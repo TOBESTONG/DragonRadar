@@ -40,6 +40,7 @@ import (
 	_ "github.com/google/syzkaller/vm/starnix"
 	_ "github.com/google/syzkaller/vm/vmm"
 	_ "github.com/google/syzkaller/vm/vmware"
+	_ "github.com/google/syzkaller/vm/dragonball"
 )
 
 type Pool struct {
