@@ -176,7 +176,7 @@ func (pool *Pool) Create(workdir string, index int) (vmimpl.Instance, error) {
 		return nil, err
 	}
 }
-
+ 
 func (pool *Pool) ctor(workdir, sshkey, sshuser string, index int) (*instance, error) {
     inst := &instance{
         index:      index,
