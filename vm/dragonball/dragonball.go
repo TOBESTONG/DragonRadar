@@ -1,8 +1,4 @@
-// Copyright 2015 syzkaller project authors. All rights reserved.
-// Use of this source code is governed by Apache 2 LICENSE that can be found in the LICENSE file.
-
-// Package dragonball provides a VM backend using dbs-cli to start Dragonball micro-VMs.
-// This implementation is specific to Linux hosts.
+// dragonball.go
 package dragonball
 
 import (
@@ -23,7 +19,6 @@ import (
 	"github.com/google/syzkaller/vm/vmimpl"
 )
 
-// Call vmimpl.Register to register a virtual machine type named "dragonball"
 func init() {
 	vmimpl.Register("dragonball", vmimpl.Type{
 		Ctor:       ctor,
@@ -31,56 +26,44 @@ func init() {
 	})
 }
 
-// Config is the parameter in the vm in syzkaller's syzkaller.cfg file, which defines the configuration parameters required to start Kata Containers.
 type Config struct {
-	KernelPath string `json:"kernel_path"` // Path to the kernel image (from --kernel-path)
-	Rootfs     string `json:"rootfs"`      // Path to the root filesystem image (from --rootfs)
-	BootArgs   string `json:"boot_args"`   // Kernel boot arguments (from --boot-args)
-	MemSize    int    `json:"mem_size"`    // Memory size in MiB (from --mem-size)
-	Vcpu       int    `json:"vcpu"`        // Number of virtual CPUs (from --vcpu)
-	MaxVcpu    int    `json:"max_vcpu"`    // Maximum number of vCPUs (from --max-vcpu)
-	LogFile    string `json:"log_file"`    // Log file path (from --log-file)
-	LogLevel   string `json:"log_level"`   // Logging level (from --log-level)
-	VirNets    string `json:"virnets"`     // Network configuration (from --virnets)
-	DbsCli     string `json:"dbs_cli"`     // Path to dbs-cli binary
-	Cmdline    string `json:"cmdline"`     // Kernel command line arguments
-	Initrd     string `json:"initrd"`
+	KernelPath string `json:"kernel_path"`
+	Rootfs     string `json:"rootfs"`
+	BootArgs   string `json:"boot_args"`
+	MemSize    int    `json:"mem_size"`
+	Vcpu       int    `json:"vcpu"`
+	MaxVcpu    int    `json:"max_vcpu"`
+	LogFile    string `json:"log_file"`
+	LogLevel   string `json:"log_level"`
+	DbsCli     string `json:"dbs_cli"`
 	DbsArgs    string `json:"dbs_args"`
 	Count      int    `json:"count"`
 }
 
-// Pool represents a group of Dragonball VM instances
 type Pool struct {
-	env *vmimpl.Env // Holds environment configurations (like SSH details, debug info)
-	cfg *Config     // Configuration specific to Dragonball VM instance
+	env *vmimpl.Env
+	cfg *Config
 }
 
-// Instance represents a single Dragonball VM instance
 type instance struct {
-	cfg        *Config              // Configuration for this specific instance
-	os         string               // OS being used in the guest VM
-	kernelPath string               // Path to the kernel image
-	rootfs     string               // Path to the root filesystem image
-	bootArgs   string               // Kernel boot arguments
-	memory     int                  // Memory size in MiB
-	vcpu       int                  // Number of virtual CPUs
-	maxVcpu    int                  // Maximum number of vCPUs
-	virNets    string               // Network configuration (e.g., TAP device)
-	workdir    string               // Working directory for instance
-	sshKey     string               // SSH key for accessing the VM
-	sshUser    string               // SSH user for VM access
-	sshHost    string               // SSH host (typically localhost or VM IP)
-	sshPort    int                  // SSH port for connecting to the VM
-	dbsCmd     *exec.Cmd            // The running process of the Dragonball VM
-	merger     *vmimpl.OutputMerger // For handling console output/log merging
-	index      int
-	debug      bool
-	timeouts   targets.Timeouts
-	rpipe      io.ReadCloser
-	wpipe      io.WriteCloser
+	cfg          *Config
+	os           string
+	workdir      string
+	sshKey       string
+	sshUser      string
+	sshHost      string
+	sshPort      int
+	dbsCmd       *exec.Cmd
+	merger       *vmimpl.OutputMerger
+	index        int
+	debug        bool
+	timeouts     targets.Timeouts
+	rpipe        io.ReadCloser
+	wpipe        io.WriteCloser
+	sshPublicKey string
+	guestIP      string
 }
 
-// ctor constructor, used to initialize VM Pool
 func ctor(env *vmimpl.Env) (vmimpl.Pool, error) {
 	cfg := &Config{
 		Count:   1,
@@ -114,7 +97,6 @@ func ctor(env *vmimpl.Env) (vmimpl.Pool, error) {
 	if cfg.MemSize < 128 || cfg.MemSize > 1048576 {
 		return nil, fmt.Errorf("bad dragonball mem: %v, want [128-1048576]", cfg.MemSize)
 	}
-	// Set default values if not provided
 	if cfg.Rootfs == "" {
 		cfg.Rootfs = env.Image
 	}
@@ -122,8 +104,10 @@ func ctor(env *vmimpl.Env) (vmimpl.Pool, error) {
 		return nil, fmt.Errorf("kernel_path must be specified in the configuration")
 	}
 	cfg.KernelPath = osutil.Abs(cfg.KernelPath)
-	if cfg.Initrd != "" {
-		cfg.Initrd = osutil.Abs(cfg.Initrd)
+
+	// Set up the network bridge
+	if err := setupBridge(); err != nil {
+		return nil, fmt.Errorf("failed to set up network bridge: %w", err)
 	}
 
 	pool := &Pool{
@@ -133,37 +117,43 @@ func ctor(env *vmimpl.Env) (vmimpl.Pool, error) {
 	return pool, nil
 }
 
-// Implement the Count method of the Pool interface and return the number of VMs running in parallel in the Pool.
+func setupBridge() error {
+	// Create a bridge if not exists
+	bridgeName := "br0"
+	_, err := osutil.RunCmd(time.Minute, "", "ip", "link", "show", bridgeName)
+	if err != nil {
+		// Bridge does not exist, create it
+		cmds := [][]string{
+			{"ip", "link", "add", bridgeName, "type", "bridge"},
+			{"ip", "addr", "add", "192.168.100.1/24", "dev", bridgeName},
+			{"ip", "link", "set", bridgeName, "up"},
+		}
+		for _, cmd := range cmds {
+			_, err := osutil.RunCmd(time.Minute, "", cmd[0], cmd[1:]...)
+			if err != nil {
+				return fmt.Errorf("failed to run command %v: %w", cmd, err)
+			}
+		}
+	}else {
+        log.Logf(0, "Bridge %s already exists", bridgeName)
+	}
+	return nil
+}
+
+
 func (pool *Pool) Count() int {
 	return pool.cfg.Count
 }
 
-// The Create method is used to create a new Dragonball VM instance
 func (pool *Pool) Create(workdir string, index int) (vmimpl.Instance, error) {
 	sshkey := pool.env.SSHKey
 	sshuser := pool.env.SSHUser
-	/*	//Note reason: This function is called in ctor instead: if err := inst.prepareInitScript()
 
-		// Generate an init.sh script to set up networking and other configurations in the VM.
-		initFile := filepath.Join(workdir, "init.sh")
-		initScriptWithKey := strings.Replace(initScript, "{{KEY}}", sshkey, -1)
-		// Write the script to the VM's working directory
-		if err := osutil.WriteExecFile(initFile, []byte(initScriptWithKey)); err != nil {
-			return nil, fmt.Errorf("failed to create init.sh file: %w", err)
-		}
-	*/
-	// Ensure TAP interface exists
-	if err := setupTapInterface("tap0"); err != nil {
-		return nil, fmt.Errorf("failed to set up TAP interface: %w", err)
-	}
-
-	// Create the Dragonball instance
 	for i := 0; ; i++ {
 		inst, err := pool.ctor(workdir, sshkey, sshuser, index)
 		if err == nil {
 			return inst, nil
 		}
-		// Handle potential errors in the setup of the virtual machine.
 		if i < 1000 && strings.Contains(err.Error(), "could not set up host forwarding rule") {
 			continue
 		}
@@ -185,7 +175,6 @@ func (pool *Pool) ctor(workdir, sshkey, sshuser string, index int) (*instance, e
 		sshUser:  sshuser,
 		timeouts: pool.env.Timeouts,
 	}
-
 	closeInst := inst
 	defer func() {
 		if closeInst != nil {
@@ -196,15 +185,20 @@ func (pool *Pool) ctor(workdir, sshkey, sshuser string, index int) (*instance, e
 	if err := inst.prepareInitScript(); err != nil {
 		return nil, fmt.Errorf("failed to prepare init.sh: %w", err)
 	}
-	// Create the pipes for the VM's console output
+
+	// Ensure TAP interface exists
+	tapInterface := fmt.Sprintf("tap%d", inst.index)
+	if err := inst.setupTapInterface(tapInterface); err != nil {
+		return nil, fmt.Errorf("failed to set up TAP interface: %w", err)
+	}
+
 	var err error
 	inst.rpipe, inst.wpipe, err = osutil.LongPipe()
 	if err != nil {
 		return nil, err
 	}
 
-	// Start the VM
-	if err := inst.boot(); err != nil {
+	if err := inst.boot(tapInterface); err != nil {
 		return nil, err
 	}
 
@@ -212,9 +206,33 @@ func (pool *Pool) ctor(workdir, sshkey, sshuser string, index int) (*instance, e
 	return inst, nil
 }
 
-func (inst *instance) boot() error {
+func (inst *instance) prepareInitScript() error {
+	sshPubKey, err := os.ReadFile(inst.sshKey + ".pub")
+	if err != nil {
+		return fmt.Errorf("failed to read SSH public key: %w", err)
+	}
+
+	inst.sshPublicKey = strings.TrimSpace(string(sshPubKey))
+
+	// Assign unique guest IP based on inst.index
+	inst.guestIP = fmt.Sprintf("192.168.100.%d", inst.index+2) // Starts from .2
+
+	// Write init.sh to the shared directory (inst.workdir)
+	initScriptContent := strings.Replace(initScript, "{{KEY}}", inst.sshKey, -1)
+	initScriptContent = strings.Replace(initScriptContent, "{{GUEST_IP}}", inst.guestIP, -1)
+	initScriptPath := filepath.Join(inst.workdir, "init.sh")
+	if err := osutil.WriteExecFile(initScriptPath, []byte(initScriptContent)); err != nil {
+		return fmt.Errorf("failed to write init.sh to shared directory: %w", err)
+	}
+
+	return nil
+}
+
+func (inst *instance) boot(tapInterface string) error {
+	// Assign an unused TCP port for SSH port forwarding
 	inst.sshPort = vmimpl.UnusedTCPPort()
-	args := inst.buildDbsCliArgs()
+
+	args := inst.buildDbsCliArgs(tapInterface)
 
 	if inst.debug {
 		log.Logf(0, "starting dbs-cli with args: %v", args)
@@ -251,23 +269,14 @@ func (inst *instance) boot() error {
 	inst.merger.Add("dbs-cli", inst.rpipe)
 	inst.rpipe = nil
 
-	/*
-	   // Wait for the API socket to be ready
-	   apiSockPath := filepath.Join(inst.workdir, "dbs.sock")
-	   if err := waitForAPISocket(apiSockPath, 10*time.Second); err != nil {
-	       return fmt.Errorf("API socket not ready: %w", err)
-	   }
-	*/
-
 	// Set up port forwarding using iptables
-	guestIP := fmt.Sprintf("192.168.100.%d", inst.index+2)
-    if err := setupPortForwarding(inst.sshPort, guestIP, 22); err != nil {
-        return fmt.Errorf("failed to set up port forwarding: %w", err)
-    }
+	if err := setupPortForwarding(inst.sshPort, inst.guestIP, 22); err != nil {
+		return fmt.Errorf("failed to set up port forwarding: %w", err)
+	}
 
-    inst.sshHost = "localhost"
+	inst.sshHost = "localhost"
 	// Wait for SSH to become available
-	if err := vmimpl.WaitForSSH(inst.debug, 10*time.Minute*inst.timeouts.Scale, "localhost",
+	if err := vmimpl.WaitForSSH(inst.debug, 10*time.Minute*inst.timeouts.Scale, inst.sshHost,
 		inst.sshKey, inst.sshUser, inst.os, inst.sshPort, inst.merger.Err, false); err != nil {
 		return vmimpl.MakeBootError(err, nil)
 	}
@@ -296,137 +305,130 @@ func (inst *instance) Close() error {
 	if inst.wpipe != nil {
 		inst.wpipe.Close()
 	}
+
+	// Clean up the tap interface
+	tapInterface := fmt.Sprintf("tap%d", inst.index)
+	osutil.RunCmd(time.Minute, "", "ip", "link", "set", tapInterface, "down")
+	osutil.RunCmd(time.Minute, "", "ip", "tuntap", "del", "mode", "tap", tapInterface)
+
+	// Clean up port forwarding rules
+	cleanupPortForwarding(inst.sshPort, inst.guestIP, 22)
+
 	return nil
 }
 
-func setupPortForwarding(hostPort int, guestIP string, guestPort int) error {
-    cmds := [][]string{
-        {"iptables", "-t", "nat", "-A", "PREROUTING", "-p", "tcp",
-            "--dport", strconv.Itoa(hostPort), "-j", "DNAT", "--to-destination",
-            fmt.Sprintf("%s:%d", guestIP, guestPort)},
-        {"iptables", "-t", "nat", "-A", "POSTROUTING", "-p", "tcp", "-d", guestIP,
-            "-j", "MASQUERADE"},
-    }
-    for _, cmd := range cmds {
-        _, err := osutil.RunCmd(time.Minute, "", cmd[0], cmd[1:]...)
-        if err != nil {
-            return fmt.Errorf("failed to run command %v: %w", cmd, err)
-        }
-    }
-    return nil
+func (inst *instance) setupTapInterface(tapName string) error {
+	// Create TAP interface
+	cmds := [][]string{
+		{"ip", "tuntap", "add", "dev", tapName, "mode", "tap"},
+		{"ip", "link", "set", tapName, "up"},
+		{"ip", "link", "set", tapName, "master", "br0"},
+	}
+	for _, cmd := range cmds {
+		_, err := osutil.RunCmd(time.Minute, "", cmd[0], cmd[1:]...)
+		if err != nil {
+			return fmt.Errorf("failed to run command %v: %w", cmd, err)
+		}
+	}
+	return nil
 }
 
+func (inst *instance) buildDbsCliArgs(tapInterface string) []string {
+	guestMAC := fmt.Sprintf("AA:BB:CC:DD:EE:%02X", inst.index)
+
+	virnetsConfig := fmt.Sprintf(`[{
+		"guest_mac":"%s",
+		"backend":{
+			"type":"virtio",
+			"iface_id":"eth0",
+			"host_dev_name":"%s",
+			"allow_duplicate_mac":true
+		}
+	}]`, guestMAC, tapInterface)
+
+	fsConfig := fmt.Sprintf(`{
+		"sock_path": "%s",
+		"tag": "syzkaller",
+		"num_queues": 1,
+		"queue_size": 1024,
+		"cache_size": 2147483648,
+		"thread_pool_size": 1,
+		"cache_policy": "always",
+		"writeback_cache": true,
+		"no_open": true,
+		"xattr": false,
+		"drop_sys_resource": false,
+		"mode": "virtio",
+		"fuse_killpriv_v2": false,
+		"no_readdir": false,
+		"use_shared_irq": true,
+		"use_generic_irq": true
+	}`, filepath.Join(inst.workdir, "vhost-user-fs.sock"))
+
+	bootArgs := inst.cfg.BootArgs + " init=/init"
+
+	args := []string{
+		"create",
+		"--vcpu", fmt.Sprintf("%d", inst.cfg.Vcpu),
+		"--max-vcpu", fmt.Sprintf("%d", inst.cfg.MaxVcpu),
+		"--mem-size", fmt.Sprintf("%d", inst.cfg.MemSize),
+		"--kernel-path", inst.cfg.KernelPath,
+		"--rootfs", inst.cfg.Rootfs,
+		"--boot-args", bootArgs,
+		"--virnets", virnetsConfig,
+		"--fs", fsConfig,
+		"--serial-path", "stdio",
+	}
+
+	if inst.cfg.LogFile != "" {
+		args = append(args, "--log-file", inst.cfg.LogFile)
+	}
+
+	if inst.cfg.LogLevel != "" {
+		args = append(args, "--log-level", inst.cfg.LogLevel)
+	}
+
+	if inst.cfg.DbsArgs != "" {
+		args = append(args, strings.Split(inst.cfg.DbsArgs, " ")...)
+	}
+
+	return args
+}
+
+func setupPortForwarding(hostPort int, guestIP string, guestPort int) error {
+	cmds := [][]string{
+		{"iptables", "-t", "nat", "-A", "PREROUTING", "-p", "tcp",
+			"--dport", strconv.Itoa(hostPort), "-j", "DNAT", "--to-destination",
+			fmt.Sprintf("%s:%d", guestIP, guestPort)},
+		{"iptables", "-t", "nat", "-A", "POSTROUTING", "-p", "tcp", "-d", guestIP,
+			"-j", "MASQUERADE"},
+	}
+	for _, cmd := range cmds {
+		_, err := osutil.RunCmd(time.Minute, "", cmd[0], cmd[1:]...)
+		if err != nil {
+			return fmt.Errorf("failed to run command %v: %w", cmd, err)
+		}
+	}
+	return nil
+}
+
+func cleanupPortForwarding(hostPort int, guestIP string, guestPort int) {
+	cmds := [][]string{
+		{"iptables", "-t", "nat", "-D", "PREROUTING", "-p", "tcp",
+			"--dport", strconv.Itoa(hostPort), "-j", "DNAT", "--to-destination",
+			fmt.Sprintf("%s:%d", guestIP, guestPort)},
+		{"iptables", "-t", "nat", "-D", "POSTROUTING", "-p", "tcp", "-d", guestIP,
+			"-j", "MASQUERADE"},
+	}
+	for _, cmd := range cmds {
+		osutil.RunCmd(time.Minute, "", cmd[0], cmd[1:]...)
+	}
+}
 
 func (inst *instance) Forward(port int) (string, error) {
 	// Return the host address and port where the service is forwarded.
 	return fmt.Sprintf("localhost:%d", port), nil
 }
-
-func setupTapInterface(tapName string) error {
-    // Create TAP interface and assign IP
-    cmds := [][]string{
-        {"ip", "tuntap", "add", "dev", tapName, "mode", "tap", "user", fmt.Sprintf("%s", os.Getenv("USER"))},
-        {"ip", "addr", "add", "192.168.100.1/24", "dev", tapName},
-        {"ip", "link", "set", tapName, "up"},
-    }
-    for _, cmd := range cmds {
-        _, err := osutil.RunCmd(time.Minute, "", cmd[0], cmd[1:]...)
-        if err != nil {
-            return fmt.Errorf("failed to run command %v: %w", cmd, err)
-        }
-    }
-    return nil
-}
-
-
-func (inst *instance) prepareInitScript() error {
-    sshPubKey, err := os.ReadFile(inst.sshKey + ".pub")
-    if err != nil {
-        return fmt.Errorf("failed to read SSH public key: %w", err)
-    }
-
-    // Assign unique guest IP based on inst.index
-    guestIP := fmt.Sprintf("192.168.100.%d", inst.index+2) // Starts from .2
-
-    initScriptContent := strings.Replace(initScript, "{{SSH_PUBLIC_KEY}}", strings.TrimSpace(string(sshPubKey)), -1)
-    initScriptContent = strings.Replace(initScriptContent, "{{GUEST_IP}}", guestIP, -1)
-
-    initFile := filepath.Join(inst.workdir, "init.sh")
-    return osutil.WriteExecFile(initFile, []byte(initScriptContent))
-}
-
-
-
-
-func (inst *instance) buildDbsCliArgs() []string {
-    guestMAC := fmt.Sprintf("AA:BB:CC:DD:EE:%02X", inst.index)
-    tapInterface := "tap0"
-
-    virnetsConfig := fmt.Sprintf(`[{
-        "guest_mac":"%s",
-        "backend":{
-            "type":"virtio",
-            "iface_id":"eth0",
-            "host_dev_name":"%s",
-            "allow_duplicate_mac":true
-        }
-    }]`, guestMAC, tapInterface)
-
-	/*
-	   fsConfig := fmt.Sprintf(`{
-	       "sock_path": "%s",
-	       "tag": "syzkaller",
-	       "num_queues": 4,
-	       "queue_size": 1024,
-	       "cache_size": 2147483648,
-	       "thread_pool_size": 4,
-	       "cache_policy": "always",
-	       "writeback_cache": true,
-	       "no_open": true,
-	       "xattr": false,
-	       "drop_sys_resource": false,
-	       "mode": "virtio",
-	       "fuse_killpriv_v2": false,
-	       "no_readdir": false,
-	       "use_shared_irq": true,
-	       "use_generic_irq": true
-	   }`, filepath.Join(inst.workdir, "vhost-user-fs.sock"))
-	*/
-
-    // bootArgs := inst.cfg.BootArgs + " init=/init.sh"
-	bootArgs := inst.cfg.BootArgs
-
-    args := []string{
-        "create",
-        "--vcpu", fmt.Sprintf("%d", inst.cfg.Vcpu),
-        "--max-vcpu", fmt.Sprintf("%d", inst.cfg.MaxVcpu),
-        "--mem-size", fmt.Sprintf("%d", inst.cfg.MemSize),
-        "--kernel-path", inst.cfg.KernelPath,
-        "--rootfs", inst.cfg.Rootfs,
-        "--boot-args", bootArgs,
-        "--virnets", virnetsConfig,
-        "--serial-path", "stdio",
-    }
-
-    if inst.cfg.Initrd != "" {
-        args = append(args, "--initrd-path", inst.cfg.Initrd)
-    }
-
-    if inst.cfg.LogFile != "" {
-        args = append(args, "--log-file", inst.cfg.LogFile)
-    }
-
-    if inst.cfg.LogLevel != "" {
-        args = append(args, "--log-level", inst.cfg.LogLevel)
-    }
-
-    if inst.cfg.DbsArgs != "" {
-        args = append(args, strings.Split(inst.cfg.DbsArgs, " ")...)
-    }
-
-    return args
-}
-
 
 func (inst *instance) Run(timeout time.Duration, stop <-chan bool, command string) (
 	<-chan []byte, <-chan error, error) {
@@ -494,23 +496,50 @@ func (inst *instance) sshArgs(args ...string) []string {
 }
 
 // nolint: lll
-const initScript = `#!/bin/bash
+const initScript = `#! /bin/bash
 set -eux
-
-# Configure network interface
-ip addr add {{GUEST_IP}}/24 dev eth0
-ip link set eth0 up
-ip route add default via 192.168.100.1
-
-# Set up SSH server
-mkdir -p /root/.ssh
-echo "{{SSH_PUBLIC_KEY}}" >> /root/.ssh/authorized_keys
-chmod 600 /root/.ssh/authorized_keys
-
-# Start SSH server
-/usr/sbin/sshd
-
-# Keep the VM running
-tail -f /dev/null
-
+mount -t proc none /proc
+mount -t sysfs none /sys
+mount -t debugfs nodev /sys/kernel/debug/
+mount -t tmpfs none /tmp
+mount -t tmpfs none /var
+mount -t tmpfs none /run
+mount -t tmpfs none /etc
+mount -t tmpfs none /root
+touch /etc/fstab
+mkdir /etc/network
+mkdir /run/network
+printf 'auto lo\niface lo inet loopback\n\n' >> /etc/network/interfaces
+printf 'auto eth0\niface eth0 inet static\naddress {{GUEST_IP}}\nnetmask 255.255.255.0\ngateway 192.168.100.1\n\n' >> /etc/network/interfaces
+mkdir -p /etc/network/if-pre-up.d
+mkdir -p /etc/network/if-up.d
+ifup lo
+ifup eth0 || true
+echo "root::0:0:root:/root:/bin/bash" > /etc/passwd
+mkdir -p /etc/ssh
+cp {{KEY}}.pub /root/
+chmod 0700 /root
+chmod 0600 /root/key.pub
+mkdir -p /var/run/sshd/
+chmod 700 /var/run/sshd
+groupadd -g 33 sshd
+useradd -u 33 -g 33 -c sshd -d / sshd
+cat > /etc/ssh/sshd_config <<EOF
+          Port 22
+          Protocol 2
+          UsePrivilegeSeparation no
+          HostKey {{KEY}}
+          PermitRootLogin yes
+          AuthenticationMethods publickey
+          ChallengeResponseAuthentication no
+          AuthorizedKeysFile /root/key.pub
+          IgnoreUserKnownHosts yes
+          AllowUsers root
+          LogLevel INFO
+          TCPKeepAlive yes
+          RSAAuthentication yes
+          PubkeyAuthentication yes
+EOF
+/usr/sbin/sshd -e -D
+/sbin/halt -f
 `
