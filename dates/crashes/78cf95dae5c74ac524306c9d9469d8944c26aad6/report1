@@ -1,0 +1,122 @@
+kernel write not supported for file [eventfd] (pid: 2074 comm: kworker/0:3)
+netlink: 'syz.1.1034': attribute type 3 has an invalid length.
+netlink: 4560 bytes leftover after parsing attributes in process `syz.1.1034'.
+INFO: task syz.3.618:12732 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.3.618       state:D stack:23384 pid:12732 ppid: 10297 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ bit_wait_io+0x12/0xa0 kernel/sched/wait_bit.c:209
+ __wait_on_bit_lock+0x131/0x1c0 kernel/sched/wait_bit.c:90
+ out_of_line_wait_on_bit_lock+0xd5/0x110 kernel/sched/wait_bit.c:117
+ wait_on_bit_lock_io include/linux/wait_bit.h:208 [inline]
+ __lock_buffer fs/buffer.c:69 [inline]
+ lock_buffer include/linux/buffer_head.h:366 [inline]
+ write_dirty_buffer+0x15e/0x170 fs/buffer.c:3121
+ fsync_buffers_list fs/buffer.c:730 [inline]
+ sync_mapping_buffers+0x3ed/0xcf0 fs/buffer.c:548
+ ext4_sync_parent fs/ext4/fsync.c:70 [inline]
+ ext4_fsync_nojournal fs/ext4/fsync.c:97 [inline]
+ ext4_sync_file+0xc74/0xf40 fs/ext4/fsync.c:170
+ vfs_fsync_range+0x13d/0x230 fs/sync.c:200
+ generic_write_sync include/linux/fs.h:2739 [inline]
+ ext4_buffered_write_iter+0x36a/0x4d0 fs/ext4/file.c:278
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ call_write_iter include/linux/fs.h:1903 [inline]
+ do_iter_readv_writev+0x476/0x760 fs/read_write.c:740
+ do_iter_write+0x18d/0x670 fs/read_write.c:866
+ vfs_iter_write+0x70/0xa0 fs/read_write.c:907
+ iter_file_splice_write+0x73a/0xc00 fs/splice.c:686
+ do_splice_from fs/splice.c:764 [inline]
+ direct_splice_actor+0x10f/0x170 fs/splice.c:933
+ splice_direct_to_actor+0x387/0x980 fs/splice.c:888
+ do_splice_direct+0x1c4/0x290 fs/splice.c:976
+ do_sendfile+0x54f/0x10e0 fs/read_write.c:1257
+ __do_sys_sendfile64 fs/read_write.c:1318 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1304 [inline]
+ __x64_sys_sendfile64+0x1cd/0x210 fs/read_write.c:1304
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fde33793ef9
+RSP: 002b:00007fde3240d038 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007fde3394bf80 RCX: 00007fde33793ef9
+RDX: 0000000000000000 RSI: 0000000000000006 RDI: 0000000000000005
+RBP: 00007fde33806b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0001000000201005 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fde3394bf80 R15: 00007ffcf793c7a8
+INFO: task syz.3.618:12799 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.3.618       state:D stack:27000 pid:12799 ppid: 10297 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ bit_wait_io+0x12/0xa0 kernel/sched/wait_bit.c:209
+ __wait_on_bit_lock+0x131/0x1c0 kernel/sched/wait_bit.c:90
+ out_of_line_wait_on_bit_lock+0xd5/0x110 kernel/sched/wait_bit.c:117
+ wait_on_bit_lock_io include/linux/wait_bit.h:208 [inline]
+ __lock_buffer fs/buffer.c:69 [inline]
+ lock_buffer include/linux/buffer_head.h:366 [inline]
+ __sync_dirty_buffer+0x34f/0x3e0 fs/buffer.c:3142
+ __ext4_handle_dirty_metadata+0x28b/0x9b0 fs/ext4/ext4_jbd2.c:364
+ ext4_finish_convert_inline_dir fs/ext4/inline.c:1164 [inline]
+ ext4_convert_inline_data_nolock+0x9b5/0xd60 fs/ext4/inline.c:1240
+ ext4_try_add_inline_entry+0x38f/0x650 fs/ext4/inline.c:1313
+ ext4_add_entry+0x34e/0xc60 fs/ext4/namei.c:2209
+ ext4_mkdir+0x41c/0xb10 fs/ext4/namei.c:2814
+ vfs_mkdir+0x45c/0x710 fs/namei.c:3650
+ do_mkdirat+0x145/0x2a0 fs/namei.c:3673
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fde33793ef9
+RSP: 002b:00007fde321a8038 EFLAGS: 00000246 ORIG_RAX: 0000000000000102
+RAX: ffffffffffffffda RBX: 00007fde3394c208 RCX: 00007fde33793ef9
+RDX: 0000000000000000 RSI: 0000000020000540 RDI: 0000000000000008
+RBP: 00007fde33806b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fde3394c208 R15: 00007ffcf793c7a8
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/24:
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x28c kernel/locking/lockdep.c:6254
+1 lock held by in:imklog/154:
+3 locks held by kworker/u4:5/1089:
+ #0: ffff88800838d938 ((wq_completion)writeback){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88800838d938 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff88800838d938 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88800838d938 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff88800838d938 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff88800838d938 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff888019e27da8 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+ #2: ffff8880081360e0 (&type->s_umount_key#30){.+.+}-{3:3}, at: trylock_super+0x1d/0x100 fs/super.c:418
+1 lock held by syz.3.618/12732:
+ #0: ffff888018ce2438 (sb_writers#3){.+.+}-{0:0}, at: __do_sys_sendfile64 fs/read_write.c:1318 [inline]
+ #0: ffff888018ce2438 (sb_writers#3){.+.+}-{0:0}, at: __se_sys_sendfile64 fs/read_write.c:1304 [inline]
+ #0: ffff888018ce2438 (sb_writers#3){.+.+}-{0:0}, at: __x64_sys_sendfile64+0x1cd/0x210 fs/read_write.c:1304
+3 locks held by syz.3.618/12799:
+ #0: ffff888018ce2438 (sb_writers#3){.+.+}-{0:0}, at: filename_create+0x104/0x490 fs/namei.c:3462
+ #1: ffff88801a8970d0 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+ #1: ffff88801a8970d0 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: filename_create+0x15a/0x490 fs/namei.c:3467
+ #2: ffff88801a896d10 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ #2: ffff88801a896d10 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_add_inline_entry+0x108/0x650 fs/ext4/inline.c:1271
+1 lock held by syz.1.820/15982:
+ #0: ffff888018ce20e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.3.891/16414:
+ #0: ffff888018ce20e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.1.946/16990:
+ #0: ffff888018ce20e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.0.992/17907:
+ #0: ffff888018ce20e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.0.992/17912:
+ #0: ffff888018ce20e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.3.1014/18185:
+ #0: ffff888018ce20e0 (&type->s_umount_key#42){++++}-{3:3}, at: __get_super.part.0+0x128/0x270 fs/super.c:761
+
+=============================================
+

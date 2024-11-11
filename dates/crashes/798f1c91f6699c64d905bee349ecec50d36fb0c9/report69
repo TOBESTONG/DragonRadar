@@ -1,0 +1,170 @@
+EXT4-fs (loop0): mounted filesystem without journal. Opts: debug,orlov,dioread_nolock,test_dummy_encryption,nojournal_checksum,init_itable=0x0000000000000000,stripe=0x0000000000003096,usrquota,,errors=continue
+======================================================
+WARNING: possible circular locking dependency detected
+5.10.0 #1 Not tainted
+------------------------------------------------------
+syz.0.134/4513 is trying to acquire lock:
+ffff888013a967a8 (&dquot->dq_lock){+.+.}-{3:3}, at: dquot_commit+0x4d/0x380 fs/quota/dquot.c:476
+
+but task is already holding lock:
+ffff888013b1f898 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_map_blocks+0x69d/0x1740 fs/ext4/inode.c:621
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&ei->i_data_sem/2){++++}-{3:3}:
+       down_read+0x96/0x450 kernel/locking/rwsem.c:1492
+       ext4_map_blocks+0x381/0x1740 fs/ext4/inode.c:551
+       ext4_getblk+0x144/0x6a0 fs/ext4/inode.c:838
+       ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+       ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+       write_blk+0x12f/0x220 fs/quota/quota_tree.c:73
+       get_free_dqblk+0xff/0x2d0 fs/quota/quota_tree.c:102
+       do_insert_tree+0x57b/0xf80 fs/quota/quota_tree.c:309
+       do_insert_tree+0xdb8/0xf80 fs/quota/quota_tree.c:340
+       do_insert_tree+0x677/0xf80 fs/quota/quota_tree.c:340
+       do_insert_tree+0x677/0xf80 fs/quota/quota_tree.c:340
+       dq_insert_tree fs/quota/quota_tree.c:366 [inline]
+       qtree_write_dquot+0x3bf/0x580 fs/quota/quota_tree.c:385
+       v2_write_dquot+0x11c/0x250 fs/quota/quota_v2.c:334
+       dquot_acquire+0x2cf/0x590 fs/quota/dquot.c:443
+       ext4_acquire_dquot+0x25e/0x3d0 fs/ext4/super.c:6186
+       dqget+0x681/0xfb0 fs/quota/dquot.c:901
+       __dquot_initialize+0x59d/0xd60 fs/quota/dquot.c:1479
+       ext4_mkdir+0xc5/0xb10 fs/ext4/namei.c:2792
+       vfs_mkdir+0x45c/0x710 fs/namei.c:3650
+       do_mkdirat+0x145/0x2a0 fs/namei.c:3673
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #1 (&s->s_dquot.dqio_sem){++++}-{3:3}:
+       down_read+0x96/0x450 kernel/locking/rwsem.c:1492
+       v2_read_dquot+0x49/0x120 fs/quota/quota_v2.c:308
+       dquot_acquire+0x133/0x590 fs/quota/dquot.c:434
+       ext4_acquire_dquot+0x25e/0x3d0 fs/ext4/super.c:6186
+       dqget+0x681/0xfb0 fs/quota/dquot.c:901
+       __dquot_initialize+0x59d/0xd60 fs/quota/dquot.c:1479
+       ext4_orphan_cleanup fs/ext4/super.c:3095 [inline]
+       ext4_fill_super+0x91c3/0xd960 fs/ext4/super.c:5067
+       mount_bdev+0x350/0x410 fs/super.c:1419
+       legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+       vfs_get_tree+0x8e/0x360 fs/super.c:1549
+       do_new_mount fs/namespace.c:2875 [inline]
+       path_mount+0x1318/0x2060 fs/namespace.c:3205
+       do_mount fs/namespace.c:3218 [inline]
+       __do_sys_mount fs/namespace.c:3426 [inline]
+       __se_sys_mount fs/namespace.c:3403 [inline]
+       __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #0 (&dquot->dq_lock){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:2868 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+       validate_chain kernel/locking/lockdep.c:3608 [inline]
+       __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+       lock_acquire kernel/locking/lockdep.c:5437 [inline]
+       lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+       __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+       __mutex_lock+0x13b/0x10d0 kernel/locking/mutex.c:1103
+       dquot_commit+0x4d/0x380 fs/quota/dquot.c:476
+       ext4_write_dquot+0x24e/0x310 fs/ext4/super.c:6170
+       ext4_mark_dquot_dirty+0x111/0x1a0 fs/ext4/super.c:6221
+       mark_dquot_dirty fs/quota/dquot.c:347 [inline]
+       mark_all_dquot_dirty fs/quota/dquot.c:385 [inline]
+       __dquot_alloc_space+0x528/0xa80 fs/quota/dquot.c:1709
+       dquot_alloc_space_nodirty include/linux/quotaops.h:297 [inline]
+       dquot_alloc_space include/linux/quotaops.h:310 [inline]
+       dquot_alloc_block include/linux/quotaops.h:334 [inline]
+       ext4_mb_new_blocks+0x55a/0x4b60 fs/ext4/mballoc.c:4959
+       ext4_ext_map_blocks+0x1f8e/0x5d50 fs/ext4/extents.c:4238
+       ext4_map_blocks+0x700/0x1740 fs/ext4/inode.c:628
+       _ext4_get_block+0x241/0x590 fs/ext4/inode.c:784
+       __block_write_begin_int+0x3f2/0x1b40 fs/buffer.c:2011
+       ext4_write_begin+0x649/0x1170 fs/ext4/inode.c:1200
+       ext4_da_write_begin+0x61e/0xe60 fs/ext4/inode.c:2952
+       generic_perform_write+0x1fe/0x4d0 mm/filemap.c:3329
+       ext4_buffered_write_iter+0x244/0x4d0 fs/ext4/file.c:270
+       ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+       call_write_iter include/linux/fs.h:1903 [inline]
+       new_sync_write+0x42c/0x670 fs/read_write.c:518
+       vfs_write+0x81b/0xac0 fs/read_write.c:605
+       ksys_write+0x12d/0x250 fs/read_write.c:658
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+other info that might help us debug this:
+
+Chain exists of:
+  &dquot->dq_lock --> &s->s_dquot.dqio_sem --> &ei->i_data_sem/2
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ei->i_data_sem/2);
+                               lock(&s->s_dquot.dqio_sem);
+                               lock(&ei->i_data_sem/2);
+  lock(&dquot->dq_lock);
+
+ *** DEADLOCK ***
+
+5 locks held by syz.0.134/4513:
+ #0: ffff88801fe48ff0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+ #1: ffff888010d98438 (sb_writers#3){.+.+}-{0:0}, at: ksys_write+0x12d/0x250 fs/read_write.c:658
+ #2: ffff888013b1faa8 (&sb->s_type->i_mutex_key#14){++++}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ #2: ffff888013b1faa8 (&sb->s_type->i_mutex_key#14){++++}-{3:3}, at: ext4_buffered_write_iter+0xb6/0x4d0 fs/ext4/file.c:264
+ #3: ffff888013b1f898 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_map_blocks+0x69d/0x1740 fs/ext4/inode.c:621
+ #4: ffffffff852c8500 (dquot_srcu){....}-{0:0}, at: i_dquot fs/quota/dquot.c:926 [inline]
+ #4: ffffffff852c8500 (dquot_srcu){....}-{0:0}, at: __dquot_alloc_space+0x1b2/0xa80 fs/quota/dquot.c:1671
+
+stack backtrace:
+CPU: 0 PID: 4513 Comm: syz.0.134 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
+ check_prev_add kernel/locking/lockdep.c:2868 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+ validate_chain kernel/locking/lockdep.c:3608 [inline]
+ __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+ __mutex_lock+0x13b/0x10d0 kernel/locking/mutex.c:1103
+ dquot_commit+0x4d/0x380 fs/quota/dquot.c:476
+ ext4_write_dquot+0x24e/0x310 fs/ext4/super.c:6170
+ ext4_mark_dquot_dirty+0x111/0x1a0 fs/ext4/super.c:6221
+ mark_dquot_dirty fs/quota/dquot.c:347 [inline]
+ mark_all_dquot_dirty fs/quota/dquot.c:385 [inline]
+ __dquot_alloc_space+0x528/0xa80 fs/quota/dquot.c:1709
+ dquot_alloc_space_nodirty include/linux/quotaops.h:297 [inline]
+ dquot_alloc_space include/linux/quotaops.h:310 [inline]
+ dquot_alloc_block include/linux/quotaops.h:334 [inline]
+ ext4_mb_new_blocks+0x55a/0x4b60 fs/ext4/mballoc.c:4959
+ ext4_ext_map_blocks+0x1f8e/0x5d50 fs/ext4/extents.c:4238
+ ext4_map_blocks+0x700/0x1740 fs/ext4/inode.c:628
+ _ext4_get_block+0x241/0x590 fs/ext4/inode.c:784
+ __block_write_begin_int+0x3f2/0x1b40 fs/buffer.c:2011
+ ext4_write_begin+0x649/0x1170 fs/ext4/inode.c:1200
+ ext4_da_write_begin+0x61e/0xe60 fs/ext4/inode.c:2952
+ generic_perform_write+0x1fe/0x4d0 mm/filemap.c:3329
+ ext4_buffered_write_iter+0x244/0x4d0 fs/ext4/file.c:270
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ call_write_iter include/linux/fs.h:1903 [inline]
+ new_sync_write+0x42c/0x670 fs/read_write.c:518
+ vfs_write+0x81b/0xac0 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f69446e8ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f6943362038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f69448a0f80 RCX: 00007f69446e8ef9
+RDX: 000000000208e24b RSI: 0000000020000180 RDI: 0000000000000007
+RBP: 00007f694475bb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f69448a0f80 R15: 00007ffd04329998

@@ -1,0 +1,108 @@
+EXT4-fs warning (device loop3): ext4_evict_inode:293: xattr delete (err -27)
+EXT4-fs error (device loop2): ext4_xattr_ibody_get:593: inode #18: comm syz.2.15: corrupted in-inode xattr
+==================================================================
+BUG: KASAN: use-after-free in get_max_inline_xattr_value_size+0x49c/0x510 fs/ext4/inline.c:57
+Read of size 4 at addr ffff88801044c040 by task syz.2.15/2108
+
+CPU: 1 PID: 2108 Comm: syz.2.15 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ get_max_inline_xattr_value_size+0x49c/0x510 fs/ext4/inline.c:57
+ ext4_get_max_inline_size.part.0+0xa8/0x180 fs/ext4/inline.c:108
+ ext4_get_max_inline_size fs/ext4/inline.c:96 [inline]
+ ext4_da_write_inline_data_begin+0x1d6/0xdb0 fs/ext4/inline.c:882
+ ext4_da_write_begin+0x8fc/0xe60 fs/ext4/inode.c:2959
+ generic_perform_write+0x1fe/0x4d0 mm/filemap.c:3329
+ ext4_buffered_write_iter+0x244/0x4d0 fs/ext4/file.c:270
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ call_write_iter include/linux/fs.h:1903 [inline]
+ new_sync_write+0x42c/0x670 fs/read_write.c:518
+ vfs_write+0x81b/0xac0 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f2569156ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f2567dd0038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f256930ef80 RCX: 00007f2569156ef9
+RDX: 000000000208e24b RSI: 0000000020000180 RDI: 0000000000000004
+RBP: 00007f25691c9b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f256930ef80 R15: 00007ffc45d85288
+
+Allocated by task 2042:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ kmem_cache_alloc_node+0x155/0x340 mm/slub.c:2927
+ __alloc_skb+0x6d/0x590 net/core/skbuff.c:198
+ alloc_skb include/linux/skbuff.h:1094 [inline]
+ alloc_skb_with_frags+0x93/0x620 net/core/skbuff.c:5835
+ sock_alloc_send_pskb+0x742/0x8a0 net/core/sock.c:2329
+ unix_dgram_sendmsg+0x3cd/0x1880 net/unix/af_unix.c:1670
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0x15c/0x190 net/socket.c:671
+ sock_write_iter+0x291/0x3d0 net/socket.c:998
+ call_write_iter include/linux/fs.h:1903 [inline]
+ new_sync_write+0x42c/0x670 fs/read_write.c:518
+ vfs_write+0x81b/0xac0 fs/read_write.c:605
+ ksys_write+0x1ee/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 116:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ kfree_skbmem+0xef/0x1b0 net/core/skbuff.c:622
+ __kfree_skb net/core/skbuff.c:679 [inline]
+ consume_skb net/core/skbuff.c:834 [inline]
+ consume_skb+0xcf/0x160 net/core/skbuff.c:828
+ skb_free_datagram+0x16/0xf0 net/core/datagram.c:325
+ unix_dgram_recvmsg+0x6ee/0xb50 net/unix/af_unix.c:2179
+ sock_recvmsg_nosec net/socket.c:885 [inline]
+ sock_recvmsg+0x145/0x180 net/socket.c:903
+ ____sys_recvmsg+0x209/0x590 net/socket.c:2576
+ ___sys_recvmsg+0x127/0x200 net/socket.c:2618
+ __sys_recvmsg+0xe2/0x1a0 net/socket.c:2654
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff88801044c000
+ which belongs to the cache skbuff_head_cache of size 224
+The buggy address is located 64 bytes inside of
+ 224-byte region [ffff88801044c000, ffff88801044c0e0)
+The buggy address belongs to the page:
+page:00000000be694f76 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1044c
+flags: 0x100000000000200(slab)
+raw: 0100000000000200 0000000000000000 0000000100000001 ffff8880082d4640
+raw: 0000000000000000 00000000000c000c 00000001ffffffff ffff888008e8a781
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff888008e8a781
+
+Memory state around the buggy address:
+ ffff88801044bf00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88801044bf80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff88801044c000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                           ^
+ ffff88801044c080: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+ ffff88801044c100: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
+==================================================================
+EXT4-fs error (device loop2): ext4_lookup:1706: inode #11: comm syz-executor: iget: bad extra_isize 43624 (inode size 256)
+EXT4-fs error (device loop2): ext4_lookup:1706: inode #11: comm syz-executor: iget: bad extra_isize 43624 (inode size 256)
+EXT4-fs (loop0): Ignoring removed bh option
+EXT4-fs (loop0): mounting ext3 file system using the ext4 subsystem
+EXT4-fs (loop0): 1 truncate cleaned up
+EXT4-fs (loop0): mounted filesystem without journal. Opts: grpid,resgid=0x000000000000ee00,bh,noload,data_err=ignore,usrjquota=,,errors=continue

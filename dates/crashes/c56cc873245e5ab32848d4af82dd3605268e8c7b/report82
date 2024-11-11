@@ -1,0 +1,53 @@
+EXT4-fs (loop1): free_blocks=65280
+EXT4-fs (loop1): dirty_blocks=1
+EXT4-fs (loop1): Block reservation details
+EXT4-fs (loop1): i_reserved_data_blocks=1
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 2124 at fs/ext4/xattr.c:1640 ext4_xattr_set_entry+0x2917/0x37c0 fs/ext4/xattr.c:1640
+Modules linked in:
+CPU: 0 PID: 2124 Comm: syz.1.19 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_xattr_set_entry+0x2917/0x37c0 fs/ext4/xattr.c:1640
+Code: 00 e9 98 db ff ff e8 c8 f8 8f ff 48 8b 7c 24 08 45 31 ed e8 4b c3 df ff 48 8b ac 24 18 01 00 00 e9 79 db ff ff e8 a9 f8 8f ff <0f> 0b e9 71 e1 ff ff e8 9d f8 8f ff 48 8b 54 24 38 31 f6 4c 89 e7
+RSP: 0018:ffff88800b2173a8 EFLAGS: 00010216
+RAX: 0000000000003685 RBX: ffff88800a02c020 RCX: ffffc90000d97000
+RDX: 0000000000040000 RSI: ffffffff81b61617 RDI: 0000000000000007
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: 00000000000007dc
+R13: 00000000ffffffc3 R14: ffff88800b2176f0 R15: ffff88800b217818
+FS:  00007f7e9b3036c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020001d00 CR3: 00000000199ae000 CR4: 0000000000350ef0
+Call Trace:
+ ext4_xattr_block_set+0x834/0x2f50 fs/ext4/xattr.c:1942
+ ext4_xattr_set_handle+0xd01/0x12b0 fs/ext4/xattr.c:2390
+ ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2491
+ __vfs_setxattr+0x10f/0x170 fs/xattr.c:177
+ __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+ __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+ vfs_setxattr+0xe8/0x270 fs/xattr.c:283
+ setxattr+0x23d/0x330 fs/xattr.c:548
+ path_setxattr+0x170/0x190 fs/xattr.c:567
+ __do_sys_lsetxattr fs/xattr.c:589 [inline]
+ __se_sys_lsetxattr fs/xattr.c:585 [inline]
+ __x64_sys_lsetxattr+0xbd/0x150 fs/xattr.c:585
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f7e9c689ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f7e9b303038 EFLAGS: 00000246 ORIG_RAX: 00000000000000bd
+RAX: ffffffffffffffda RBX: 00007f7e9c841f80 RCX: 00007f7e9c689ef9
+RDX: 0000000000000000 RSI: 0000000020001d40 RDI: 0000000020001cc0
+RBP: 00007f7e9c6fcb76 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f7e9c841f80 R15: 00007ffd1b8091e8
+irq event stamp: 4455
+hardirqs last  enabled at (4461): [<ffffffff812d7afe>] console_trylock_spinning kernel/printk/printk.c:1823 [inline]
+hardirqs last  enabled at (4461): [<ffffffff812d7afe>] vprintk_emit+0x42e/0x430 kernel/printk/printk.c:2027
+hardirqs last disabled at (4466): [<ffffffff812d7ae0>] console_trylock_spinning kernel/printk/printk.c:1802 [inline]
+hardirqs last disabled at (4466): [<ffffffff812d7ae0>] vprintk_emit+0x410/0x430 kernel/printk/printk.c:2027
+softirqs last  enabled at (4210): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (4203): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace bcbdcc999ceb9fd6 ]---
+syz.1.19 (2124) used greatest stack depth: 24104 bytes left
+netlink: 12 bytes leftover after parsing attributes in process `syz.1.20'.

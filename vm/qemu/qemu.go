@@ -796,5 +796,6 @@ cat > /etc/ssh/sshd_config <<EOF
           PubkeyAuthentication yes
 EOF
 /usr/sbin/sshd -e -D
+
 /sbin/halt -f
 `

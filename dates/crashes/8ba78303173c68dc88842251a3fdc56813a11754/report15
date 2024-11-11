@@ -1,0 +1,98 @@
+ext4 filesystem being mounted at /20/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /20/file0 supports timestamps until 2038 (0x7fffffff)
+------------[ cut here ]------------
+kernel BUG at fs/buffer.c:3015!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+
+CPU: 0 PID: 2252 Comm: kmmpd-loop0 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:submit_bh_wbc+0x5f2/0x7c0 fs/buffer.c:3015
+Code: ff e8 12 e4 bf ff 41 81 cc 00 10 00 00 e9 15 ff ff ff e8 01 e4 bf ff 0f 0b 48 c7 c7 40 3a 29 85 e8 02 61 5a 02 e8 ee e3 bf ff <0f> 0b 48 c7 c7 00 3a 29 85 e8 ef 60 5a 02 e8 db e3 bf ff 0f 0b 48
+=============================
+RSP: 0018:ffff88801071fd70 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888010a37740 RCX: ffffffff81862583
+RDX: ffff888008a28000 RSI: ffffffff81862ad2 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888010a37747
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000003800
+WARNING: suspicious RCU usage
+R13: 0000000000000001 R14: 0000000000000000 R15: ffff8880082aa000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+5.10.0 #1 Not tainted
+CR2: 00007f5fa2315800 CR3: 000000000c962000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+-----------------------------
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ write_mmp_block+0x333/0x6e0 fs/ext4/mmp.c:55
+kernel/sched/core.c:7270 Illegal context switch in RCU-bh read-side critical section!
+ kmmpd+0x428/0xab0 fs/ext4/mmp.c:167
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 0
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+1 lock held by syz.3.76/2444:
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+ #0: 
+Modules linked in:
+ffff88800b5aa9a8
+hpet: Lost 1 RTC interrupts
+Unable to read rock-ridge attributes
+ (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_read_lock include/linux/mmap_lock.h:46 [inline]
+ (&mm->mmap_lock#2){++++}-{3:3}, at: __mm_populate+0x24e/0x340 mm/gup.c:1458
+
+stack backtrace:
+CPU: 1 PID: 2444 Comm: syz.3.76 Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep+0x3ed/0x4d0 kernel/sched/core.c:7270
+ prepare_alloc_pages mm/page_alloc.c:4892 [inline]
+ __alloc_pages_nodemask+0x434/0x6a0 mm/page_alloc.c:4936
+ alloc_pages_vma+0xbb/0x490 mm/mempolicy.c:2234
+ shmem_alloc_page+0x10f/0x1e0 mm/shmem.c:1565
+ shmem_alloc_and_acct_page mm/shmem.c:1590 [inline]
+ shmem_getpage_gfp.constprop.0+0x515/0x19a0 mm/shmem.c:1893
+ shmem_fault+0x1fd/0x820 mm/shmem.c:2114
+ __do_fault+0x113/0x410 mm/memory.c:3612
+ do_read_fault mm/memory.c:4006 [inline]
+ do_fault mm/memory.c:4134 [inline]
+ handle_pte_fault mm/memory.c:4374 [inline]
+ __handle_mm_fault mm/memory.c:4509 [inline]
+ handle_mm_fault+0x1ed0/0x37e0 mm/memory.c:4607
+ faultin_page mm/gup.c:885 [inline]
+ __get_user_pages+0x618/0x1510 mm/gup.c:1097
+ populate_vma_page_range+0x24d/0x370 mm/gup.c:1430
+ __mm_populate+0x1ea/0x340 mm/gup.c:1478
+Unable to read rock-ridge attributes
+ mm_populate include/linux/mm.h:2590 [inline]
+ vm_mmap_pgoff+0x1d3/0x1f0 mm/util.c:512
+ ksys_mmap_pgoff+0xe4/0x5f0 mm/mmap.c:1634
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ffb9ddc5ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffb9ca3f038 EFLAGS: 00000246 ORIG_RAX: 0000000000000009
+RAX: ffffffffffffffda RBX: 00007ffb9df7df80 RCX: 00007ffb9ddc5ef9
+RDX: b635773f06ebbeee RSI: 0000000000b36000 RDI: 0000000020000000
+RBP: 00007ffb9de38b76 R08: ffffffffffffffff R09: 0000000000000000
+R10: 0000000000008031 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007ffb9df7df80 R15: 00007ffe88ba2528
+---[ end trace 1949e9c50a9e2a8e ]---
+RIP: 0010:submit_bh_wbc+0x5f2/0x7c0 fs/buffer.c:3015
+Code: ff e8 12 e4 bf ff 41 81 cc 00 10 00 00 e9 15 ff ff ff e8 01 e4 bf ff 0f 0b 48 c7 c7 40 3a 29 85 e8 02 61 5a 02 e8 ee e3 bf ff <0f> 0b 48 c7 c7 00 3a 29 85 e8 ef 60 5a 02 e8 db e3 bf ff 0f 0b 48
+RSP: 0018:ffff88801071fd70 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888010a37740 RCX: ffffffff81862583
+RDX: ffff888008a28000 RSI: ffffffff81862ad2 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888010a37747
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000003800
+R13: 0000000000000001 R14: 0000000000000000 R15: ffff8880082aa000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f9bcda8d000 CR3: 000000000bdb8000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600

@@ -1,0 +1,572 @@
+Extracting prog: 7m50.742506755s
+Minimizing prog: 2m25.733999929s
+Simplifying prog options: 0s
+Extracting C: 21.652320897s
+Simplifying C: 2m40.851599633s
+
+
+24 programs, timeouts [30s 1m40s 6m0s]
+extracting reproducer from 24 programs
+testing a last program of every proc
+single: executing 4 programs separately with timeout 30s
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$netlink-sendmsg$netlink
+detailed listing:
+executing program 0:
+r0 = socket$netlink(0x10, 0x3, 0x0)
+sendmsg$netlink(r0, &(0x7f0000000100)={0x0, 0x0, &(0x7f00000006c0)=[{&(0x7f0000000200)={0x18, 0x2a, 0x1, 0x0, 0x0, "", [@typed={0x7, 0x0, 0x0, 0x0, @str='\\\'\x00'}]}, 0x18}], 0x1}, 0x0)
+
+program did not crash
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): getpid-process_vm_readv
+detailed listing:
+executing program 0:
+r0 = getpid()
+process_vm_readv(r0, &(0x7f0000008400)=[{0x0}, {&(0x7f0000006180)=""/152, 0x98}], 0x2, &(0x7f0000008640)=[{&(0x7f0000008480)=""/95, 0x5f}], 0x1, 0x0)
+
+program did not crash
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$inet_udplite-ioctl$sock_inet_SIOCSIFADDR
+detailed listing:
+executing program 0:
+r0 = socket$inet_udplite(0x2, 0x2, 0x88)
+ioctl$sock_inet_SIOCSIFADDR(r0, 0x8916, &(0x7f00000000c0)={'lo\x00', {0x2, 0x0, @broadcast}})
+
+program did not crash
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): msgrcv-mount$9p_fd
+detailed listing:
+executing program 0:
+msgrcv(0x0, 0x0, 0x0, 0x0, 0x0)
+mount$9p_fd(0x0, &(0x7f0000000080)='./file0\x00', 0x0, 0x0, 0x0)
+
+program did not crash
+single: failed to extract reproducer
+bisect: bisecting 24 programs with base timeout 30s
+testing program (duration=36s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+detailed listing:
+executing program 0:
+r0 = socket$inet_tcp(0x2, 0x1, 0x0)
+setsockopt$inet_tcp_TCP_MD5SIG(r0, 0x6, 0xe, &(0x7f0000000180)={@in={{0x2, 0x0, @private}}, 0x0, 0x0, 0x35, 0x0, "b074002a7334ca0bd9bdbab8e157de8b919189c102cd804efea9aa269845153073512532a293b24a336ff7311ca7e6546324f2caf37e788d121cea0e057eead1fe0259ae8c5a1dedd1de2a9cdcdff6d1"}, 0xd8)
+executing program 0:
+r0 = socket$netlink(0x10, 0x3, 0x0)
+sendmsg$netlink(r0, &(0x7f0000000000)={0x0, 0x50, &(0x7f0000000580)=[{&(0x7f0000000080)={0x18, 0x56, 0x601, 0x0, 0x0, "", [@typed={0x7, 0x0, 0x0, 0x0, @str='\x00\x00\x00'}]}, 0x18}], 0x1}, 0x0)
+executing program 0:
+r0 = socket$nl_route(0x10, 0x3, 0x0)
+sendmsg$netlink(r0, &(0x7f0000000040)={0x0, 0x0, &(0x7f0000000380)=[{&(0x7f0000000680)={0x28, 0x2c, 0x1, 0x0, 0x0, "", [@typed={0x8, 0x0, 0x0, 0x0, @fd}, @typed={0x8, 0x0, 0x0, 0x0, @uid=0xee00}, @nested={0x8, 0x0, 0x0, 0x1, [@typed={0x4, 0x1, 0x0, 0x0, @binary}]}]}, 0x28}], 0x1}, 0x0)
+executing program 0:
+r0 = socket$inet_icmp_raw(0x2, 0x3, 0x1)
+sendmmsg$inet(r0, &(0x7f0000003440)=[{{&(0x7f0000000180)={0x2, 0x0, @empty}, 0x10, &(0x7f0000000940)=[{&(0x7f0000000300)="988e", 0x2}, {0x0}, {&(0x7f0000000640)="16", 0x1}], 0x3}}], 0x1, 0x0)
+executing program 0:
+r0 = eventfd(0x0)
+read$eventfd(r0, &(0x7f0000003cc0), 0x8)
+executing program 3:
+r0 = socket$inet_udp(0x2, 0x2, 0x0)
+getsockopt$inet_udp_int(r0, 0x11, 0x67, 0x0, &(0x7f0000001580))
+executing program 3:
+r0 = socket$nl_xfrm(0x10, 0x3, 0x6)
+sendmsg$nl_xfrm(r0, &(0x7f00000003c0)={0x0, 0x0, &(0x7f0000000380)={&(0x7f00000006c0)=@flushsa={0x14, 0x1c, 0x1}, 0x14}}, 0x0)
+executing program 3:
+r0 = socket$inet6_udp(0xa, 0x2, 0x0)
+getsockopt$IP6T_SO_GET_REVISION_MATCH(r0, 0x29, 0x44, &(0x7f0000000000)={'HL\x00'}, &(0x7f0000000040)=0x1e)
+executing program 3:
+r0 = openat$incfs(0xffffffffffffff9c, &(0x7f0000000000)='.log\x00', 0x40142, 0x0)
+write$P9_RATTACH(r0, &(0x7f0000000180)={0xfffffffffffffdd9, 0x69, 0x0, {0x0, 0x0, 0x2}}, 0xfffffea6)
+executing program 3:
+r0 = socket$inet6_tcp(0xa, 0x1, 0x0)
+ioctl$sock_inet6_SIOCADDRT(r0, 0x890b, &(0x7f0000000940)={@remote, @private1, @local})
+executing program 1:
+r0 = socket$nl_audit(0x10, 0x3, 0x9)
+sendmmsg(r0, &(0x7f0000004f40)=[{{0x0, 0x0, &(0x7f0000000000)=[{&(0x7f00000002c0)="d9", 0x1}], 0x1}}, {{0x0, 0x0, &(0x7f0000001480)=[{0x0}, {0x0}, {0x0}, {0x0}, {0x0}, {0x0}, {0x0}, {0x0, 0x4f}, {0x0}], 0x9}}], 0x2, 0x0)
+executing program 1:
+r0 = socket$netlink(0x10, 0x3, 0x0)
+sendmsg$netlink(r0, &(0x7f0000000040)={0x0, 0x0, &(0x7f0000000000)=[{&(0x7f0000000140)={0x1c, 0x5e, 0x321, 0x0, 0x0, "", [@nested={0xc, 0x0, 0x0, 0x1, [@typed={0x8, 0x0, 0x0, 0x0, @ipv4=@multicast1}]}]}, 0x1c}], 0x1}, 0x0)
+executing program 1:
+r0 = socket$nl_generic(0x10, 0x3, 0x10)
+sendmsg$netlink(r0, &(0x7f0000004a40)={0x0, 0x0, &(0x7f0000004980)=[{&(0x7f0000000a40)={0x1c, 0x1b, 0x1, 0x0, 0x0, "", [@nested={0xc, 0x0, 0x0, 0x1, [@typed={0x6, 0x11c, 0x0, 0x0, @str='&\x00'}]}]}, 0x1c}], 0x1}, 0x0)
+executing program 3:
+msgrcv(0x0, 0x0, 0x0, 0x0, 0x0)
+mount$9p_fd(0x0, &(0x7f0000000080)='./file0\x00', 0x0, 0x0, 0x0)
+executing program 1:
+r0 = syz_open_dev$usbmon(&(0x7f0000000040), 0x0, 0x0)
+ioctl$MON_IOCH_MFLUSH(r0, 0x9208, 0x0)
+executing program 2:
+r0 = open(&(0x7f00000000c0)='./bus\x00', 0x1c1042, 0x0)
+pwrite64(r0, &(0x7f00000001c0)='B', 0x1, 0x4010040bffc)
+executing program 1:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file0\x00', 0xc906, &(0x7f0000000140)={[{@nobarrier}, {@noblock_validity}, {@lazytime}, {@barrier_val={'barrier', 0x3d, 0x3}}, {@errors_remount}, {@resuid={'resuid', 0x3d, 0xee00}}, {@errors_remount}, {@resgid={'resgid', 0x3d, 0xee01}}, {@resgid={'resgid', 0x3d, 0xee00}, 0x32}]}, 0x1e, 0x4d2, &(0x7f0000000540)="$eJzs3d9rW9cdAPDvla3ESZzZYXvIAsvCkmGHLZIdL4nZQ7bB2J4C27L3zLNlYyxbxpKT2ITNYX/AYIyt0Kc+9aXQP6BQ8ieUQqB9L21pKW3SPvShjYqupNRx5NhOZClYnw/c6Jz7Q9/zVawjnXsPugH0rDMRcTEiHlWr1Vp9qLE+01giiYiN+n4PH9yZri1JVKvXP0/STbV6bbfRTc95rH5IDETEX/4Y8ffk6bjltfWFqWKxsNKo5yuLy/ny2vqF+cWpucJcYWliYvzy5JXJS5NjbclzMCKu/v7j//379T9cffuXtz648enoP5LG+tiUR7vVU8+mr0VTf0Ss7EewLuhr5JPtdkMAANiV5vf8n0XE+RiKvvTbHAAAAHCQVH8zGN8kEdXndPh5DwQAAAA6JpPOgU0yucY8gMHIZHK5+hzeH8XRTLFUrvxitrS6NFOfKzsc2czsfLEw1pgrPBzZpFYfT8vf1y9uqU9ExImI+O/QkbSemy4VZ7p98gMAAAB6xLEt4/+vhurjfwAAAOCAGe52AwAAAIB9Z/wPAAAAB5/xPwAAABxof7p2rbZUm/e/nrm5trpQunlhplBeyC2uTuemSyvLublSaS79zb7FnZ6vWCot/yqWVm/nK4VyJV9eW7+xWFpdqtyYf+IW2AAAAEAHnfjpvfeTiNj49ZF0qTnU7UYBHdG/l50/2r92AJ3X1+0GAF2zp89/4EDJdrsBQNclO2zfdvLOO+1vCwAAsD9Gftz6+n+y47mBjUyHmgjsE+f/oHe5/g+9y/V/6F3Z6AsDeeht+3/9v1rdU4MAAIC2G0yXJJOLSM8DDEYmk8tFHE9vC5BNZueLhbGI+EFEvDeUPVyrj6dHJjuOGQAAAAAAAAAAAAAAAAAAAAAAAACAumo1iSoAAABwoEVkPkka9/8aGTo3uPX8wKHk66H0MSJuvXr9/7enKpWV8dr6Lx6vr7zSWH+xG2cwAAAAgK2a4/TmOB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2unhgzvTzaWTcT/7XUQMt4rfHwPp40BkI+Lol0n0bzouiYi+NsTfuBsRJ1vFT2rNiuFGK1rFP9LF+JmIONaG+NDL7tX6n9+2ev9l4kz62Pr9dzntoV7ctv1f0txjIO3nWvU/x3cZ49T9N/Pbxr8bcaq/df/T7H+TbeKf3WX8v/11fX27bdXXIkZafv4kT8TKVxaX8+W19Qvzi1NzhbnC0sTE+OXJK5OXJsfys/PFQuPfTV3ymcel//zkrUfPyv/oNvGHd8j/3C7z//b+7Qc/rBezreKPnm3993dym/iZxmffzxvl2vaRZnmjXt7s9Bvvnn5W/jP1/Pv3+v8/usv8z//5Xx/uclcAoAPKa+sLU8ViYaWnCy/0atS+Fr0UWSjstfDPl6MZL2Whu/0SAADQfk+PgQEAAAAAAAAAAAAAAAAAAIBO6+Sv6zVtdCdVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBn+i4AAP//YCrSwQ==")
+open(&(0x7f0000000100)='./bus\x00', 0x145542, 0x0)
+executing program 2:
+r0 = socket$inet_icmp_raw(0x2, 0x3, 0x1)
+ioctl$sock_inet_SIOCDARP(r0, 0x8953, &(0x7f0000000080)={{0x2, 0x0, @initdev={0xac, 0x1e, 0x0, 0x0}}, {0x0, @remote}, 0x0, {0x2, 0x0, @dev}})
+executing program 2:
+r0 = semget$private(0x0, 0x1, 0x0)
+semctl$SETALL(r0, 0x0, 0x11, &(0x7f0000000340))
+executing program 2:
+r0 = socket$nl_xfrm(0x10, 0x3, 0x6)
+sendmsg$nl_xfrm(r0, &(0x7f00000000c0)={0x0, 0x0, &(0x7f0000000040)={&(0x7f0000000440)=@getpolicy={0x50, 0x15, 0x1, 0x0, 0x0, {{@in6=@ipv4={'\x00', '\xff\xff', @initdev={0xac, 0x1e, 0x0, 0x0}}}, 0x6e6bb2}}, 0x50}}, 0x0)
+executing program 2:
+r0 = openat$fuse(0xffffffffffffff9c, &(0x7f0000000080), 0x2, 0x0)
+ioctl$sock_ipv6_tunnel_SIOCCHG6RD(r0, 0x541b, 0x0)
+executing program 0:
+r0 = socket$inet_udplite(0x2, 0x2, 0x88)
+ioctl$sock_inet_SIOCSIFADDR(r0, 0x8916, &(0x7f00000000c0)={'lo\x00', {0x2, 0x0, @broadcast}})
+executing program 1:
+r0 = getpid()
+process_vm_readv(r0, &(0x7f0000008400)=[{0x0}, {&(0x7f0000006180)=""/152, 0x98}], 0x2, &(0x7f0000008640)=[{&(0x7f0000008480)=""/95, 0x5f}], 0x1, 0x0)
+executing program 2:
+r0 = socket$netlink(0x10, 0x3, 0x0)
+sendmsg$netlink(r0, &(0x7f0000000100)={0x0, 0x0, &(0x7f00000006c0)=[{&(0x7f0000000200)={0x18, 0x2a, 0x1, 0x0, 0x0, "", [@typed={0x7, 0x0, 0x0, 0x0, @str='\\\'\x00'}]}, 0x18}], 0x1}, 0x0)
+
+program crashed: BUG: unable to handle kernel paging request in dqput
+bisect: bisecting 24 programs
+bisect: split chunks (needed=false): <24>
+bisect: split chunk #0 of len 24 into 3 parts
+bisect: testing without sub-chunk 1/3
+testing program (duration=34s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+detailed listing:
+executing program 3:
+r0 = openat$incfs(0xffffffffffffff9c, &(0x7f0000000000)='.log\x00', 0x40142, 0x0)
+write$P9_RATTACH(r0, &(0x7f0000000180)={0xfffffffffffffdd9, 0x69, 0x0, {0x0, 0x0, 0x2}}, 0xfffffea6)
+executing program 3:
+r0 = socket$inet6_tcp(0xa, 0x1, 0x0)
+ioctl$sock_inet6_SIOCADDRT(r0, 0x890b, &(0x7f0000000940)={@remote, @private1, @local})
+executing program 1:
+r0 = socket$nl_audit(0x10, 0x3, 0x9)
+sendmmsg(r0, &(0x7f0000004f40)=[{{0x0, 0x0, &(0x7f0000000000)=[{&(0x7f00000002c0)="d9", 0x1}], 0x1}}, {{0x0, 0x0, &(0x7f0000001480)=[{0x0}, {0x0}, {0x0}, {0x0}, {0x0}, {0x0}, {0x0}, {0x0, 0x4f}, {0x0}], 0x9}}], 0x2, 0x0)
+executing program 1:
+r0 = socket$netlink(0x10, 0x3, 0x0)
+sendmsg$netlink(r0, &(0x7f0000000040)={0x0, 0x0, &(0x7f0000000000)=[{&(0x7f0000000140)={0x1c, 0x5e, 0x321, 0x0, 0x0, "", [@nested={0xc, 0x0, 0x0, 0x1, [@typed={0x8, 0x0, 0x0, 0x0, @ipv4=@multicast1}]}]}, 0x1c}], 0x1}, 0x0)
+executing program 1:
+r0 = socket$nl_generic(0x10, 0x3, 0x10)
+sendmsg$netlink(r0, &(0x7f0000004a40)={0x0, 0x0, &(0x7f0000004980)=[{&(0x7f0000000a40)={0x1c, 0x1b, 0x1, 0x0, 0x0, "", [@nested={0xc, 0x0, 0x0, 0x1, [@typed={0x6, 0x11c, 0x0, 0x0, @str='&\x00'}]}]}, 0x1c}], 0x1}, 0x0)
+executing program 3:
+msgrcv(0x0, 0x0, 0x0, 0x0, 0x0)
+mount$9p_fd(0x0, &(0x7f0000000080)='./file0\x00', 0x0, 0x0, 0x0)
+executing program 1:
+r0 = syz_open_dev$usbmon(&(0x7f0000000040), 0x0, 0x0)
+ioctl$MON_IOCH_MFLUSH(r0, 0x9208, 0x0)
+executing program 2:
+r0 = open(&(0x7f00000000c0)='./bus\x00', 0x1c1042, 0x0)
+pwrite64(r0, &(0x7f00000001c0)='B', 0x1, 0x4010040bffc)
+executing program 1:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file0\x00', 0xc906, &(0x7f0000000140)={[{@nobarrier}, {@noblock_validity}, {@lazytime}, {@barrier_val={'barrier', 0x3d, 0x3}}, {@errors_remount}, {@resuid={'resuid', 0x3d, 0xee00}}, {@errors_remount}, {@resgid={'resgid', 0x3d, 0xee01}}, {@resgid={'resgid', 0x3d, 0xee00}, 0x32}]}, 0x1e, 0x4d2, &(0x7f0000000540)="$eJzs3d9rW9cdAPDvla3ESZzZYXvIAsvCkmGHLZIdL4nZQ7bB2J4C27L3zLNlYyxbxpKT2ITNYX/AYIyt0Kc+9aXQP6BQ8ieUQqB9L21pKW3SPvShjYqupNRx5NhOZClYnw/c6Jz7Q9/zVawjnXsPugH0rDMRcTEiHlWr1Vp9qLE+01giiYiN+n4PH9yZri1JVKvXP0/STbV6bbfRTc95rH5IDETEX/4Y8ffk6bjltfWFqWKxsNKo5yuLy/ny2vqF+cWpucJcYWliYvzy5JXJS5NjbclzMCKu/v7j//379T9cffuXtz648enoP5LG+tiUR7vVU8+mr0VTf0Ss7EewLuhr5JPtdkMAANiV5vf8n0XE+RiKvvTbHAAAAHCQVH8zGN8kEdXndPh5DwQAAAA6JpPOgU0yucY8gMHIZHK5+hzeH8XRTLFUrvxitrS6NFOfKzsc2czsfLEw1pgrPBzZpFYfT8vf1y9uqU9ExImI+O/QkbSemy4VZ7p98gMAAAB6xLEt4/+vhurjfwAAAOCAGe52AwAAAIB9Z/wPAAAAB5/xPwAAABxof7p2rbZUm/e/nrm5trpQunlhplBeyC2uTuemSyvLublSaS79zb7FnZ6vWCot/yqWVm/nK4VyJV9eW7+xWFpdqtyYf+IW2AAAAEAHnfjpvfeTiNj49ZF0qTnU7UYBHdG/l50/2r92AJ3X1+0GAF2zp89/4EDJdrsBQNclO2zfdvLOO+1vCwAAsD9Gftz6+n+y47mBjUyHmgjsE+f/oHe5/g+9y/V/6F3Z6AsDeeht+3/9v1rdU4MAAIC2G0yXJJOLSM8DDEYmk8tFHE9vC5BNZueLhbGI+EFEvDeUPVyrj6dHJjuOGQAAAAAAAAAAAAAAAAAAAAAAAACAumo1iSoAAABwoEVkPkka9/8aGTo3uPX8wKHk66H0MSJuvXr9/7enKpWV8dr6Lx6vr7zSWH+xG2cwAAAAgK2a4/TmOB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2unhgzvTzaWTcT/7XUQMt4rfHwPp40BkI+Lol0n0bzouiYi+NsTfuBsRJ1vFT2rNiuFGK1rFP9LF+JmIONaG+NDL7tX6n9+2ev9l4kz62Pr9dzntoV7ctv1f0txjIO3nWvU/x3cZ49T9N/Pbxr8bcaq/df/T7H+TbeKf3WX8v/11fX27bdXXIkZafv4kT8TKVxaX8+W19Qvzi1NzhbnC0sTE+OXJK5OXJsfys/PFQuPfTV3ymcel//zkrUfPyv/oNvGHd8j/3C7z//b+7Qc/rBezreKPnm3993dym/iZxmffzxvl2vaRZnmjXt7s9Bvvnn5W/jP1/Pv3+v8/usv8z//5Xx/uclcAoAPKa+sLU8ViYaWnCy/0atS+Fr0UWSjstfDPl6MZL2Whu/0SAADQfk+PgQEAAAAAAAAAAAAAAAAAAIBO6+Sv6zVtdCdVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBn+i4AAP//YCrSwQ==")
+open(&(0x7f0000000100)='./bus\x00', 0x145542, 0x0)
+executing program 2:
+r0 = socket$inet_icmp_raw(0x2, 0x3, 0x1)
+ioctl$sock_inet_SIOCDARP(r0, 0x8953, &(0x7f0000000080)={{0x2, 0x0, @initdev={0xac, 0x1e, 0x0, 0x0}}, {0x0, @remote}, 0x0, {0x2, 0x0, @dev}})
+executing program 2:
+r0 = semget$private(0x0, 0x1, 0x0)
+semctl$SETALL(r0, 0x0, 0x11, &(0x7f0000000340))
+executing program 2:
+r0 = socket$nl_xfrm(0x10, 0x3, 0x6)
+sendmsg$nl_xfrm(r0, &(0x7f00000000c0)={0x0, 0x0, &(0x7f0000000040)={&(0x7f0000000440)=@getpolicy={0x50, 0x15, 0x1, 0x0, 0x0, {{@in6=@ipv4={'\x00', '\xff\xff', @initdev={0xac, 0x1e, 0x0, 0x0}}}, 0x6e6bb2}}, 0x50}}, 0x0)
+executing program 2:
+r0 = openat$fuse(0xffffffffffffff9c, &(0x7f0000000080), 0x2, 0x0)
+ioctl$sock_ipv6_tunnel_SIOCCHG6RD(r0, 0x541b, 0x0)
+executing program 0:
+r0 = socket$inet_udplite(0x2, 0x2, 0x88)
+ioctl$sock_inet_SIOCSIFADDR(r0, 0x8916, &(0x7f00000000c0)={'lo\x00', {0x2, 0x0, @broadcast}})
+executing program 1:
+r0 = getpid()
+process_vm_readv(r0, &(0x7f0000008400)=[{0x0}, {&(0x7f0000006180)=""/152, 0x98}], 0x2, &(0x7f0000008640)=[{&(0x7f0000008480)=""/95, 0x5f}], 0x1, 0x0)
+executing program 2:
+r0 = socket$netlink(0x10, 0x3, 0x0)
+sendmsg$netlink(r0, &(0x7f0000000100)={0x0, 0x0, &(0x7f00000006c0)=[{&(0x7f0000000200)={0x18, 0x2a, 0x1, 0x0, 0x0, "", [@typed={0x7, 0x0, 0x0, 0x0, @str='\\\'\x00'}]}, 0x18}], 0x1}, 0x0)
+
+program crashed: BUG: unable to handle kernel paging request in dqput
+bisect: the chunk can be dropped
+bisect: testing without sub-chunk 2/3
+testing program (duration=32s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): [2, 2, 2, 2, 2, 2, 2, 2]
+detailed listing:
+executing program 1:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file0\x00', 0xc906, &(0x7f0000000140)={[{@nobarrier}, {@noblock_validity}, {@lazytime}, {@barrier_val={'barrier', 0x3d, 0x3}}, {@errors_remount}, {@resuid={'resuid', 0x3d, 0xee00}}, {@errors_remount}, {@resgid={'resgid', 0x3d, 0xee01}}, {@resgid={'resgid', 0x3d, 0xee00}, 0x32}]}, 0x1e, 0x4d2, &(0x7f0000000540)="$eJzs3d9rW9cdAPDvla3ESZzZYXvIAsvCkmGHLZIdL4nZQ7bB2J4C27L3zLNlYyxbxpKT2ITNYX/AYIyt0Kc+9aXQP6BQ8ieUQqB9L21pKW3SPvShjYqupNRx5NhOZClYnw/c6Jz7Q9/zVawjnXsPugH0rDMRcTEiHlWr1Vp9qLE+01giiYiN+n4PH9yZri1JVKvXP0/STbV6bbfRTc95rH5IDETEX/4Y8ffk6bjltfWFqWKxsNKo5yuLy/ny2vqF+cWpucJcYWliYvzy5JXJS5NjbclzMCKu/v7j//379T9cffuXtz648enoP5LG+tiUR7vVU8+mr0VTf0Ss7EewLuhr5JPtdkMAANiV5vf8n0XE+RiKvvTbHAAAAHCQVH8zGN8kEdXndPh5DwQAAAA6JpPOgU0yucY8gMHIZHK5+hzeH8XRTLFUrvxitrS6NFOfKzsc2czsfLEw1pgrPBzZpFYfT8vf1y9uqU9ExImI+O/QkbSemy4VZ7p98gMAAAB6xLEt4/+vhurjfwAAAOCAGe52AwAAAIB9Z/wPAAAAB5/xPwAAABxof7p2rbZUm/e/nrm5trpQunlhplBeyC2uTuemSyvLublSaS79zb7FnZ6vWCot/yqWVm/nK4VyJV9eW7+xWFpdqtyYf+IW2AAAAEAHnfjpvfeTiNj49ZF0qTnU7UYBHdG/l50/2r92AJ3X1+0GAF2zp89/4EDJdrsBQNclO2zfdvLOO+1vCwAAsD9Gftz6+n+y47mBjUyHmgjsE+f/oHe5/g+9y/V/6F3Z6AsDeeht+3/9v1rdU4MAAIC2G0yXJJOLSM8DDEYmk8tFHE9vC5BNZueLhbGI+EFEvDeUPVyrj6dHJjuOGQAAAAAAAAAAAAAAAAAAAAAAAACAumo1iSoAAABwoEVkPkka9/8aGTo3uPX8wKHk66H0MSJuvXr9/7enKpWV8dr6Lx6vr7zSWH+xG2cwAAAAgK2a4/TmOB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2unhgzvTzaWTcT/7XUQMt4rfHwPp40BkI+Lol0n0bzouiYi+NsTfuBsRJ1vFT2rNiuFGK1rFP9LF+JmIONaG+NDL7tX6n9+2ev9l4kz62Pr9dzntoV7ctv1f0txjIO3nWvU/x3cZ49T9N/Pbxr8bcaq/df/T7H+TbeKf3WX8v/11fX27bdXXIkZafv4kT8TKVxaX8+W19Qvzi1NzhbnC0sTE+OXJK5OXJsfys/PFQuPfTV3ymcel//zkrUfPyv/oNvGHd8j/3C7z//b+7Qc/rBezreKPnm3993dym/iZxmffzxvl2vaRZnmjXt7s9Bvvnn5W/jP1/Pv3+v8/usv8z//5Xx/uclcAoAPKa+sLU8ViYaWnCy/0atS+Fr0UWSjstfDPl6MZL2Whu/0SAADQfk+PgQEAAAAAAAAAAAAAAAAAAIBO6+Sv6zVtdCdVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBn+i4AAP//YCrSwQ==")
+open(&(0x7f0000000100)='./bus\x00', 0x145542, 0x0)
+executing program 2:
+r0 = socket$inet_icmp_raw(0x2, 0x3, 0x1)
+ioctl$sock_inet_SIOCDARP(r0, 0x8953, &(0x7f0000000080)={{0x2, 0x0, @initdev={0xac, 0x1e, 0x0, 0x0}}, {0x0, @remote}, 0x0, {0x2, 0x0, @dev}})
+executing program 2:
+r0 = semget$private(0x0, 0x1, 0x0)
+semctl$SETALL(r0, 0x0, 0x11, &(0x7f0000000340))
+executing program 2:
+r0 = socket$nl_xfrm(0x10, 0x3, 0x6)
+sendmsg$nl_xfrm(r0, &(0x7f00000000c0)={0x0, 0x0, &(0x7f0000000040)={&(0x7f0000000440)=@getpolicy={0x50, 0x15, 0x1, 0x0, 0x0, {{@in6=@ipv4={'\x00', '\xff\xff', @initdev={0xac, 0x1e, 0x0, 0x0}}}, 0x6e6bb2}}, 0x50}}, 0x0)
+executing program 2:
+r0 = openat$fuse(0xffffffffffffff9c, &(0x7f0000000080), 0x2, 0x0)
+ioctl$sock_ipv6_tunnel_SIOCCHG6RD(r0, 0x541b, 0x0)
+executing program 0:
+r0 = socket$inet_udplite(0x2, 0x2, 0x88)
+ioctl$sock_inet_SIOCSIFADDR(r0, 0x8916, &(0x7f00000000c0)={'lo\x00', {0x2, 0x0, @broadcast}})
+executing program 1:
+r0 = getpid()
+process_vm_readv(r0, &(0x7f0000008400)=[{0x0}, {&(0x7f0000006180)=""/152, 0x98}], 0x2, &(0x7f0000008640)=[{&(0x7f0000008480)=""/95, 0x5f}], 0x1, 0x0)
+executing program 2:
+r0 = socket$netlink(0x10, 0x3, 0x0)
+sendmsg$netlink(r0, &(0x7f0000000100)={0x0, 0x0, &(0x7f00000006c0)=[{&(0x7f0000000200)={0x18, 0x2a, 0x1, 0x0, 0x0, "", [@typed={0x7, 0x0, 0x0, 0x0, @str='\\\'\x00'}]}, 0x18}], 0x1}, 0x0)
+
+program crashed: BUG: unable to handle kernel paging request in dqput
+bisect: the chunk can be dropped
+bisect: testing without sub-chunk 3/3
+bisect: split chunks (needed=true): <8>
+bisect: split chunk #0 of len 8 into 2 parts
+bisect: testing without sub-chunk 1/2
+testing program (duration=31s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): [2, 2, 2, 2]
+detailed listing:
+executing program 2:
+r0 = openat$fuse(0xffffffffffffff9c, &(0x7f0000000080), 0x2, 0x0)
+ioctl$sock_ipv6_tunnel_SIOCCHG6RD(r0, 0x541b, 0x0)
+executing program 0:
+r0 = socket$inet_udplite(0x2, 0x2, 0x88)
+ioctl$sock_inet_SIOCSIFADDR(r0, 0x8916, &(0x7f00000000c0)={'lo\x00', {0x2, 0x0, @broadcast}})
+executing program 1:
+r0 = getpid()
+process_vm_readv(r0, &(0x7f0000008400)=[{0x0}, {&(0x7f0000006180)=""/152, 0x98}], 0x2, &(0x7f0000008640)=[{&(0x7f0000008480)=""/95, 0x5f}], 0x1, 0x0)
+executing program 2:
+r0 = socket$netlink(0x10, 0x3, 0x0)
+sendmsg$netlink(r0, &(0x7f0000000100)={0x0, 0x0, &(0x7f00000006c0)=[{&(0x7f0000000200)={0x18, 0x2a, 0x1, 0x0, 0x0, "", [@typed={0x7, 0x0, 0x0, 0x0, @str='\\\'\x00'}]}, 0x18}], 0x1}, 0x0)
+
+program did not crash
+bisect: testing without sub-chunk 2/2
+testing program (duration=31s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): [2, 2, 2, 2]
+detailed listing:
+executing program 1:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file0\x00', 0xc906, &(0x7f0000000140)={[{@nobarrier}, {@noblock_validity}, {@lazytime}, {@barrier_val={'barrier', 0x3d, 0x3}}, {@errors_remount}, {@resuid={'resuid', 0x3d, 0xee00}}, {@errors_remount}, {@resgid={'resgid', 0x3d, 0xee01}}, {@resgid={'resgid', 0x3d, 0xee00}, 0x32}]}, 0x1e, 0x4d2, &(0x7f0000000540)="$eJzs3d9rW9cdAPDvla3ESZzZYXvIAsvCkmGHLZIdL4nZQ7bB2J4C27L3zLNlYyxbxpKT2ITNYX/AYIyt0Kc+9aXQP6BQ8ieUQqB9L21pKW3SPvShjYqupNRx5NhOZClYnw/c6Jz7Q9/zVawjnXsPugH0rDMRcTEiHlWr1Vp9qLE+01giiYiN+n4PH9yZri1JVKvXP0/STbV6bbfRTc95rH5IDETEX/4Y8ffk6bjltfWFqWKxsNKo5yuLy/ny2vqF+cWpucJcYWliYvzy5JXJS5NjbclzMCKu/v7j//379T9cffuXtz648enoP5LG+tiUR7vVU8+mr0VTf0Ss7EewLuhr5JPtdkMAANiV5vf8n0XE+RiKvvTbHAAAAHCQVH8zGN8kEdXndPh5DwQAAAA6JpPOgU0yucY8gMHIZHK5+hzeH8XRTLFUrvxitrS6NFOfKzsc2czsfLEw1pgrPBzZpFYfT8vf1y9uqU9ExImI+O/QkbSemy4VZ7p98gMAAAB6xLEt4/+vhurjfwAAAOCAGe52AwAAAIB9Z/wPAAAAB5/xPwAAABxof7p2rbZUm/e/nrm5trpQunlhplBeyC2uTuemSyvLublSaS79zb7FnZ6vWCot/yqWVm/nK4VyJV9eW7+xWFpdqtyYf+IW2AAAAEAHnfjpvfeTiNj49ZF0qTnU7UYBHdG/l50/2r92AJ3X1+0GAF2zp89/4EDJdrsBQNclO2zfdvLOO+1vCwAAsD9Gftz6+n+y47mBjUyHmgjsE+f/oHe5/g+9y/V/6F3Z6AsDeeht+3/9v1rdU4MAAIC2G0yXJJOLSM8DDEYmk8tFHE9vC5BNZueLhbGI+EFEvDeUPVyrj6dHJjuOGQAAAAAAAAAAAAAAAAAAAAAAAACAumo1iSoAAABwoEVkPkka9/8aGTo3uPX8wKHk66H0MSJuvXr9/7enKpWV8dr6Lx6vr7zSWH+xG2cwAAAAgK2a4/TmOB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2unhgzvTzaWTcT/7XUQMt4rfHwPp40BkI+Lol0n0bzouiYi+NsTfuBsRJ1vFT2rNiuFGK1rFP9LF+JmIONaG+NDL7tX6n9+2ev9l4kz62Pr9dzntoV7ctv1f0txjIO3nWvU/x3cZ49T9N/Pbxr8bcaq/df/T7H+TbeKf3WX8v/11fX27bdXXIkZafv4kT8TKVxaX8+W19Qvzi1NzhbnC0sTE+OXJK5OXJsfys/PFQuPfTV3ymcel//zkrUfPyv/oNvGHd8j/3C7z//b+7Qc/rBezreKPnm3993dym/iZxmffzxvl2vaRZnmjXt7s9Bvvnn5W/jP1/Pv3+v8/usv8z//5Xx/uclcAoAPKa+sLU8ViYaWnCy/0atS+Fr0UWSjstfDPl6MZL2Whu/0SAADQfk+PgQEAAAAAAAAAAAAAAAAAAIBO6+Sv6zVtdCdVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBn+i4AAP//YCrSwQ==")
+open(&(0x7f0000000100)='./bus\x00', 0x145542, 0x0)
+executing program 2:
+r0 = socket$inet_icmp_raw(0x2, 0x3, 0x1)
+ioctl$sock_inet_SIOCDARP(r0, 0x8953, &(0x7f0000000080)={{0x2, 0x0, @initdev={0xac, 0x1e, 0x0, 0x0}}, {0x0, @remote}, 0x0, {0x2, 0x0, @dev}})
+executing program 2:
+r0 = semget$private(0x0, 0x1, 0x0)
+semctl$SETALL(r0, 0x0, 0x11, &(0x7f0000000340))
+executing program 2:
+r0 = socket$nl_xfrm(0x10, 0x3, 0x6)
+sendmsg$nl_xfrm(r0, &(0x7f00000000c0)={0x0, 0x0, &(0x7f0000000040)={&(0x7f0000000440)=@getpolicy={0x50, 0x15, 0x1, 0x0, 0x0, {{@in6=@ipv4={'\x00', '\xff\xff', @initdev={0xac, 0x1e, 0x0, 0x0}}}, 0x6e6bb2}}, 0x50}}, 0x0)
+
+program crashed: BUG: unable to handle kernel paging request in dqput
+bisect: the chunk can be dropped
+bisect: split chunks (needed=true): <4>
+bisect: split chunk #0 of len 4 into 2 parts
+bisect: testing without sub-chunk 1/2
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): [2, 2]
+detailed listing:
+executing program 2:
+r0 = semget$private(0x0, 0x1, 0x0)
+semctl$SETALL(r0, 0x0, 0x11, &(0x7f0000000340))
+executing program 2:
+r0 = socket$nl_xfrm(0x10, 0x3, 0x6)
+sendmsg$nl_xfrm(r0, &(0x7f00000000c0)={0x0, 0x0, &(0x7f0000000040)={&(0x7f0000000440)=@getpolicy={0x50, 0x15, 0x1, 0x0, 0x0, {{@in6=@ipv4={'\x00', '\xff\xff', @initdev={0xac, 0x1e, 0x0, 0x0}}}, 0x6e6bb2}}, 0x50}}, 0x0)
+
+program did not crash
+bisect: testing without sub-chunk 2/2
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): [2, 2]
+detailed listing:
+executing program 1:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file0\x00', 0xc906, &(0x7f0000000140)={[{@nobarrier}, {@noblock_validity}, {@lazytime}, {@barrier_val={'barrier', 0x3d, 0x3}}, {@errors_remount}, {@resuid={'resuid', 0x3d, 0xee00}}, {@errors_remount}, {@resgid={'resgid', 0x3d, 0xee01}}, {@resgid={'resgid', 0x3d, 0xee00}, 0x32}]}, 0x1e, 0x4d2, &(0x7f0000000540)="$eJzs3d9rW9cdAPDvla3ESZzZYXvIAsvCkmGHLZIdL4nZQ7bB2J4C27L3zLNlYyxbxpKT2ITNYX/AYIyt0Kc+9aXQP6BQ8ieUQqB9L21pKW3SPvShjYqupNRx5NhOZClYnw/c6Jz7Q9/zVawjnXsPugH0rDMRcTEiHlWr1Vp9qLE+01giiYiN+n4PH9yZri1JVKvXP0/STbV6bbfRTc95rH5IDETEX/4Y8ffk6bjltfWFqWKxsNKo5yuLy/ny2vqF+cWpucJcYWliYvzy5JXJS5NjbclzMCKu/v7j//379T9cffuXtz648enoP5LG+tiUR7vVU8+mr0VTf0Ss7EewLuhr5JPtdkMAANiV5vf8n0XE+RiKvvTbHAAAAHCQVH8zGN8kEdXndPh5DwQAAAA6JpPOgU0yucY8gMHIZHK5+hzeH8XRTLFUrvxitrS6NFOfKzsc2czsfLEw1pgrPBzZpFYfT8vf1y9uqU9ExImI+O/QkbSemy4VZ7p98gMAAAB6xLEt4/+vhurjfwAAAOCAGe52AwAAAIB9Z/wPAAAAB5/xPwAAABxof7p2rbZUm/e/nrm5trpQunlhplBeyC2uTuemSyvLublSaS79zb7FnZ6vWCot/yqWVm/nK4VyJV9eW7+xWFpdqtyYf+IW2AAAAEAHnfjpvfeTiNj49ZF0qTnU7UYBHdG/l50/2r92AJ3X1+0GAF2zp89/4EDJdrsBQNclO2zfdvLOO+1vCwAAsD9Gftz6+n+y47mBjUyHmgjsE+f/oHe5/g+9y/V/6F3Z6AsDeeht+3/9v1rdU4MAAIC2G0yXJJOLSM8DDEYmk8tFHE9vC5BNZueLhbGI+EFEvDeUPVyrj6dHJjuOGQAAAAAAAAAAAAAAAAAAAAAAAACAumo1iSoAAABwoEVkPkka9/8aGTo3uPX8wKHk66H0MSJuvXr9/7enKpWV8dr6Lx6vr7zSWH+xG2cwAAAAgK2a4/TmOB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2unhgzvTzaWTcT/7XUQMt4rfHwPp40BkI+Lol0n0bzouiYi+NsTfuBsRJ1vFT2rNiuFGK1rFP9LF+JmIONaG+NDL7tX6n9+2ev9l4kz62Pr9dzntoV7ctv1f0txjIO3nWvU/x3cZ49T9N/Pbxr8bcaq/df/T7H+TbeKf3WX8v/11fX27bdXXIkZafv4kT8TKVxaX8+W19Qvzi1NzhbnC0sTE+OXJK5OXJsfys/PFQuPfTV3ymcel//zkrUfPyv/oNvGHd8j/3C7z//b+7Qc/rBezreKPnm3993dym/iZxmffzxvl2vaRZnmjXt7s9Bvvnn5W/jP1/Pv3+v8/usv8z//5Xx/uclcAoAPKa+sLU8ViYaWnCy/0atS+Fr0UWSjstfDPl6MZL2Whu/0SAADQfk+PgQEAAAAAAAAAAAAAAAAAAIBO6+Sv6zVtdCdVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBn+i4AAP//YCrSwQ==")
+open(&(0x7f0000000100)='./bus\x00', 0x145542, 0x0)
+executing program 2:
+r0 = socket$inet_icmp_raw(0x2, 0x3, 0x1)
+ioctl$sock_inet_SIOCDARP(r0, 0x8953, &(0x7f0000000080)={{0x2, 0x0, @initdev={0xac, 0x1e, 0x0, 0x0}}, {0x0, @remote}, 0x0, {0x2, 0x0, @dev}})
+
+program crashed: BUG: unable to handle kernel paging request in dqput
+bisect: the chunk can be dropped
+bisect: split chunks (needed=true): <2>
+bisect: split chunk #0 of len 2 into 2 parts
+bisect: testing without sub-chunk 1/2
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$inet_icmp_raw-ioctl$sock_inet_SIOCDARP
+detailed listing:
+executing program 2:
+r0 = socket$inet_icmp_raw(0x2, 0x3, 0x1)
+ioctl$sock_inet_SIOCDARP(r0, 0x8953, &(0x7f0000000080)={{0x2, 0x0, @initdev={0xac, 0x1e, 0x0, 0x0}}, {0x0, @remote}, 0x0, {0x2, 0x0, @dev}})
+
+program did not crash
+bisect: testing without sub-chunk 2/2
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open
+detailed listing:
+executing program 1:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file0\x00', 0xc906, &(0x7f0000000140)={[{@nobarrier}, {@noblock_validity}, {@lazytime}, {@barrier_val={'barrier', 0x3d, 0x3}}, {@errors_remount}, {@resuid={'resuid', 0x3d, 0xee00}}, {@errors_remount}, {@resgid={'resgid', 0x3d, 0xee01}}, {@resgid={'resgid', 0x3d, 0xee00}, 0x32}]}, 0x1e, 0x4d2, &(0x7f0000000540)="$eJzs3d9rW9cdAPDvla3ESZzZYXvIAsvCkmGHLZIdL4nZQ7bB2J4C27L3zLNlYyxbxpKT2ITNYX/AYIyt0Kc+9aXQP6BQ8ieUQqB9L21pKW3SPvShjYqupNRx5NhOZClYnw/c6Jz7Q9/zVawjnXsPugH0rDMRcTEiHlWr1Vp9qLE+01giiYiN+n4PH9yZri1JVKvXP0/STbV6bbfRTc95rH5IDETEX/4Y8ffk6bjltfWFqWKxsNKo5yuLy/ny2vqF+cWpucJcYWliYvzy5JXJS5NjbclzMCKu/v7j//379T9cffuXtz648enoP5LG+tiUR7vVU8+mr0VTf0Ss7EewLuhr5JPtdkMAANiV5vf8n0XE+RiKvvTbHAAAAHCQVH8zGN8kEdXndPh5DwQAAAA6JpPOgU0yucY8gMHIZHK5+hzeH8XRTLFUrvxitrS6NFOfKzsc2czsfLEw1pgrPBzZpFYfT8vf1y9uqU9ExImI+O/QkbSemy4VZ7p98gMAAAB6xLEt4/+vhurjfwAAAOCAGe52AwAAAIB9Z/wPAAAAB5/xPwAAABxof7p2rbZUm/e/nrm5trpQunlhplBeyC2uTuemSyvLublSaS79zb7FnZ6vWCot/yqWVm/nK4VyJV9eW7+xWFpdqtyYf+IW2AAAAEAHnfjpvfeTiNj49ZF0qTnU7UYBHdG/l50/2r92AJ3X1+0GAF2zp89/4EDJdrsBQNclO2zfdvLOO+1vCwAAsD9Gftz6+n+y47mBjUyHmgjsE+f/oHe5/g+9y/V/6F3Z6AsDeeht+3/9v1rdU4MAAIC2G0yXJJOLSM8DDEYmk8tFHE9vC5BNZueLhbGI+EFEvDeUPVyrj6dHJjuOGQAAAAAAAAAAAAAAAAAAAAAAAACAumo1iSoAAABwoEVkPkka9/8aGTo3uPX8wKHk66H0MSJuvXr9/7enKpWV8dr6Lx6vr7zSWH+xG2cwAAAAgK2a4/TmOB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2unhgzvTzaWTcT/7XUQMt4rfHwPp40BkI+Lol0n0bzouiYi+NsTfuBsRJ1vFT2rNiuFGK1rFP9LF+JmIONaG+NDL7tX6n9+2ev9l4kz62Pr9dzntoV7ctv1f0txjIO3nWvU/x3cZ49T9N/Pbxr8bcaq/df/T7H+TbeKf3WX8v/11fX27bdXXIkZafv4kT8TKVxaX8+W19Qvzi1NzhbnC0sTE+OXJK5OXJsfys/PFQuPfTV3ymcel//zkrUfPyv/oNvGHd8j/3C7z//b+7Qc/rBezreKPnm3993dym/iZxmffzxvl2vaRZnmjXt7s9Bvvnn5W/jP1/Pv3+v8/usv8z//5Xx/uclcAoAPKa+sLU8ViYaWnCy/0atS+Fr0UWSjstfDPl6MZL2Whu/0SAADQfk+PgQEAAAAAAAAAAAAAAAAAAIBO6+Sv6zVtdCdVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBn+i4AAP//YCrSwQ==")
+open(&(0x7f0000000100)='./bus\x00', 0x145542, 0x0)
+
+program crashed: BUG: unable to handle kernel paging request in dqput
+bisect: the chunk can be dropped
+bisect: split chunks (needed=true): <1>
+bisect: split chunk #0 of len 1 into 2 parts
+bisect: no way to further split the chunk
+bisect: 1 programs left: 
+
+executing program 1:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file0\x00', 0xc906, &(0x7f0000000140)={[{@nobarrier}, {@noblock_validity}, {@lazytime}, {@barrier_val={'barrier', 0x3d, 0x3}}, {@errors_remount}, {@resuid={'resuid', 0x3d, 0xee00}}, {@errors_remount}, {@resgid={'resgid', 0x3d, 0xee01}}, {@resgid={'resgid', 0x3d, 0xee00}, 0x32}]}, 0x1e, 0x4d2, &(0x7f0000000540)="$eJzs3d9rW9cdAPDvla3ESZzZYXvIAsvCkmGHLZIdL4nZQ7bB2J4C27L3zLNlYyxbxpKT2ITNYX/AYIyt0Kc+9aXQP6BQ8ieUQqB9L21pKW3SPvShjYqupNRx5NhOZClYnw/c6Jz7Q9/zVawjnXsPugH0rDMRcTEiHlWr1Vp9qLE+01giiYiN+n4PH9yZri1JVKvXP0/STbV6bbfRTc95rH5IDETEX/4Y8ffk6bjltfWFqWKxsNKo5yuLy/ny2vqF+cWpucJcYWliYvzy5JXJS5NjbclzMCKu/v7j//379T9cffuXtz648enoP5LG+tiUR7vVU8+mr0VTf0Ss7EewLuhr5JPtdkMAANiV5vf8n0XE+RiKvvTbHAAAAHCQVH8zGN8kEdXndPh5DwQAAAA6JpPOgU0yucY8gMHIZHK5+hzeH8XRTLFUrvxitrS6NFOfKzsc2czsfLEw1pgrPBzZpFYfT8vf1y9uqU9ExImI+O/QkbSemy4VZ7p98gMAAAB6xLEt4/+vhurjfwAAAOCAGe52AwAAAIB9Z/wPAAAAB5/xPwAAABxof7p2rbZUm/e/nrm5trpQunlhplBeyC2uTuemSyvLublSaS79zb7FnZ6vWCot/yqWVm/nK4VyJV9eW7+xWFpdqtyYf+IW2AAAAEAHnfjpvfeTiNj49ZF0qTnU7UYBHdG/l50/2r92AJ3X1+0GAF2zp89/4EDJdrsBQNclO2zfdvLOO+1vCwAAsD9Gftz6+n+y47mBjUyHmgjsE+f/oHe5/g+9y/V/6F3Z6AsDeeht+3/9v1rdU4MAAIC2G0yXJJOLSM8DDEYmk8tFHE9vC5BNZueLhbGI+EFEvDeUPVyrj6dHJjuOGQAAAAAAAAAAAAAAAAAAAAAAAACAumo1iSoAAABwoEVkPkka9/8aGTo3uPX8wKHk66H0MSJuvXr9/7enKpWV8dr6Lx6vr7zSWH+xG2cwAAAAgK2a4/TmOB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2unhgzvTzaWTcT/7XUQMt4rfHwPp40BkI+Lol0n0bzouiYi+NsTfuBsRJ1vFT2rNiuFGK1rFP9LF+JmIONaG+NDL7tX6n9+2ev9l4kz62Pr9dzntoV7ctv1f0txjIO3nWvU/x3cZ49T9N/Pbxr8bcaq/df/T7H+TbeKf3WX8v/11fX27bdXXIkZafv4kT8TKVxaX8+W19Qvzi1NzhbnC0sTE+OXJK5OXJsfys/PFQuPfTV3ymcel//zkrUfPyv/oNvGHd8j/3C7z//b+7Qc/rBezreKPnm3993dym/iZxmffzxvl2vaRZnmjXt7s9Bvvnn5W/jP1/Pv3+v8/usv8z//5Xx/uclcAoAPKa+sLU8ViYaWnCy/0atS+Fr0UWSjstfDPl6MZL2Whu/0SAADQfk+PgQEAAAAAAAAAAAAAAAAAAIBO6+Sv6zVtdCdVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBn+i4AAP//YCrSwQ==")
+open(&(0x7f0000000100)='./bus\x00', 0x145542, 0x0)
+
+
+bisect: trying to concatenate
+bisect: concatenate 1 entries
+testing program (duration=45s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file0\x00', 0xc906, &(0x7f0000000140)={[{@nobarrier}, {@noblock_validity}, {@lazytime}, {@barrier_val={'barrier', 0x3d, 0x3}}, {@errors_remount}, {@resuid={'resuid', 0x3d, 0xee00}}, {@errors_remount}, {@resgid={'resgid', 0x3d, 0xee01}}, {@resgid={'resgid', 0x3d, 0xee00}, 0x32}]}, 0x1e, 0x4d2, &(0x7f0000000540)="$eJzs3d9rW9cdAPDvla3ESZzZYXvIAsvCkmGHLZIdL4nZQ7bB2J4C27L3zLNlYyxbxpKT2ITNYX/AYIyt0Kc+9aXQP6BQ8ieUQqB9L21pKW3SPvShjYqupNRx5NhOZClYnw/c6Jz7Q9/zVawjnXsPugH0rDMRcTEiHlWr1Vp9qLE+01giiYiN+n4PH9yZri1JVKvXP0/STbV6bbfRTc95rH5IDETEX/4Y8ffk6bjltfWFqWKxsNKo5yuLy/ny2vqF+cWpucJcYWliYvzy5JXJS5NjbclzMCKu/v7j//379T9cffuXtz648enoP5LG+tiUR7vVU8+mr0VTf0Ss7EewLuhr5JPtdkMAANiV5vf8n0XE+RiKvvTbHAAAAHCQVH8zGN8kEdXndPh5DwQAAAA6JpPOgU0yucY8gMHIZHK5+hzeH8XRTLFUrvxitrS6NFOfKzsc2czsfLEw1pgrPBzZpFYfT8vf1y9uqU9ExImI+O/QkbSemy4VZ7p98gMAAAB6xLEt4/+vhurjfwAAAOCAGe52AwAAAIB9Z/wPAAAAB5/xPwAAABxof7p2rbZUm/e/nrm5trpQunlhplBeyC2uTuemSyvLublSaS79zb7FnZ6vWCot/yqWVm/nK4VyJV9eW7+xWFpdqtyYf+IW2AAAAEAHnfjpvfeTiNj49ZF0qTnU7UYBHdG/l50/2r92AJ3X1+0GAF2zp89/4EDJdrsBQNclO2zfdvLOO+1vCwAAsD9Gftz6+n+y47mBjUyHmgjsE+f/oHe5/g+9y/V/6F3Z6AsDeeht+3/9v1rdU4MAAIC2G0yXJJOLSM8DDEYmk8tFHE9vC5BNZueLhbGI+EFEvDeUPVyrj6dHJjuOGQAAAAAAAAAAAAAAAAAAAAAAAACAumo1iSoAAABwoEVkPkka9/8aGTo3uPX8wKHk66H0MSJuvXr9/7enKpWV8dr6Lx6vr7zSWH+xG2cwAAAAgK2a4/TmOB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2unhgzvTzaWTcT/7XUQMt4rfHwPp40BkI+Lol0n0bzouiYi+NsTfuBsRJ1vFT2rNiuFGK1rFP9LF+JmIONaG+NDL7tX6n9+2ev9l4kz62Pr9dzntoV7ctv1f0txjIO3nWvU/x3cZ49T9N/Pbxr8bcaq/df/T7H+TbeKf3WX8v/11fX27bdXXIkZafv4kT8TKVxaX8+W19Qvzi1NzhbnC0sTE+OXJK5OXJsfys/PFQuPfTV3ymcel//zkrUfPyv/oNvGHd8j/3C7z//b+7Qc/rBezreKPnm3993dym/iZxmffzxvl2vaRZnmjXt7s9Bvvnn5W/jP1/Pv3+v8/usv8z//5Xx/uclcAoAPKa+sLU8ViYaWnCy/0atS+Fr0UWSjstfDPl6MZL2Whu/0SAADQfk+PgQEAAAAAAAAAAAAAAAAAAIBO6+Sv6zVtdCdVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBn+i4AAP//YCrSwQ==")
+open(&(0x7f0000000100)='./bus\x00', 0x145542, 0x0)
+
+program crashed: BUG: unable to handle kernel paging request in dqput
+bisect: concatenation succeeded
+found reproducer with 2 syscalls
+minimizing guilty program
+testing program (duration=45s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file0\x00', 0xc906, &(0x7f0000000140)={[{@nobarrier}, {@noblock_validity}, {@lazytime}, {@barrier_val={'barrier', 0x3d, 0x3}}, {@errors_remount}, {@resuid={'resuid', 0x3d, 0xee00}}, {@errors_remount}, {@resgid={'resgid', 0x3d, 0xee01}}, {@resgid={'resgid', 0x3d, 0xee00}, 0x32}]}, 0x1e, 0x4d2, &(0x7f0000000540)="$eJzs3d9rW9cdAPDvla3ESZzZYXvIAsvCkmGHLZIdL4nZQ7bB2J4C27L3zLNlYyxbxpKT2ITNYX/AYIyt0Kc+9aXQP6BQ8ieUQqB9L21pKW3SPvShjYqupNRx5NhOZClYnw/c6Jz7Q9/zVawjnXsPugH0rDMRcTEiHlWr1Vp9qLE+01giiYiN+n4PH9yZri1JVKvXP0/STbV6bbfRTc95rH5IDETEX/4Y8ffk6bjltfWFqWKxsNKo5yuLy/ny2vqF+cWpucJcYWliYvzy5JXJS5NjbclzMCKu/v7j//379T9cffuXtz648enoP5LG+tiUR7vVU8+mr0VTf0Ss7EewLuhr5JPtdkMAANiV5vf8n0XE+RiKvvTbHAAAAHCQVH8zGN8kEdXndPh5DwQAAAA6JpPOgU0yucY8gMHIZHK5+hzeH8XRTLFUrvxitrS6NFOfKzsc2czsfLEw1pgrPBzZpFYfT8vf1y9uqU9ExImI+O/QkbSemy4VZ7p98gMAAAB6xLEt4/+vhurjfwAAAOCAGe52AwAAAIB9Z/wPAAAAB5/xPwAAABxof7p2rbZUm/e/nrm5trpQunlhplBeyC2uTuemSyvLublSaS79zb7FnZ6vWCot/yqWVm/nK4VyJV9eW7+xWFpdqtyYf+IW2AAAAEAHnfjpvfeTiNj49ZF0qTnU7UYBHdG/l50/2r92AJ3X1+0GAF2zp89/4EDJdrsBQNclO2zfdvLOO+1vCwAAsD9Gftz6+n+y47mBjUyHmgjsE+f/oHe5/g+9y/V/6F3Z6AsDeeht+3/9v1rdU4MAAIC2G0yXJJOLSM8DDEYmk8tFHE9vC5BNZueLhbGI+EFEvDeUPVyrj6dHJjuOGQAAAAAAAAAAAAAAAAAAAAAAAACAumo1iSoAAABwoEVkPkka9/8aGTo3uPX8wKHk66H0MSJuvXr9/7enKpWV8dr6Lx6vr7zSWH+xG2cwAAAAgK2a4/TmOB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2unhgzvTzaWTcT/7XUQMt4rfHwPp40BkI+Lol0n0bzouiYi+NsTfuBsRJ1vFT2rNiuFGK1rFP9LF+JmIONaG+NDL7tX6n9+2ev9l4kz62Pr9dzntoV7ctv1f0txjIO3nWvU/x3cZ49T9N/Pbxr8bcaq/df/T7H+TbeKf3WX8v/11fX27bdXXIkZafv4kT8TKVxaX8+W19Qvzi1NzhbnC0sTE+OXJK5OXJsfys/PFQuPfTV3ymcel//zkrUfPyv/oNvGHd8j/3C7z//b+7Qc/rBezreKPnm3993dym/iZxmffzxvl2vaRZnmjXt7s9Bvvnn5W/jP1/Pv3+v8/usv8z//5Xx/uclcAoAPKa+sLU8ViYaWnCy/0atS+Fr0UWSjstfDPl6MZL2Whu/0SAADQfk+PgQEAAAAAAAAAAAAAAAAAAIBO6+Sv6zVtdCdVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBn+i4AAP//YCrSwQ==")
+
+program did not crash
+testing program (duration=45s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): open
+detailed listing:
+executing program 0:
+open(&(0x7f0000000100)='./bus\x00', 0x145542, 0x0)
+
+program did not crash
+testing program (duration=45s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file0\x00', 0xc906, &(0x7f0000000140)={[{@nobarrier}, {@noblock_validity}, {@lazytime}, {@barrier_val={'barrier', 0x3d, 0x3}}, {@errors_remount}, {@resuid={'resuid', 0x3d, 0xee00}}, {@errors_remount}, {@resgid={'resgid', 0x3d, 0xee01}}, {@resgid={'resgid', 0x3d, 0xee00}, 0x32}]}, 0x1e, 0x4d2, &(0x7f0000000540)="$eJzs3d9rW9cdAPDvla3ESZzZYXvIAsvCkmGHLZIdL4nZQ7bB2J4C27L3zLNlYyxbxpKT2ITNYX/AYIyt0Kc+9aXQP6BQ8ieUQqB9L21pKW3SPvShjYqupNRx5NhOZClYnw/c6Jz7Q9/zVawjnXsPugH0rDMRcTEiHlWr1Vp9qLE+01giiYiN+n4PH9yZri1JVKvXP0/STbV6bbfRTc95rH5IDETEX/4Y8ffk6bjltfWFqWKxsNKo5yuLy/ny2vqF+cWpucJcYWliYvzy5JXJS5NjbclzMCKu/v7j//379T9cffuXtz648enoP5LG+tiUR7vVU8+mr0VTf0Ss7EewLuhr5JPtdkMAANiV5vf8n0XE+RiKvvTbHAAAAHCQVH8zGN8kEdXndPh5DwQAAAA6JpPOgU0yucY8gMHIZHK5+hzeH8XRTLFUrvxitrS6NFOfKzsc2czsfLEw1pgrPBzZpFYfT8vf1y9uqU9ExImI+O/QkbSemy4VZ7p98gMAAAB6xLEt4/+vhurjfwAAAOCAGe52AwAAAIB9Z/wPAAAAB5/xPwAAABxof7p2rbZUm/e/nrm5trpQunlhplBeyC2uTuemSyvLublSaS79zb7FnZ6vWCot/yqWVm/nK4VyJV9eW7+xWFpdqtyYf+IW2AAAAEAHnfjpvfeTiNj49ZF0qTnU7UYBHdG/l50/2r92AJ3X1+0GAF2zp89/4EDJdrsBQNclO2zfdvLOO+1vCwAAsD9Gftz6+n+y47mBjUyHmgjsE+f/oHe5/g+9y/V/6F3Z6AsDeeht+3/9v1rdU4MAAIC2G0yXJJOLSM8DDEYmk8tFHE9vC5BNZueLhbGI+EFEvDeUPVyrj6dHJjuOGQAAAAAAAAAAAAAAAAAAAAAAAACAumo1iSoAAABwoEVkPkka9/8aGTo3uPX8wKHk66H0MSJuvXr9/7enKpWV8dr6Lx6vr7zSWH+xG2cwAAAAgK2a4/TmOB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2unhgzvTzaWTcT/7XUQMt4rfHwPp40BkI+Lol0n0bzouiYi+NsTfuBsRJ1vFT2rNiuFGK1rFP9LF+JmIONaG+NDL7tX6n9+2ev9l4kz62Pr9dzntoV7ctv1f0txjIO3nWvU/x3cZ49T9N/Pbxr8bcaq/df/T7H+TbeKf3WX8v/11fX27bdXXIkZafv4kT8TKVxaX8+W19Qvzi1NzhbnC0sTE+OXJK5OXJsfys/PFQuPfTV3ymcel//zkrUfPyv/oNvGHd8j/3C7z//b+7Qc/rBezreKPnm3993dym/iZxmffzxvl2vaRZnmjXt7s9Bvvnn5W/jP1/Pv3+v8/usv8z//5Xx/uclcAoAPKa+sLU8ViYaWnCy/0atS+Fr0UWSjstfDPl6MZL2Whu/0SAADQfk+PgQEAAAAAAAAAAAAAAAAAAIBO6+Sv6zVtdCdVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBn+i4AAP//YCrSwQ==")
+open(0x0, 0x145542, 0x0)
+
+program did not crash
+extracting C reproducer
+testing compiled C program (duration=45s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open
+program crashed: BUG: unable to handle kernel paging request in dqput
+simplifying C reproducer
+testing compiled C program (duration=45s, {Threaded:false Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open
+program crashed: BUG: unable to handle kernel paging request in dqput
+testing compiled C program (duration=45s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:false Cgroups:false BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open
+program crashed: BUG: unable to handle kernel paging request in dqput
+testing compiled C program (duration=45s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox: SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:false UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open
+program did not crash
+testing compiled C program (duration=45s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open
+program crashed: BUG: unable to handle kernel paging request in dqput
+testing compiled C program (duration=45s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open
+program crashed: BUG: unable to handle kernel paging request in dqput
+testing compiled C program (duration=45s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open
+program crashed: BUG: unable to handle kernel paging request in dqput
+testing compiled C program (duration=45s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:false HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open
+program crashed: BUG: unable to handle kernel paging request in dqput
+testing compiled C program (duration=45s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:false HandleSegv:false Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open
+program crashed: BUG: unable to handle kernel paging request in dqput
+testing compiled C program (duration=45s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:false Swap:true UseTmpDir:false HandleSegv:false Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open
+program crashed: BUG: unable to handle kernel paging request in dqput
+testing compiled C program (duration=45s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:false Swap:false UseTmpDir:false HandleSegv:false Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open
+program crashed: BUG: unable to handle kernel paging request in dqput
+reproducing took 13m18.980503437s
+repro crashed as (corrupted=false):
+EXT4-fs (loop0): mounted filesystem without journal. Opts: nobarrier,noblock_validity,lazytime,barrier=0x0000000000000003,errors=remount-ro,resuid=0x000000000000ee00,errors=remount-ro,resgid=0x000000000000ee01,resgid=0x000000000000ee002
+Quota error (device loop0): qtree_write_dquot: Error -641722073 occurred while creating quota
+BUG: unable to handle page fault for address: fffffbfffb380346
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 80190067 P4D 80190067 PUD 6ddb4067 PMD 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 237 Comm: syz-executor336 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
+RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
+RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
+RIP: 0010:check_memory_region+0x189/0x1e0 mm/kasan/generic.c:192
+Code: 41 83 e1 07 49 39 c1 7d 89 41 bb 01 00 00 00 5b 5d 44 89 d8 41 5c c3 48 85 d2 74 ed 48 01 ea eb 09 48 83 c0 01 48 39 d0 74 df <80> 38 00 74 f2 e9 34 ff ff ff 48 29 c3 48 89 da 49 89 d3 49 c1 fb
+RSP: 0018:ffff888010ca7968 EFLAGS: 00010286
+RAX: fffffbfffb380346 RBX: fffffbfffb380348 RCX: ffffffff8195e26d
+RDX: fffffbfffb380348 RSI: 0000000000000004 RDI: ffffffffd9c01a37
+RBP: fffffbfffb380346 R08: 0000000000000000 R09: ffffffffd9c01a3a
+R10: fffffbfffb380347 R11: 0000000000000001 R12: ffffffffd9c01a57
+R13: ffffffffd9c01a37 R14: 0000000000000007 R15: fffffbfffb380346
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfffb380346 CR3: 000000000c596000 CR4: 0000000000350ee0
+Call Trace:
+ instrument_atomic_read include/linux/instrumented.h:71 [inline]
+ atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
+ dqput.part.0+0xad/0x7e0 fs/quota/dquot.c:770
+ dqput fs/quota/dquot.c:757 [inline]
+ dqput_all fs/quota/dquot.c:397 [inline]
+ __dquot_drop+0x1cc/0x2a0 fs/quota/dquot.c:1577
+ dquot_drop+0x151/0x1a0 fs/quota/dquot.c:1602
+ ext4_clear_inode+0x52/0x1e0 fs/ext4/super.c:1405
+ ext4_evict_inode+0x1cb/0x1890 fs/ext4/inode.c:332
+ evict+0x284/0x6d0 fs/inode.c:578
+ dispose_list fs/inode.c:613 [inline]
+ evict_inodes+0x3c1/0x5e0 fs/inode.c:663
+ generic_shutdown_super+0xa6/0x370 fs/super.c:454
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f81d68185ad
+Code: Unable to access opcode bytes at RIP 0x7f81d6818583.
+RSP: 002b:00007ffd2d5581d8 EFLAGS: 00000202 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f81d68185ad
+RDX: 00000000000000e7 RSI: ffffffffffffffc0 RDI: 0000000000000001
+RBP: 00007ffd2d558230 R08: 0000000000000000 R09: 0000000120080522
+R10: 00007ffd2d558100 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000000000000001 R14: 0000000000000001 R15: 00007f81d68af600
+Modules linked in:
+CR2: fffffbfffb380346
+---[ end trace 07843acb2d7016f5 ]---
+RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
+RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
+RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
+RIP: 0010:check_memory_region+0x189/0x1e0 mm/kasan/generic.c:192
+Code: 41 83 e1 07 49 39 c1 7d 89 41 bb 01 00 00 00 5b 5d 44 89 d8 41 5c c3 48 85 d2 74 ed 48 01 ea eb 09 48 83 c0 01 48 39 d0 74 df <80> 38 00 74 f2 e9 34 ff ff ff 48 29 c3 48 89 da 49 89 d3 49 c1 fb
+RSP: 0018:ffff888010ca7968 EFLAGS: 00010286
+RAX: fffffbfffb380346 RBX: fffffbfffb380348 RCX: ffffffff8195e26d
+RDX: fffffbfffb380348 RSI: 0000000000000004 RDI: ffffffffd9c01a37
+RBP: fffffbfffb380346 R08: 0000000000000000 R09: ffffffffd9c01a3a
+R10: fffffbfffb380347 R11: 0000000000000001 R12: ffffffffd9c01a57
+R13: ffffffffd9c01a37 R14: 0000000000000007 R15: fffffbfffb380346
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfffb380346 CR3: 000000000c596000 CR4: 0000000000350ee0
+note: syz-executor336[237] exited with preempt_count 1
+Fixing recursive fault but reboot is needed!
+----------------
+Code disassembly (best guess):
+   0:	41 83 e1 07          	and    $0x7,%r9d
+   4:	49 39 c1             	cmp    %rax,%r9
+   7:	7d 89                	jge    0xffffff92
+   9:	41 bb 01 00 00 00    	mov    $0x1,%r11d
+   f:	5b                   	pop    %rbx
+  10:	5d                   	pop    %rbp
+  11:	44 89 d8             	mov    %r11d,%eax
+  14:	41 5c                	pop    %r12
+  16:	c3                   	ret
+  17:	48 85 d2             	test   %rdx,%rdx
+  1a:	74 ed                	je     0x9
+  1c:	48 01 ea             	add    %rbp,%rdx
+  1f:	eb 09                	jmp    0x2a
+  21:	48 83 c0 01          	add    $0x1,%rax
+  25:	48 39 d0             	cmp    %rdx,%rax
+  28:	74 df                	je     0x9
+* 2a:	80 38 00             	cmpb   $0x0,(%rax) <-- trapping instruction
+  2d:	74 f2                	je     0x21
+  2f:	e9 34 ff ff ff       	jmp    0xffffff68
+  34:	48 29 c3             	sub    %rax,%rbx
+  37:	48 89 da             	mov    %rbx,%rdx
+  3a:	49 89 d3             	mov    %rdx,%r11
+  3d:	49                   	rex.WB
+  3e:	c1                   	.byte 0xc1
+  3f:	fb                   	sti
+
+final repro crashed as (corrupted=false):
+EXT4-fs (loop0): mounted filesystem without journal. Opts: nobarrier,noblock_validity,lazytime,barrier=0x0000000000000003,errors=remount-ro,resuid=0x000000000000ee00,errors=remount-ro,resgid=0x000000000000ee01,resgid=0x000000000000ee002
+Quota error (device loop0): qtree_write_dquot: Error -641722073 occurred while creating quota
+BUG: unable to handle page fault for address: fffffbfffb380346
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 80190067 P4D 80190067 PUD 6ddb4067 PMD 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 237 Comm: syz-executor336 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
+RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
+RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
+RIP: 0010:check_memory_region+0x189/0x1e0 mm/kasan/generic.c:192
+Code: 41 83 e1 07 49 39 c1 7d 89 41 bb 01 00 00 00 5b 5d 44 89 d8 41 5c c3 48 85 d2 74 ed 48 01 ea eb 09 48 83 c0 01 48 39 d0 74 df <80> 38 00 74 f2 e9 34 ff ff ff 48 29 c3 48 89 da 49 89 d3 49 c1 fb
+RSP: 0018:ffff888010ca7968 EFLAGS: 00010286
+RAX: fffffbfffb380346 RBX: fffffbfffb380348 RCX: ffffffff8195e26d
+RDX: fffffbfffb380348 RSI: 0000000000000004 RDI: ffffffffd9c01a37
+RBP: fffffbfffb380346 R08: 0000000000000000 R09: ffffffffd9c01a3a
+R10: fffffbfffb380347 R11: 0000000000000001 R12: ffffffffd9c01a57
+R13: ffffffffd9c01a37 R14: 0000000000000007 R15: fffffbfffb380346
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfffb380346 CR3: 000000000c596000 CR4: 0000000000350ee0
+Call Trace:
+ instrument_atomic_read include/linux/instrumented.h:71 [inline]
+ atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
+ dqput.part.0+0xad/0x7e0 fs/quota/dquot.c:770
+ dqput fs/quota/dquot.c:757 [inline]
+ dqput_all fs/quota/dquot.c:397 [inline]
+ __dquot_drop+0x1cc/0x2a0 fs/quota/dquot.c:1577
+ dquot_drop+0x151/0x1a0 fs/quota/dquot.c:1602
+ ext4_clear_inode+0x52/0x1e0 fs/ext4/super.c:1405
+ ext4_evict_inode+0x1cb/0x1890 fs/ext4/inode.c:332
+ evict+0x284/0x6d0 fs/inode.c:578
+ dispose_list fs/inode.c:613 [inline]
+ evict_inodes+0x3c1/0x5e0 fs/inode.c:663
+ generic_shutdown_super+0xa6/0x370 fs/super.c:454
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f81d68185ad
+Code: Unable to access opcode bytes at RIP 0x7f81d6818583.
+RSP: 002b:00007ffd2d5581d8 EFLAGS: 00000202 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f81d68185ad
+RDX: 00000000000000e7 RSI: ffffffffffffffc0 RDI: 0000000000000001
+RBP: 00007ffd2d558230 R08: 0000000000000000 R09: 0000000120080522
+R10: 00007ffd2d558100 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000000000000001 R14: 0000000000000001 R15: 00007f81d68af600
+Modules linked in:
+CR2: fffffbfffb380346
+---[ end trace 07843acb2d7016f5 ]---
+RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
+RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
+RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
+RIP: 0010:check_memory_region+0x189/0x1e0 mm/kasan/generic.c:192
+Code: 41 83 e1 07 49 39 c1 7d 89 41 bb 01 00 00 00 5b 5d 44 89 d8 41 5c c3 48 85 d2 74 ed 48 01 ea eb 09 48 83 c0 01 48 39 d0 74 df <80> 38 00 74 f2 e9 34 ff ff ff 48 29 c3 48 89 da 49 89 d3 49 c1 fb
+RSP: 0018:ffff888010ca7968 EFLAGS: 00010286
+RAX: fffffbfffb380346 RBX: fffffbfffb380348 RCX: ffffffff8195e26d
+RDX: fffffbfffb380348 RSI: 0000000000000004 RDI: ffffffffd9c01a37
+RBP: fffffbfffb380346 R08: 0000000000000000 R09: ffffffffd9c01a3a
+R10: fffffbfffb380347 R11: 0000000000000001 R12: ffffffffd9c01a57
+R13: ffffffffd9c01a37 R14: 0000000000000007 R15: fffffbfffb380346
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfffb380346 CR3: 000000000c596000 CR4: 0000000000350ee0
+note: syz-executor336[237] exited with preempt_count 1
+Fixing recursive fault but reboot is needed!
+----------------
+Code disassembly (best guess):
+   0:	41 83 e1 07          	and    $0x7,%r9d
+   4:	49 39 c1             	cmp    %rax,%r9
+   7:	7d 89                	jge    0xffffff92
+   9:	41 bb 01 00 00 00    	mov    $0x1,%r11d
+   f:	5b                   	pop    %rbx
+  10:	5d                   	pop    %rbp
+  11:	44 89 d8             	mov    %r11d,%eax
+  14:	41 5c                	pop    %r12
+  16:	c3                   	ret
+  17:	48 85 d2             	test   %rdx,%rdx
+  1a:	74 ed                	je     0x9
+  1c:	48 01 ea             	add    %rbp,%rdx
+  1f:	eb 09                	jmp    0x2a
+  21:	48 83 c0 01          	add    $0x1,%rax
+  25:	48 39 d0             	cmp    %rdx,%rax
+  28:	74 df                	je     0x9
+* 2a:	80 38 00             	cmpb   $0x0,(%rax) <-- trapping instruction
+  2d:	74 f2                	je     0x21
+  2f:	e9 34 ff ff ff       	jmp    0xffffff68
+  34:	48 29 c3             	sub    %rax,%rbx
+  37:	48 89 da             	mov    %rbx,%rdx
+  3a:	49 89 d3             	mov    %rdx,%r11
+  3d:	49                   	rex.WB
+  3e:	c1                   	.byte 0xc1
+  3f:	fb                   	sti
+

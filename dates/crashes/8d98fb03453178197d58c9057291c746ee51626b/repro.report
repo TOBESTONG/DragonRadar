@@ -1,0 +1,369 @@
+EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,dioread_lock,grpquota,noauto_da_alloc,resgid=0x0000000000000000,barrier,auto_da_alloc,usrquota,
+ext4 filesystem being mounted at /file1 supports timestamps until 2038 (0x7fffffff)
+==================================================================
+BUG: KASAN: slab-out-of-bounds in ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+BUG: KASAN: slab-out-of-bounds in ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+Read of size 4 at addr ffff88800fe36274 by task syz-executor144/237
+
+CPU: 1 PID: 237 Comm: syz-executor144 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+ ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+ ext4_ext_remove_space+0x1445/0x4470 fs/ext4/extents.c:2806
+ ext4_punch_hole+0x678/0x1130 fs/ext4/inode.c:4105
+ ext4_fallocate+0x10e7/0x3e70 fs/ext4/extents.c:4655
+ vfs_fallocate+0x494/0xdd0 fs/open.c:309
+ ioctl_preallocate+0x18e/0x200 fs/ioctl.c:494
+ file_ioctl fs/ioctl.c:537 [inline]
+ do_vfs_ioctl+0xe3c/0x1140 fs/ioctl.c:732
+ __do_sys_ioctl fs/ioctl.c:751 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x108/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fe1f6cd340d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc1d591258 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0031656c69662f2e RCX: 00007fe1f6cd340d
+RDX: 0000000020000080 RSI: 0000000040305829 RDI: 0000000000000004
+RBP: 0000000000000000 R08: 0000555555fadfc0 R09: 0000555555fadfc0
+R10: 0000555555fadfc0 R11: 0000000000000246 R12: 00007ffc1d591418
+R13: 431bde82d7b634db R14: 00007ffc1d591290 R15: 0000000000000001
+
+Allocated by task 209:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ __build_skb+0x21/0x60 net/core/skbuff.c:311
+ build_skb+0x1a/0x220 net/core/skbuff.c:327
+ e1000_clean_rx_irq+0x93d/0x1160 drivers/net/ethernet/intel/e1000/e1000_main.c:4386
+ e1000_clean+0x943/0x1f30 drivers/net/ethernet/intel/e1000/e1000_main.c:3803
+ napi_poll net/core/dev.c:6759 [inline]
+ net_rx_action+0x463/0x11f0 net/core/dev.c:6829
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+
+Freed by task 209:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ napi_skb_finish net/core/dev.c:6067 [inline]
+ napi_gro_receive+0x6c7/0x840 net/core/dev.c:6090
+ e1000_receive_skb drivers/net/ethernet/intel/e1000/e1000_main.c:4007 [inline]
+ e1000_clean_rx_irq+0x627/0x1160 drivers/net/ethernet/intel/e1000/e1000_main.c:4463
+ e1000_clean+0x943/0x1f30 drivers/net/ethernet/intel/e1000/e1000_main.c:3803
+ napi_poll net/core/dev.c:6759 [inline]
+ net_rx_action+0x463/0x11f0 net/core/dev.c:6829
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+
+The buggy address belongs to the object at ffff88800fe36140
+ which belongs to the cache skbuff_head_cache of size 224
+The buggy address is located 84 bytes to the right of
+ 224-byte region [ffff88800fe36140, ffff88800fe36220)
+The buggy address belongs to the page:
+page:000000006751aa91 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xfe36
+flags: 0x100000000000200(slab)
+raw: 0100000000000200 dead000000000100 dead000000000122 ffff888008349500
+raw: 0000000000000000 00000000000c000c 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88800fe36100: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
+ ffff88800fe36180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88800fe36200: fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc fc
+                                                             ^
+ ffff88800fe36280: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88800fe36300: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+==================================================================
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz-executor144: Freeing blocks not in datazone - block = 198187184717824, count = 182
+EXT4-fs (loop0): Remounting filesystem read-only
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz-executor144: Freeing blocks not in datazone - block = 17471926929536, count = 6976
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz-executor144: Freeing blocks not in datazone - block = 95167885344770, count = 23552
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz-executor144: Freeing blocks not in datazone - block = 2762526720, count = 0
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz-executor144: Freeing blocks not in datazone - block = 88897233092609, count = 30976
+syz-executor144 (237) used greatest stack depth: 24432 bytes left
+general protection fault, probably for non-canonical address 0x87209361000000f7: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 116 Comm: systemd-udevd Tainted: G    B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:freelist_dereference mm/slub.c:272 [inline]
+RIP: 0010:get_freepointer mm/slub.c:278 [inline]
+RIP: 0010:get_freepointer_safe mm/slub.c:292 [inline]
+RIP: 0010:slab_alloc_node mm/slub.c:2858 [inline]
+RIP: 0010:slab_alloc mm/slub.c:2899 [inline]
+RIP: 0010:kmem_cache_alloc+0xed/0x330 mm/slub.c:2904
+Code: 8b 71 08 48 39 f2 75 e7 48 8b 01 48 83 79 10 00 48 89 04 24 0f 84 f3 01 00 00 48 85 c0 0f 84 ea 01 00 00 8b 4d 28 48 8b 7d 00 <48> 8b 1c 08 40 f6 c7 0f 0f 85 f4 01 00 00 48 8d 4a 40 65 48 0f c7
+RSP: 0018:ffff88801132fa58 EFLAGS: 00010286
+RAX: 87209360ffffffff RBX: ffff88800c450a00 RCX: 00000000000000f8
+RDX: 00000000000c9180 RSI: 00000000000c9180 RDI: 0000000000038290
+RBP: ffff888008144000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000dc0
+R13: ffffffff8177d7e1 R14: ffff888008de6200 R15: 0000000000000dc0
+FS:  00007faf031b08c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffc1d591148 CR3: 000000000ad86000 CR4: 0000000000350ef0
+Call Trace:
+ kmem_cache_zalloc include/linux/slab.h:654 [inline]
+ __alloc_file+0x21/0x310 fs/file_table.c:101
+ alloc_empty_file+0x6d/0x170 fs/file_table.c:151
+ path_openat+0x125/0x26f0 fs/namei.c:3355
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7faf0365c342
+Code: c0 f6 c2 40 75 52 89 d0 45 31 d2 25 00 00 41 00 3d 00 00 41 00 74 41 64 8b 04 25 18 00 00 00 85 c0 75 65 b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 a2 00 00 00 48 8b 4c 24 38 64 48 2b 0c 25
+RSP: 002b:00007fffa6f1e7d0 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007faf0365c342
+RDX: 00000000002a0000 RSI: 0000564b18bdb781 RDI: 0000000000000012
+RBP: 0000564b18bdb780 R08: 0000564b18196950 R09: 00007faf0373fbe0
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000564b18c0ff7c
+R13: 0000000000000012 R14: 0000000000000008 R15: 0000564b18bdb781
+Modules linked in:
+general protection fault, probably for non-canonical address 0x87209361000000f7: 0000 [#2] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 100 Comm: systemd-journal Tainted: G    B D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:freelist_dereference mm/slub.c:272 [inline]
+RIP: 0010:get_freepointer mm/slub.c:278 [inline]
+RIP: 0010:get_freepointer_safe mm/slub.c:292 [inline]
+RIP: 0010:slab_alloc_node mm/slub.c:2858 [inline]
+RIP: 0010:slab_alloc mm/slub.c:2899 [inline]
+RIP: 0010:kmem_cache_alloc+0xed/0x330 mm/slub.c:2904
+Code: 8b 71 08 48 39 f2 75 e7 48 8b 01 48 83 79 10 00 48 89 04 24 0f 84 f3 01 00 00 48 85 c0 0f 84 ea 01 00 00 8b 4d 28 48 8b 7d 00 <48> 8b 1c 08 40 f6 c7 0f 0f 85 f4 01 00 00 48 8d 4a 40 65 48 0f c7
+RSP: 0018:ffff88800a7e7a58 EFLAGS: 00010286
+RAX: 87209360ffffffff RBX: ffff88800a975800 RCX: 00000000000000f8
+RDX: 00000000000c9180 RSI: 00000000000c9180 RDI: 0000000000038290
+RBP: ffff888008144000 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000dc0
+R13: ffffffff8177d7e1 R14: ffff88800b5ac100 R15: 0000000000000dc0
+FS:  00007fb95d0c3900(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffc1d591148 CR3: 000000000bd32000 CR4: 0000000000350ef0
+Call Trace:
+ kmem_cache_zalloc include/linux/slab.h:654 [inline]
+ __alloc_file+0x21/0x310 fs/file_table.c:101
+ alloc_empty_file+0x6d/0x170 fs/file_table.c:151
+ path_openat+0x125/0x26f0 fs/namei.c:3355
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fb95d978244
+Code: 84 00 00 00 00 00 44 89 54 24 0c e8 46 58 f9 ff 44 8b 54 24 0c 44 89 e2 48 89 ee 41 89 c0 bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 34 44 89 c7 89 44 24 0c e8 78 58 f9 ff 8b 44
+RSP: 002b:00007ffef0706150 EFLAGS: 00000293 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00005597c2149d60 RCX: 00007fb95d978244
+RDX: 0000000000080802 RSI: 00005597c216a260 RDI: 00000000ffffff9c
+RBP: 00005597c216a260 R08: 0000000000000000 R09: ffffffffffffff01
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000080802
+R13: 00000000fffffffa R14: 00005597c21504e0 R15: 0000000000000002
+Modules linked in:
+---[ end trace 7787a8fd49477083 ]---
+RIP: 0010:freelist_dereference mm/slub.c:272 [inline]
+RIP: 0010:get_freepointer mm/slub.c:278 [inline]
+RIP: 0010:get_freepointer_safe mm/slub.c:292 [inline]
+RIP: 0010:slab_alloc_node mm/slub.c:2858 [inline]
+RIP: 0010:slab_alloc mm/slub.c:2899 [inline]
+RIP: 0010:kmem_cache_alloc+0xed/0x330 mm/slub.c:2904
+Code: 8b 71 08 48 39 f2 75 e7 48 8b 01 48 83 79 10 00 48 89 04 24 0f 84 f3 01 00 00 48 85 c0 0f 84 ea 01 00 00 8b 4d 28 48 8b 7d 00 <48> 8b 1c 08 40 f6 c7 0f 0f 85 f4 01 00 00 48 8d 4a 40 65 48 0f c7
+RSP: 0018:ffff88801132fa58 EFLAGS: 00010286
+general protection fault, probably for non-canonical address 0xf7d000000200: 0000 [#3] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 154 Comm: in:imklog Tainted: G    B D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:freelist_dereference mm/slub.c:272 [inline]
+RIP: 0010:get_freepointer mm/slub.c:278 [inline]
+RIP: 0010:get_freepointer_safe mm/slub.c:292 [inline]
+RIP: 0010:slab_alloc_node mm/slub.c:2858 [inline]
+RIP: 0010:slab_alloc mm/slub.c:2899 [inline]
+RIP: 0010:kmem_cache_alloc_trace+0xe5/0x270 mm/slub.c:2916
+Code: 8b 71 08 48 39 f2 75 e7 48 8b 01 48 83 79 10 00 48 89 04 24 0f 84 63 01 00 00 48 85 c0 0f 84 5a 01 00 00 8b 4d 28 48 8b 7d 00 <48> 8b 1c 08 40 f6 c7 0f 0f 85 64 01 00 00 48 8d 4a 40 65 48 0f c7
+RSP: 0018:ffff8880117e7ad8 EFLAGS: 00010206
+RAX: 0000f7d000000000 RBX: 0000000000000cc0 RCX: 0000000000000200
+RDX: 000000000003cf80 RSI: 000000000003cf80 RDI: 0000000000036af0
+RBP: ffff888008041140 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000cc0
+R13: 0000000000000400 R14: ffffffff812d2f92 R15: 0000000000000000
+FS:  00007f713b04f700(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f7130034098 CR3: 000000000d18c000 CR4: 0000000000350ef0
+Call Trace:
+ kmalloc include/linux/slab.h:552 [inline]
+ syslog_print+0xb2/0x460 kernel/printk/printk.c:1459
+ do_syslog.part.0+0x79c/0x880 kernel/printk/printk.c:1615
+ do_syslog+0x49/0x60 kernel/printk/printk.c:1596
+ kmsg_read+0x90/0xb0 fs/proc/kmsg.c:40
+ pde_read fs/proc/inode.c:321 [inline]
+ proc_reg_read+0x11c/0x300 fs/proc/inode.c:331
+ vfs_read+0x228/0x580 fs/read_write.c:494
+ ksys_read+0x12d/0x250 fs/read_write.c:634
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f713ba9f08c
+Code: ec 28 48 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 89 fc ff ff 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 31 c0 0f 05 <48> 3d 00 f0 ff ff 77 34 44 89 c7 48 89 44 24 08 e8 bf fc ff ff 48
+RSP: 002b:00007f713b02e4d0 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f713ba9f08c
+RDX: 0000000000001fa0 RSI: 00007f713b02ed00 RDI: 0000000000000005
+RBP: 000055bf590a3500 R08: 0000000000000000 R09: 000055bf5909fec8
+---[ end trace 7787a8fd49477084 ]---
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f713b02ed00
+R13: 0000000000001fa0 R14: 00007f713b02ed00 R15: 00007f713b02edda
+RIP: 0010:freelist_dereference mm/slub.c:272 [inline]
+RIP: 0010:get_freepointer mm/slub.c:278 [inline]
+RIP: 0010:get_freepointer_safe mm/slub.c:292 [inline]
+RIP: 0010:slab_alloc_node mm/slub.c:2858 [inline]
+RIP: 0010:slab_alloc mm/slub.c:2899 [inline]
+RIP: 0010:kmem_cache_alloc+0xed/0x330 mm/slub.c:2904
+Modules linked in:
+RAX: 87209360ffffffff RBX: ffff88800c450a00 RCX: 00000000000000f8
+Code: 8b 71 08 48 39 f2 75 e7 48 8b 01 48 83 79 10 00 48 89 04 24 0f 84 f3 01 00 00 48 85 c0 0f 84 ea 01 00 00 8b 4d 28 48 8b 7d 00 <48> 8b 1c 08 40 f6 c7 0f 0f 85 f4 01 00 00 48 8d 4a 40 65 48 0f c7
+RDX: 00000000000c9180 RSI: 00000000000c9180 RDI: 0000000000038290
+RBP: ffff888008144000 R08: 0000000000000000 R09: 0000000000000000
+RSP: 0018:ffff88801132fa58 EFLAGS: 00010286
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000dc0
+R13: ffffffff8177d7e1 R14: ffff888008de6200 R15: 0000000000000dc0
+FS:  00007faf031b08c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f7130034098 CR3: 000000000ad86000 CR4: 0000000000350ef0
+
+RAX: 87209360ffffffff RBX: ffff88800c450a00 RCX: 00000000000000f8
+RDX: 00000000000c9180 RSI: 00000000000c9180 RDI: 0000000000038290
+RBP: ffff888008144000 R08: 0000000000000000 R09: 0000000000000000
+general protection fault, probably for non-canonical address 0x87209361000000f7: 0000 [#4] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 1 Comm: systemd Tainted: G    B D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:freelist_dereference mm/slub.c:272 [inline]
+RIP: 0010:get_freepointer mm/slub.c:278 [inline]
+RIP: 0010:get_freepointer_safe mm/slub.c:292 [inline]
+RIP: 0010:slab_alloc_node mm/slub.c:2858 [inline]
+RIP: 0010:slab_alloc mm/slub.c:2899 [inline]
+RIP: 0010:kmem_cache_alloc+0xed/0x330 mm/slub.c:2904
+Code: 8b 71 08 48 39 f2 75 e7 48 8b 01 48 83 79 10 00 48 89 04 24 0f 84 f3 01 00 00 48 85 c0 0f 84 ea 01 00 00 8b 4d 28 48 8b 7d 00 <48> 8b 1c 08 40 f6 c7 0f 0f 85 f4 01 00 00 48 8d 4a 40 65 48 0f c7
+RSP: 0018:ffff8880081cfa58 EFLAGS: 00010286
+RAX: 87209360ffffffff RBX: ffff88800cb29c00 RCX: 00000000000000f8
+RDX: 00000000000c9180 RSI: 00000000000c9180 RDI: 0000000000038290
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000dc0
+RBP: ffff888008144000 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000dc0
+R13: ffffffff8177d7e1 R14: ffff888008de6200 R15: 0000000000000dc0
+R13: ffffffff8177d7e1 R14: ffff88800accce80 R15: 0000000000000dc0
+FS:  00007f57181ff900(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+FS:  00007fb95d0c3900(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CR2: 0000564b18bf9010 CR3: 000000000ced8000 CR4: 0000000000350ef0
+Call Trace:
+ kmem_cache_zalloc include/linux/slab.h:654 [inline]
+ __alloc_file+0x21/0x310 fs/file_table.c:101
+ alloc_empty_file+0x6d/0x170 fs/file_table.c:151
+ path_openat+0x125/0x26f0 fs/namei.c:3355
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020511000 CR3: 000000000bd32000 CR4: 0000000000350ee0
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f57189c9244
+Code: 84 00 00 00 00 00 44 89 54 24 0c e8 46 58 f9 ff 44 8b 54 24 0c 44 89 e2 48 89 ee 41 89 c0 bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 34 44 89 c7 89 44 24 0c e8 78 58 f9 ff 8b 44
+RSP: 002b:00007ffc5e081090 EFLAGS: 00000293 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00005639fce67b90 RCX: 00007f57189c9244
+RDX: 0000000000080000 RSI: 00007ffc5e081220 RDI: 00000000ffffff9c
+RBP: 00007ffc5e081220 R08: 0000000000000000 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000080000
+R13: 00005639fce67b90 R14: 0000000000000001 R15: 0000000000000000
+Modules linked in:
+---[ end trace 7787a8fd49477085 ]---
+BUG: unable to handle page fault for address: ffffebe8a0000008
+RIP: 0010:freelist_dereference mm/slub.c:272 [inline]
+RIP: 0010:get_freepointer mm/slub.c:278 [inline]
+RIP: 0010:get_freepointer_safe mm/slub.c:292 [inline]
+RIP: 0010:slab_alloc_node mm/slub.c:2858 [inline]
+RIP: 0010:slab_alloc mm/slub.c:2899 [inline]
+RIP: 0010:kmem_cache_alloc+0xed/0x330 mm/slub.c:2904
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 0 
+Code: 8b 71 08 48 39 f2 75 e7 48 8b 01 48 83 79 10 00 48 89 04 24 0f 84 f3 01 00 00 48 85 c0 0f 84 ea 01 00 00 8b 4d 28 48 8b 7d 00 <48> 8b 1c 08 40 f6 c7 0f 0f 85 f4 01 00 00 48 8d 4a 40 65 48 0f c7
+P4D 0 
+Oops: 0000 [#5] PREEMPT SMP KASAN NOPTI
+RSP: 0018:ffff88801132fa58 EFLAGS: 00010286
+CPU: 1 PID: 244 Comm: syz-executor144 Tainted: G    B D           5.10.0 #1
+
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RAX: 87209360ffffffff RBX: ffff88800c450a00 RCX: 00000000000000f8
+RIP: 0010:compound_head include/linux/page-flags.h:185 [inline]
+RIP: 0010:virt_to_head_page include/linux/mm.h:860 [inline]
+RIP: 0010:qlink_to_cache mm/kasan/quarantine.c:130 [inline]
+RIP: 0010:qlist_free_all+0x8d/0xd0 mm/kasan/quarantine.c:167
+Code: df 48 85 db 75 cc 48 89 f0 4c 01 e8 72 56 4c 89 f2 48 2b 15 25 65 57 03 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 03 65 57 03 <48> 8b 50 08 48 8d 4a ff 83 e2 01 48 0f 45 c1 48 8b 78 18 eb 93 49
+RDX: 00000000000c9180 RSI: 00000000000c9180 RDI: 0000000000038290
+RSP: 0018:ffff88800b0c79c8 EFLAGS: 00010286
+RBP: ffff888008144000 R08: 0000000000000000 R09: 0000000000000000
+RAX: ffffebe8a0000000 RBX: 0000000000000000 RCX: 000000008010000f
+RDX: 0000777f80000000 RSI: 000002a800000004 RDI: 0000000000000000
+RBP: dffffc0000000000 R08: 0000000000000001 R09: 000000008010000f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000dc0
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800b0c7a00
+R13: 0000000080000000 R14: ffffffff80000000 R15: 000002a800000004
+FS:  0000555555fad380(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+R13: ffffffff8177d7e1 R14: ffff888008de6200 R15: 0000000000000dc0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffebe8a0000008 CR3: 0000000010682000 CR4: 0000000000350ee0
+FS:  00007f57181ff900(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+Call Trace:
+ quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:267
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ __kasan_kmalloc.constprop.0+0x9e/0xd0 mm/kasan/common.c:442
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+CR2: 0000564b18bf9010 CR3: 000000000ced8000 CR4: 0000000000350ef0
+ ptlock_alloc+0x1d/0x70 mm/memory.c:5228
+ ptlock_init include/linux/mm.h:2176 [inline]
+ pgtable_pte_page_ctor include/linux/mm.h:2203 [inline]
+ __pte_alloc_one include/asm-generic/pgalloc.h:66 [inline]
+ pte_alloc_one+0x68/0x1b0 arch/x86/mm/pgtable.c:33
+----------------
+Code disassembly (best guess):
+   0:	8b 71 08             	mov    0x8(%rcx),%esi
+   3:	48 39 f2             	cmp    %rsi,%rdx
+   6:	75 e7                	jne    0xffffffef
+   8:	48 8b 01             	mov    (%rcx),%rax
+   b:	48 83 79 10 00       	cmpq   $0x0,0x10(%rcx)
+  10:	48 89 04 24          	mov    %rax,(%rsp)
+  14:	0f 84 f3 01 00 00    	je     0x20d
+  1a:	48 85 c0             	test   %rax,%rax
+  1d:	0f 84 ea 01 00 00    	je     0x20d
+  23:	8b 4d 28             	mov    0x28(%rbp),%ecx
+  26:	48 8b 7d 00          	mov    0x0(%rbp),%rdi
+* 2a:	48 8b 1c 08          	mov    (%rax,%rcx,1),%rbx <-- trapping instruction
+  2e:	40 f6 c7 0f          	test   $0xf,%dil
+  32:	0f 85 f4 01 00 00    	jne    0x22c
+  38:	48 8d 4a 40          	lea    0x40(%rdx),%rcx
+  3c:	65                   	gs
+  3d:	48                   	rex.W
+  3e:	0f                   	.byte 0xf
+  3f:	c7                   	.byte 0xc7

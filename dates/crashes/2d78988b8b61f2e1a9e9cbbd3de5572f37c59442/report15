@@ -1,0 +1,89 @@
+EXT4-fs (loop1): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+ext4 filesystem being mounted at /13/file1 supports timestamps until 2038 (0x7fffffff)
+==================================================================
+BUG: KASAN: use-after-free in crc16+0xcb/0xe0 lib/crc16.c:58
+Read of size 1 at addr ffff88800d2ad000 by task syz.1.51/2325
+
+CPU: 1 PID: 2325 Comm: syz.1.51 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ crc16+0xcb/0xe0 lib/crc16.c:58
+ ext4_group_desc_csum+0x62d/0x8a0 fs/ext4/super.c:2837
+ ext4_group_desc_csum_set+0xc3/0x1a0 fs/ext4/super.c:2860
+ __ext4_new_inode+0x1d15/0x55b0 fs/ext4/ialloc.c:1221
+ ext4_mkdir+0x32c/0xb10 fs/ext4/namei.c:2799
+ vfs_mkdir+0x45c/0x710 fs/namei.c:3650
+ do_mkdirat+0x145/0x2a0 fs/namei.c:3673
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f7b797afef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f7b78429038 EFLAGS: 00000246 ORIG_RAX: 0000000000000053
+RAX: ffffffffffffffda RBX: 00007f7b79967f80 RCX: 00007f7b797afef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000200000c0
+RBP: 00007f7b79822b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f7b79967f80 R15: 00007ffeb210fb78
+
+Allocated by task 2229:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ kmem_cache_zalloc include/linux/slab.h:654 [inline]
+ __kernfs_new_node+0xd4/0x930 fs/kernfs/dir.c:627
+ kernfs_new_node+0x93/0x120 fs/kernfs/dir.c:689
+ __kernfs_create_file+0x51/0x350 fs/kernfs/file.c:1002
+ sysfs_add_file_mode_ns+0x221/0x560 fs/sysfs/file.c:306
+ create_files fs/sysfs/group.c:64 [inline]
+ internal_create_group+0x313/0xb80 fs/sysfs/group.c:149
+ internal_create_groups.part.0+0x90/0x140 fs/sysfs/group.c:189
+ internal_create_groups fs/sysfs/group.c:185 [inline]
+ sysfs_create_groups+0x25/0x50 fs/sysfs/group.c:215
+ device_add_groups drivers/base/core.c:2030 [inline]
+ device_add_attrs drivers/base/core.c:2178 [inline]
+ device_add+0x7a5/0x1bc0 drivers/base/core.c:2887
+ netdev_register_kobject+0x17a/0x3b0 net/core/net-sysfs.c:1898
+ register_netdevice+0xdc8/0x16c0 net/core/dev.c:9982
+ register_netdev+0x2d/0x50 net/core/dev.c:10113
+ sit_init_net+0x260/0x5a0 net/ipv6/sit.c:1914
+ ops_init net/core/net_namespace.c:152 [inline]
+ setup_net+0x377/0x970 net/core/net_namespace.c:342
+ copy_net_ns+0x327/0x610 net/core/net_namespace.c:483
+ create_new_namespaces+0x3f6/0xb20 kernel/nsproxy.c:110
+ unshare_nsproxy_namespaces+0xbd/0x230 kernel/nsproxy.c:231
+ ksys_unshare+0x445/0x8a0 kernel/fork.c:2949
+ __do_sys_unshare kernel/fork.c:3017 [inline]
+ __se_sys_unshare kernel/fork.c:3015 [inline]
+ __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3015
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff88800d2ad000
+ which belongs to the cache kernfs_node_cache of size 168
+The buggy address is located 0 bytes inside of
+ 168-byte region [ffff88800d2ad000, ffff88800d2ad0a8)
+The buggy address belongs to the page:
+page:00000000f64c9d31 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88800d2ade80 pfn:0xd2ad
+flags: 0x100000000000200(slab)
+raw: 0100000000000200 ffffea0000438d80 0000000300000003 ffff888008144280
+raw: ffff88800d2ade80 0000000080110000 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88800d2acf00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88800d2acf80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff88800d2ad000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff88800d2ad080: fb fb fb fb fb fc fc fc fc fc fc fc fc fb fb fb
+ ffff88800d2ad100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+syz.2.48 (2283) used greatest stack depth: 22728 bytes left

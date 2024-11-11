@@ -1,0 +1,40 @@
+audit: type=1400 audit(1730889271.507:6): avc:  denied  { execmem } for  pid=237 comm="syz-executor255" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+================================================================================
+UBSAN: shift-out-of-bounds in fs/ext4/mballoc.c:2736:26
+shift exponent 37 is too large for 32-bit type 'int'
+CPU: 0 PID: 237 Comm: syz-executor255 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ ext4_mb_init_backend fs/ext4/mballoc.c:2736 [inline]
+ ext4_mb_init.cold+0x9c/0x113 fs/ext4/mballoc.c:2920
+ ext4_fill_super+0x8156/0xd960 fs/ext4/super.c:4999
+ mount_bdev+0x350/0x410 fs/super.c:1419
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f3d8690df6e
+Code: c7 05 6e 2a 09 00 00 00 00 00 eb 98 e8 ab 05 00 00 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff3069c278 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fff3069c2d0 RCX: 00007f3d8690df6e
+RDX: 0000000020000040 RSI: 0000000020000500 RDI: 00007fff3069c290
+RBP: 00007fff3069c290 R08: 00007fff3069c2d0 R09: 00000000000004ad
+R10: 0000000000000047 R11: 0000000000000202 R12: 00005555567c2340
+R13: 0000000000000004 R14: 0000000000000000 R15: 0000000000000001
+================================================================================
+EXT4-fs (loop0): orphan cleanup on readonly fs
+EXT4-fs error (device loop0): ext4_ext_check_inode:459: inode #3: comm syz-executor255: pblk 0 bad header/extent: invalid extent entries - magic f30a, entries 1, max 4(4), depth 0(0)
+EXT4-fs error (device loop0): ext4_quota_enable:6366: comm syz-executor255: Bad quota inode # 3
+EXT4-fs warning (device loop0): ext4_enable_quotas:6403: Failed to enable quota tracking (type=0, err=-117). Please run e2fsck to fix.
+EXT4-fs (loop0): Cannot turn on quotas: error -117
+EXT4-fs (loop0): mounted filesystem without journal. Opts: nojournal_checksum,sysvgroups,max_dir_size_kb=0x0000000000000009,barrier=0x000000007ffffffe,data_err=abort,block_validity,resuid=0x0000000000000000,resgid=0x0000000000000000,minixdf,,errors=continue

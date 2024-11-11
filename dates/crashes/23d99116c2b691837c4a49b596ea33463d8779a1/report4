@@ -1,0 +1,18 @@
+netlink: 'syz.0.206': attribute type 4 has an invalid length.
+EXT4-fs warning (device loop2): ext4_multi_mount_protect:324: MMP startup interrupted, failing mount
+==================================================================
+BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+BUG: KASAN: use-after-free in atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+BUG: KASAN: use-after-free in __refcount_add include/linux/refcount.h:193 [inline]
+BUG: KASAN: use-after-free in __refcount_inc include/linux/refcount.h:250 [inline]
+BUG: KASAN: use-after-free in refcount_inc include/linux/refcount.h:267 [inline]
+BUG: KASAN: use-after-free in get_task_struct include/linux/sched/task.h:104 [inline]
+BUG: KASAN: use-after-free in kthread_stop+0x76/0x6c0 kernel/kthread.c:591
+Write of size 4 at addr ffff88800b160020 by task syz-executor/3623
+
+CPU: 1 PID: 3623 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385

@@ -1,0 +1,77 @@
+fuse: Bad value for 'group_id'
+netlink: 28 bytes leftover after parsing attributes in process `syz.0.155'.
+------------[ cut here ]------------
+Trying to write to read-only block-device loop0 (partno 0)
+WARNING: CPU: 0 PID: 116 at block/blk-core.c:704 bio_check_ro block/blk-core.c:704 [inline]
+WARNING: CPU: 0 PID: 116 at block/blk-core.c:704 submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Modules linked in:
+CPU: 1 PID: 116 Comm: systemd-udevd Not tainted 5.10.0 #1
+fuse: Bad value for 'fd'
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:bio_check_ro block/blk-core.c:704 [inline]
+RIP: 0010:submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Code: 03 00 00 45 8b a4 24 64 05 00 00 48 89 ef 48 8d 74 24 50 e8 43 37 fe ff 48 c7 c7 00 ee 5b 84 48 89 c6 44 89 e2 e8 bd 1c e7 01 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 80 3c 02
+RSP: 0018:ffff8880118973d8 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 1ffff11002312e81 RCX: 0000000000000000
+RDX: ffff88800cf23400 RSI: ffffffff812d93c5 RDI: ffffed1002312e6d
+RBP: ffff88800aff1900 R08: 0000000000000001 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+netlink: 8 bytes leftover after parsing attributes in process `syz.1.154'.
+R13: ffff88800b980000 R14: ffff88800aff1910 R15: ffff88800aff1908
+FS:  00007f8c0cfe58c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f1b1f210e18 CR3: 000000000fd0a000 CR4: 0000000000350ee0
+Call Trace:
+ submit_bio_noacct+0x82/0x1000 block/blk-core.c:1044
+EXT4-fs (loop1): Mount option "noacl" will be removed by 3.5
+Contact linux-ext4@vger.kernel.org if you think we should keep it.
+
+ submit_bio+0xfd/0x540 block/blk-core.c:1129
+ submit_bh_wbc+0x580/0x7c0 fs/buffer.c:3054
+ __block_write_full_page+0x810/0x1080 fs/buffer.c:1810
+EXT4-fs (loop1): mounting with "discard" option, but the device does not support discard
+EXT4-fs (loop1): mounted filesystem without journal. Opts: noacl,block_validity,minixdf,block_validity,debug_want_extra_isize=0x0000000000000006,init_itable=0x0000000000000004,usrquota,discard,,errors=continue
+ block_write_full_page+0x23b/0x2b0 fs/buffer.c:2980
+ __writepage+0x67/0x180 mm/page-writeback.c:2311
+ write_cache_pages+0x594/0xfb0 mm/page-writeback.c:2246
+ generic_writepages mm/page-writeback.c:2337 [inline]
+ generic_writepages+0xe2/0x150 mm/page-writeback.c:2326
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __filemap_fdatawrite_range+0x24b/0x2f0 mm/filemap.c:422
+ filemap_write_and_wait_range mm/filemap.c:655 [inline]
+ filemap_write_and_wait_range+0x65/0x100 mm/filemap.c:649
+ filemap_write_and_wait include/linux/fs.h:2649 [inline]
+ __sync_blockdev fs/block_dev.c:509 [inline]
+ sync_blockdev+0x64/0x90 fs/block_dev.c:518
+ blk_drop_partitions+0xa9/0x180 block/partitions/core.c:635
+ bdev_disk_changed+0x212/0x400 fs/block_dev.c:1393
+ blkdev_reread_part block/ioctl.c:103 [inline]
+ blkdev_common_ioctl+0x1372/0x17a0 block/ioctl.c:552
+ blkdev_ioctl+0x1f4/0x720 block/ioctl.c:621
+ block_ioctl+0xf9/0x140 fs/block_dev.c:1869
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x196/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f8c0d4972d7
+Code: 00 00 00 48 8b 05 b9 cb 0d 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 89 cb 0d 00 f7 d8 64 89 01 48
+RSP: 002b:00007ffdbdac89d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007ffdbdac8a60 RCX: 00007f8c0d4972d7
+RDX: 0000000000000000 RSI: 000000000000125f RDI: 000000000000000f
+RBP: 00007ffdbdac8a80 R08: 000055e417743540 R09: 000055e418f001a0
+R10: 0000000000000000 R11: 0000000000000246 R12: 000055e417749071
+R13: 000055e41774389f R14: 00007ffdbdac8a30 R15: 000055e418efd950
+irq event stamp: 1287201
+hardirqs last  enabled at (1287211): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (1287220): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (1287186): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (1287175): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 15dd1e1c0b6aa1a0 ]---
+blk_update_request: I/O error, dev loop0, sector 0 op 0x1:(WRITE) flags 0x800 phys_seg 1 prio class 0
+Buffer I/O error on dev loop0, logical block 0, lost async page write
+blk_update_request: I/O error, dev loop0, sector 8 op 0x1:(WRITE) flags 0x800 phys_seg 1 prio class 0
+Buffer I/O error on dev loop0, logical block 1, lost async page write
+blk_update_request: I/O error, dev loop0, sector 232 op 0x1:(WRITE) flags 0x800 phys_seg 1 prio class 0
+Buffer I/O error on dev loop0, logical block 29, lost async page write

@@ -1,0 +1,138 @@
+EXT4-fs (loop2): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,dioread_lock,grpquota,noauto_da_alloc,resgid=0x0000000000000000,barrier,auto_da_alloc,usrquota,
+ext4 filesystem being mounted at /36/file1 supports timestamps until 2038 (0x7fffffff)
+==================================================================
+BUG: KASAN: use-after-free in ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+BUG: KASAN: use-after-free in ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+Read of size 4 at addr ffff88801956a350 by task syz.2.173/4866
+
+CPU: 0 PID: 4866 Comm: syz.2.173 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+ ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+ ext4_ext_remove_space+0x1445/0x4470 fs/ext4/extents.c:2806
+ ext4_punch_hole+0x678/0x1130 fs/ext4/inode.c:4105
+ ext4_fallocate+0x10e7/0x3e70 fs/ext4/extents.c:4655
+ vfs_fallocate+0x494/0xdd0 fs/open.c:309
+ ioctl_preallocate+0x18e/0x200 fs/ioctl.c:494
+ file_ioctl fs/ioctl.c:537 [inline]
+ do_vfs_ioctl+0xe3c/0x1140 fs/ioctl.c:732
+ __do_sys_ioctl fs/ioctl.c:751 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x108/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f9dc21e0ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f9dc0e39038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f9dc2399058 RCX: 00007f9dc21e0ef9
+RDX: 0000000020000080 RSI: 0000000040305829 RDI: 0000000000000006
+RBP: 00007f9dc2253b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f9dc2399058 R15: 00007ffeec1351f8
+
+Allocated by task 64:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ kmem_cache_alloc_node+0x155/0x340 mm/slub.c:2927
+ alloc_task_struct_node kernel/fork.c:170 [inline]
+ dup_task_struct kernel/fork.c:860 [inline]
+ copy_process+0x45fe/0x69f0 kernel/fork.c:1938
+ kernel_clone+0xe7/0xa80 kernel/fork.c:2456
+ kernel_thread+0xb5/0xf0 kernel/fork.c:2508
+ call_usermodehelper_exec_sync kernel/umh.c:133 [inline]
+ call_usermodehelper_exec_work+0x69/0x180 kernel/umh.c:164
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+
+Freed by task 4702:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ __put_task_struct+0x25a/0x3e0 kernel/fork.c:741
+ put_task_struct include/linux/sched/task.h:113 [inline]
+ delayed_put_task_struct+0x1c2/0x310 kernel/exit.c:172
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+
+Last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:178
+ finish_task_switch+0x582/0x830 kernel/sched/core.c:3652
+ context_switch kernel/sched/core.c:3782 [inline]
+ __schedule+0x888/0x2030 kernel/sched/core.c:4528
+ preempt_schedule_common+0x45/0xc0 kernel/sched/core.c:4687
+ preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:40
+ __raw_spin_unlock include/linux/spinlock_api_smp.h:152 [inline]
+ _raw_spin_unlock+0x36/0x40 kernel/locking/spinlock.c:183
+ spin_unlock include/linux/spinlock.h:394 [inline]
+ __d_lookup+0x64f/0x760 fs/dcache.c:2404
+ lookup_fast+0x2ca/0x6e0 fs/namei.c:1502
+ walk_component+0xc6/0x6a0 fs/namei.c:1857
+ link_path_walk+0x6c4/0xc90 fs/namei.c:2184
+ path_lookupat+0x15e/0x6c0 fs/namei.c:2333
+ filename_lookup+0x19f/0x560 fs/namei.c:2367
+ user_path_at include/linux/namei.h:59 [inline]
+ do_faccessat+0x11b/0x830 fs/open.c:423
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Second to last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:178
+ finish_task_switch+0x582/0x830 kernel/sched/core.c:3652
+ context_switch kernel/sched/core.c:3782 [inline]
+ __schedule+0x888/0x2030 kernel/sched/core.c:4528
+ preempt_schedule_irq+0x60/0xe0 kernel/sched/core.c:4789
+ irqentry_exit_cond_resched kernel/entry/common.c:357 [inline]
+ irqentry_exit_cond_resched kernel/entry/common.c:349 [inline]
+ irqentry_exit+0x7a/0xa0 kernel/entry/common.c:387
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+
+The buggy address belongs to the object at ffff888019569a00
+ which belongs to the cache task_struct of size 6400
+The buggy address is located 2384 bytes inside of
+ 6400-byte region [ffff888019569a00, ffff88801956b300)
+The buggy address belongs to the page:
+page:000000008326d907 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x19568
+head:000000008326d907 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x100000000010200(slab|head)
+raw: 0100000000010200 0000000000000000 0000000100000001 ffff888008138dc0
+raw: 0000000000000000 0000000000040004 00000001ffffffff ffff88800c1caac1
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff88800c1caac1
+
+Memory state around the buggy address:
+ ffff88801956a200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88801956a280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88801956a300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                 ^
+ ffff88801956a380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88801956a400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+EXT4-fs error (device loop2): ext4_free_blocks:5297: comm syz.2.173: Freeing blocks not in datazone - block = 281474976710655, count = 32767
+EXT4-fs (loop2): Remounting filesystem read-only
+EXT4-fs error (device loop2): ext4_free_blocks:5297: comm syz.2.173: Freeing blocks not in datazone - block = 244838905675775, count = 20141
+EXT4-fs error (device loop2): ext4_free_blocks:5297: comm syz.2.173: Freeing blocks not in datazone - block = 0, count = 1

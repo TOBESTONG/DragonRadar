@@ -1,0 +1,146 @@
+EXT4-fs error (device loop2): ext4_readdir:243: inode #11: block 7: comm syz-executor: path /8/file1/lost+found: bad entry in directory: rec_len is smaller than minimal - offset=0, inode=5, rec_len=0, name_len=0, size=4096
+Quota error (device loop2): write_blk: dquota write failed
+Quota error (device loop2): qtree_write_dquot: Error -28 occurred while creating quota
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+syz-executor/5236 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff88800c5e2aa8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88800c5e2aa8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 21004
+hardirqs last  enabled at (21004): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (21004): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (21003): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (21003): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (20914): [<ffffffff8379d104>] read_pnet include/net/net_namespace.h:330 [inline]
+softirqs last  enabled at (20914): [<ffffffff8379d104>] sock_net include/net/sock.h:2523 [inline]
+softirqs last  enabled at (20914): [<ffffffff8379d104>] unix_create1+0x484/0x570 net/unix/af_unix.c:814
+softirqs last disabled at (20937): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor/5236:
+ #0: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #1: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 1 PID: 5236 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+EXT4-fs: failed to create workqueue
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+EXT4-fs (loop0): mount failed
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:preempt_schedule_irq+0x5b/0xe0 kernel/sched/core.c:4789
+Code: 00 48 b8 00 00 00 00 00 fc ff df 48 89 dd 48 c1 ed 03 48 01 c5 bf 01 00 00 00 e8 90 00 35 fd e8 8b be 60 fd fb bf 01 00 00 00 <e8> c0 d0 ff ff 9c 58 fa f6 c4 02 75 59 bf 01 00 00 00 e8 ee e0 34
+RSP: 0018:ffff888012aaf900 EFLAGS: 00000202
+RAX: 00000000000051c7 RBX: ffff8880196a1a00 RCX: 1ffffffff0bac709
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
+RBP: ffffed10032d4340 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ irqentry_exit_cond_resched kernel/entry/common.c:357 [inline]
+ irqentry_exit_cond_resched kernel/entry/common.c:349 [inline]
+ irqentry_exit+0x7a/0xa0 kernel/entry/common.c:387
+ asm_sysvec_reschedule_ipi+0x12/0x20 arch/x86/include/asm/idtentry.h:636
+RIP: 0010:queue_work_on+0x83/0xd0 kernel/workqueue.c:1527
+Code: 31 ff 89 ee e8 5e bc 28 00 40 84 ed 74 46 e8 d4 c4 28 00 31 ff 48 89 de e8 aa bc 28 00 48 85 db 75 26 e8 c0 c4 28 00 41 56 9d <48> 83 c4 08 44 89 f8 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 a6 c4 28
+RSP: 0018:ffff888012aaf9d8 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 0000000000000200 RCX: 1ffffffff0bac709
+RDX: ffff8880196a1a00 RSI: ffffffff811d4a00 RDI: 0000000000000000
+RBP: ffff888017e9be00 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888017e9be00
+R13: ffff888008059000 R14: 0000000000000293 R15: 0000000000000001
+ queue_work include/linux/workqueue.h:507 [inline]
+ call_usermodehelper_exec+0x34d/0x4c0 kernel/umh.c:433
+ call_modprobe kernel/kmod.c:98 [inline]
+ __request_module+0x414/0xa10 kernel/kmod.c:170
+ dev_load+0x219/0x230 net/core/dev_ioctl.c:376
+ dev_ioctl+0x185/0xe40 net/core/dev_ioctl.c:435
+ sock_do_ioctl+0x152/0x2f0 net/socket.c:1070
+ sock_ioctl+0x3e6/0x720 net/socket.c:1198
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x196/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f7ef8f19afb
+Code: 00 48 89 44 24 18 31 c0 48 8d 44 24 60 c7 04 24 10 00 00 00 48 89 44 24 08 48 8d 44 24 20 48 89 44 24 10 b8 10 00 00 00 0f 05 <89> c2 3d 00 f0 ff ff 77 1c 48 8b 44 24 18 64 48 2b 04 25 28 00 00
+RSP: 002b:00007ffc46e5e330 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00007f7ef8f19afb
+RDX: 00007ffc46e5e390 RSI: 0000000000008933 RDI: 0000000000000005
+RBP: 00007ffc46e5e390 R08: 000000000000000a R09: 00007ffc46e5e6b0
+R10: 0000000000000026 R11: 0000000000000246 R12: 0000000000000003
+R13: 00007f7ef9c00620 R14: 0000000000000006 R15: 0000000000000000
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+   7:	fc ff df
+   a:	48 89 dd             	mov    %rbx,%rbp
+   d:	48 c1 ed 03          	shr    $0x3,%rbp
+  11:	48 01 c5             	add    %rax,%rbp
+  14:	bf 01 00 00 00       	mov    $0x1,%edi
+  19:	e8 90 00 35 fd       	call   0xfd3500ae
+  1e:	e8 8b be 60 fd       	call   0xfd60beae
+  23:	fb                   	sti
+  24:	bf 01 00 00 00       	mov    $0x1,%edi
+* 29:	e8 c0 d0 ff ff       	call   0xffffd0ee <-- trapping instruction
+  2e:	9c                   	pushf
+  2f:	58                   	pop    %rax
+  30:	fa                   	cli
+  31:	f6 c4 02             	test   $0x2,%ah
+  34:	75 59                	jne    0x8f
+  36:	bf 01 00 00 00       	mov    $0x1,%edi
+  3b:	e8                   	.byte 0xe8
+  3c:	ee                   	out    %al,(%dx)
+  3d:	e0 34                	loopne 0x73

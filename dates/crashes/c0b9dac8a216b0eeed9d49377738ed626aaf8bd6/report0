@@ -1,0 +1,182 @@
+EXT4-fs (loop2): mounted filesystem without journal. Opts: quota,nodelalloc,errors=remount-ro,grpid,
+ext4 filesystem being mounted at /1/file0 supports timestamps until 2038 (0x7fffffff)
+======================================================
+WARNING: possible circular locking dependency detected
+print_req_error: 278 callbacks suppressed
+blk_update_request: I/O error, dev loop0, sector 0 op 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
+5.10.0 #1 Not tainted
+blk_update_request: I/O error, dev loop0, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+------------------------------------------------------
+syz.2.512/9361 is trying to acquire lock:
+ffff88801a8ef0d0 (
+buffer_io_error: 279 callbacks suppressed
+Buffer I/O error on dev loop0p16, logical block 0, async page read
+&sb->s_type->i_mutex_key#14/4){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+&sb->s_type->i_mutex_key#14/4){+.+.}-{3:3}, at: lock_two_nondirectories+0xd1/0x110 fs/inode.c:1036
+
+but task is already holding lock:
+blk_update_request: I/O error, dev loop0, sector 1 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+ffff88801a8e8488 (&ea_inode->i_rwsem#14/1){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ffff88801a8e8488 (&ea_inode->i_rwsem#14/1){+.+.}-{3:3}, at: lock_two_nondirectories+0xec/0x110 fs/inode.c:1034
+Buffer I/O error on dev loop0p16, logical block 1, async page read
+blk_update_request: I/O error, dev loop0, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #3 (&ea_inode->i_rwsem#14/1
+Buffer I/O error on dev loop0p16, logical block 0, async page read
+){+.+.}-{3:3}:
+       down_write+0x8d/0x150 kernel/locking/rwsem.c:1531
+       inode_lock include/linux/fs.h:774 [inline]
+       ext4_xattr_inode_create fs/ext4/xattr.c:1438 [inline]
+       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1518 [inline]
+       ext4_xattr_set_entry+0x299e/0x37c0 fs/ext4/xattr.c:1646
+       ext4_xattr_block_set+0x834/0x2f50 fs/ext4/xattr.c:1942
+blk_update_request: I/O error, dev loop0, sector 1 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+       ext4_xattr_set_handle+0xd01/0x12b0 fs/ext4/xattr.c:2390
+       ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2491
+       __vfs_setxattr+0x10f/0x170 fs/xattr.c:177
+       __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+Buffer I/O error on dev loop0p16, logical block 1, async page read
+       __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+       vfs_setxattr+0xe8/0x270 fs/xattr.c:283
+       setxattr+0x23d/0x330 fs/xattr.c:548
+blk_update_request: I/O error, dev loop0, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+       path_setxattr+0x170/0x190 fs/xattr.c:567
+       __do_sys_setxattr fs/xattr.c:582 [inline]
+       __se_sys_setxattr fs/xattr.c:578 [inline]
+       __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:578
+Buffer I/O error on dev loop0p16, logical block 0, async page read
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+blk_update_request: I/O error, dev loop0, sector 1 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+
+-> #2 (
+Buffer I/O error on dev loop0p16, logical block 1, async page read
+&ei->xattr_sem){++++}-{3:3}:
+       down_write+0x8d/0x150 kernel/locking/rwsem.c:1531
+       ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+       ext4_xattr_set_handle+0x15e/0x12b0 fs/ext4/xattr.c:2306
+blk_update_request: I/O error, dev loop0, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+       ext4_initxattrs+0xb5/0x120 fs/ext4/xattr_security.c:43
+       security_inode_init_security+0x1a7/0x350 security/security.c:1053
+       __ext4_new_inode+0x38ec/0x55b0 fs/ext4/ialloc.c:1317
+Buffer I/O error on dev loop0p16, logical block 0, async page read
+       ext4_create+0x2ce/0x4d0 fs/ext4/namei.c:2619
+       lookup_open+0xf52/0x1330 fs/namei.c:3104
+       open_last_lookups fs/namei.c:3178 [inline]
+       path_openat+0x93f/0x26f0 fs/namei.c:3366
+blk_update_request: I/O error, dev loop0, sector 1 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+       do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+       do_sys_openat2+0x16d/0x420 fs/open.c:1168
+       do_sys_open fs/open.c:1184 [inline]
+       __do_sys_openat fs/open.c:1200 [inline]
+       __se_sys_openat fs/open.c:1195 [inline]
+       __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+Buffer I/O error on dev loop0p16, logical block 1, async page read
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #1
+blk_update_request: I/O error, dev loop0, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+ (jbd2_handle
+Buffer I/O error on dev loop0p16, logical block 0, async page read
+){++++}-{0:0}:
+       start_this_handle+0x103d/0x1440 fs/jbd2/transaction.c:446
+       jbd2__journal_start+0x3d3/0x960 fs/jbd2/transaction.c:503
+       __ext4_journal_start_sb+0x210/0x490 fs/ext4/ext4_jbd2.c:105
+Buffer I/O error on dev loop0p16, logical block 1, async page read
+       __ext4_journal_start fs/ext4/ext4_jbd2.h:328 [inline]
+       ext4_rename+0x963/0x2640 fs/ext4/namei.c:3788
+       ext4_rename2+0x1af/0x240 fs/ext4/namei.c:4109
+       vfs_rename+0xf1b/0x1960 fs/namei.c:4310
+       do_renameat2+0x732/0xb80 fs/namei.c:4457
+       __do_sys_rename fs/namei.c:4503 [inline]
+       __se_sys_rename fs/namei.c:4501 [inline]
+       __x64_sys_rename+0x5d/0x80 fs/namei.c:4501
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #0 (&sb->s_type->i_mutex_key#14/4){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:2868 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+       validate_chain kernel/locking/lockdep.c:3608 [inline]
+       __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+       lock_acquire kernel/locking/lockdep.c:5437 [inline]
+       lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+       down_write_nested+0x91/0x150 kernel/locking/rwsem.c:1627
+       inode_lock_nested include/linux/fs.h:809 [inline]
+       lock_two_nondirectories+0xd1/0x110 fs/inode.c:1036
+       vfs_rename+0x3cf/0x1960 fs/namei.c:4284
+       do_renameat2+0x732/0xb80 fs/namei.c:4457
+       __do_sys_rename fs/namei.c:4503 [inline]
+       __se_sys_rename fs/namei.c:4501 [inline]
+       __x64_sys_rename+0x5d/0x80 fs/namei.c:4501
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+other info that might help us debug this:
+
+Chain exists of:
+  &sb->s_type->i_mutex_key#14/4 --> &ei->xattr_sem --> &ea_inode->i_rwsem#14/1
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ea_inode->i_rwsem#14/1);
+                               lock(&ei->xattr_sem);
+                               lock(&ea_inode->i_rwsem#14/1);
+  lock(&sb->s_type->i_mutex_key#14/4);
+
+ *** DEADLOCK ***
+
+3 locks held by syz.2.512/9361:
+ #0: ffff8880089fe438 (sb_writers#3){.+.+}-{0:0}, at: do_renameat2+0x353/0xb80 fs/namei.c:4402
+ #1: ffff88801a8edd20 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+ #1: ffff88801a8edd20 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: lock_rename+0x225/0x280 fs/namei.c:2756
+ #2: ffff88801a8e8488 (&ea_inode->i_rwsem#14/1){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ #2: ffff88801a8e8488 (&ea_inode->i_rwsem#14/1){+.+.}-{3:3}, at: lock_two_nondirectories+0xec/0x110 fs/inode.c:1034
+
+stack backtrace:
+CPU: 0 PID: 9361 Comm: syz.2.512 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
+ check_prev_add kernel/locking/lockdep.c:2868 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+ validate_chain kernel/locking/lockdep.c:3608 [inline]
+ __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ down_write_nested+0x91/0x150 kernel/locking/rwsem.c:1627
+ inode_lock_nested include/linux/fs.h:809 [inline]
+ lock_two_nondirectories+0xd1/0x110 fs/inode.c:1036
+ vfs_rename+0x3cf/0x1960 fs/namei.c:4284
+ do_renameat2+0x732/0xb80 fs/namei.c:4457
+ __do_sys_rename fs/namei.c:4503 [inline]
+ __se_sys_rename fs/namei.c:4501 [inline]
+ __x64_sys_rename+0x5d/0x80 fs/namei.c:4501
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fe63982cef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe6384a6038 EFLAGS: 00000246 ORIG_RAX: 0000000000000052
+RAX: ffffffffffffffda RBX: 00007fe6399e4f80 RCX: 00007fe63982cef9
+RDX: 0000000000000000 RSI: 00000000200001c0 RDI: 0000000020000100
+RBP: 00007fe63989fb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fe6399e4f80 R15: 00007fff1c32f498
+hpet: Lost 7 RTC interrupts
+EXT4-fs (loop1): encrypted files will use data=ordered instead of data journaling mode
+[EXT4 FS bs=1024, gc=1, bpg=8192, ipg=32, mo=a00ec018, mo2=0002]
+System zones: 1-12
+EXT4-fs (loop1): ext4_orphan_cleanup: truncating inode 15 to 10 bytes
+EXT4-fs error (device loop1): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 191 vs 220 free clusters
+EXT4-fs (loop1): 1 truncate cleaned up
+EXT4-fs (loop1): mounted filesystem without journal. Opts: debug,resuid=0x000000000000ee01,debug_want_extra_isize=0x000000000000002e,lazytime,i_version,quota,,errors=continue

@@ -1,0 +1,60 @@
+EXT4-fs warning (device loop2): htree_dirblock_to_tree:1003: inode #2: lblock 0: comm syz-executor: error -117 reading directory block
+EXT4-fs warning (device loop2): ext4_da_release_space:1508: ext4_da_release_space: ino 18, to_free 1 with only 0 reserved data blocks
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 15096 at fs/ext4/inode.c:1512 ext4_da_release_space+0x4c5/0x5c0 fs/ext4/inode.c:1508
+Modules linked in:
+EXT4-fs (loop1): Ignoring removed orlov option
+CPU: 0 PID: 15096 Comm: syz.2.649 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_da_release_space+0x4c5/0x5c0 fs/ext4/inode.c:1512
+Code: 3c 11 00 0f 85 d4 00 00 00 48 8b 7d 28 41 57 41 89 d9 ba e4 05 00 00 48 c7 c1 20 a0 52 84 48 c7 c6 c0 b4 52 84 e8 7b 90 0e 00 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 0f b6 04
+RSP: 0018:ffff888019b67748 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff8880164cce00 RSI: ffffffff81b43718 RDI: ffffed100336ceb8
+RBP: ffff888015d53e48 R08: 0000000000000085 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888008a14000
+R13: ffff888015d54400 R14: ffff888015d54340 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f75c3abd008 CR3: 0000000019c12000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ ext4_es_remove_extent+0x20d/0x460 fs/ext4/extents_status.c:1462
+ ext4_clear_inode+0x4a/0x1e0 fs/ext4/super.c:1404
+ ext4_evict_inode+0x1cb/0x1890 fs/ext4/inode.c:332
+ evict+0x284/0x6d0 fs/inode.c:578
+ dispose_list fs/inode.c:613 [inline]
+ evict_inodes+0x3c1/0x5e0 fs/inode.c:663
+ generic_shutdown_super+0xa6/0x370 fs/super.c:454
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ ret_from_fork+0x15/0x30 arch/x86/entry/entry_64.S:289
+RIP: 0033:0x7f636b509ef9
+Code: Unable to access opcode bytes at RIP 0x7f636b509ecf.
+RSP: 002b:00007f636a182fe8 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+RAX: 0000000000000000 RBX: 00007f636b6c1f80 RCX: 00007f636b509ef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007f636b57cb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000001 R14: 00007f636b6c1f80 R15: 00007ffe37e61708
+irq event stamp: 1703
+hardirqs last  enabled at (1711): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (1720): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (1086): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (1051): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 11089fb380d9e6f1 ]---
+EXT4-fs error (device loop1): ext4_xattr_ibody_find:2175: inode #17: comm syz.1.664: corrupted in-inode xattr
+EXT4-fs error (device loop1): ext4_orphan_get:1388: comm syz.1.664: couldn't read orphan inode 17 (err -117)
+EXT4-fs (loop1): mounted filesystem without journal. Opts: orlov,quota,noinit_itable,noload,auto_da_alloc=0x0000000000000002,bsddf,jqfmt=vfsold,noload,grpid,grpquota,,errors=continue

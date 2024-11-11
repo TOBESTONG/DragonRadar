@@ -1,0 +1,385 @@
+netlink: 'syz.1.313': attribute type 4 has an invalid length.
+netlink: 'syz.1.313': attribute type 4 has an invalid length.
+cgroup: fork rejected by pids controller in /syz1
+cgroup: fork rejected by pids controller in /syz0
+INFO: task kworker/1:0:17 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/1:0     state:D stack:28136 pid:   17 ppid:     2 flags:0x00004000
+Workqueue: events kprobe_optimizer
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ schedule_timeout+0x387/0x460 kernel/time/timer.c:1847
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x163/0x260 kernel/sched/completion.c:138
+ __wait_rcu_gp+0x247/0x3f0 kernel/rcu/update.c:401
+ synchronize_rcu_tasks_generic.constprop.0+0xba/0x170 kernel/rcu/tasks.h:178
+ kprobe_optimizer+0x32e/0x820 kernel/kprobes.c:618
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+INFO: task rcu_tasks_kthre:22 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:rcu_tasks_kthre state:D stack:29640 pid:   22 ppid:     2 flags:0x00004000
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ schedule_timeout+0x387/0x460 kernel/time/timer.c:1847
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x163/0x260 kernel/sched/completion.c:138
+ __synchronize_srcu+0x135/0x210 kernel/rcu/srcutree.c:922
+ rcu_tasks_wait_gp+0x441/0xa40 kernel/rcu/tasks.h:327
+ rcu_tasks_kthread+0x2fa/0x670 kernel/rcu/tasks.h:224
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+INFO: task syz.1.116:4233 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.1.116       state:D stack:26144 pid: 4233 ppid:  2805 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4665
+ __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
+ __mutex_lock+0x3e2/0x10d0 kernel/locking/mutex.c:1103
+ unregister_kretprobes.part.0+0x23/0x1f0 kernel/kprobes.c:2184
+ unregister_kretprobes kernel/kprobes.c:2182 [inline]
+ unregister_kretprobe+0x69/0x90 kernel/kprobes.c:2174
+ __unregister_trace_kprobe+0x84/0x220 kernel/trace/trace_kprobe.c:523
+ destroy_local_trace_kprobe+0xc8/0x170 kernel/trace/trace_kprobe.c:1853
+ perf_try_init_event+0x461/0x580 kernel/events/core.c:10934
+ perf_init_event kernel/events/core.c:10971 [inline]
+ perf_event_alloc.part.0+0xdcb/0x2ca0 kernel/events/core.c:11249
+ perf_event_alloc kernel/events/core.c:12056 [inline]
+ __do_sys_perf_event_open+0xb09/0x2ca0 kernel/events/core.c:11744
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f9b38691ef9
+RSP: 002b:00007f9b372ea038 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
+RAX: ffffffffffffffda RBX: 00007f9b3884a058 RCX: 00007f9b38691ef9
+RDX: ffffffffffffffff RSI: 0000000000000000 RDI: 0000000020000000
+RBP: 00007f9b38704b76 R08: 0000000000000001 R09: 0000000000000000
+R10: ffffffffffffffff R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f9b3884a058 R15: 00007ffd2b4123c8
+INFO: task syz.3.138:4924 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.3.138       state:D stack:27512 pid: 4924 ppid:  3839 flags:0x00000004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4665
+ __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
+ __mutex_lock+0x3e2/0x10d0 kernel/locking/mutex.c:1103
+ arch_static_call_transform+0x1f/0x90 arch/x86/kernel/static_call.c:84
+ __static_call_update+0xcf/0x670 kernel/static_call.c:131
+ tracepoint_update_call kernel/tracepoint.c:244 [inline]
+ tracepoint_add_func+0x63a/0x9d0 kernel/tracepoint.c:277
+ tracepoint_probe_register_prio kernel/tracepoint.c:342 [inline]
+ tracepoint_probe_register+0x9c/0xe0 kernel/tracepoint.c:362
+ trace_event_reg+0x28f/0x350 kernel/trace/trace_events.c:305
+ perf_trace_event_reg kernel/trace/trace_event_perf.c:129 [inline]
+ perf_trace_event_init+0x5ba/0xb50 kernel/trace/trace_event_perf.c:204
+ perf_trace_init+0x176/0x240 kernel/trace/trace_event_perf.c:228
+ perf_tp_event_init+0xa2/0x120 kernel/events/core.c:9451
+ perf_try_init_event+0x130/0x580 kernel/events/core.c:10919
+ perf_init_event kernel/events/core.c:10971 [inline]
+ perf_event_alloc.part.0+0xdcb/0x2ca0 kernel/events/core.c:11249
+ perf_event_alloc kernel/events/core.c:12056 [inline]
+ __do_sys_perf_event_open+0xb09/0x2ca0 kernel/events/core.c:11744
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ff8fcf7aef9
+RSP: 002b:00007ff8fbbf4038 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
+RAX: ffffffffffffffda RBX: 00007ff8fd132f80 RCX: 00007ff8fcf7aef9
+RDX: 0000000000000000 RSI: ffffffffffffffff RDI: 00000000200002c0
+RBP: 00007ff8fcfedb76 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffffffffffff R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007ff8fd132f80 R15: 00007ffff9ea0c18
+INFO: task syz.0.148:5422 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.0.148       state:D stack:27376 pid: 5422 ppid:  4957 flags:0x00000004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4665
+ __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
+ __mutex_lock+0x3e2/0x10d0 kernel/locking/mutex.c:1103
+ perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+ perf_tp_event_init+0xa2/0x120 kernel/events/core.c:9451
+ perf_try_init_event+0x130/0x580 kernel/events/core.c:10919
+ perf_init_event kernel/events/core.c:10971 [inline]
+ perf_event_alloc.part.0+0xdcb/0x2ca0 kernel/events/core.c:11249
+ perf_event_alloc kernel/events/core.c:12056 [inline]
+ __do_sys_perf_event_open+0xb09/0x2ca0 kernel/events/core.c:11744
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f8240d00ef9
+RSP: 002b:00007f823f97a038 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
+RAX: ffffffffffffffda RBX: 00007f8240eb8f80 RCX: 00007f8240d00ef9
+RDX: ffffffffffffffff RSI: 0000000000000000 RDI: 0000000020000200
+RBP: 00007f8240d73b76 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffffffffffff R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f8240eb8f80 R15: 00007ffdc74eb908
+INFO: task syz.1.149:5975 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.1.149       state:D stack:29304 pid: 5975 ppid:  5430 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4665
+ __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
+ __mutex_lock+0x3e2/0x10d0 kernel/locking/mutex.c:1103
+ perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+ perf_tp_event_init+0xa2/0x120 kernel/events/core.c:9451
+ perf_try_init_event+0x130/0x580 kernel/events/core.c:10919
+ perf_init_event kernel/events/core.c:10971 [inline]
+ perf_event_alloc.part.0+0xdcb/0x2ca0 kernel/events/core.c:11249
+ perf_event_alloc kernel/events/core.c:12056 [inline]
+ __do_sys_perf_event_open+0xb09/0x2ca0 kernel/events/core.c:11744
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f9d95f0aef9
+RSP: 002b:00007f9d94b42038 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
+RAX: ffffffffffffffda RBX: 00007f9d960c3130 RCX: 00007f9d95f0aef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000000
+RBP: 00007f9d95f7db76 R08: 0000000000000009 R09: 0000000000000000
+R10: ffffffffffffffff R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000001 R14: 00007f9d960c3130 R15: 00007ffdc8783f08
+
+Showing all locks held in the system:
+2 locks held by kworker/0:1/12:
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: trace_sched_stat_runtime include/trace/events/sched.h:435 [inline]
+ #1: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: update_curr+0x27d/0x7e0 kernel/sched/fair.c:869
+5 locks held by kworker/1:0/17:
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff888008297da8 ((optimizing_work).work){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+ #2: ffffffff8516ff28 (kprobe_mutex){+.+.}-{3:3}, at: kprobe_optimizer+0x21/0x820 kernel/kprobes.c:599
+ #3: ffffffff84f6b2f0 (cpu_hotplug_lock){++++}-{0:0}, at: kprobe_optimizer+0x26/0x820 kernel/kprobes.c:600
+ #4: ffffffff84f95108 (text_mutex){+.+.}-{3:3}, at: kprobe_optimizer+0x34/0x820 kernel/kprobes.c:601
+1 lock held by khungtaskd/24:
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x28c kernel/locking/lockdep.c:6254
+5 locks held by kworker/u4:1/59:
+ #0: ffff888008322138 ((wq_completion)netns){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008322138 ((wq_completion)netns){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008322138 ((wq_completion)netns){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008322138 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008322138 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008322138 ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88800aa27da8 (net_cleanup_work){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+ #2: ffffffff85a883d0 (pernet_ops_rwsem){++++}-{3:3}, at: cleanup_net+0x9b/0x8e0 net/core/net_namespace.c:566
+ #3: ffffffff85aa76a8 (rtnl_mutex){+.+.}-{3:3}, at: sit_exit_batch_net+0x88/0x530 net/ipv6/sit.c:1938
+ #4: ffffffff850fde68 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:290 [inline]
+ #4: ffffffff850fde68 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0xa53/0xbb0 kernel/rcu/tree_exp.h:836
+2 locks held by kworker/0:2/68:
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88800c02fda8 ((work_completion)(&rew.rew_work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+2 locks held by kworker/1:2/69:
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88800ccb7da8 (free_ipc_work){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+1 lock held by in:imklog/154:
+ #0: ffff88800ac5b270 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+3 locks held by syz.1.116/4233:
+ #0: ffff8880110d60d8 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff8516ff28 (kprobe_mutex){+.+.}-{3:3}, at: unregister_kretprobes.part.0+0x23/0x1f0 kernel/kprobes.c:2184
+6 locks held by syz.3.138/4924:
+ #0: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #1: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+ #2: ffffffff8517a8c8 (tracepoints_mutex){+.+.}-{3:3}, at: tracepoint_probe_register_prio kernel/tracepoint.c:338 [inline]
+ #2: ffffffff8517a8c8 (tracepoints_mutex){+.+.}-{3:3}, at: tracepoint_probe_register+0x78/0xe0 kernel/tracepoint.c:362
+ #3: ffffffff84f6b2f0 (cpu_hotplug_lock){++++}-{0:0}, at: __static_call_update+0x87/0x670 kernel/static_call.c:123
+ #4: ffffffff851b7408 (static_call_mutex){+.+.}-{3:3}, at: static_call_lock kernel/static_call.c:23 [inline]
+ #4: ffffffff851b7408 (static_call_mutex){+.+.}-{3:3}, at: __static_call_update+0x95/0x670 kernel/static_call.c:124
+ #5: ffffffff84f95108 (text_mutex){+.+.}-{3:3}, at: arch_static_call_transform+0x1f/0x90 arch/x86/kernel/static_call.c:84
+3 locks held by syz.0.148/5422:
+ #0: ffff888017256758 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.1.149/5975:
+ #0: ffff8880192d7458 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.2.150/6678:
+ #0: ffff8880117c05d8 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.3.151/6822:
+ #0: ffff888023973358 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.0.154/7285:
+ #0: ffff8880239b5a58 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.1.163/8060:
+ #0: ffff88800b2ee0d8 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.2.155/8495:
+ #0: ffff888019417458 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.3.169/8796:
+ #0: ffff88800c45da58 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.0.164/9184:
+ #0: ffff88800cff46d8 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.1.172/9909:
+ #0: ffff8880110d7458 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+5 locks held by syz.2.179/10450:
+ #0: ffff8880114da460 (sk_lock-AF_INET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1581 [inline]
+ #0: ffff8880114da460 (sk_lock-AF_INET){+.+.}-{0:0}, at: do_tcp_setsockopt net/ipv4/tcp.c:3106 [inline]
+ #0: ffff8880114da460 (sk_lock-AF_INET){+.+.}-{0:0}, at: tcp_setsockopt+0x2d5/0x25b0 net/ipv4/tcp.c:3340
+ #1: ffffffff85b29528 (tcp_md5sig_mutex){+.+.}-{3:3}, at: tcp_alloc_md5sig_pool+0x74/0x7e0 net/ipv4/tcp.c:3936
+ #2: ffffffff84f6b2f0 (cpu_hotplug_lock){++++}-{0:0}, at: static_key_slow_inc+0xe/0x20 kernel/jump_label.c:158
+ #3: ffffffff851c7388 (jump_label_mutex){+.+.}-{3:3}, at: jump_label_lock kernel/jump_label.c:27 [inline]
+ #3: ffffffff851c7388 (jump_label_mutex){+.+.}-{3:3}, at: static_key_slow_inc_cpuslocked+0x138/0x270 kernel/jump_label.c:141
+ #4: ffffffff84f95108 (text_mutex){+.+.}-{3:3}, at: arch_jump_label_transform_queue+0x53/0xf0 arch/x86/kernel/jump_label.c:115
+3 locks held by syz.3.180/10732:
+ #0: ffff88801616cd58 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.0.193/11125:
+ #0: ffff8880206ccaa0 (sk_lock-AF_INET6){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1581 [inline]
+ #0: ffff8880206ccaa0 (sk_lock-AF_INET6){+.+.}-{0:0}, at: do_ipv6_setsockopt.constprop.0+0x2c3/0x43c0 net/ipv6/ipv6_sockglue.c:418
+ #1: ffffffff84f6b2f0 (cpu_hotplug_lock){++++}-{0:0}, at: static_key_slow_inc+0xe/0x20 kernel/jump_label.c:158
+ #2: ffffffff851c7388 (jump_label_mutex){+.+.}-{3:3}, at: jump_label_lock kernel/jump_label.c:27 [inline]
+ #2: ffffffff851c7388 (jump_label_mutex){+.+.}-{3:3}, at: static_key_slow_inc_cpuslocked+0x138/0x270 kernel/jump_label.c:141
+3 locks held by syz.1.198/11719:
+ #0: ffff8880110d3358 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.3.204/12518:
+ #0: ffff88800de2edd8 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.2.207/12531:
+ #0: ffff88800b2ea658 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.0.208/13002:
+ #0: ffff88800c4592d8 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+2 locks held by syz.0.208/13003:
+ #0: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #1: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_uprobe_init+0x164/0x210 kernel/trace/trace_event_perf.c:335
+3 locks held by syz.1.226/13778:
+ #0: ffff888023975a58 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.2.241/14595:
+ #0: ffff88800fabe0d8 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.3.242/14599:
+ #0: ffff8880112db358 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.0.255/15378:
+ #0: ffff888016f785d8 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.1.260/15549:
+ #0: ffff888023974d58 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.3.257/16376:
+ #0: ffff88800b2eedd8 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.2.264/16399:
+ #0: ffff88800b2e9958 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+2 locks held by syz.0.265/17210:
+ #0: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #1: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.1.266/17335:
+ #0: ffff88800830b9d8 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.2.282/18286:
+ #0: ffff88800de292d8 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.3.291/18314:
+ #0: ffff888038354d58 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.1.297/19247:
+ #0: ffff888008e112d8 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.0.301/19261:
+ #0: ffff888008e12cd8 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.2.308/20214:
+ #0: ffff888015f1fad8 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.3.310/20763:
+ #0: ffff88800b954db0 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_ioctl+0xd2/0x290 kernel/trace/blktrace.c:733
+ #1: ffffffff8518ff08 (blk_probe_mutex){+.+.}-{3:3}, at: get_probe_ref kernel/trace/blktrace.c:325 [inline]
+ #1: ffffffff8518ff08 (blk_probe_mutex){+.+.}-{3:3}, at: do_blk_trace_setup+0x7ad/0xc10 kernel/trace/blktrace.c:578
+ #2: ffffffff8517a8c8 (tracepoints_mutex){+.+.}-{3:3}, at: tracepoint_probe_register_prio kernel/tracepoint.c:338 [inline]
+ #2: ffffffff8517a8c8 (tracepoints_mutex){+.+.}-{3:3}, at: tracepoint_probe_register+0x78/0xe0 kernel/tracepoint.c:362
+3 locks held by syz.0.311/21675:
+ #0: ffff8880161692d8 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff8516ff28 (kprobe_mutex){+.+.}-{3:3}, at: check_kprobe_rereg kernel/kprobes.c:1605 [inline]
+ #2: ffffffff8516ff28 (kprobe_mutex){+.+.}-{3:3}, at: register_kprobe+0x77/0x1300 kernel/kprobes.c:1695
+3 locks held by syz.1.313/21678:
+ #0: ffff888038353358 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+3 locks held by syz.2.314/22178:
+ #0: ffff888017714058 (&sig->exec_update_mutex){+.+.}-{3:3}, at: __do_sys_perf_event_open+0x9fc/0x2ca0 kernel/events/core.c:11724
+ #1: ffffffff871f9fa0 (&pmus_srcu){....}-{0:0}, at: perf_event_alloc.part.0+0xc00/0x2ca0 kernel/events/core.c:11247
+ #2: ffffffff85193da8 (event_mutex){+.+.}-{3:3}, at: perf_trace_init+0x49/0x240 kernel/trace/trace_event_perf.c:223
+
+=============================================
+

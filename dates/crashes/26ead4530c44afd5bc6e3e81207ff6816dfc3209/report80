@@ -1,0 +1,119 @@
+kernel write not supported for file [eventfd] (pid: 47 comm: kworker/1:1)
+EXT4-fs (loop0): 1 truncate cleaned up
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+modprobe/3621 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff888019d890a8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff888019d890a8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 2594
+hardirqs last  enabled at (2594): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (2594): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (2593): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (2593): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (1078): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (2523): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+2 locks held by modprobe/3621:
+ #0: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #1: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 1 PID: 3621 Comm: modprobe Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:get_unused_fd_flags+0x2/0xc0 fs/file.c:564
+Code: e9 3e fe ff ff 4c 89 ef e8 6b 0a f4 ff e9 58 fe ff ff 4c 89 ff e8 5e 0a f4 ff e9 7c fd ff ff 66 0f 1f 84 00 00 00 00 00 41 54 <41> 89 fc 53 65 48 8b 1c 25 40 ef 01 00 48 83 ec 08 e8 e8 d9 c6 ff
+RSP: 0018:ffff888018c27db0 EFLAGS: 00000246
+RAX: 1ffff11003184fd6 RBX: 1ffff11003184fbb RCX: ffffffff8176cb87
+RDX: ffff88800b39b400 RSI: ffffffff8176cb99 RDI: 0000000000088000
+RBP: 0000000000000000 R08: 0000000000000fe0 R09: ffffea0000464607
+R10: fffffffffffff000 R11: 0000000000000001 R12: ffff88801191d500
+R13: ffff888018c27eb0 R14: 00000000ffffff9c R15: dffffc0000000000
+ do_sys_openat2+0x134/0x420 fs/open.c:1166
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fa9c76731c7
+Code: 25 00 00 41 00 3d 00 00 41 00 74 47 64 8b 04 25 18 00 00 00 85 c0 75 6b 44 89 e2 48 89 ee bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 95 00 00 00 48 8b 4c 24 28 64 48 2b 0c 25
+RSP: 002b:00007ffc28322960 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 000055dca7d92550 RCX: 00007fa9c76731c7
+RDX: 0000000000080000 RSI: 00007ffc28322b00 RDI: 00000000ffffff9c
+RBP: 00007ffc28322b00 R08: 0000000000000008 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000080000
+R13: 000055dca7d92550 R14: 0000000000000001 R15: 0000000000000000
+----------------
+Code disassembly (best guess):
+   0:	e9 3e fe ff ff       	jmp    0xfffffe43
+   5:	4c 89 ef             	mov    %r13,%rdi
+   8:	e8 6b 0a f4 ff       	call   0xfff40a78
+   d:	e9 58 fe ff ff       	jmp    0xfffffe6a
+  12:	4c 89 ff             	mov    %r15,%rdi
+  15:	e8 5e 0a f4 ff       	call   0xfff40a78
+  1a:	e9 7c fd ff ff       	jmp    0xfffffd9b
+  1f:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
+  26:	00 00
+  28:	41 54                	push   %r12
+* 2a:	41 89 fc             	mov    %edi,%r12d <-- trapping instruction
+  2d:	53                   	push   %rbx
+  2e:	65 48 8b 1c 25 40 ef 	mov    %gs:0x1ef40,%rbx
+  35:	01 00
+  37:	48 83 ec 08          	sub    $0x8,%rsp
+  3b:	e8 e8 d9 c6 ff       	call   0xffc6da28

@@ -1,0 +1,129 @@
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs error (device loop3): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 55 vs 150994969 free clusters
+======================================================
+WARNING: possible circular locking dependency detected
+5.10.0 #1 Not tainted
+------------------------------------------------------
+syz.3.118/4819 is trying to acquire lock:
+ffff8880088f6628 (sb_internal){.+.+}-{0:0}, at: evict+0x284/0x6d0 fs/inode.c:578
+
+but task is already holding lock:
+ffff888013bc9e50 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ffff888013bc9e50 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x15e/0x12b0 fs/ext4/xattr.c:2306
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&ei->xattr_sem){++++}-{3:3}:
+       down_write+0x8d/0x150 kernel/locking/rwsem.c:1531
+       ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+       ext4_inline_data_truncate+0x19b/0xb20 fs/ext4/inline.c:1881
+       ext4_truncate+0xa4a/0x1390 fs/ext4/inode.c:4211
+       ext4_evict_inode+0xb59/0x1890 fs/ext4/inode.c:280
+       evict+0x284/0x6d0 fs/inode.c:578
+       iput_final fs/inode.c:1654 [inline]
+       iput+0x4e5/0x840 fs/inode.c:1680
+       do_unlinkat+0x3ee/0x650 fs/namei.c:3903
+       __do_sys_unlinkat fs/namei.c:3938 [inline]
+       __se_sys_unlinkat fs/namei.c:3931 [inline]
+       __x64_sys_unlinkat+0xbd/0x130 fs/namei.c:3931
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #0 (sb_internal){.+.+}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:2868 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+       validate_chain kernel/locking/lockdep.c:3608 [inline]
+       __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+       lock_acquire kernel/locking/lockdep.c:5437 [inline]
+       lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1594 [inline]
+       sb_start_intwrite include/linux/fs.h:1711 [inline]
+       ext4_evict_inode+0x5a1/0x1890 fs/ext4/inode.c:237
+       evict+0x284/0x6d0 fs/inode.c:578
+       iput_final fs/inode.c:1654 [inline]
+       iput+0x4e5/0x840 fs/inode.c:1680
+       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1525 [inline]
+       ext4_xattr_set_entry+0x2d7a/0x37c0 fs/ext4/xattr.c:1646
+       ext4_xattr_ibody_inline_set+0x78/0x2b0 fs/ext4/xattr.c:2198
+       ext4_xattr_set_handle+0x939/0x12b0 fs/ext4/xattr.c:2378
+       ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2491
+       __vfs_setxattr+0x10f/0x170 fs/xattr.c:177
+       __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+       __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+       vfs_setxattr+0xe8/0x270 fs/xattr.c:283
+       setxattr+0x23d/0x330 fs/xattr.c:548
+       path_setxattr+0x170/0x190 fs/xattr.c:567
+       __do_sys_setxattr fs/xattr.c:582 [inline]
+       __se_sys_setxattr fs/xattr.c:578 [inline]
+       __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:578
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ei->xattr_sem);
+                               lock(sb_internal);
+                               lock(&ei->xattr_sem);
+  lock(sb_internal);
+
+ *** DEADLOCK ***
+
+3 locks held by syz.3.118/4819:
+ #0: ffff8880088f6438 (sb_writers#3){.+.+}-{0:0}, at: path_setxattr+0xb5/0x190 fs/xattr.c:565
+ #1: ffff888013bca210 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ #1: ffff888013bca210 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: vfs_setxattr+0xca/0x270 fs/xattr.c:282
+ #2: ffff888013bc9e50 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ #2: ffff888013bc9e50 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x15e/0x12b0 fs/ext4/xattr.c:2306
+
+stack backtrace:
+CPU: 1 PID: 4819 Comm: syz.3.118 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
+ check_prev_add kernel/locking/lockdep.c:2868 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+ validate_chain kernel/locking/lockdep.c:3608 [inline]
+ __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+ __sb_start_write include/linux/fs.h:1594 [inline]
+ sb_start_intwrite include/linux/fs.h:1711 [inline]
+ ext4_evict_inode+0x5a1/0x1890 fs/ext4/inode.c:237
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1525 [inline]
+ ext4_xattr_set_entry+0x2d7a/0x37c0 fs/ext4/xattr.c:1646
+ ext4_xattr_ibody_inline_set+0x78/0x2b0 fs/ext4/xattr.c:2198
+ ext4_xattr_set_handle+0x939/0x12b0 fs/ext4/xattr.c:2378
+ ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2491
+ __vfs_setxattr+0x10f/0x170 fs/xattr.c:177
+ __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+ __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+ vfs_setxattr+0xe8/0x270 fs/xattr.c:283
+ setxattr+0x23d/0x330 fs/xattr.c:548
+ path_setxattr+0x170/0x190 fs/xattr.c:567
+ __do_sys_setxattr fs/xattr.c:582 [inline]
+ __se_sys_setxattr fs/xattr.c:578 [inline]
+ __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:578
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f93cd5e9ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f93cc263038 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
+RAX: ffffffffffffffda RBX: 00007f93cd7a1f80 RCX: 00007f93cd5e9ef9
+RDX: 0000000020000240 RSI: 0000000020000200 RDI: 0000000020000080
+RBP: 00007f93cd65cb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000000007c8 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f93cd7a1f80 R15: 00007ffe30541758

@@ -1,0 +1,136 @@
+EXT4-fs error (device loop2): ext4_map_blocks:584: inode #3: block 9: comm syz.2.181: lblock 0 mapped to illegal pblock 9 (length 1)
+EXT4-fs (loop2): Remounting filesystem read-only
+__quota_error: 4 callbacks suppressed
+Quota error (device loop2): qtree_write_dquot: dquota write failed
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4.h:3196!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 4328 Comm: syz.2.181 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff888017daee00 EFLAGS: 00010216
+RAX: 0000000000006b37 RBX: 0000000000000001 RCX: ffffc900015af000
+RDX: 0000000000040000 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff88800f82e000 R08: 0000000000000000 R09: ffff888013f46c9f
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800f82c000
+R13: ffff88800f82c650 R14: 0000000000000001 R15: 0000000000000001
+FS:  00007fc730a136c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f442b49d4d0 CR3: 000000000bce0000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_mb_find_by_goal+0xf4/0x1030 fs/ext4/mballoc.c:1884
+ ext4_mb_regular_allocator+0x235/0x1ee0 fs/ext4/mballoc.c:2320
+ ext4_mb_new_blocks+0x2322/0x4b60 fs/ext4/mballoc.c:4997
+EXT4-fs error (device loop2): ext4_map_blocks:584: inode #2: block 3: comm syz.2.181: lblock 0 mapped to illegal pblock 3 (length 1)
+ ext4_ext_map_blocks+0x1f8e/0x5d50 fs/ext4/extents.c:4238
+ ext4_map_blocks+0x700/0x1740 fs/ext4/inode.c:628
+ _ext4_get_block+0x241/0x590 fs/ext4/inode.c:784
+ __block_write_begin_int+0x3f2/0x1b40 fs/buffer.c:2011
+ ext4_write_begin+0x649/0x1170 fs/ext4/inode.c:1200
+ ext4_da_write_begin+0x61e/0xe60 fs/ext4/inode.c:2952
+ generic_perform_write+0x1fe/0x4d0 mm/filemap.c:3329
+ ext4_buffered_write_iter+0x244/0x4d0 fs/ext4/file.c:270
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ call_write_iter include/linux/fs.h:1903 [inline]
+ new_sync_write+0x42c/0x670 fs/read_write.c:518
+ vfs_write+0x81b/0xac0 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fc731dbaef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fc730a13038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fc731f73058 RCX: 00007fc731dbaef9
+RDX: 0000000000000025 RSI: 0000000020000440 RDI: 0000000000000004
+RBP: 00007fc731e2db76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fc731f73058 R15: 00007fffa89e03a8
+Modules linked in:
+---[ end trace 489d07e840fb58b3 ]---
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff888017daee00 EFLAGS: 00010216
+RAX: 0000000000006b37 RBX: 0000000000000001 RCX: ffffc900015af000
+RDX: 0000000000040000 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff88800f82e000 R08: 0000000000000000 R09: ffff888013f46c9f
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800f82c000
+R13: ffff88800f82c650 R14: 0000000000000001 R15: 0000000000000001
+FS:  00007fc730a136c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f9f71b90000 CR3: 000000000bce0000 CR4: 0000000000350ee0
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#2] PREEMPT SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 1 PID: 4328 Comm: syz.2.181 Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:jbd2__journal_start+0x84/0x960 fs/jbd2/transaction.c:479
+Code: c6 07 00 00 4d 8b bf d8 10 00 00 4d 85 ff 0f 84 97 00 00 00 e8 7d 1f 8e ff 4c 89 fa 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 ad 07 00 00 48 b8 00 00 00 00 00 fc ff df 49 8b
+RSP: 0018:ffff888017dafab8 EFLAGS: 00010256
+RAX: dffffc0000000000 RBX: ffff88800cfa0000 RCX: 0000000000000008
+RDX: 0000000000000000 RSI: ffffffff81b7ef43 RDI: ffff888019c944d8
+RBP: 0000000000000000 R08: 0000000000000c40 R09: 0000000000000005
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000008
+R13: 000000000000001d R14: 0000000000000c40 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6f866cb6f8 CR3: 000000000b816000 CR4: 0000000000350ee0
+Call Trace:
+ __ext4_journal_start_sb+0x210/0x490 fs/ext4/ext4_jbd2.c:105
+ __ext4_journal_start fs/ext4/ext4_jbd2.h:328 [inline]
+ ext4_evict_inode+0x96c/0x1890 fs/ext4/inode.c:246
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ dentry_unlink_inode+0x2b4/0x3e0 fs/dcache.c:374
+ __dentry_kill+0x36f/0x5b0 fs/dcache.c:579
+ dentry_kill fs/dcache.c:717 [inline]
+ dput+0x6ad/0xc70 fs/dcache.c:878
+ __fput+0x3a5/0x980 fs/file_table.c:294
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fc731dbaef9
+Code: Unable to access opcode bytes at RIP 0x7fc731dbaecf.
+RSP: 002b:00007fc730a13038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fc731f73058 RCX: 00007fc731dbaef9
+RDX: 0000000000000025 RSI: 0000000020000440 RDI: 0000000000000004
+RBP: 00007fc731e2db76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fc731f73058 R15: 00007fffa89e03a8
+Modules linked in:
+---[ end trace 489d07e840fb58b4 ]---
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff888017daee00 EFLAGS: 00010216
+RAX: 0000000000006b37 RBX: 0000000000000001 RCX: ffffc900015af000
+RDX: 0000000000040000 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff88800f82e000 R08: 0000000000000000 R09: ffff888013f46c9f
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800f82c000
+R13: ffff88800f82c650 R14: 0000000000000001 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055a7367f03a8 CR3: 000000000c6fe000 CR4: 0000000000350ef0
+Fixing recursive fault but reboot is needed!
+EXT4-fs warning (device loop2): kmmpd:182: kmmpd being stopped since MMP feature has been disabled.
+----------------
+Code disassembly (best guess):
+   0:	c6 07 00             	movb   $0x0,(%rdi)
+   3:	00 4d 8b             	add    %cl,-0x75(%rbp)
+   6:	bf d8 10 00 00       	mov    $0x10d8,%edi
+   b:	4d 85 ff             	test   %r15,%r15
+   e:	0f 84 97 00 00 00    	je     0xab
+  14:	e8 7d 1f 8e ff       	call   0xff8e1f96
+  19:	4c 89 fa             	mov    %r15,%rdx
+  1c:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  23:	fc ff df
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 ad 07 00 00    	jne    0x7e1
+  34:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  3b:	fc ff df
+  3e:	49                   	rex.WB
+  3f:	8b                   	.byte 0x8b

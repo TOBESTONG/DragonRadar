@@ -1,0 +1,125 @@
+audit: type=1400 audit(1731336606.928:34): avc:  denied  { read } for  pid=6012 comm="syz.2.259" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=perf_event permissive=1
+EXT4-fs (loop2): invalid inodes per group: 204800
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+kworker/u4:3/65 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff888011376ca8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff888011376ca8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 413220
+hardirqs last  enabled at (413220): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (413220): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (413219): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (413219): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (413024): [<ffffffff81099056>] memcpy include/linux/string.h:399 [inline]
+softirqs last  enabled at (413024): [<ffffffff81099056>] fpu__copy+0x176/0x640 arch/x86/kernel/fpu/core.c:240
+softirqs last disabled at (413091): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+4 locks held by kworker/u4:3/65:
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88800be8fda8 ((work_completion)(&sub_info->work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+ #2: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #3: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 1 PID: 65 Comm: kworker/u4:3 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: events_unbound call_usermodehelper_exec_work
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:arch_dup_task_struct+0x7/0x70 arch/x86/kernel/process.c:90
+Code: c6 bf 40 01 00 00 e8 b8 2c 02 01 eb af e8 98 1d f7 ff 5b c3 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 c7 c0 e0 6b d6 85 <41> 54 49 89 f4 48 ba 00 00 00 00 00 fc ff df 48 89 c1 55 83 e0 07
+RSP: 0018:ffff88800be8f948 EFLAGS: 00000293
+RAX: ffffffff85d66be0 RBX: ffff88800bc4b400 RCX: ffffffff8115e401
+RDX: ffff88800bc4b400 RSI: ffff88800bc4b400 RDI: ffff888020e18000
+RBP: ffff88800be8fad8 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888018a00000
+R13: ffff888020e18018 R14: 0000000000800100 R15: ffff888020e18000
+ dup_task_struct kernel/fork.c:873 [inline]
+ copy_process+0x6da/0x69f0 kernel/fork.c:1938
+ kernel_clone+0xe7/0xa80 kernel/fork.c:2456
+ kernel_thread+0xb5/0xf0 kernel/fork.c:2508
+ call_usermodehelper_exec_sync kernel/umh.c:133 [inline]
+ call_usermodehelper_exec_work+0x69/0x180 kernel/umh.c:164
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+EXT4-fs warning (device loop2): ext4_multi_mount_protect:385: Unable to create kmmpd thread for loop2.
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0:	bf 40 01 00 00       	mov    $0x140,%edi
+   5:	e8 b8 2c 02 01       	call   0x1022cc2
+   a:	eb af                	jmp    0xffffffbb
+   c:	e8 98 1d f7 ff       	call   0xfff71da9
+  11:	5b                   	pop    %rbx
+  12:	c3                   	ret
+  13:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
+  1a:	00 00 00 00
+  1e:	0f 1f 40 00          	nopl   0x0(%rax)
+  22:	48 c7 c0 e0 6b d6 85 	mov    $0xffffffff85d66be0,%rax
+* 29:	41 54                	push   %r12 <-- trapping instruction
+  2b:	49 89 f4             	mov    %rsi,%r12
+  2e:	48 ba 00 00 00 00 00 	movabs $0xdffffc0000000000,%rdx
+  35:	fc ff df
+  38:	48 89 c1             	mov    %rax,%rcx
+  3b:	55                   	push   %rbp
+  3c:	83 e0 07             	and    $0x7,%eax

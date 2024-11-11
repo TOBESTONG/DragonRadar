@@ -1,0 +1,208 @@
+Out of memory: Killed process 6476 (syz.2.186) total-vm:87248kB, anon-rss:0kB, file-rss:14372kB, shmem-rss:0kB, UID:0 pgtables:112kB oom_score_adj:1000
+oom_reaper: reaped process 6476 (syz.2.186), now anon-rss:0kB, file-rss:14336kB, shmem-rss:0kB
+INFO: task syz.2.78:3538 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.2.78        state:D stack:24384 pid: 3538 ppid:  2297 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ bit_wait_io+0x12/0xa0 kernel/sched/wait_bit.c:209
+ __wait_on_bit_lock+0x131/0x1c0 kernel/sched/wait_bit.c:90
+ out_of_line_wait_on_bit_lock+0xd5/0x110 kernel/sched/wait_bit.c:117
+ wait_on_bit_lock_io include/linux/wait_bit.h:208 [inline]
+ __lock_buffer fs/buffer.c:69 [inline]
+ lock_buffer include/linux/buffer_head.h:366 [inline]
+ __sync_dirty_buffer+0x34f/0x3e0 fs/buffer.c:3142
+ __ext4_handle_dirty_metadata+0x28b/0x9b0 fs/ext4/ext4_jbd2.c:364
+ ext4_finish_convert_inline_dir fs/ext4/inline.c:1164 [inline]
+ ext4_convert_inline_data_nolock+0x9b5/0xd60 fs/ext4/inline.c:1240
+ ext4_try_add_inline_entry+0x38f/0x650 fs/ext4/inline.c:1313
+ ext4_add_entry+0x34e/0xc60 fs/ext4/namei.c:2209
+ ext4_mkdir+0x41c/0xb10 fs/ext4/namei.c:2814
+ vfs_mkdir+0x45c/0x710 fs/namei.c:3650
+ do_mkdirat+0x145/0x2a0 fs/namei.c:3673
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f3f9f074ef9
+RSP: 002b:00007f3f9dcee038 EFLAGS: 00000246 ORIG_RAX: 0000000000000102
+RAX: ffffffffffffffda RBX: 00007f3f9f22cf80 RCX: 00007f3f9f074ef9
+RDX: 0000000000000000 RSI: 0000000020000540 RDI: 0000000000000007
+RBP: 00007f3f9f0e7b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f3f9f22cf80 R15: 00007ffd231ed768
+
+Showing all locks held in the system:
+3 locks held by systemd/1:
+ #0: ffff88800f920c68 (&ep->mtx){+.+.}-{3:3}, at: ep_scan_ready_list+0x653/0x7c0 fs/eventpoll.c:694
+ #1: ffff888009000ea8 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ #1: ffff888009000ea8 (&mm->mmap_lock#2){++++}-{3:3}, at: do_user_addr_fault+0x339/0xc40 arch/x86/mm/fault.c:1313
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4310 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4306 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __perform_reclaim mm/page_alloc.c:4334 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_direct_reclaim mm/page_alloc.c:4351 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0x1339/0x23a0 mm/page_alloc.c:4755
+3 locks held by kworker/u4:0/7:
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88800821fda8 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+ #2: ffff8880081360e0 (&type->s_umount_key#30){.+.+}-{3:3}, at: trylock_super+0x1d/0x100 fs/super.c:418
+1 lock held by khungtaskd/23:
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x28c kernel/locking/lockdep.c:6254
+2 locks held by kworker/1:1/47:
+ #0: ffff888008056138 ((wq_completion)events_freezable_power_){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008056138 ((wq_completion)events_freezable_power_){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008056138 ((wq_completion)events_freezable_power_){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008056138 ((wq_completion)events_freezable_power_){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008056138 ((wq_completion)events_freezable_power_){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008056138 ((wq_completion)events_freezable_power_){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff888008db7da8 ((work_completion)(&(&ev->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+3 locks held by kworker/u4:2/64:
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88800bc97da8 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+ #2: ffff8880081360e0 (&type->s_umount_key#30){.+.+}-{3:3}, at: trylock_super+0x1d/0x100 fs/super.c:418
+2 locks held by systemd-journal/101:
+ #0: ffff8880108d6f58 (&ei->i_mmap_sem){++++}-{3:3}, at: ext4_filemap_fault+0x7f/0xc0 fs/ext4/inode.c:6191
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4310 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4306 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __perform_reclaim mm/page_alloc.c:4334 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_direct_reclaim mm/page_alloc.c:4351 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0x1339/0x23a0 mm/page_alloc.c:4755
+3 locks held by systemd-udevd/116:
+ #0: ffff888009eb8150 (&type->i_mutex_dir_key#4){++++}-{3:3}, at: inode_lock_shared include/linux/fs.h:784 [inline]
+ #0: ffff888009eb8150 (&type->i_mutex_dir_key#4){++++}-{3:3}, at: lookup_slow fs/namei.c:1560 [inline]
+ #0: ffff888009eb8150 (&type->i_mutex_dir_key#4){++++}-{3:3}, at: walk_component+0x40b/0x6a0 fs/namei.c:1861
+ #1: ffffffff852e21c8 (kernfs_mutex){+.+.}-{3:3}, at: kernfs_iop_lookup+0x4a/0x220 fs/kernfs/dir.c:1087
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4310 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4306 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __perform_reclaim mm/page_alloc.c:4334 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_direct_reclaim mm/page_alloc.c:4351 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0x1339/0x23a0 mm/page_alloc.c:4755
+2 locks held by cron/140:
+ #0: ffff888009e1e580 (&ei->i_mmap_sem){++++}-{3:3}, at: ext4_filemap_fault+0x7f/0xc0 fs/ext4/inode.c:6191
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4310 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4306 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __perform_reclaim mm/page_alloc.c:4334 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_direct_reclaim mm/page_alloc.c:4351 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0x1339/0x23a0 mm/page_alloc.c:4755
+2 locks held by in:imklog/155:
+ #0: ffff888009ea3e20 (&ei->i_mmap_sem){++++}-{3:3}, at: ext4_filemap_fault+0x7f/0xc0 fs/ext4/inode.c:6191
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4310 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4306 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __perform_reclaim mm/page_alloc.c:4334 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_direct_reclaim mm/page_alloc.c:4351 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0x1339/0x23a0 mm/page_alloc.c:4755
+2 locks held by sshd/216:
+ #0: ffff888013e37930 (&ei->i_mmap_sem){++++}-{3:3}, at: ext4_filemap_fault+0x7f/0xc0 fs/ext4/inode.c:6191
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4310 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4306 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __perform_reclaim mm/page_alloc.c:4334 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_direct_reclaim mm/page_alloc.c:4351 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0x1339/0x23a0 mm/page_alloc.c:4755
+3 locks held by syz.2.78/3538:
+ #0: ffff88800923a438 (sb_writers#3){.+.+}-{0:0}, at: filename_create+0x104/0x490 fs/namei.c:3462
+ #1: ffff888013ffc970 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+ #1: ffff888013ffc970 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: filename_create+0x15a/0x490 fs/namei.c:3467
+ #2: ffff888013ffc5b0 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ #2: ffff888013ffc5b0 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_add_inline_entry+0x108/0x650 fs/ext4/inline.c:1271
+1 lock held by syz.0.182/6453:
+ #0: ffff88800923a0e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.0.182/6454:
+ #0: ffff88800923a0e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.2.186/6476:
+ #0: ffff88800923a0e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+3 locks held by syz-executor/7213:
+ #0: ffff888015d8ac60 (&tsk->futex_exit_mutex){+.+.}-{3:3}, at: futex_cleanup_begin kernel/futex.c:3677 [inline]
+ #0: ffff888015d8ac60 (&tsk->futex_exit_mutex){+.+.}-{3:3}, at: futex_exit_release+0x2d/0x220 kernel/futex.c:3729
+ #1: ffff888017d29568 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ #1: ffff888017d29568 (&mm->mmap_lock#2){++++}-{3:3}, at: do_user_addr_fault+0x339/0xc40 arch/x86/mm/fault.c:1313
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4310 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4306 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __perform_reclaim mm/page_alloc.c:4334 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_direct_reclaim mm/page_alloc.c:4351 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0x1339/0x23a0 mm/page_alloc.c:4755
+1 lock held by systemd-udevd/8071:
+ #0: ffffffff852e21c8 (kernfs_mutex){+.+.}-{3:3}, at: kernfs_iop_getattr+0x85/0xd0 fs/kernfs/inode.c:192
+3 locks held by syz.3.310/9294:
+ #0: ffff888010fb8438 (sb_writers#3){.+.+}-{0:0}, at: filename_create+0x104/0x490 fs/namei.c:3462
+ #1: ffff88801a500488 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+ #1: ffff88801a500488 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: filename_create+0x15a/0x490 fs/namei.c:3467
+ #2: ffff88801a5000c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ #2: ffff88801a5000c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_add_inline_entry+0x108/0x650 fs/ext4/inline.c:1271
+3 locks held by syz-executor/10017:
+ #0: ffff88800c83c660 (&tsk->futex_exit_mutex){+.+.}-{3:3}, at: futex_cleanup_begin kernel/futex.c:3677 [inline]
+ #0: ffff88800c83c660 (&tsk->futex_exit_mutex){+.+.}-{3:3}, at: futex_exit_release+0x2d/0x220 kernel/futex.c:3729
+ #1: ffff8880089eed28 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ #1: ffff8880089eed28 (&mm->mmap_lock#2){++++}-{3:3}, at: do_user_addr_fault+0x339/0xc40 arch/x86/mm/fault.c:1313
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4310 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4306 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __perform_reclaim mm/page_alloc.c:4334 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_direct_reclaim mm/page_alloc.c:4351 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0x1339/0x23a0 mm/page_alloc.c:4755
+3 locks held by kworker/0:3/10462:
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88801787fda8 (kernfs_notify_work){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+ #2: ffffffff852e21c8 (kernfs_mutex){+.+.}-{3:3}, at: kernfs_notify_workfn+0xdf/0x4d0 fs/kernfs/file.c:882
+3 locks held by syz-executor/10557:
+ #0: ffff8880104ae060 (&tsk->futex_exit_mutex){+.+.}-{3:3}, at: futex_cleanup_begin kernel/futex.c:3677 [inline]
+ #0: ffff8880104ae060 (&tsk->futex_exit_mutex){+.+.}-{3:3}, at: futex_exit_release+0x2d/0x220 kernel/futex.c:3729
+ #1: ffff88800ac35fa8 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ #1: ffff88800ac35fa8 (&mm->mmap_lock#2){++++}-{3:3}, at: do_user_addr_fault+0x339/0xc40 arch/x86/mm/fault.c:1313
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4310 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4306 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __perform_reclaim mm/page_alloc.c:4334 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_direct_reclaim mm/page_alloc.c:4351 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0x1339/0x23a0 mm/page_alloc.c:4755
+2 locks held by syz-executor/10564:
+ #0: ffff888013f0ef58 (&ei->i_mmap_sem){++++}-{3:3}, at: ext4_filemap_fault+0x7f/0xc0 fs/ext4/inode.c:6191
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4310 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4306 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __perform_reclaim mm/page_alloc.c:4334 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_direct_reclaim mm/page_alloc.c:4351 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0x1339/0x23a0 mm/page_alloc.c:4755
+3 locks held by syz.1.480/11459:
+ #0: ffff88800b94cdb0 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_ioctl+0xd2/0x290 kernel/trace/blktrace.c:733
+ #1: ffffffff85177648 (relay_channels_mutex){+.+.}-{3:3}, at: relay_open kernel/relay.c:603 [inline]
+ #1: ffffffff85177648 (relay_channels_mutex){+.+.}-{3:3}, at: relay_open+0x3e4/0xa30 kernel/relay.c:564
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4310 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4306 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __perform_reclaim mm/page_alloc.c:4334 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_direct_reclaim mm/page_alloc.c:4351 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0x1339/0x23a0 mm/page_alloc.c:4755
+2 locks held by syz-executor/11512:
+ #0: ffff888010d28ea8 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_write_lock_killable include/linux/mmap_lock.h:26 [inline]
+ #0: ffff888010d28ea8 (&mm->mmap_lock#2){++++}-{3:3}, at: vm_mmap_pgoff+0x153/0x1f0 mm/util.c:505
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4310 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4306 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __perform_reclaim mm/page_alloc.c:4334 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_direct_reclaim mm/page_alloc.c:4351 [inline]
+ #1: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0x1339/0x23a0 mm/page_alloc.c:4755
+3 locks held by syz.2.500/11526:
+ #0: ffff88801abfc660 (&tsk->futex_exit_mutex){+.+.}-{3:3}, at: futex_cleanup_begin kernel/futex.c:3677 [inline]
+ #0: ffff88801abfc660 (&tsk->futex_exit_mutex){+.+.}-{3:3}, at: futex_exit_release+0x2d/0x220 kernel/futex.c:3729
+ #1: ffff888010d29c28 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ #1: ffff888010d29c28 (&mm->mmap_lock#2){++++}-{3:3}, at: do_user_addr_fault+0x339/0xc40 arch/x86/mm/fault.c:1313
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4310 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_release mm/page_alloc.c:4306 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __perform_reclaim mm/page_alloc.c:4334 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_direct_reclaim mm/page_alloc.c:4351 [inline]
+ #2: ffffffff852321c0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0x1339/0x23a0 mm/page_alloc.c:4755
+
+=============================================
+

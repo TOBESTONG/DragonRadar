@@ -1,0 +1,788 @@
+Warning: Permanently added '[localhost]:20413' (ED25519) to the list of known hosts.
+executing program
+syzkaller login: [   46.505020] audit: type=1400 audit(1730956943.316:6): avc:  denied  { execmem } for  pid=237 comm="syz-executor295" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+[   46.720398] 
+[   46.720755] =====================================================
+[   46.721920] WARNING: HARDIRQ-safe -> HARDIRQ-unsafe lock order detected
+[   46.723190] 5.10.0 #1 Not tainted
+[   46.723831] -----------------------------------------------------
+[   46.724993] syz-executor295/245 [HC0[0]:SC0[0]:HE0:SE1] is trying to acquire:
+[   46.726637] ffff88800c22a8b8 (&f->f_owner.lock){.+.+}-{2:2}, at: send_sigio+0x24/0x3b0
+[   46.728977] 
+[   46.728977] and this task is already holding:
+[   46.730507] ffff8880089c6408 (&new->fa_lock){....}-{2:2}, at: kill_fasync+0x1a1/0x4c0
+[   46.732016] which would create a new lock dependency:
+[   46.733002]  (&new->fa_lock){....}-{2:2} -> (&f->f_owner.lock){.+.+}-{2:2}
+[   46.734379] 
+[   46.734379] but this new dependency connects a HARDIRQ-irq-safe lock:
+[   46.735903]  (&dev->event_lock){-...}-{2:2}
+[   46.735921] 
+[   46.735921] ... which became HARDIRQ-irq-safe at:
+[   46.737948]   lock_acquire+0x293/0x9b0
+[   46.738700]   _raw_spin_lock_irqsave+0x39/0x50
+[   46.739605]   input_event+0x7b/0xb0
+[   46.740315]   psmouse_report_standard_buttons+0x2c/0x80
+[   46.741326]   psmouse_process_byte+0x398/0x8c0
+[   46.742224]   psmouse_handle_byte+0x47/0x530
+[   46.743075]   psmouse_interrupt+0x301/0x12b0
+[   46.743952]   serio_interrupt+0x8d/0x150
+[   46.744724]   i8042_interrupt+0x3fd/0x720
+[   46.745531]   __handle_irq_event_percpu+0x2ef/0x940
+[   46.746477]   handle_irq_event_percpu+0x76/0x170
+[   46.747363]   handle_irq_event+0xa1/0x130
+[   46.748161]   handle_edge_irq+0x267/0xd20
+[   46.748930]   asm_call_irq_on_stack+0x12/0x20
+[   46.749776]   common_interrupt+0x12c/0x220
+[   46.750635]   asm_common_interrupt+0x1e/0x40
+[   46.751515]   _raw_spin_unlock_irqrestore+0x25/0x50
+[   46.752468]   i8042_command+0x168/0x190
+[   46.753203]   i8042_aux_write+0xd7/0x120
+[   46.754012]   ps2_do_sendbyte+0x2bb/0x620
+[   46.755083]   ps2_sendbyte+0x4b/0x90
+[   46.756367]   cypress_send_ext_cmd+0x1c8/0x9a0
+[   46.757616]   cypress_detect+0x75/0x190
+[   46.758664]   psmouse_try_protocol+0x218/0x3b0
+[   46.759861]   psmouse_extensions+0x557/0x920
+[   46.761019]   psmouse_switch_protocol+0x535/0x790
+[   46.762297]   psmouse_connect+0x60c/0xfb0
+[   46.763400]   serio_driver_probe+0x77/0xa0
+[   46.764665]   really_probe+0x2a8/0xe70
+[   46.765735]   driver_probe_device+0x118/0x1e0
+[   46.766977]   device_driver_attach+0x27d/0x2f0
+[   46.768237]   __driver_attach+0x154/0x340
+[   46.769374]   bus_for_each_dev+0x136/0x1d0
+[   46.770551]   serio_handle_event+0x279/0x8a0
+[   46.771832]   process_one_work+0x7ce/0x16c0
+[   46.772828]   worker_thread+0x61d/0x1310
+[   46.773434]   kthread+0x3b2/0x4a0
+[   46.773966]   ret_from_fork+0x22/0x30
+[   46.774556] 
+[   46.774556] to a HARDIRQ-irq-unsafe lock:
+[   46.775412]  (&f->f_owner.lock){.+.+}-{2:2}
+[   46.775428] 
+[   46.775428] ... which became HARDIRQ-irq-unsafe at:
+[   46.777063] ...
+[   46.777072]   lock_acquire+0x293/0x9b0
+[   46.777930]   _raw_read_lock+0x5b/0x70
+[   46.778520]   do_fcntl+0x74f/0xff0
+[   46.779051]   __x64_sys_fcntl+0x165/0x1e0
+[   46.779675]   do_syscall_64+0x33/0x40
+[   46.780245]   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   46.781055] 
+[   46.781055] other info that might help us debug this:
+[   46.781055] 
+[   46.782315] Chain exists of:
+[   46.782315]   &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
+[   46.782315] 
+[   46.784035]  Possible interrupt unsafe locking scenario:
+[   46.784035] 
+[   46.785090]        CPU0                    CPU1
+[   46.785855]        ----                    ----
+[   46.786562]   lock(&f->f_owner.lock);
+[   46.787235]                                local_irq_disable();
+[   46.788218]                                lock(&dev->event_lock);
+[   46.789221]                                lock(&new->fa_lock);
+[   46.790144]   <Interrupt>
+[   46.790565]     lock(&dev->event_lock);
+[   46.791180] 
+[   46.791180]  *** DEADLOCK ***
+[   46.791180] 
+[   46.792083] 8 locks held by syz-executor295/245:
+[   46.792830]  #0: ffff88800cc51110 (&evdev->mutex){+.+.}-{3:3}, at: evdev_write+0x154/0x470
+[   46.794112]  #1: ffff88800a9f2230 (&dev->event_lock){-...}-{2:2}, at: input_inject_event+0xa6/0x390
+[   46.795554]  #2: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: input_inject_event+0x92/0x390
+[   46.796896]  #3: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: input_pass_values.part.0+0x0/0x760
+[   46.798303]  #4: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: evdev_events+0x59/0x490
+[   46.799635]  #5: ffff888010cac028 (&client->buffer_lock){....}-{2:2}, at: evdev_pass_values.part.0+0xf6/0x9e0
+[   46.801164]  #6: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: kill_fasync+0x3d/0x4c0
+[   46.802415]  #7: ffff8880089c6408 (&new->fa_lock){....}-{2:2}, at: kill_fasync+0x1a1/0x4c0
+[   46.803705] 
+[   46.803705] the dependencies between HARDIRQ-irq-safe lock and the holding lock:
+[   46.805085]   -> (&dev->event_lock){-...}-{2:2} {
+[   46.805858]      IN-HARDIRQ-W at:
+[   46.806403]                         lock_acquire+0x293/0x9b0
+[   46.807312]                         _raw_spin_lock_irqsave+0x39/0x50
+[   46.808311]                         input_event+0x7b/0xb0
+[   46.809192]                         psmouse_report_standard_buttons+0x2c/0x80
+[   46.810346]                         psmouse_process_byte+0x398/0x8c0
+[   46.811342]                         psmouse_handle_byte+0x47/0x530
+[   46.812331]                         psmouse_interrupt+0x301/0x12b0
+[   46.813306]                         serio_interrupt+0x8d/0x150
+[   46.814192]                         i8042_interrupt+0x3fd/0x720
+[   46.815092]                         __handle_irq_event_percpu+0x2ef/0x940
+[   46.816118]                         handle_irq_event_percpu+0x76/0x170
+[   46.817124]                         handle_irq_event+0xa1/0x130
+[   46.818032]                         handle_edge_irq+0x267/0xd20
+[   46.818947]                         asm_call_irq_on_stack+0x12/0x20
+[   46.820091]                         common_interrupt+0x12c/0x220
+[   46.821046]                         asm_common_interrupt+0x1e/0x40
+[   46.822004]                         _raw_spin_unlock_irqrestore+0x25/0x50
+[   46.823047]                         i8042_command+0x168/0x190
+[   46.823928]                         i8042_aux_write+0xd7/0x120
+[   46.824861]                         ps2_do_sendbyte+0x2bb/0x620
+[   46.825819]                         ps2_sendbyte+0x4b/0x90
+[   46.826700]                         cypress_send_ext_cmd+0x1c8/0x9a0
+[   46.827764]                         cypress_detect+0x75/0x190
+[   46.828697]                         psmouse_try_protocol+0x218/0x3b0
+[   46.829654]                         psmouse_extensions+0x557/0x920
+[   46.830583]                         psmouse_switch_protocol+0x535/0x790
+[   46.831606]                         psmouse_connect+0x60c/0xfb0
+[   46.832527]                         serio_driver_probe+0x77/0xa0
+[   46.833473]                         really_probe+0x2a8/0xe70
+[   46.834361]                         driver_probe_device+0x118/0x1e0
+[   46.835338]                         device_driver_attach+0x27d/0x2f0
+[   46.836371]                         __driver_attach+0x154/0x340
+[   46.837296]                         bus_for_each_dev+0x136/0x1d0
+[   46.838244]                         serio_handle_event+0x279/0x8a0
+[   46.839246]                         process_one_work+0x7ce/0x16c0
+[   46.840198]                         worker_thread+0x61d/0x1310
+[   46.841098]                         kthread+0x3b2/0x4a0
+[   46.841899]                         ret_from_fork+0x22/0x30
+[   46.842775]      INITIAL USE at:
+[   46.843271]                        lock_acquire+0x293/0x9b0
+[   46.844116]                        _raw_spin_lock_irqsave+0x39/0x50
+[   46.845111]                        input_inject_event+0xa6/0x390
+[   46.846024]                        led_set_brightness_nosleep+0xe9/0x1a0
+[   46.847047]                        led_set_brightness+0x134/0x170
+[   46.848000]                        led_trigger_event+0x70/0xd0
+[   46.848934]                        kbd_led_trigger_activate+0xfa/0x130
+[   46.849951]                        led_trigger_set+0x494/0xaa0
+[   46.850870]                        led_trigger_set_default+0x1a6/0x230
+[   46.851887]                        led_classdev_register_ext+0x539/0x750
+[   46.852900]                        input_leds_connect+0x496/0x990
+[   46.853873]                        input_attach_handler+0x18b/0x260
+[   46.854847]                        input_register_device.cold+0x106/0x230
+[   46.855898]                        atkbd_connect+0x83a/0xb70
+[   46.856803]                        serio_driver_probe+0x77/0xa0
+[   46.857739]                        really_probe+0x2a8/0xe70
+[   46.858614]                        driver_probe_device+0x118/0x1e0
+[   46.859594]                        device_driver_attach+0x27d/0x2f0
+[   46.860596]                        __driver_attach+0x154/0x340
+[   46.861521]                        bus_for_each_dev+0x136/0x1d0
+[   46.862467]                        serio_handle_event+0x279/0x8a0
+[   46.863429]                        process_one_work+0x7ce/0x16c0
+[   46.864360]                        worker_thread+0x61d/0x1310
+[   46.865311]                        kthread+0x3b2/0x4a0
+[   46.866102]                        ret_from_fork+0x22/0x30
+[   46.866926]    }
+[   46.867225]    ... key      at: [<ffffffff87a64ea0>] __key.5+0x0/0x40
+[   46.868240]    ... acquired at:
+[   46.868738]    _raw_spin_lock+0x2a/0x40
+[   46.869325]    evdev_pass_values.part.0+0xf6/0x9e0
+[   46.870068]    evdev_events+0x328/0x490
+[   46.870665]    input_to_handler+0x297/0x4c0
+[   46.871304]    input_pass_values.part.0+0x2e4/0x760
+[   46.872054]    input_handle_event+0x883/0x1560
+[   46.872741]    input_inject_event+0x36a/0x390
+[   46.873404]    evdev_write+0x326/0x470
+[   46.873984]    vfs_write+0x29a/0xac0
+[   46.874533]    ksys_write+0x1ee/0x250
+[   46.875094]    do_syscall_64+0x33/0x40
+[   46.875682]    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   46.876467] 
+[   46.876723]  -> (&client->buffer_lock){....}-{2:2} {
+[   46.877498]     INITIAL USE at:
+[   46.877992]                      lock_acquire+0x293/0x9b0
+[   46.878815]                      _raw_spin_lock+0x2a/0x40
+[   46.879636]                      evdev_pass_values.part.0+0xf6/0x9e0
+[   46.880601]                      evdev_events+0x328/0x490
+[   46.881415]                      input_to_handler+0x297/0x4c0
+[   46.882324]                      input_pass_values.part.0+0x2e4/0x760
+[   46.883312]                      input_handle_event+0x883/0x1560
+[   46.884232]                      input_inject_event+0x36a/0x390
+[   46.885127]                      evdev_write+0x326/0x470
+[   46.885933]                      vfs_write+0x29a/0xac0
+[   46.886744]                      ksys_write+0x1ee/0x250
+[   46.887575]                      do_syscall_64+0x33/0x40
+[   46.888388]                      entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   46.889434]   }
+[   46.889732]   ... key      at: [<ffffffff87a65120>] __key.4+0x0/0x40
+[   46.890690]   ... acquired at:
+[   46.891164]    _raw_read_lock+0x5b/0x70
+[   46.891760]    kill_fasync+0x1a1/0x4c0
+[   46.892335]    evdev_pass_values.part.0+0x697/0x9e0
+[   46.893082]    evdev_events+0x328/0x490
+[   46.893677]    input_to_handler+0x297/0x4c0
+[   46.894311]    input_pass_values.part.0+0x2e4/0x760
+[   46.895053]    input_handle_event+0x883/0x1560
+[   46.895732]    input_inject_event+0x36a/0x390
+[   46.896396]    evdev_write+0x326/0x470
+[   46.897013]    vfs_write+0x29a/0xac0
+[   46.897599]    ksys_write+0x1ee/0x250
+[   46.898155]    do_syscall_64+0x33/0x40
+[   46.898737]    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   46.899523] 
+[   46.899761] -> (&new->fa_lock){....}-{2:2} {
+[   46.900420]    INITIAL USE at:
+[   46.900902]                    lock_acquire+0x293/0x9b0
+[   46.901759]                    _raw_write_lock_irq+0x32/0x50
+[   46.902675]                    fasync_remove_entry+0xb6/0x1f0
+[   46.903578]                    fasync_helper+0x9e/0xb0
+[   46.904372]                    __fput+0x73e/0x980
+[   46.905102]                    task_work_run+0xe2/0x1a0
+[   46.905952]                    do_exit+0xb29/0x28e0
+[   46.906737]                    do_group_exit+0x125/0x310
+[   46.907557]                    __x64_sys_exit_group+0x3a/0x50
+[   46.908550]                    do_syscall_64+0x33/0x40
+[   46.909377]                    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   46.910411]    INITIAL READ USE at:
+[   46.910965]                         lock_acquire+0x293/0x9b0
+[   46.911859]                         _raw_read_lock+0x5b/0x70
+[   46.912743]                         kill_fasync+0x1a1/0x4c0
+[   46.913653]                         evdev_pass_values.part.0+0x697/0x9e0
+[   46.914686]                         evdev_events+0x328/0x490
+[   46.915607]                         input_to_handler+0x297/0x4c0
+[   46.916573]                         input_pass_values.part.0+0x2e4/0x760
+[   46.917616]                         input_handle_event+0x883/0x1560
+[   46.918604]                         input_inject_event+0x36a/0x390
+[   46.919571]                         evdev_write+0x326/0x470
+[   46.920437]                         vfs_write+0x29a/0xac0
+[   46.921305]                         ksys_write+0x1ee/0x250
+[   46.922190]                         do_syscall_64+0x33/0x40
+[   46.923059]                         entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   46.924179]  }
+[   46.924484]  ... key      at: [<ffffffff8720a140>] __key.0+0x0/0x40
+[   46.925458]  ... acquired at:
+[   46.925942]    lock_acquire+0x293/0x9b0
+[   46.926588]    _raw_read_lock+0x5b/0x70
+[   46.927189]    send_sigio+0x24/0x3b0
+[   46.927753]    kill_fasync+0x25b/0x4c0
+[   46.928343]    evdev_pass_values.part.0+0x697/0x9e0
+[   46.929162]    evdev_events+0x328/0x490
+[   46.929802]    input_to_handler+0x297/0x4c0
+[   46.930462]    input_pass_values.part.0+0x2e4/0x760
+[   46.931231]    input_handle_event+0x883/0x1560
+[   46.931974]    input_inject_event+0x36a/0x390
+[   46.932697]    evdev_write+0x326/0x470
+[   46.933287]    vfs_write+0x29a/0xac0
+[   46.933861]    ksys_write+0x1ee/0x250
+[   46.934431]    do_syscall_64+0x33/0x40
+[   46.935047]    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   46.935863] 
+[   46.936104] 
+[   46.936104] the dependencies between the lock to be acquired
+[   46.936107]  and HARDIRQ-irq-unsafe lock:
+[   46.937873] -> (&f->f_owner.lock){.+.+}-{2:2} {
+[   46.938571]    HARDIRQ-ON-R at:
+[   46.939054]                     lock_acquire+0x293/0x9b0
+[   46.939910]                     _raw_read_lock+0x5b/0x70
+[   46.940716]                     do_fcntl+0x74f/0xff0
+[   46.941475]                     __x64_sys_fcntl+0x165/0x1e0
+[   46.942311]                     do_syscall_64+0x33/0x40
+[   46.943126]                     entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   46.944148]    SOFTIRQ-ON-R at:
+[   46.944647]                     lock_acquire+0x293/0x9b0
+[   46.945462]                     _raw_read_lock+0x5b/0x70
+[   46.946275]                     do_fcntl+0x74f/0xff0
+[   46.947043]                     __x64_sys_fcntl+0x165/0x1e0
+[   46.947893]                     do_syscall_64+0x33/0x40
+[   46.948691]                     entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   46.949711]    INITIAL READ USE at:
+[   46.950252]                         lock_acquire+0x293/0x9b0
+[   46.951114]                         _raw_read_lock+0x5b/0x70
+[   46.952017]                         do_fcntl+0x74f/0xff0
+[   46.952846]                         __x64_sys_fcntl+0x165/0x1e0
+[   46.953772]                         do_syscall_64+0x33/0x40
+[   46.954648]                         entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   46.955748]  }
+[   46.956029]  ... key      at: [<ffffffff87209360>] __key.5+0x0/0x40
+[   46.957029]  ... acquired at:
+[   46.957501]    lock_acquire+0x293/0x9b0
+[   46.958104]    _raw_read_lock+0x5b/0x70
+[   46.958707]    send_sigio+0x24/0x3b0
+[   46.959260]    kill_fasync+0x25b/0x4c0
+[   46.959852]    evdev_pass_values.part.0+0x697/0x9e0
+[   46.960609]    evdev_events+0x328/0x490
+[   46.961208]    input_to_handler+0x297/0x4c0
+[   46.961864]    input_pass_values.part.0+0x2e4/0x760
+[   46.962616]    input_handle_event+0x883/0x1560
+[   46.963288]    input_inject_event+0x36a/0x390
+[   46.963988]    evdev_write+0x326/0x470
+[   46.964596]    vfs_write+0x29a/0xac0
+[   46.965159]    ksys_write+0x1ee/0x250
+[   46.965823]    do_syscall_64+0x33/0x40
+[   46.966397]    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   46.967196] 
+[   46.967438] 
+[   46.967438] stack backtrace:
+[   46.968114] CPU: 1 PID: 245 Comm: syz-executor295 Not tainted 5.10.0 #1
+[   46.969122] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[   46.970668] Call Trace:
+[   46.971068]  dump_stack+0x107/0x163
+[   46.971627]  check_irq_usage.cold+0x47f/0x5e2
+[   46.972312]  ? __is_insn_slot_addr+0x1ad/0x270
+[   46.973010]  ? print_shortest_lock_dependencies+0x80/0x80
+[   46.973846]  ? stack_trace_save+0xc0/0xc0
+[   46.974473]  ? check_path.constprop.0+0x22/0x40
+[   46.975180]  ? stack_trace_save+0x8c/0xc0
+[   46.975813]  ? alloc_chain_hlocks+0x4bf/0xc80
+[   46.976494]  __lock_acquire+0x2adc/0x5ca0
+[   46.977129]  ? lockdep_hardirqs_on_prepare+0x420/0x420
+[   46.977944]  lock_acquire+0x293/0x9b0
+[   46.978532]  ? send_sigio+0x24/0x3b0
+[   46.979101]  ? lock_release+0x6f0/0x6f0
+[   46.979713]  ? lock_release+0x6f0/0x6f0
+[   46.980334]  ? lock_release+0x6f0/0x6f0
+[   46.980960]  ? lock_release+0x6f0/0x6f0
+[   46.981584]  _raw_read_lock+0x5b/0x70
+[   46.982175]  ? send_sigio+0x24/0x3b0
+[   46.982757]  send_sigio+0x24/0x3b0
+[   46.983306]  kill_fasync+0x25b/0x4c0
+[   46.983890]  evdev_pass_values.part.0+0x697/0x9e0
+[   46.984648]  ? evdev_release+0x3f0/0x3f0
+[   46.985279]  ? ktime_mono_to_any+0xda/0x1d0
+[   46.985951]  evdev_events+0x328/0x490
+[   46.986545]  ? evdev_pass_values.part.0+0x9e0/0x9e0
+[   46.987321]  input_to_handler+0x297/0x4c0
+[   46.987981]  input_pass_values.part.0+0x2e4/0x760
+[   46.988736]  ? rwlock_bug.part.0+0x90/0x90
+[   46.989395]  input_handle_event+0x883/0x1560
+[   46.990094]  input_inject_event+0x36a/0x390
+[   46.990787]  evdev_write+0x326/0x470
+[   46.991365]  ? evdev_open+0x600/0x600
+[   46.991961]  ? security_file_permission+0x248/0x580
+[   46.992749]  ? build_open_flags+0x660/0x660
+[   46.993416]  ? evdev_open+0x600/0x600
+[   46.994011]  vfs_write+0x29a/0xac0
+[   46.994571]  ksys_write+0x1ee/0x250
+[   46.995122]  ? __ia32_sys_read+0xb0/0xb0
+[   46.995749]  ? syscall_enter_from_user_mode+0x27/0x80
+[   46.996588]  do_syscall_64+0x33/0x40
+[   46.997152]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   46.997946] RIP: 0033:0x7f78d5f7c8dd
+[   46.998518] Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+[   47.001461] RSP: 002b:00007ffe6add0b28 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+[   47.002598] RAX: ffffffffffffffda RBX: 000000000000b5fd RCX: 00007f78d5f7c8dd
+[   47.003661] RDX: 0000000000000018 RSI: 00000000200002c0 RDI: 0000000000000005
+[   47.004772] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+[   47.005873] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffe6add0b3c
+[   47.006938] R13: 431bde82d7b634db R14: 00007f78d6011cd0 R15: 0000000000000001
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+executing program
+
+VM DIAGNOSIS:
+13:22:23  Registers:
+info registers vcpu 0
+
+CPU#0
+RAX=ffffffff83eca430 RBX=ffffffff84e389c0 RCX=ffffffff83eb246c RDX=ffffffff84e389c0
+RSI=0000000000000001 RDI=ffffffff83eca83f RBP=0000000000000000 RSP=ffffffff84e07e40
+R8 =0000000000000000 R9 =ffff88806ce3416b R10=ffffed100d9c682d R11=0000000000000001
+R12=fffffbfff09c7138 R13=ffffffff85d66c08 R14=0000000000000000 R15=dffffc0000000000
+RIP=ffffffff83eca43e RFL=00000246 [---Z-P-] CPL=0 II=0 A20=1 SMM=0 HLT=1
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 0000000000000000 00000000 00000000
+GS =0000 ffff88806ce00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe0000003000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe0000001000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=00007ffe6add0a18 CR3=0000000008b8e000 CR4=00350ef0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM01=0000000000000000 0000000000000000 027b464283a6918f 1670d5209d3f91f1
+YMM02=0000000000000000 0000000000000000 7d22f83973fdc0c6 65e994834b96c537
+YMM03=0000000000000000 0000000000000000 7620b0d0a5285111 89696557f527b1f3
+YMM04=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM05=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM06=0000000000000000 0000000000000000 0d0c0f0e09080b0a 0504070601000302
+YMM07=0000000000000000 0000000000000000 0e0d0c0f0a09080b 0605040702010003
+YMM08=0000000000000000 0000000000000000 636578655f6f6400 745f647074667300
+YMM09=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM10=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+info registers vcpu 1
+
+CPU#1
+RAX=0000000000000069 RBX=0000000000000000 RCX=0000000000000000 RDX=00000000000003f8
+RSI=ffffffff823c0a41 RDI=ffffffff87a492e0 RBP=ffffffff87a492a0 RSP=ffff88800af271c8
+R8 =0000000000000001 R9 =0000000000000003 R10=000000000000001f R11=0000000000000001
+R12=0000000000000069 R13=0000000000000000 R14=ffffffff87a492a0 R15=dffffc0000000000
+RIP=ffffffff823c0a6c RFL=00000002 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 00005555567b5380 00000000 00000000
+GS =0000 ffff88806cf00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe000003e000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe000003c000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=0000000020000040 CR3=000000000c2f6000 CR4=00350ee0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 2323232323232323 2323232323232323
+YMM01=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM02=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM03=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM04=0000000000000000 0000000000000000 00007f78d6004840 00007f78d6016b80
+YMM05=0000000000000000 0000000000000000 0000000000000001 0000000000000001
+YMM06=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM07=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM08=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM09=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM10=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000

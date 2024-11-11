@@ -1,0 +1,119 @@
+EXT4-fs (loop1): mounted filesystem without journal. Opts: prjquota,grpquota,debug_want_extra_isize=0x000000000000005c,noauto_da_alloc,mblk_io_submit,errors=continue,debug,,errors=continue
+FAT-fs (loop3): Unrecognized mount option "uni_xla4e=0" or missing value
+syz.1.197 (5426) used greatest stack depth: 22856 bytes left
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 5577 Comm: syz.3.217 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:scsi_command_size include/scsi/scsi_common.h:24 [inline]
+RIP: 0010:scsi_setup_scsi_cmnd drivers/scsi/scsi_lib.c:1195 [inline]
+RIP: 0010:scsi_prepare_cmd drivers/scsi/scsi_lib.c:1577 [inline]
+RIP: 0010:scsi_queue_rq+0x1ec4/0x2bf0 drivers/scsi/scsi_lib.c:1666
+Code: 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 9e 0b 00 00 48 8b 8b 40 02 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 ca 48 c1 ea 03 <0f> b6 04 02 48 89 ca 83 e2 07 38 d0 7f 08 84 c0 0f 85 60 0c 00 00
+RSP: 0018:ffff8880223c73c0 EFLAGS: 00010256
+RAX: dffffc0000000000 RBX: ffff88800a986340 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff82b05311 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffff88800a986588
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800a986580
+R13: ffff88800bc54000 R14: 0000000000000000 R15: ffff88800bece000
+FS:  00007f22a5a766c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000021f04000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ blk_mq_dispatch_rq_list+0x36e/0x1ca0 block/blk-mq.c:1388
+ __blk_mq_sched_dispatch_requests+0x260/0x490 block/blk-mq-sched.c:308
+ blk_mq_sched_dispatch_requests+0xfb/0x180 block/blk-mq-sched.c:341
+ __blk_mq_run_hw_queue+0x12c/0x290 block/blk-mq.c:1532
+ __blk_mq_delay_run_hw_queue+0x4e7/0x5a0 block/blk-mq.c:1609
+ blk_mq_run_hw_queue+0x16c/0x2f0 block/blk-mq.c:1662
+ blk_mq_sched_insert_request+0x380/0x440 block/blk-mq-sched.c:467
+ blk_execute_rq+0xd4/0x1b0 block/blk-exec.c:86
+ sg_io+0x630/0xf90 block/scsi_ioctl.c:360
+ scsi_cmd_ioctl+0x51a/0x580 block/scsi_ioctl.c:809
+ scsi_cmd_blk_ioctl block/scsi_ioctl.c:867 [inline]
+ scsi_cmd_blk_ioctl+0xe1/0x130 block/scsi_ioctl.c:858
+ cdrom_ioctl+0xc6/0x2f70 drivers/cdrom/cdrom.c:3361
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /dev/sr0 supports timestamps until 2038 (0x7fffffff)
+ sr_block_ioctl+0x141/0x1a0 drivers/scsi/sr.c:594
+ __blkdev_driver_ioctl block/ioctl.c:228 [inline]
+ blkdev_ioctl+0x2a8/0x720 block/ioctl.c:623
+ block_ioctl+0xf9/0x140 fs/block_dev.c:1869
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x196/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f22a6e1def9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f22a5a76038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f22a6fd6058 RCX: 00007f22a6e1def9
+RDX: 0000000020000280 RSI: 0000000000002285 RDI: 0000000000000007
+RBP: 00007f22a6e90b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f22a6fd6058 R15: 00007ffc5b495168
+Modules linked in:
+---[ end trace a4ba08f4442df492 ]---
+RIP: 0010:scsi_command_size include/scsi/scsi_common.h:24 [inline]
+RIP: 0010:scsi_setup_scsi_cmnd drivers/scsi/scsi_lib.c:1195 [inline]
+RIP: 0010:scsi_prepare_cmd drivers/scsi/scsi_lib.c:1577 [inline]
+RIP: 0010:scsi_queue_rq+0x1ec4/0x2bf0 drivers/scsi/scsi_lib.c:1666
+Code: 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 9e 0b 00 00 48 8b 8b 40 02 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 ca 48 c1 ea 03 <0f> b6 04 02 48 89 ca 83 e2 07 38 d0 7f 08 84 c0 0f 85 60 0c 00 00
+RSP: 0018:ffff8880223c73c0 EFLAGS: 00010256
+RAX: dffffc0000000000 RBX: ffff88800a986340 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff82b05311 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffff88800a986588
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800a986580
+R13: ffff88800bc54000 R14: 0000000000000000 R15: ffff88800bece000
+FS:  00007f22a5a766c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000021f04000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+note: syz.3.217[5577] exited with preempt_count 1
+BUG: sleeping function called from invalid context at include/linux/percpu-rwsem.h:49
+in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 5577, name: syz.3.217
+INFO: lockdep is turned off.
+Preemption disabled at:
+[<ffffffff81f74ff6>] __blk_mq_delay_run_hw_queue+0x346/0x5a0 block/blk-mq.c:1607
+CPU: 1 PID: 5577 Comm: syz.3.217 Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep.cold+0x65/0x79 kernel/sched/core.c:7304
+ percpu_down_read include/linux/percpu-rwsem.h:49 [inline]
+ cgroup_threadgroup_change_begin include/linux/cgroup-defs.h:733 [inline]
+ exit_signals+0x74/0x9e0 kernel/signal.c:2843
+ do_exit+0x237/0x28e0 kernel/exit.c:765
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7f22a6e1def9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f22a5a76038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f22a6fd6058 RCX: 00007f22a6e1def9
+RDX: 0000000020000280 RSI: 0000000000002285 RDI: 0000000000000007
+RBP: 00007f22a6e90b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f22a6fd6058 R15: 00007ffc5b495168
+EXT4-fs (loop2): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /5/file2 supports timestamps until 2038 (0x7fffffff)
+----------------
+Code disassembly (best guess), 4 bytes skipped:
+   0:	48 c1 ea 03          	shr    $0x3,%rdx
+   4:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+   8:	0f 85 9e 0b 00 00    	jne    0xbac
+   e:	48 8b 8b 40 02 00 00 	mov    0x240(%rbx),%rcx
+  15:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  1c:	fc ff df
+  1f:	48 89 ca             	mov    %rcx,%rdx
+  22:	48 c1 ea 03          	shr    $0x3,%rdx
+* 26:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax <-- trapping instruction
+  2a:	48 89 ca             	mov    %rcx,%rdx
+  2d:	83 e2 07             	and    $0x7,%edx
+  30:	38 d0                	cmp    %dl,%al
+  32:	7f 08                	jg     0x3c
+  34:	84 c0                	test   %al,%al
+  36:	0f 85 60 0c 00 00    	jne    0xc9c

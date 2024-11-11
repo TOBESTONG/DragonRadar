@@ -1,0 +1,133 @@
+EXT4-fs (loop2): mounted filesystem without journal. Opts: nobarrier,noblock_validity,lazytime,barrier=0x0000000000000003,errors=remount-ro,resuid=0x000000000000ee00,errors=remount-ro,resgid=0x000000000000ee01,resgid=0x000000000000ee002
+EXT4-fs error (device loop2): ext4_mb_mark_diskspace_used:3233: comm syz.2.1944: Allocating blocks 43-59 which overlap fs metadata
+EXT4-fs (loop2): Remounting filesystem read-only
+BUG: unable to handle page fault for address: fffffbfffb380346
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 80190067 P4D 80190067 PUD 6ddb4067 PMD 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 11737 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
+RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
+RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
+RIP: 0010:check_memory_region+0x189/0x1e0 mm/kasan/generic.c:192
+Code: 41 83 e1 07 49 39 c1 7d 89 41 bb 01 00 00 00 5b 5d 44 89 d8 41 5c c3 48 85 d2 74 ed 48 01 ea eb 09 48 83 c0 01 48 39 d0 74 df <80> 38 00 74 f2 e9 34 ff ff ff 48 29 c3 48 89 da 49 89 d3 49 c1 fb
+RSP: 0018:ffff888024aafab0 EFLAGS: 00010286
+RAX: fffffbfffb380346 RBX: fffffbfffb380348 RCX: ffffffff8195e26d
+RDX: fffffbfffb380348 RSI: 0000000000000004 RDI: ffffffffd9c01a37
+RBP: fffffbfffb380346 R08: 0000000000000000 R09: ffffffffd9c01a3a
+R10: fffffbfffb380347 R11: 0000000000000001 R12: ffffffffd9c01a57
+R13: ffffffffd9c01a37 R14: 0000000000000007 R15: fffffbfffb380346
+FS:  000055555570d500(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfffb380346 CR3: 000000000df96000 CR4: 0000000000350ef0
+Call Trace:
+ instrument_atomic_read include/linux/instrumented.h:71 [inline]
+ atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
+ dqput.part.0+0xad/0x7e0 fs/quota/dquot.c:770
+ dqput fs/quota/dquot.c:757 [inline]
+ dqput_all fs/quota/dquot.c:397 [inline]
+ __dquot_drop+0x1cc/0x2a0 fs/quota/dquot.c:1577
+ dquot_drop+0x151/0x1a0 fs/quota/dquot.c:1602
+ ext4_clear_inode+0x52/0x1e0 fs/ext4/super.c:1405
+ ext4_evict_inode+0x1cb/0x1890 fs/ext4/inode.c:332
+ evict+0x284/0x6d0 fs/inode.c:578
+ dispose_list fs/inode.c:613 [inline]
+ evict_inodes+0x3c1/0x5e0 fs/inode.c:663
+ generic_shutdown_super+0xa6/0x370 fs/super.c:454
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fc469ed4227
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007fff696d41e8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007fc469f45a14 RCX: 00007fc469ed4227
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007fff696d42a0
+RBP: 00007fff696d42a0 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fff696d5320
+R13: 00007fc469f45a14 R14: 000000000001fc60 R15: 00007fff696d5360
+Modules linked in:
+CR2: fffffbfffb380346
+---[ end trace d9bf74d16ba36018 ]---
+RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
+RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
+RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
+RIP: 0010:check_memory_region+0x189/0x1e0 mm/kasan/generic.c:192
+Code: 41 83 e1 07 49 39 c1 7d 89 41 bb 01 00 00 00 5b 5d 44 89 d8 41 5c c3 48 85 d2 74 ed 48 01 ea eb 09 48 83 c0 01 48 39 d0 74 df <80> 38 00 74 f2 e9 34 ff ff ff 48 29 c3 48 89 da 49 89 d3 49 c1 fb
+RSP: 0018:ffff888024aafab0 EFLAGS: 00010286
+RAX: fffffbfffb380346 RBX: fffffbfffb380348 RCX: ffffffff8195e26d
+RDX: fffffbfffb380348 RSI: 0000000000000004 RDI: ffffffffd9c01a37
+RBP: fffffbfffb380346 R08: 0000000000000000 R09: ffffffffd9c01a3a
+R10: fffffbfffb380347 R11: 0000000000000001 R12: ffffffffd9c01a57
+R13: ffffffffd9c01a37 R14: 0000000000000007 R15: fffffbfffb380346
+FS:  000055555570d500(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfffb380346 CR3: 000000000df96000 CR4: 0000000000350ef0
+note: syz-executor[11737] exited with preempt_count 1
+BUG: sleeping function called from invalid context at include/linux/percpu-rwsem.h:49
+in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 11737, name: syz-executor
+INFO: lockdep is turned off.
+irq event stamp: 214266
+hardirqs last  enabled at (214265): [<ffffffff817344eb>] quarantine_put+0xab/0x1c0 mm/kasan/quarantine.c:217
+hardirqs last disabled at (214266): [<ffffffff83eb1a25>] exc_page_fault+0x45/0x1a0 arch/x86/mm/fault.c:1482
+softirqs last  enabled at (214074): [<ffffffff8109c73e>] copy_kernel_to_xregs arch/x86/include/asm/fpu/internal.h:344 [inline]
+softirqs last  enabled at (214074): [<ffffffff8109c73e>] __fpu__restore_sig+0xf0e/0x1690 arch/x86/kernel/fpu/signal.c:366
+softirqs last disabled at (214072): [<ffffffff8109c1bc>] __fpu__restore_sig+0x98c/0x1690 arch/x86/kernel/fpu/signal.c:326
+CPU: 0 PID: 11737 Comm: syz-executor Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep.cold+0x65/0x79 kernel/sched/core.c:7304
+ percpu_down_read include/linux/percpu-rwsem.h:49 [inline]
+ cgroup_threadgroup_change_begin include/linux/cgroup-defs.h:733 [inline]
+ exit_signals+0x74/0x9e0 kernel/signal.c:2843
+ do_exit+0x237/0x28e0 kernel/exit.c:765
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fc469ed4227
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007fff696d41e8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007fc469f45a14 RCX: 00007fc469ed4227
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007fff696d42a0
+RBP: 00007fff696d42a0 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fff696d5320
+R13: 00007fc469f45a14 R14: 000000000001fc60 R15: 00007fff696d5360
+----------------
+Code disassembly (best guess):
+   0:	41 83 e1 07          	and    $0x7,%r9d
+   4:	49 39 c1             	cmp    %rax,%r9
+   7:	7d 89                	jge    0xffffff92
+   9:	41 bb 01 00 00 00    	mov    $0x1,%r11d
+   f:	5b                   	pop    %rbx
+  10:	5d                   	pop    %rbp
+  11:	44 89 d8             	mov    %r11d,%eax
+  14:	41 5c                	pop    %r12
+  16:	c3                   	ret
+  17:	48 85 d2             	test   %rdx,%rdx
+  1a:	74 ed                	je     0x9
+  1c:	48 01 ea             	add    %rbp,%rdx
+  1f:	eb 09                	jmp    0x2a
+  21:	48 83 c0 01          	add    $0x1,%rax
+  25:	48 39 d0             	cmp    %rdx,%rax
+  28:	74 df                	je     0x9
+* 2a:	80 38 00             	cmpb   $0x0,(%rax) <-- trapping instruction
+  2d:	74 f2                	je     0x21
+  2f:	e9 34 ff ff ff       	jmp    0xffffff68
+  34:	48 29 c3             	sub    %rax,%rbx
+  37:	48 89 da             	mov    %rbx,%rdx
+  3a:	49 89 d3             	mov    %rdx,%r11
+  3d:	49                   	rex.WB
+  3e:	c1                   	.byte 0xc1
+  3f:	fb                   	sti

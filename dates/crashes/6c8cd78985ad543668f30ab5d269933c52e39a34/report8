@@ -1,0 +1,157 @@
+ext4 filesystem being mounted at /7/file1 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+==================================================================
+BUG: KASAN: use-after-free in ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+BUG: KASAN: use-after-free in ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+Read of size 4 at addr ffff88801d89eb20 by task syz.1.112/4522
+
+CPU: 1 PID: 4522 Comm: syz.1.112 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+ ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+ ext4_ext_remove_space+0x1445/0x4470 fs/ext4/extents.c:2806
+ ext4_punch_hole+0x678/0x1130 fs/ext4/inode.c:4105
+ ext4_fallocate+0x10e7/0x3e70 fs/ext4/extents.c:4655
+ vfs_fallocate+0x494/0xdd0 fs/open.c:309
+ ioctl_preallocate+0x18e/0x200 fs/ioctl.c:494
+ file_ioctl fs/ioctl.c:537 [inline]
+ do_vfs_ioctl+0xe3c/0x1140 fs/ioctl.c:732
+ __do_sys_ioctl fs/ioctl.c:751 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x108/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fb1164dcef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb115135038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fb116695058 RCX: 00007fb1164dcef9
+RDX: 0000000020000080 RSI: 0000000040305829 RDI: 0000000000000008
+RBP: 00007fb11654fb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fb116695058 R15: 00007ffc127feb08
+
+Allocated by task 4210:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ kmem_cache_zalloc include/linux/slab.h:654 [inline]
+ __alloc_file+0x21/0x310 fs/file_table.c:101
+ alloc_empty_file+0x6d/0x170 fs/file_table.c:151
+ path_openat+0x125/0x26f0 fs/namei.c:3355
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 4496:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+
+Last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff88801d89ea00
+ which belongs to the cache filp of size 488
+The buggy address is located 288 bytes inside of
+ 488-byte region [ffff88801d89ea00, ffff88801d89ebe8)
+The buggy address belongs to the page:
+page:0000000032e91844 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1d89e
+head:0000000032e91844 order:1 compound_mapcount:0
+flags: 0x100000000010200(slab|head)
+raw: 0100000000010200 dead000000000100 dead000000000122 ffff888008144000
+raw: 0000000000000000 00000000000c000c 00000001ffffffff ffff888008e8a381
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff888008e8a381
+
+Memory state around the buggy address:
+ ffff88801d89ea00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88801d89ea80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88801d89eb00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                               ^
+ ffff88801d89eb80: fb fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc
+ ffff88801d89ec00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+syz.0.110 (4492) used greatest stack depth: 22536 bytes left
+------------[ cut here ]------------
+kernel BUG at fs/ext4/extents.c:3159!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 4522 Comm: syz.1.112 Tainted: G    B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_split_extent_at+0x70b/0xe90 fs/ext4/extents.c:3159
+Code: c8 4c 89 f1 e8 06 40 ff ff 31 ff 89 c6 89 04 24 e8 4a d7 a5 ff 8b 04 24 85 c0 0f 84 37 06 00 00 41 89 c7 eb 1f e8 75 df a5 ff <0f> 0b 48 c7 c7 20 d1 2e 85 e8 76 5c 40 02 41 89 df 48 8b 44 24 08
+RSP: 0018:ffff88801d3e77a8 EFLAGS: 00010216
+RAX: 00000000000301f6 RBX: 000000001ff7fdfd RCX: ffffc90006dc2000
+RDX: 0000000000040000 RSI: ffffffff81a02f4b RDI: 0000000000000004
+RBP: ffff88800f9b2f30 R08: 0000000000000000 R09: 0000000050000028
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801d8d4628
+R13: 0000000000000000 R14: ffff88801bc5e5a8 R15: 0000000000000000
+FS:  00007fb1151356c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2a2bb245a8 CR3: 0000000018c64000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_force_split_extent_at fs/ext4/extents.c:305 [inline]
+ ext4_ext_remove_space+0x2dcf/0x4470 fs/ext4/extents.c:2853
+ ext4_punch_hole+0x678/0x1130 fs/ext4/inode.c:4105
+ ext4_fallocate+0x10e7/0x3e70 fs/ext4/extents.c:4655
+ vfs_fallocate+0x494/0xdd0 fs/open.c:309
+ ioctl_preallocate+0x18e/0x200 fs/ioctl.c:494
+ file_ioctl fs/ioctl.c:537 [inline]
+ do_vfs_ioctl+0xe3c/0x1140 fs/ioctl.c:732
+ __do_sys_ioctl fs/ioctl.c:751 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x108/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fb1164dcef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb115135038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fb116695058 RCX: 00007fb1164dcef9
+RDX: 0000000020000080 RSI: 0000000040305829 RDI: 0000000000000008
+RBP: 00007fb11654fb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fb116695058 R15: 00007ffc127feb08
+Modules linked in:
+---[ end trace 73f2fe5bf58bcc66 ]---
+RIP: 0010:ext4_split_extent_at+0x70b/0xe90 fs/ext4/extents.c:3159
+Code: c8 4c 89 f1 e8 06 40 ff ff 31 ff 89 c6 89 04 24 e8 4a d7 a5 ff 8b 04 24 85 c0 0f 84 37 06 00 00 41 89 c7 eb 1f e8 75 df a5 ff <0f> 0b 48 c7 c7 20 d1 2e 85 e8 76 5c 40 02 41 89 df 48 8b 44 24 08
+RSP: 0018:ffff88801d3e77a8 EFLAGS: 00010216
+RAX: 00000000000301f6 RBX: 000000001ff7fdfd RCX: ffffc90006dc2000
+RDX: 0000000000040000 RSI: ffffffff81a02f4b RDI: 0000000000000004
+RBP: ffff88800f9b2f30 R08: 0000000000000000 R09: 0000000050000028
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801d8d4628
+R13: 0000000000000000 R14: ffff88801bc5e5a8 R15: 0000000000000000
+FS:  00007fb1151356c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2a2bb2e5f0 CR3: 0000000018c64000 CR4: 0000000000350ee0

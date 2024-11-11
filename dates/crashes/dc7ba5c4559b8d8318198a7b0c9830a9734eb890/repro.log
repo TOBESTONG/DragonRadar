@@ -1,0 +1,303 @@
+Warning: Permanently added '[localhost]:56209' (ED25519) to the list of known hosts.
+executing program
+syzkaller login: [   19.588057] audit: type=1400 audit(1730889289.671:6): avc:  denied  { execmem } for  pid=236 comm="syz-executor320" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+[   19.618840] EXT4-fs error (device loop0): ext4_orphan_get:1385: inode #15: comm syz-executor320: casefold flag without casefold feature
+[   19.625067] EXT4-fs error (device loop0): ext4_xattr_inode_iget:389: inode #12: comm syz-executor320: casefold flag without casefold feature
+[   19.627700] ------------[ cut here ]------------
+[   19.628454] WARNING: CPU: 1 PID: 236 at kernel/locking/lockdep.c:894 register_lock_class+0x223/0x1a00
+[   19.629822] Modules linked in:
+[   19.630393] CPU: 1 PID: 236 Comm: syz-executor320 Not tainted 5.10.0 #1
+[   19.631390] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[   19.633326] RIP: 0010:register_lock_class+0x223/0x1a00
+[   19.634704] Code: 48 b8 00 00 00 00 00 fc ff df 48 89 fe 48 c1 ee 03 80 3c 06 00 0f 85 6a 15 00 00 4d 3b 6f 18 74 0b 49 81 3f c0 91 74 86 74 02 <0f> 0b 85 ed 0f 84 2d 01 00 00 f6 44 24 04 01 0f 85 22 01 00 00 83
+[   19.637790] RSP: 0018:ffff888010ea7640 EFLAGS: 00010087
+[   19.638628] RAX: dffffc0000000000 RBX: 1ffff110021d4ecf RCX: 0000000000000000
+[   19.639733] RDX: ffffffff871ec9a0 RSI: 1ffff1100273a931 RDI: ffff8880139d4988
+[   19.640808] RBP: 0000000000000001 R08: 0000000000000003 R09: 0000000000000000
+[   19.641879] R10: 0000000000000000 R11: 0000000000000001 R12: ffffffff86e82a40
+[   19.642963] R13: ffffffff844f5200 R14: ffffffff85321149 R15: ffff8880139d4970
+[   19.644043] FS:  0000555555d4f380(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+[   19.645256] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   19.646106] CR2: 00007fa22ee44cd0 CR3: 000000000fb46000 CR4: 0000000000350ee0
+[   19.647162] Call Trace:
+[   19.647566]  ? ext4_get_projid+0x190/0x190
+[   19.648198]  ? is_dynamic_key+0x1c0/0x1c0
+[   19.648820]  ? __getblk_gfp+0x48/0x70
+[   19.649408]  lockdep_init_map_waits+0x385/0x720
+[   19.650098]  ext4_xattr_inode_iget+0x198/0x590
+[   19.650772]  ? __brelse+0x84/0xa0
+[   19.651281]  ext4_xattr_inode_dec_ref_all+0x172/0xa10
+[   19.652064]  ? ext4_xattr_inode_get+0x760/0x760
+[   19.652786]  ? errseq_check+0x4b/0x80
+[   19.653375]  ? __ext4_journal_get_write_access+0x1ba/0x2b0
+[   19.654203]  ext4_xattr_delete_inode+0x4b9/0xda0
+[   19.654908]  ? ext4_expand_extra_isize_ea+0x1910/0x1910
+[   19.655719]  ? ext4_journal_check_start+0x1ae/0x290
+[   19.656463]  ext4_evict_inode+0xb87/0x1890
+[   19.657068]  ? ext4_da_write_begin+0xe60/0xe60
+[   19.657752]  ? rwlock_bug.part.0+0x90/0x90
+[   19.658397]  ? ext4_da_write_begin+0xe60/0xe60
+[   19.659070]  evict+0x284/0x6d0
+[   19.659554]  ? ext4_nfs_commit_metadata+0x300/0x300
+[   19.660288]  iput+0x4e5/0x840
+[   19.660734]  ext4_fill_super+0x92ef/0xd960
+[   19.661361]  ? ext4_calculate_overhead+0x1390/0x1390
+[   19.662104]  ? wait_for_completion+0x260/0x260
+[   19.662781]  ? set_blocksize+0x1d5/0x410
+[   19.663376]  mount_bdev+0x350/0x410
+[   19.663904]  ? ext4_calculate_overhead+0x1390/0x1390
+[   19.664670]  ? ext4_nfs_get_inode+0xd0/0xd0
+[   19.665314]  legacy_get_tree+0x105/0x220
+[   19.665897]  ? ns_capable_common+0x117/0x140
+[   19.666570]  vfs_get_tree+0x8e/0x360
+[   19.667104]  path_mount+0x1318/0x2060
+[   19.667658]  ? strncpy_from_user+0x9e/0x490
+[   19.668318]  ? finish_automount+0xa90/0xa90
+[   19.668941]  ? getname_flags.part.0+0x1dd/0x4f0
+[   19.669650]  ? _copy_from_user+0x160/0x1b0
+[   19.670304]  __x64_sys_mount+0x27e/0x300
+[   19.670890]  ? path_mount+0x2060/0x2060
+[   19.671576]  ? syscall_enter_from_user_mode+0x27/0x80
+[   19.672406]  do_syscall_64+0x33/0x40
+[   19.672945]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   19.673702] RIP: 0033:0x7f3d8d6ddb9e
+[   19.674257] Code: c7 05 3e 2e 09 00 00 00 00 00 eb 98 e8 ab 05 00 00 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+[   19.676991] RSP: 002b:00007ffc57517e88 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+[   19.678144] RAX: ffffffffffffffda RBX: 00007ffc57517ee0 RCX: 00007f3d8d6ddb9e
+[   19.679265] RDX: 0000000020000180 RSI: 00000000200000c0 RDI: 00007ffc57517ea0
+[   19.680328] RBP: 00007ffc57517ea0 R08: 00007ffc57517ee0 R09: 0000000000000446
+[   19.681372] R10: 0000000000800714 R11: 0000000000000202 R12: 0000555555d4f340
+[   19.682419] R13: 0000000000000004 R14: 0000000000800714 R15: 0000000000000000
+[   19.683465] irq event stamp: 13249
+[   19.683968] hardirqs last  enabled at (13249): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20
+[   19.685399] hardirqs last disabled at (13248): [<ffffffff83ebd8e6>] preempt_schedule_irq+0xc6/0xe0
+[   19.686730] softirqs last  enabled at (13244): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+[   19.688060] softirqs last disabled at (13237): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+[   19.689393] ---[ end trace 256136af3c68487b ]---
+[   19.690410] 
+[   19.690672] ======================================================
+[   19.691606] WARNING: possible circular locking dependency detected
+[   19.692511] 5.10.0 #1 Tainted: G        W        
+[   19.693212] ------------------------------------------------------
+[   19.694113] syz-executor320/236 is trying to acquire lock:
+[   19.694911] ffff8880139d4970 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: ext4_xattr_inode_iget+0x23e/0x590
+[   19.696390] 
+[   19.696390] but task is already holding lock:
+[   19.697267] ffff888011102628 (sb_internal){.+.+}-{0:0}, at: evict+0x284/0x6d0
+[   19.698322] 
+[   19.698322] which lock already depends on the new lock.
+[   19.698322] 
+[   19.699517] 
+[   19.699517] the existing dependency chain (in reverse order) is:
+[   19.700617] 
+[   19.700617] -> #1 (sb_internal){.+.+}-{0:0}:
+[   19.701482]        ext4_evict_inode+0x5a1/0x1890
+[   19.702154]        evict+0x284/0x6d0
+[   19.702698]        iput+0x4e5/0x840
+[   19.703226]        dentry_unlink_inode+0x2b4/0x3e0
+[   19.703926]        __dentry_kill+0x36f/0x5b0
+[   19.704571]        dput+0x6ad/0xc70
+[   19.705095]        do_renameat2+0x742/0xb80
+[   19.705732]        __x64_sys_rename+0x5d/0x80
+[   19.706417]        do_syscall_64+0x33/0x40
+[   19.707044]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   19.707883] 
+[   19.707883] -> #0 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}:
+[   19.708953]        __lock_acquire+0x2ac4/0x5ca0
+[   19.709654]        lock_acquire+0x293/0x9b0
+[   19.710298]        down_write+0x8d/0x150
+[   19.710884]        ext4_xattr_inode_iget+0x23e/0x590
+[   19.711636]        ext4_xattr_inode_dec_ref_all+0x172/0xa10
+[   19.712488]        ext4_xattr_delete_inode+0x4b9/0xda0
+[   19.713288]        ext4_evict_inode+0xb87/0x1890
+[   19.713996]        evict+0x284/0x6d0
+[   19.714558]        iput+0x4e5/0x840
+[   19.715091]        ext4_fill_super+0x92ef/0xd960
+[   19.715787]        mount_bdev+0x350/0x410
+[   19.716405]        legacy_get_tree+0x105/0x220
+[   19.717086]        vfs_get_tree+0x8e/0x360
+[   19.717732]        path_mount+0x1318/0x2060
+[   19.718382]        __x64_sys_mount+0x27e/0x300
+[   19.719075]        do_syscall_64+0x33/0x40
+[   19.719706]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   19.720555] 
+[   19.720555] other info that might help us debug this:
+[   19.720555] 
+[   19.721743]  Possible unsafe locking scenario:
+[   19.721743] 
+[   19.722632]        CPU0                    CPU1
+[   19.723337]        ----                    ----
+[   19.724021]   lock(sb_internal);
+[   19.724549]                                lock(&type->i_mutex_dir_key#3/1);
+[   19.725613]                                lock(sb_internal);
+[   19.726485]   lock(&type->i_mutex_dir_key#3/1);
+[   19.727195] 
+[   19.727195]  *** DEADLOCK ***
+[   19.727195] 
+[   19.728095] 2 locks held by syz-executor320/236:
+[   19.728826]  #0: ffff8880111020e0 (&type->s_umount_key#21/1){+.+.}-{3:3}, at: alloc_super+0x1b4/0xac0
+[   19.730141]  #1: ffff888011102628 (sb_internal){.+.+}-{0:0}, at: evict+0x284/0x6d0
+[   19.731274] 
+[   19.731274] stack backtrace:
+[   19.731916] CPU: 1 PID: 236 Comm: syz-executor320 Tainted: G        W         5.10.0 #1
+[   19.733103] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[   19.734586] Call Trace:
+[   19.734992]  dump_stack+0x107/0x163
+[   19.735543]  check_noncircular+0x25f/0x2e0
+[   19.736167]  ? print_circular_bug+0x450/0x450
+[   19.736869]  ? print_irqtrace_events+0x270/0x270
+[   19.737588]  ? find_held_lock+0x2c/0x110
+[   19.738202]  ? alloc_chain_hlocks+0x4bf/0xc80
+[   19.738854]  __lock_acquire+0x2ac4/0x5ca0
+[   19.739495]  ? lockdep_hardirqs_on_prepare+0x420/0x420
+[   19.740237]  ? _raw_spin_unlock_irq+0x1f/0x40
+[   19.740864]  ? lockdep_hardirqs_on+0x79/0x100
+[   19.741558]  ? _raw_spin_unlock_irq+0x2a/0x40
+[   19.742243]  lock_acquire+0x293/0x9b0
+[   19.742798]  ? ext4_xattr_inode_iget+0x23e/0x590
+[   19.743501]  ? lock_release+0x6f0/0x6f0
+[   19.744067]  ? mark_held_locks+0x9e/0xe0
+[   19.744658]  down_write+0x8d/0x150
+[   19.745166]  ? ext4_xattr_inode_iget+0x23e/0x590
+[   19.745859]  ? down_write_killable_nested+0x180/0x180
+[   19.746604]  ? lockdep_init_map_waits+0x3a9/0x720
+[   19.747304]  ext4_xattr_inode_iget+0x23e/0x590
+[   19.747948]  ? __brelse+0x84/0xa0
+[   19.748458]  ext4_xattr_inode_dec_ref_all+0x172/0xa10
+[   19.749208]  ? ext4_xattr_inode_get+0x760/0x760
+[   19.749868]  ? errseq_check+0x4b/0x80
+[   19.750419]  ? __ext4_journal_get_write_access+0x1ba/0x2b0
+[   19.751242]  ext4_xattr_delete_inode+0x4b9/0xda0
+[   19.751920]  ? ext4_expand_extra_isize_ea+0x1910/0x1910
+[   19.752686]  ? ext4_journal_check_start+0x1ae/0x290
+[   19.753411]  ext4_evict_inode+0xb87/0x1890
+[   19.754011]  ? ext4_da_write_begin+0xe60/0xe60
+[   19.754666]  ? rwlock_bug.part.0+0x90/0x90
+[   19.755279]  ? ext4_da_write_begin+0xe60/0xe60
+[   19.755928]  evict+0x284/0x6d0
+[   19.756393]  ? ext4_nfs_commit_metadata+0x300/0x300
+[   19.757113]  iput+0x4e5/0x840
+[   19.757574]  ext4_fill_super+0x92ef/0xd960
+[   19.758206]  ? ext4_calculate_overhead+0x1390/0x1390
+[   19.758944]  ? wait_for_completion+0x260/0x260
+[   19.759630]  ? set_blocksize+0x1d5/0x410
+[   19.760246]  mount_bdev+0x350/0x410
+[   19.760794]  ? ext4_calculate_overhead+0x1390/0x1390
+[   19.761542]  ? ext4_nfs_get_inode+0xd0/0xd0
+[   19.762147]  legacy_get_tree+0x105/0x220
+[   19.762735]  ? ns_capable_common+0x117/0x140
+[   19.763370]  vfs_get_tree+0x8e/0x360
+[   19.763897]  path_mount+0x1318/0x2060
+[   19.764466]  ? strncpy_from_user+0x9e/0x490
+[   19.765079]  ? finish_automount+0xa90/0xa90
+[   19.765715]  ? getname_flags.part.0+0x1dd/0x4f0
+[   19.766422]  ? _copy_from_user+0x160/0x1b0
+[   19.767042]  __x64_sys_mount+0x27e/0x300
+[   19.767653]  ? path_mount+0x2060/0x2060
+[   19.768237]  ? syscall_enter_from_user_mode+0x27/0x80
+[   19.768999]  do_syscall_64+0x33/0x40
+[   19.769560]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   19.770323] RIP: 0033:0x7f3d8d6ddb9e
+[   19.770864] Code: c7 05 3e 2e 09 00 00 00 00 00 eb 98 e8 ab 05 00 00 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+[   19.773668] RSP: 002b:00007ffc57517e88 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+[   19.774765] RAX: ffffffffffffffda RBX: 00007ffc57517ee0 RCX: 00007f3d8d6ddb9e
+[   19.775810] RDX: 0000000020000180 RSI: 00000000200000c0 RDI: 00007ffc57517ea0
+[   19.776847] RBP: 00007ffc57517ea0 R08: 00007ffc57517ee0 R09: 0000000000000446
+[   19.777873] R10: 0000000000800714 R11: 0000000000000202 R12: 0000555555d4f340
+[   19.778902] R13: 0000000000000004 R14: 0000000000800714 R15: 0000000000000000
+[   19.780200] EXT4-fs error (device loop0) in ext4_do_update_inode:5151: error 27
+[   19.782741] EXT4-fs error (device loop0) in ext4_orphan_del:3092: error 27
+[   19.784155] EXT4-fs error (device loop0) in ext4_do_update_inode:5151: error 27
+[   19.785836] EXT4-fs error (device loop0): ext4_evict_inode:320: inode #15: comm syz-executor320: mark_inode_dirty error
+[   19.789201] EXT4-fs (loop0): 1 orphan inode deleted
+[   19.790385] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[   19.792325] EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+
+VM DIAGNOSIS:
+18:34:49  Registers:
+info registers vcpu 0
+
+CPU#0
+RAX=0000000080010002 RBX=ffff88806ce274e0 RCX=ffffffff8136315d RDX=0000000000000001
+RSI=ffffffff81363167 RDI=0000000000000005 RBP=ffff88806ce26bc0 RSP=ffff88806ce09e20
+R8 =0000000000000000 R9 =ffffffff85d66c0f R10=0000000000000000 R11=0000000000000001
+R12=0000000000000000 R13=0000000000000001 R14=ffff88806ce26c08 R15=ffff88806ce26b40
+RIP=ffffffff81460ec4 RFL=00000002 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 00007f1cda6de8c0 00000000 00000000
+GS =0000 ffff88806ce00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe0000003000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe0000001000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=000055f7314d1ca8 CR3=000000000fe80000 CR4=00350ef0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM01=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM02=0000000000000000 0000000000000000 ffff000000000000 ffff0000ff000000
+YMM03=0000000000000000 0000000000000000 00ff00000000ff00 000000ff000000ff
+YMM04=0000000000000000 0000000000000000 2f2f2f2f2f2f2f2f 2f2f2f2f2f2f2f2f
+YMM05=0000000000000000 0000000000000000 0000000affffffff 000055f7314c9b00
+YMM06=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM07=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM08=0000000000000000 0000000000000000 0055f72fae552c00 007fff00303a3762
+YMM09=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM10=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+info registers vcpu 1
+
+CPU#1
+RAX=dffffc0000000060 RBX=0000000000000005 RCX=0000000000000000 RDX=00000000000003fd
+RSI=ffffffff823c0aec RDI=ffffffff87a492e0 RBP=ffffffff87a492a0 RSP=ffff888010ea6f78
+R8 =0000000000000001 R9 =0000000000000003 R10=000000000000001f R11=0000000000000001
+R12=0000000000000000 R13=fffffbfff0f492a7 R14=fffffbfff0f4925e R15=dffffc0000000000
+RIP=ffffffff823c0b14 RFL=00000002 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 0000555555d4f380 00000000 00000000
+GS =0000 ffff88806cf00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe000003e000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe000003c000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=00007fa22ee44cd0 CR3=000000000fb46000 CR4=00350ee0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 3d3d3d3d3d3d3d3d 3d3d3d3d3d3d3d3d
+YMM01=0000000000000000 0000000000000000 0000000000000000 323d595449524f49
+YMM02=0000000000000000 0000000000000000 ffffffffffffffff ffffffffffffffff
+YMM03=0000000000000000 0000000000000000 2f6c616e72756f6a 2f676f6c2f6e7572
+YMM04=0000000000000000 0000000000000000 b8ee688d492446a7 0000000000127340
+YMM05=0000000000000000 0000000000000000 d3fdd5f48436fbd7 00000000000aeab8
+YMM06=0000000000000000 0000000000000000 9c0871ca27196065 00000000000ae970
+YMM07=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM08=0000000000000000 0000000000000000 44495f474f4c5359 530069253d595449
+YMM09=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM10=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000

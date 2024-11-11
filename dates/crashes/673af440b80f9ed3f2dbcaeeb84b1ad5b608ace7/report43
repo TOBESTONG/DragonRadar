@@ -1,0 +1,52 @@
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs (loop2): feature flags set on rev 0 fs, running e2fsck is recommended
+================================================================================
+UBSAN: shift-out-of-bounds in fs/ext4/mballoc.c:2736:26
+shift exponent 34 is too large for 32-bit type 'int'
+CPU: 1 PID: 2188 Comm: syz.2.28 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+EXT4-fs (loop3): 1 truncate cleaned up
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ ext4_mb_init_backend fs/ext4/mballoc.c:2736 [inline]
+ ext4_mb_init.cold+0x9c/0x113 fs/ext4/mballoc.c:2920
+ ext4_fill_super+0x8156/0xd960 fs/ext4/super.c:4999
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+ mount_bdev+0x350/0x410 fs/super.c:1419
+EXT4-fs warning (device loop3): verify_group_input:150: Last group not full
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fe93222069a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe930e76e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fe930e76ef0 RCX: 00007fe93222069a
+RDX: 0000000020000000 RSI: 0000000020000500 RDI: 00007fe930e76eb0
+RBP: 0000000020000000 R08: 00007fe930e76ef0 R09: 000000000000c902
+R10: 000000000000c902 R11: 0000000000000246 R12: 0000000020000500
+R13: 00007fe930e76eb0 R14: 00000000000004c8 R15: 0000000020000040
+================================================================================
+EXT4-fs error (device loop2): ext4_mb_mark_diskspace_used:3233: comm syz.2.28: Allocating blocks 42-43 which overlap fs metadata
+EXT4-fs error (device loop2): ext4_mb_mark_diskspace_used:3233: comm syz.2.28: Allocating blocks 42-43 which overlap fs metadata
+EXT4-fs error (device loop2): ext4_mb_mark_diskspace_used:3233: comm syz.2.28: Allocating blocks 42-43 which overlap fs metadata
+EXT4-fs (loop2): 1 orphan inode deleted
+EXT4-fs (loop2): mounting with "discard" option, but the device does not support discard
+EXT4-fs (loop2): mounted filesystem without journal. Opts: delalloc,noblock_validity,lazytime,discard,bsddf,resgid=0x0000000000000000,nodelalloc,grpquota,sb=0x00000000000000082,errors=continue
+9pnet: Insufficient options for proto=fd
+EXT4-fs (loop0): 1 orphan inode deleted
+EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,dioread_lock,init_itable,noauto_da_alloc,resgid=0x0000000000000000,barrier,init_itable=0x000000000000c202,usrquota,
+ext4 filesystem being mounted at /4/file1 supports timestamps until 2038 (0x7fffffff)
+nfs4: Unknown parameter 'fsc0000000'
+syz.2.28 (2188) used greatest stack depth: 23088 bytes left
+EXT4-fs error (device loop3): __ext4_iget:4839: inode #17: block 1803188595: comm syz-executor: invalid block
+EXT4-fs error (device loop3): __ext4_iget:4839: inode #17: block 1803188595: comm syz-executor: invalid block

@@ -1,0 +1,235 @@
+ext4 filesystem being mounted at /0/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+netlink: 4 bytes leftover after parsing attributes in process `syz.1.199'.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5391 at mm/page_alloc.c:4930 __alloc_pages_nodemask+0x58a/0x6a0 mm/page_alloc.c:4965
+Modules linked in:
+CPU: 0 PID: 5391 Comm: syz.1.199 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:__alloc_pages_nodemask+0x58a/0x6a0 mm/page_alloc.c:4930
+Code: 00 00 0c 00 0f 85 86 00 00 00 4c 89 c2 44 89 e6 44 89 ff c6 44 24 70 00 4c 89 6c 24 58 e8 de d6 ff ff 49 89 c6 e9 17 fd ff ff <0f> 0b e9 d6 fd ff ff 4c 89 44 24 18 4c 89 44 24 10 89 74 24 0c 4c
+RSP: 0018:ffff88801b7f73d8 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 1ffff110036fee7f RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000040dc0
+RBP: 0000000000000000 R08: 0000000000000003 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000015
+R13: 0000000000000015 R14: 0000000000000000 R15: 0000000000000000
+FS:  00007f230289b6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f28dd139ff0 CR3: 0000000012a88000 CR4: 0000000000350ef0
+Call Trace:
+
+======================================================
+WARNING: possible circular locking dependency detected
+5.10.0 #1 Not tainted
+------------------------------------------------------
+syz.3.166/5366 is trying to acquire lock:
+ffff888010dae628 (sb_internal){.+.+}-{0:0}, at: evict+0x284/0x6d0 fs/inode.c:578
+
+but task is already holding lock:
+ffff888009d2bbd8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ffff888009d2bbd8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x15e/0x12b0 fs/ext4/xattr.c:2306
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&ei->xattr_sem){++++}-{3:3}:
+       down_write+0x8d/0x150 kernel/locking/rwsem.c:1531
+       ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+       ext4_xattr_set_handle+0x15e/0x12b0 fs/ext4/xattr.c:2306
+       ext4_initxattrs+0xb5/0x120 fs/ext4/xattr_security.c:43
+       security_inode_init_security+0x1a7/0x350 security/security.c:1053
+       __ext4_new_inode+0x38ec/0x55b0 fs/ext4/ialloc.c:1317
+       ext4_create+0x2ce/0x4d0 fs/ext4/namei.c:2619
+       lookup_open+0xf52/0x1330 fs/namei.c:3104
+       open_last_lookups fs/namei.c:3178 [inline]
+       path_openat+0x93f/0x26f0 fs/namei.c:3366
+       do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+       do_sys_openat2+0x16d/0x420 fs/open.c:1168
+       do_sys_open fs/open.c:1184 [inline]
+       __do_sys_openat fs/open.c:1200 [inline]
+       __se_sys_openat fs/open.c:1195 [inline]
+       __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #1 (jbd2_handle){++++}-{0:0}:
+       start_this_handle+0x103d/0x1440 fs/jbd2/transaction.c:446
+ alloc_pages_current+0x191/0x2a0 mm/mempolicy.c:2271
+       jbd2__journal_start+0x3d3/0x960 fs/jbd2/transaction.c:503
+       __ext4_journal_start_sb+0x210/0x490 fs/ext4/ext4_jbd2.c:105
+       ext4_sample_last_mounted fs/ext4/file.c:804 [inline]
+       ext4_file_open+0x647/0xab0 fs/ext4/file.c:829
+       do_dentry_open+0x650/0x1090 fs/open.c:817
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x32/0xa0 mm/slab_common.c:836
+       do_open fs/namei.c:3252 [inline]
+       path_openat+0x196a/0x26f0 fs/namei.c:3369
+       do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ kmalloc_order_trace+0x14/0x110 mm/slab_common.c:852
+       do_sys_openat2+0x16d/0x420 fs/open.c:1168
+       do_sys_open fs/open.c:1184 [inline]
+       __do_sys_openat fs/open.c:1200 [inline]
+       __se_sys_openat fs/open.c:1195 [inline]
+       __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ kmalloc_array include/linux/slab.h:592 [inline]
+ kcalloc include/linux/slab.h:603 [inline]
+ netlbl_cipsov4_add_std net/netlabel/netlabel_cipso_v4.c:263 [inline]
+ netlbl_cipsov4_add+0xeaa/0x22f0 net/netlabel/netlabel_cipso_v4.c:416
+
+-> #0 (sb_internal){.+.+}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:2868 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+       validate_chain kernel/locking/lockdep.c:3608 [inline]
+       __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+       lock_acquire kernel/locking/lockdep.c:5437 [inline]
+       lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1594 [inline]
+       sb_start_intwrite include/linux/fs.h:1711 [inline]
+       ext4_evict_inode+0x5a1/0x1890 fs/ext4/inode.c:237
+       evict+0x284/0x6d0 fs/inode.c:578
+       iput_final fs/inode.c:1654 [inline]
+       iput+0x4e5/0x840 fs/inode.c:1680
+       ext4_xattr_set_entry+0x498/0x37c0 fs/ext4/xattr.c:1783
+       ext4_xattr_block_set+0x5b6/0x2f50 fs/ext4/xattr.c:1869
+       ext4_xattr_set_handle+0xd01/0x12b0 fs/ext4/xattr.c:2390
+       ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2491
+       __vfs_setxattr+0x10f/0x170 fs/xattr.c:177
+ genl_family_rcv_msg_doit+0x22d/0x330 net/netlink/genetlink.c:739
+       __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+       __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+       vfs_setxattr+0xe8/0x270 fs/xattr.c:283
+       setxattr+0x23d/0x330 fs/xattr.c:548
+       path_setxattr+0x170/0x190 fs/xattr.c:567
+       __do_sys_setxattr fs/xattr.c:582 [inline]
+       __se_sys_setxattr fs/xattr.c:578 [inline]
+       __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:578
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+other info that might help us debug this:
+
+Chain exists of:
+  sb_internal --> jbd2_handle --> 
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x33e/0x5a0 net/netlink/genetlink.c:800
+&ei->xattr_sem
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ei->xattr_sem);
+                               lock(jbd2_handle);
+                               lock(&ei->xattr_sem
+);
+  lock(sb_internal);
+
+ *** DEADLOCK ***
+
+3 locks held by syz.3.166/5366:
+ netlink_rcv_skb+0x14b/0x430 net/netlink/af_netlink.c:2494
+ #0: ffff888010dae438 (sb_writers#3){.+.+}-{0:0}, at: path_setxattr+0xb5/0x190 fs/xattr.c:565
+ #1: 
+ffff888009d2bf98 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ffff888009d2bf98 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: vfs_setxattr+0xca/0x270 fs/xattr.c:282
+ #2: ffff888009d2bbd8
+ (
+&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x15e/0x12b0 fs/ext4/xattr.c:2306
+
+stack backtrace:
+CPU: 1 PID: 5366 Comm: syz.3.166 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+Call Trace:
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x53a/0x7e0 net/netlink/af_netlink.c:1330
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
+ netlink_sendmsg+0x912/0xe20 net/netlink/af_netlink.c:1919
+ check_prev_add kernel/locking/lockdep.c:2868 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+ validate_chain kernel/locking/lockdep.c:3608 [inline]
+ __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0x15c/0x190 net/socket.c:671
+ ____sys_sendmsg+0x709/0x880 net/socket.c:2353
+ percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+ __sb_start_write include/linux/fs.h:1594 [inline]
+ sb_start_intwrite include/linux/fs.h:1711 [inline]
+ ext4_evict_inode+0x5a1/0x1890 fs/ext4/inode.c:237
+ evict+0x284/0x6d0 fs/inode.c:578
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ ext4_xattr_set_entry+0x498/0x37c0 fs/ext4/xattr.c:1783
+ ext4_xattr_block_set+0x5b6/0x2f50 fs/ext4/xattr.c:1869
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ ext4_xattr_set_handle+0xd01/0x12b0 fs/ext4/xattr.c:2390
+ ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2491
+ __vfs_setxattr+0x10f/0x170 fs/xattr.c:177
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+ __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ vfs_setxattr+0xe8/0x270 fs/xattr.c:283
+ setxattr+0x23d/0x330 fs/xattr.c:548
+RIP: 0033:0x7f2303c21ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f230289b038 EFLAGS: 00000246
+ path_setxattr+0x170/0x190 fs/xattr.c:567
+ __do_sys_setxattr fs/xattr.c:582 [inline]
+ __se_sys_setxattr fs/xattr.c:578 [inline]
+ __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:578
+ ORIG_RAX: 000000000000002e
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+RAX: ffffffffffffffda RBX: 00007f2303dd9f80 RCX: 00007f2303c21ef9
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RDX: 0000000000000000 RSI: 0000000020000280 RDI: 0000000000000005
+RIP: 0033:0x7f1cfa420ef9
+RBP: 00007f2303c94b76 R08: 0000000000000000 R09: 0000000000000000
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+RSP: 002b:00007f1cf9058038 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
+R13: 0000000000000000 R14: 00007f2303dd9f80 R15: 00007ffcdb9af898
+RAX: ffffffffffffffda RBX: 00007f1cfa5d9130 RCX: 00007f1cfa420ef9
+RDX: 0000000000000000 RSI: 0000000020000200 RDI: 00000000200001c0
+irq event stamp: 3726
+RBP: 00007f1cfa493b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+hardirqs last  enabled at (3725): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (3726): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+R13: 0000000000000001 R14: 00007f1cfa5d9130 R15: 00007ffdf599b9c8
+softirqs last  enabled at (3688): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (3679): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 19389eb91dade8ea ]---
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0:	ff c3                	inc    %ebx
+   2:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
+   9:	00 00 00
+   c:	0f 1f 40 00          	nopl   0x0(%rax)
+  10:	48 89 f8             	mov    %rdi,%rax
+  13:	48 89 f7             	mov    %rsi,%rdi
+  16:	48 89 d6             	mov    %rdx,%rsi
+  19:	48 89 ca             	mov    %rcx,%rdx
+  1c:	4d 89 c2             	mov    %r8,%r10
+  1f:	4d 89 c8             	mov    %r9,%r8
+  22:	4c 8b 4c 24 08       	mov    0x8(%rsp),%r9
+  27:	0f 05                	syscall
+* 29:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax <-- trapping instruction
+  2f:	73 01                	jae    0x32
+  31:	c3                   	ret
+  32:	48 c7 c1 a8 ff ff ff 	mov    $0xffffffffffffffa8,%rcx
+  39:	f7 d8                	neg    %eax
+  3b:	64 89 01             	mov    %eax,%fs:(%rcx)
+  3e:	48                   	rex.W

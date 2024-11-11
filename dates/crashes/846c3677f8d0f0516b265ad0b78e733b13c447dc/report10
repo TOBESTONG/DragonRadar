@@ -1,0 +1,43 @@
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /3/file0 supports timestamps until 2038 (0x7fffffff)
+9pnet: Insufficient options for proto=fd
+------------[ cut here ]------------
+kernel BUG at fs/notify/dnotify/dnotify.c:118!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 59 Comm: kworker/u4:1 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: events_unbound fsnotify_mark_destroy_workfn
+RIP: 0010:dnotify_free_mark fs/notify/dnotify/dnotify.c:118 [inline]
+RIP: 0010:dnotify_free_mark+0x4b/0x60 fs/notify/dnotify/dnotify.c:112
+Code: 80 3c 02 00 75 32 48 83 bd 80 00 00 00 00 75 15 e8 aa c5 bc ff 48 8b 3d 83 31 4d 04 48 89 ee 5d e9 3a ae e9 ff e8 95 c5 bc ff <0f> 0b 48 c7 c7 c0 fa 29 85 e8 96 42 57 02 e8 d2 f5 e9 ff eb c7 41
+RSP: 0018:ffff88800aa37c50 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffffff845009c0 RCX: 1ffff11001546f96
+RDX: ffff88800a1a4e00 RSI: ffffffff8189492b RDI: ffff88801a409080
+RBP: ffff88801a409000 R08: 0000000000000001 R09: ffffffff86e5f70f
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800a191000
+R13: ffff88800aa37ca0 R14: ffff88800aa37cb0 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007faeec5e6760 CR3: 000000000abf0000 CR4: 0000000000350ee0
+Call Trace:
+ fsnotify_final_mark_destroy+0x77/0xb0 fs/notify/mark.c:205
+ fsnotify_mark_destroy_workfn+0x1b1/0x290 fs/notify/mark.c:840
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+---[ end trace b491e7b1a2f96caa ]---
+RIP: 0010:dnotify_free_mark fs/notify/dnotify/dnotify.c:118 [inline]
+RIP: 0010:dnotify_free_mark+0x4b/0x60 fs/notify/dnotify/dnotify.c:112
+Code: 80 3c 02 00 75 32 48 83 bd 80 00 00 00 00 75 15 e8 aa c5 bc ff 48 8b 3d 83 31 4d 04 48 89 ee 5d e9 3a ae e9 ff e8 95 c5 bc ff <0f> 0b 48 c7 c7 c0 fa 29 85 e8 96 42 57 02 e8 d2 f5 e9 ff eb c7 41
+RSP: 0018:ffff88800aa37c50 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffffff845009c0 RCX: 1ffff11001546f96
+RDX: ffff88800a1a4e00 RSI: ffffffff8189492b RDI: ffff88801a409080
+RBP: ffff88801a409000 R08: 0000000000000001 R09: ffffffff86e5f70f
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800a191000
+R13: ffff88800aa37ca0 R14: ffff88800aa37cb0 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2e6807aa8c CR3: 000000000abf0000 CR4: 0000000000350ee0
+kworker/u4:1 (59) used greatest stack depth: 23576 bytes left

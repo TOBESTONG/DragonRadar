@@ -1,0 +1,187 @@
+hpet_rtc_timer_reinit: 23 callbacks suppressed
+hpet: Lost 1 RTC interrupts
+EXT4-fs (loop0): sb orphan head is 0
+sb_info orphan list:
+==================================================================
+BUG: KASAN: use-after-free in dump_orphan_list fs/ext4/super.c:1135 [inline]
+BUG: KASAN: use-after-free in ext4_put_super+0x1119/0x11b0 fs/ext4/super.c:1242
+Read of size 4 at addr ffff888013f1d8d4 by task syz-executor/230
+
+CPU: 0 PID: 230 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ dump_orphan_list fs/ext4/super.c:1135 [inline]
+ ext4_put_super+0x1119/0x11b0 fs/ext4/super.c:1242
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fdd3f6cc227
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007ffcc174be88 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007fdd3f73da14 RCX: 00007fdd3f6cc227
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffcc174bf40
+RBP: 00007ffcc174bf40 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffcc174cfc0
+R13: 00007fdd3f73da14 R14: 000000000000acd6 R15: 00007ffcc174d000
+
+Allocated by task 3763:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ ext4_alloc_inode+0x1a/0x630 fs/ext4/super.c:1294
+ alloc_inode+0x63/0x230 fs/inode.c:234
+ iget_locked+0x1c6/0x610 fs/inode.c:1195
+ __ext4_iget+0x27c/0x4180 fs/ext4/inode.c:4619
+ ext4_orphan_get+0x284/0x6f0 fs/ext4/ialloc.c:1385
+ ext4_orphan_cleanup fs/ext4/super.c:3088 [inline]
+ ext4_fill_super+0x90de/0xd960 fs/ext4/super.c:5067
+ mount_bdev+0x350/0x410 fs/super.c:1419
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 230:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ i_callback+0x42/0x70 fs/inode.c:223
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+
+Last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ destroy_inode+0x12f/0x1c0 fs/inode.c:289
+ dispose_list fs/inode.c:613 [inline]
+ evict_inodes+0x3c1/0x5e0 fs/inode.c:663
+ generic_shutdown_super+0xa6/0x370 fs/super.c:454
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Second to last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ destroy_inode+0x12f/0x1c0 fs/inode.c:289
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ do_unlinkat+0x3ee/0x650 fs/namei.c:3903
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff888013f1d898
+ which belongs to the cache ext4_inode_cache of size 2392
+The buggy address is located 60 bytes inside of
+ 2392-byte region [ffff888013f1d898, ffff888013f1e1f0)
+The buggy address belongs to the page:
+page:000000004f6400b1 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x13f18
+head:000000004f6400b1 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x100000000010200(slab|head)
+raw: 0100000000010200 ffffea00004fda00 0000000300000003 ffff88800a8d48c0
+raw: 0000000000000000 00000000000d000d 00000001ffffffff ffff88800c2d8101
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff88800c2d8101
+
+Memory state around the buggy address:
+ ffff888013f1d780: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888013f1d800: 00 00 00 fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff888013f1d880: fc fc fc fa fb fb fb fb fb fb fb fb fb fb fb fb
+                                                 ^
+ ffff888013f1d900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888013f1d980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+hpet: Lost 9 RTC interrupts
+  inode loop0:16 at 000000000b839a2a: mode 100755, nlink 2, next 0
+------------[ cut here ]------------
+kernel BUG at fs/ext4/super.c:1243!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 230 Comm: syz-executor Tainted: G    B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_put_super+0xe1f/0x11b0 fs/ext4/super.c:1243
+Code: 6c 24 50 e8 33 ca 81 ff 4c 89 e7 e8 4b d3 ea ff 4c 89 e7 e8 43 cb f5 ff 4c 89 e7 e8 6b 8b ec ff e9 1d fe ff ff e8 d1 11 92 ff <0f> 0b 48 c7 c7 40 d1 31 85 e8 d2 8e 2c 02 48 8b 7c 24 10 e8 09 42
+RSP: 0018:ffff888019547d98 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffffffff81b3ffad
+RDX: ffff88800ca38000 RSI: ffffffff81b3fcef RDI: ffff888013f1d988
+RBP: ffff888015f6c000 R08: 0000000000000042 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800ac0a000
+R13: ffff888013f1dbd0 R14: ffff888015f6c318 R15: ffff888015f6c318
+FS:  0000555555ad0500(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2d5cbcdf28 CR3: 000000001953a000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fdd3f6cc227
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007ffcc174be88 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007fdd3f73da14 RCX: 00007fdd3f6cc227
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffcc174bf40
+RBP: 00007ffcc174bf40 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffcc174cfc0
+R13: 00007fdd3f73da14 R14: 000000000000acd6 R15: 00007ffcc174d000
+Modules linked in:
+hpet: Lost 2 RTC interrupts
+---[ end trace e80746f64e60c72c ]---
+RIP: 0010:ext4_put_super+0xe1f/0x11b0 fs/ext4/super.c:1243
+Code: 6c 24 50 e8 33 ca 81 ff 4c 89 e7 e8 4b d3 ea ff 4c 89 e7 e8 43 cb f5 ff 4c 89 e7 e8 6b 8b ec ff e9 1d fe ff ff e8 d1 11 92 ff <0f> 0b 48 c7 c7 40 d1 31 85 e8 d2 8e 2c 02 48 8b 7c 24 10 e8 09 42
+RSP: 0018:ffff888019547d98 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffffffff81b3ffad
+RDX: ffff88800ca38000 RSI: ffffffff81b3fcef RDI: ffff888013f1d988
+RBP: ffff888015f6c000 R08: 0000000000000042 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800ac0a000
+R13: ffff888013f1dbd0 R14: ffff888015f6c318 R15: ffff888015f6c318
+FS:  0000555555ad0500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2d5cc37000 CR3: 000000001953a000 CR4: 0000000000350ee0

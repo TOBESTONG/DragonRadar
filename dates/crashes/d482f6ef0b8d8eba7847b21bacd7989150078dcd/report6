@@ -1,0 +1,57 @@
+EXT4-fs error (device loop2) in ext4_reserve_inode_write:5740: Corrupt filesystem
+EXT4-fs error (device loop2): ext4_dirty_inode:5942: inode #15: comm syz.2.200: mark_inode_dirty error
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inline.c:221!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 4531 Comm: syz.2.200 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_write_inline_data+0x33a/0x3f0 fs/ext4/inline.c:221
+Code: 41 5c 41 5d 41 5e 41 5f e9 f3 08 a2 ff e8 ee 08 a2 ff b8 3c 00 00 00 48 29 e8 4c 63 e8 41 29 c4 e9 eb fe ff ff e8 d6 08 a2 ff <0f> 0b 48 c7 c7 e0 bf 2f 85 e8 d7 85 3c 02 e8 c3 08 a2 ff 0f 0b 48
+RSP: 0018:ffff88801b64f948 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88801b0bc820 RCX: ffffffff81a403b8
+RDX: ffff88800df48000 RSI: ffffffff81a405ea RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff88800b2ea3bf
+R10: 0000000000000000 R11: 0000000000000001 R12: 000000000000003c
+R13: 0000000000000000 R14: ffff88801b64fad0 R15: ffff88801b0bcd2a
+FS:  00007f0e0a4f26c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffe7abf2fd0 CR3: 000000001992e000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_restore_inline_data fs/ext4/inline.c:1123 [inline]
+ ext4_convert_inline_data_nolock+0x252/0xd60 fs/ext4/inline.c:1247
+ ext4_convert_inline_data+0x37c/0x490 fs/ext4/inline.c:1986
+ ext4_fallocate+0x19d/0x3e70 fs/ext4/extents.c:4659
+ vfs_fallocate+0x494/0xdd0 fs/open.c:309
+ ioctl_preallocate+0x18e/0x200 fs/ioctl.c:494
+ file_ioctl fs/ioctl.c:539 [inline]
+ do_vfs_ioctl+0xd2b/0x1140 fs/ioctl.c:732
+ __do_sys_ioctl fs/ioctl.c:751 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x108/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f0e0b899ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f0e0a4f2038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f0e0ba52058 RCX: 00007f0e0b899ef9
+RDX: 0000000020000080 RSI: 0000000040305839 RDI: 0000000000000004
+RBP: 00007f0e0b90cb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f0e0ba52058 R15: 00007ffcf8212468
+Modules linked in:
+---[ end trace dd7b3f62f0d9098a ]---
+RIP: 0010:ext4_write_inline_data+0x33a/0x3f0 fs/ext4/inline.c:221
+Code: 41 5c 41 5d 41 5e 41 5f e9 f3 08 a2 ff e8 ee 08 a2 ff b8 3c 00 00 00 48 29 e8 4c 63 e8 41 29 c4 e9 eb fe ff ff e8 d6 08 a2 ff <0f> 0b 48 c7 c7 e0 bf 2f 85 e8 d7 85 3c 02 e8 c3 08 a2 ff 0f 0b 48
+RSP: 0018:ffff88801b64f948 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88801b0bc820 RCX: ffffffff81a403b8
+RDX: ffff88800df48000 RSI: ffffffff81a405ea RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff88800b2ea3bf
+R10: 0000000000000000 R11: 0000000000000001 R12: 000000000000003c
+R13: 0000000000000000 R14: ffff88801b64fad0 R15: ffff88801b0bcd2a
+FS:  00007f0e0a4f26c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa480035048 CR3: 000000001992e000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+EXT4-fs error (device loop2): ext4_map_blocks:584: inode #2: block 16: comm syz-executor: lblock 0 mapped to illegal pblock 16 (length 1)
+EXT4-fs warning (device loop2): kmmpd:182: kmmpd being stopped since MMP feature has been disabled.

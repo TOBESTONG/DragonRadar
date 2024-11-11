@@ -1,0 +1,145 @@
+EXT4-fs error (device loop2) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop2): ext4_setent:3593: inode #2: comm syz.2.269: mark_inode_dirty error
+9pnet: Insufficient options for proto=fd
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+modprobe/8529 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff88800bd518a8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88800bd518a8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+EXT4-fs (loop1): orphan cleanup on readonly fs
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 3188
+hardirqs last  enabled at (3188): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (3188): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (3187): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (3187): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (2820): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (3155): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+EXT4-fs error (device loop1): ext4_mb_generate_buddy:802: group 0, 
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+5 locks held by modprobe/8529:
+ #0: ffff88801065dfa8 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ #0: ffff88801065dfa8 (&mm->mmap_lock#2){++++}-{3:3}, at: do_user_addr_fault+0x339/0xc40 arch/x86/mm/fault.c:1313
+ #1: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: filemap_map_pages+0x17f/0xdf0 mm/filemap.c:2843
+ #2: 
+block bitmap and bg descriptor inconsistent: 216 vs 220 free clusters
+ffff88800fc65318 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88800fc65318 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: pte_alloc_one_map mm/memory.c:3688 [inline]
+ffff88800fc65318 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: alloc_set_pte+0xa09/0xf80 mm/memory.c:3801
+ #3: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #4: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 1 PID: 8529 Comm: modprobe Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:check_kcov_mode kernel/kcov.c:163 [inline]
+RIP: 0010:write_comp_data+0x18/0x80 kernel/kcov.c:218
+Code: 00 00 c3 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 f2 65 8b 05 b6 e9 bb 7e 65 48 8b 34 25 40 ef 01 00 a9 00 01 ff 00 <74> 0f f6 c4 01 74 59 8b 86 14 14 00 00 85 c0 74 4f 8b 86 f0 13 00
+RSP: 0000:ffff88801f4a7bc0 EFLAGS: 00000246
+RAX: 0000000080000001 RBX: ffff88801f4a7de0 RCX: ffffffff8166982a
+RDX: 0000000000000000 RSI: ffff888017688000 RDI: 0000000000000007
+RBP: ffffea00001fa8c0 R08: 0000000000000000 R09: ffffea00001fa8c7
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888018c3a100
+R13: ffffea00001fa8c0 R14: 8000000007ea3025 R15: ffff88801f4a7e28
+ compound_head include/linux/page-flags.h:187 [inline]
+ PageSwapBacked include/linux/page-flags.h:357 [inline]
+ mm_counter_file include/linux/mm.h:1912 [inline]
+ alloc_set_pte+0x22a/0xf80 mm/memory.c:3823
+ filemap_map_pages+0xc51/0xdf0 mm/filemap.c:2887
+ do_fault_around mm/memory.c:3967 [inline]
+ do_read_fault mm/memory.c:4001 [inline]
+ do_fault mm/memory.c:4134 [inline]
+ handle_pte_fault mm/memory.c:4374 [inline]
+ __handle_mm_fault mm/memory.c:4509 [inline]
+ handle_mm_fault+0x24f6/0x37e0 mm/memory.c:4607
+ do_user_addr_fault+0x645/0xc40 arch/x86/mm/fault.c:1372
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa2/0x1a0 arch/x86/mm/fault.c:1485
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0x5605817ed5ff
+Code: 89 01 00 00 4c 89 e3 49 83 c4 01 45 0f b6 74 24 ff 4d 8d 7c 24 ff 45 84 f6 74 2a e8 7b 1d ff ff 49 89 c1 49 0f be c6 4d 8b 09 <41> f6 44 41 01 20 0f 84 03 01 00 00 40 84 ed 75 c9 bd 01 00 00 00
+RSP: 002b:00007ffc5bb16690 EFLAGS: 00010207
+EXT4-fs error (device loop1): ext4_free_branches:1008: inode #13: comm syz.1.277: invalid indirect mapped block 1 (level 2)
+
+RAX: 0000000000000070 RBX: 0000560582554741 RCX: 0000000000000000
+RDX: 0000560582554738 RSI: 00005605817fced9 RDI: 0000000000000000
+EXT4-fs (loop1): 1 truncate cleaned up
+RBP: 0000000000000000 R08: 00005605817fb340 R09: 00007f08c75c43c0
+R10: 000056058255c4f0 R11: 0000000000000000 R12: 0000560582554742
+R13: 0000000000000000 R14: 0000000000000070 R15: 0000560582554741
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+----------------
+Code disassembly (best guess):
+   0:	00 00                	add    %al,(%rax)
+   2:	c3                   	ret
+   3:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
+   a:	00 00 00 00
+   e:	0f 1f 40 00          	nopl   0x0(%rax)
+  12:	49 89 f2             	mov    %rsi,%r10
+  15:	65 8b 05 b6 e9 bb 7e 	mov    %gs:0x7ebbe9b6(%rip),%eax        # 0x7ebbe9d2
+  1c:	65 48 8b 34 25 40 ef 	mov    %gs:0x1ef40,%rsi
+  23:	01 00
+  25:	a9 00 01 ff 00       	test   $0xff0100,%eax
+* 2a:	74 0f                	je     0x3b <-- trapping instruction
+  2c:	f6 c4 01             	test   $0x1,%ah
+  2f:	74 59                	je     0x8a
+  31:	8b 86 14 14 00 00    	mov    0x1414(%rsi),%eax
+  37:	85 c0                	test   %eax,%eax
+  39:	74 4f                	je     0x8a
+  3b:	8b                   	.byte 0x8b
+  3c:	86 f0                	xchg   %dh,%al
+  3e:	13 00                	adc    (%rax),%eax

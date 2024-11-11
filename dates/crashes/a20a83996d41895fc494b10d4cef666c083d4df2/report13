@@ -1,0 +1,111 @@
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs error (device loop3): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 25 vs 150994969 free clusters
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:5121!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 229 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_do_update_inode fs/ext4/inode.c:5121 [inline]
+RIP: 0010:ext4_mark_iloc_dirty+0x276e/0x3710 fs/ext4/inode.c:5712
+Code: fd ff ff e9 49 e8 ff ff e8 4f da 9f ff 44 8b 74 24 48 31 ff 44 89 f6 e8 00 d2 9f ff 45 85 f6 0f 84 04 f1 ff ff e8 32 da 9f ff <0f> 0b 48 c7 c7 60 de 2f 85 e8 33 57 3a 02 e8 1f da 9f ff 48 8d 85
+RSP: 0018:ffff88801756fae0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888013a8b470 RCX: ffffffff81a63480
+RDX: ffff888011624e00 RSI: ffffffff81a6348e RDI: 0000000000000005
+RBP: ffff888015682500 R08: 0000000000000000 R09: ffff888013a8b65f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888010f52000
+R13: 0000000000000000 R14: 00000000ffffffff R15: ffff88801756fc10
+FS:  0000555555ebf500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000555555ee24e8 CR3: 0000000017564000 CR4: 0000000000350ee0
+Call Trace:
+ __ext4_mark_inode_dirty+0x201/0x860 fs/ext4/inode.c:5906
+ ext4_dirty_inode+0xf3/0x130 fs/ext4/inode.c:5942
+ __mark_inode_dirty+0x893/0x11a0 fs/fs-writeback.c:2260
+ generic_update_time fs/inode.c:1764 [inline]
+ update_time fs/inode.c:1777 [inline]
+ touch_atime+0x63f/0x740 fs/inode.c:1848
+ file_accessed include/linux/fs.h:2220 [inline]
+ iterate_dir+0x3e3/0x670 fs/readdir.c:70
+ __do_sys_getdents64 fs/readdir.c:366 [inline]
+ __se_sys_getdents64 fs/readdir.c:351 [inline]
+ __x64_sys_getdents64+0x13a/0x2c0 fs/readdir.c:351
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f660688d093
+Code: c1 66 0f 1f 44 00 00 48 83 c4 08 48 89 ef 5b 5d e9 52 43 f8 ff 66 90 b8 ff ff ff 7f 48 39 c2 48 0f 47 d0 b8 d9 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 05 c3 0f 1f 40 00 48 c7 c2 a8 ff ff ff f7 d8
+RSP: 002b:00007ffe7b2e2938 EFLAGS: 00000293 ORIG_RAX: 00000000000000d9
+RAX: ffffffffffffffda RBX: 0000555555eda4e0 RCX: 00007f660688d093
+RDX: 0000000000008000 RSI: 0000555555eda4e0 RDI: 0000000000000005
+RBP: 0000555555eda4b4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000001000 R11: 0000000000000293 R12: ffffffffffffffa8
+R13: 0000000000000010 R14: 0000555555eda4b0 R15: 00007ffe7b2e4be0
+Modules linked in:
+---[ end trace 324c0d4f94f890dc ]---
+RIP: 0010:ext4_do_update_inode fs/ext4/inode.c:5121 [inline]
+RIP: 0010:ext4_mark_iloc_dirty+0x276e/0x3710 fs/ext4/inode.c:5712
+Code: fd ff ff e9 49 e8 ff ff e8 4f da 9f ff 44 8b 74 24 48 31 ff 44 89 f6 e8 00 d2 9f ff 45 85 f6 0f 84 04 f1 ff ff e8 32 da 9f ff <0f> 0b 48 c7 c7 60 de 2f 85 e8 33 57 3a 02 e8 1f da 9f ff 48 8d 85
+RSP: 0018:ffff88801756fae0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888013a8b470 RCX: ffffffff81a63480
+RDX: ffff888011624e00 RSI: ffffffff81a6348e RDI: 0000000000000005
+RBP: ffff888015682500 R08: 0000000000000000 R09: ffff888013a8b65f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888010f52000
+R13: 0000000000000000 R14: 00000000ffffffff R15: ffff88801756fc10
+FS:  0000555555ebf500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000555555ee24e8 CR3: 0000000017564000 CR4: 0000000000350ee0
+note: syz-executor[229] exited with preempt_count 1
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 229 at fs/namespace.c:1109 cleanup_mnt+0x42e/0x580 fs/namespace.c:1109
+Modules linked in:
+CPU: 1 PID: 229 Comm: syz-executor Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+EXT4-fs error (device loop3): ext4_lookup:1706: inode #16: comm syz-executor: iget: bad extended attribute block 281470681743360
+RIP: 0010:cleanup_mnt+0x42e/0x580 fs/namespace.c:1109
+Code: 85 e8 66 da 8b 00 49 8d 7c 24 38 48 c7 c6 20 96 7f 81 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e 41 5f e9 57 78 b3 ff e8 32 27 c6 ff <0f> 0b e9 0a fd ff ff e8 26 27 c6 ff 4c 89 e7 e8 7e 37 05 00 e9 2f
+RSP: 0018:ffff88801756fd98 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffffffff817fe497
+RDX: ffff888011624e00 RSI: ffffffff817fe78e RDI: 0000000000000005
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+EXT4-fs error (device loop3): ext4_lookup:1706: inode #16: comm syz-executor: iget: bad extended attribute block 281470681743360
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800f883080
+R13: 0000000000000002 R14: fffffbfff0bacda6 R15: 0000000000000040
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000080 CR3: 0000000010d9e000 CR4: 0000000000350ef0
+Call Trace:
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+EXT4-fs (loop3): Delayed block allocation failed for inode 19 at logical offset 0 with max blocks 3 with error 28
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+EXT4-fs (loop3): This should not happen!! Data will be lost
+
+EXT4-fs (loop3): Total free blocks count 0
+EXT4-fs (loop3): Free/Dirty block details
+EXT4-fs (loop3): free_blocks=2415919104
+EXT4-fs (loop3): dirty_blocks=4416
+RIP: 0033:0x7f660688d093
+Code: Unable to access opcode bytes at RIP 0x7f660688d069.
+EXT4-fs (loop3): Block reservation details
+RSP: 002b:00007ffe7b2e2938 EFLAGS: 00000293 ORIG_RAX: 00000000000000d9
+EXT4-fs (loop3): i_reserved_data_blocks=276
+RAX: ffffffffffffffda RBX: 0000555555eda4e0 RCX: 00007f660688d093
+EXT4-fs (loop3): Delayed block allocation failed for inode 19 at logical offset 2456 with max blocks 2048 with error 28
+RDX: 0000000000008000 RSI: 0000555555eda4e0 RDI: 0000000000000005
+EXT4-fs (loop3): This should not happen!! Data will be lost
+
+RBP: 0000555555eda4b4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000001000 R11: 0000000000000293 R12: ffffffffffffffa8
+R13: 0000000000000010 R14: 0000555555eda4b0 R15: 00007ffe7b2e4be0
+irq event stamp: 96113
+hardirqs last  enabled at (96113): [<ffffffff810749ed>] cond_local_irq_enable arch/x86/kernel/traps.c:78 [inline]
+hardirqs last  enabled at (96113): [<ffffffff810749ed>] do_error_trap+0x14d/0x180 arch/x86/kernel/traps.c:176
+hardirqs last disabled at (96112): [<ffffffff83eae7f0>] exc_invalid_op+0x20/0x40 arch/x86/kernel/traps.c:258
+softirqs last  enabled at (96098): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (95933): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 324c0d4f94f890dd ]---
+EXT4-fs (loop1): feature flags set on rev 0 fs, running e2fsck is recommended
+EXT4-fs (loop1): warning: checktime reached, running e2fsck is recommended
+EXT4-fs error (device loop1): ext4_orphan_get:1385: inode #15: comm syz.1.55: iget: bad extended attribute block 19
+EXT4-fs error (device loop1): ext4_orphan_get:1388: comm syz.1.55: couldn't read orphan inode 15 (err -117)
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue

@@ -1,0 +1,51 @@
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs error (device loop1): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 25 vs 150994969 free clusters
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 13186 at fs/ext4/xattr.c:1640 ext4_xattr_set_entry+0x2917/0x37c0 fs/ext4/xattr.c:1640
+Modules linked in:
+CPU: 0 PID: 13186 Comm: syz.1.459 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_xattr_set_entry+0x2917/0x37c0 fs/ext4/xattr.c:1640
+Code: 00 e9 98 db ff ff e8 c8 f8 8f ff 48 8b 7c 24 08 45 31 ed e8 4b c3 df ff 48 8b ac 24 18 01 00 00 e9 79 db ff ff e8 a9 f8 8f ff <0f> 0b e9 71 e1 ff ff e8 9d f8 8f ff 48 8b 54 24 38 31 f6 4c 89 e7
+RSP: 0018:ffff888018e873a8 EFLAGS: 00010212
+RAX: 000000000000edb4 RBX: ffff888018c28020 RCX: ffffc900057dc000
+RDX: 0000000000040000 RSI: ffffffff81b61617 RDI: 0000000000000007
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: 00000000000007dc
+R13: 00000000ffffffc3 R14: ffff888018e876f0 R15: ffff888018e87818
+FS:  00007fb97b8ff6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fb97b8ddf98 CR3: 0000000017616000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ ext4_xattr_block_set+0x834/0x2f50 fs/ext4/xattr.c:1942
+ ext4_xattr_set_handle+0xd01/0x12b0 fs/ext4/xattr.c:2390
+ ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2491
+ __vfs_setxattr+0x10f/0x170 fs/xattr.c:177
+ __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+ __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+ vfs_setxattr+0xe8/0x270 fs/xattr.c:283
+ setxattr+0x23d/0x330 fs/xattr.c:548
+ path_setxattr+0x170/0x190 fs/xattr.c:567
+ __do_sys_setxattr fs/xattr.c:582 [inline]
+ __se_sys_setxattr fs/xattr.c:578 [inline]
+ __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:578
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fb97cc85ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb97b8ff038 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
+RAX: ffffffffffffffda RBX: 00007fb97ce3df80 RCX: 00007fb97cc85ef9
+RDX: 0000000000000000 RSI: 00000000200003c0 RDI: 0000000020000200
+RBP: 00007fb97ccf8b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fb97ce3df80 R15: 00007ffd07ce4a28
+irq event stamp: 57499
+hardirqs last  enabled at (57507): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (57530): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (57904): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (57915): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 3dcb8f190ff26144 ]---
+
+======================================================

@@ -1,0 +1,137 @@
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /27/file0 supports timestamps until 2038 (0x7fffffff)
+cgroup: Unknown subsys name 'devices'
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+modprobe/3144 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff88800fcb4ca8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88800fcb4ca8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 1344
+hardirqs last  enabled at (1344): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (1344): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (1343): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (1343): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (800): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (1271): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+3 locks held by modprobe/3144:
+ #0: ffff88800dfc9c28 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ #0: ffff88800dfc9c28 (&mm->mmap_lock#2){++++}-{3:3}, at: do_user_addr_fault+0x339/0xc40 arch/x86/mm/fault.c:1313
+ #1: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #2: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 1 PID: 3144 Comm: modprobe Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:lock_is_held_type+0xc2/0x100 kernel/locking/lockdep.c:5481
+Code: 03 44 39 f0 41 0f 94 c4 48 c7 c7 c0 df 46 84 e8 94 12 00 00 b8 ff ff ff ff 65 0f c1 05 77 df 16 7c 83 f8 01 75 23 ff 34 24 9d <48> 83 c4 08 44 89 e0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 45 31 e4 eb
+RSP: 0000:ffff888010d9fbb0 EFLAGS: 00000202
+RAX: 0000000000000001 RBX: 0000000000000001 RCX: 1ffffffff0bacf77
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: ffffffff850e7e40 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: fffffbfff0bacd81 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff88800dec8950 R14: 00000000ffffffff R15: ffff88800dec8950
+ lock_is_held include/linux/lockdep.h:271 [inline]
+ rcu_read_lock_sched_held+0x3a/0x70 kernel/rcu/update.c:123
+ trace_lock_acquire include/trace/events/lock.h:13 [inline]
+ lock_acquire+0x6ba/0x9b0 kernel/locking/lockdep.c:5408
+ rcu_lock_acquire include/linux/rcupdate.h:248 [inline]
+ rcu_read_lock include/linux/rcupdate.h:641 [inline]
+ get_mem_cgroup_from_mm+0x3b/0x4c0 mm/memcontrol.c:1029
+ mem_cgroup_charge+0x87/0x830 mm/memcontrol.c:6799
+ do_cow_fault mm/memory.c:4029 [inline]
+ do_fault mm/memory.c:4136 [inline]
+ handle_pte_fault mm/memory.c:4374 [inline]
+ __handle_mm_fault mm/memory.c:4509 [inline]
+ handle_mm_fault+0xf7c/0x37e0 mm/memory.c:4607
+ do_user_addr_fault+0x645/0xc40 arch/x86/mm/fault.c:1372
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa2/0x1a0 arch/x86/mm/fault.c:1485
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0x7f5189f3421f
+Code: 0f 7f 44 17 f0 f3 0f 7f 07 c3 48 83 fa 40 77 16 f3 0f 7f 07 f3 0f 7f 47 10 f3 0f 7f 44 17 f0 f3 0f 7f 44 17 e0 c3 48 8d 4f 40 <f3> 0f 7f 07 48 83 e1 c0 f3 0f 7f 44 17 f0 f3 0f 7f 47 10 f3 0f 7f
+RSP: 002b:00007ffc9747eae8 EFLAGS: 00010206
+RAX: 00007f51899fb088 RBX: 0000000000000004 RCX: 00007f51899fb0c8
+RDX: 0000000000000088 RSI: 0000000000000000 RDI: 00007f51899fb088
+RBP: 00007ffc9747edf0 R08: 00007f51899fb088 R09: 0000000000003000
+R10: 00007f51899fb110 R11: 0000000000000003 R12: 00007f5189f0f470
+R13: 00007ffc9747eaf0 R14: 00007ffc9747eb80 R15: 00007ffc9747ee80
+----------------
+Code disassembly (best guess):
+   0:	03 44 39 f0          	add    -0x10(%rcx,%rdi,1),%eax
+   4:	41 0f 94 c4          	sete   %r12b
+   8:	48 c7 c7 c0 df 46 84 	mov    $0xffffffff8446dfc0,%rdi
+   f:	e8 94 12 00 00       	call   0x12a8
+  14:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+  19:	65 0f c1 05 77 df 16 	xadd   %eax,%gs:0x7c16df77(%rip)        # 0x7c16df98
+  20:	7c
+  21:	83 f8 01             	cmp    $0x1,%eax
+  24:	75 23                	jne    0x49
+  26:	ff 34 24             	push   (%rsp)
+  29:	9d                   	popf
+* 2a:	48 83 c4 08          	add    $0x8,%rsp <-- trapping instruction
+  2e:	44 89 e0             	mov    %r12d,%eax
+  31:	5b                   	pop    %rbx
+  32:	5d                   	pop    %rbp
+  33:	41 5c                	pop    %r12
+  35:	41 5d                	pop    %r13
+  37:	41 5e                	pop    %r14
+  39:	41 5f                	pop    %r15
+  3b:	c3                   	ret
+  3c:	45 31 e4             	xor    %r12d,%r12d
+  3f:	eb                   	.byte 0xeb

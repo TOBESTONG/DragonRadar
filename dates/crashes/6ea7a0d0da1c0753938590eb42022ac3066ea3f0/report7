@@ -1,0 +1,98 @@
+audit: type=1326 audit(1730980279.929:283): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=17128 comm="syz.1.828" exe="/syz-executor" sig=0 arch=c000003e syscall=202 compat=0 ip=0x7f4294592ef9 code=0x7ffc0000
+Failed to initialize the IGMP autojoin socket (err -2)
+INFO: task syz.2.50:3207 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.2.50        state:D stack:28040 pid: 3207 ppid:   237 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ schedule_timeout+0x387/0x460 kernel/time/timer.c:1847
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x163/0x260 kernel/sched/completion.c:138
+ __flush_work+0x547/0x9d0 kernel/workqueue.c:3049
+ __cancel_work_timer+0x381/0x4d0 kernel/workqueue.c:3136
+ p9_conn_destroy net/9p/trans_fd.c:889 [inline]
+ p9_fd_close+0x29f/0x4a0 net/9p/trans_fd.c:919
+ p9_client_create+0x8ef/0x1090 net/9p/client.c:1069
+ v9fs_session_init+0x1dd/0x1730 fs/9p/v9fs.c:406
+ v9fs_mount+0x79/0x900 fs/9p/vfs_super.c:126
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f450ea19ef9
+RSP: 002b:00007f450d672038 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f450ebd2058 RCX: 00007f450ea19ef9
+RDX: 0000000020000340 RSI: 0000000020000300 RDI: 0000000000000000
+RBP: 00007f450ea8cb76 R08: 0000000020000380 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f450ebd2058 R15: 00007ffc15e44638
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/23:
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x28c kernel/locking/lockdep.c:6254
+3 locks held by kworker/u4:2/64:
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88800bc97da8 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+ #2: ffff8880081360e0 (&type->s_umount_key#30){.+.+}-{3:3}, at: trylock_super+0x1d/0x100 fs/super.c:418
+1 lock held by systemd-journal/101:
+1 lock held by in:imklog/154:
+ #0: ffff88800d302af0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+2 locks held by kworker/1:3/168:
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff888008bafda8 ((work_completion)(&m->wq)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+2 locks held by kworker/1:4/2197:
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff888016487da8 ((work_completion)(&m->wq)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+3 locks held by syz.0.449/9026:
+ #0: ffff888018898438 (sb_writers#3){.+.+}-{0:0}, at: filename_create+0x104/0x490 fs/namei.c:3462
+ #1: ffff88801a94b5c0 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+ #1: ffff88801a94b5c0 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: filename_create+0x15a/0x490 fs/namei.c:3467
+ #2: ffff88801a94b200 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ #2: ffff88801a94b200 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_add_inline_entry+0x108/0x650 fs/ext4/inline.c:1271
+1 lock held by syz-executor/9937:
+ #0: ffff888008412c40 (&bdev->bd_mutex){+.+.}-{3:3}, at: __blkdev_get+0x457/0x1900 fs/block_dev.c:1479
+1 lock held by syz.2.596/10924:
+ #0: ffff888008412c40 (&bdev->bd_mutex){+.+.}-{3:3}, at: iterate_bdevs+0xc4/0x290 fs/block_dev.c:2142
+1 lock held by syz-executor/12211:
+ #0: ffff888008412c40 (&bdev->bd_mutex){+.+.}-{3:3}, at: __blkdev_get+0x457/0x1900 fs/block_dev.c:1479
+1 lock held by syz-executor/14417:
+ #0: ffff888008412c40 (&bdev->bd_mutex){+.+.}-{3:3}, at: __blkdev_get+0x457/0x1900 fs/block_dev.c:1479
+1 lock held by syz.2.766/14595:
+ #0: ffff8880188980e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.2.766/14600:
+ #0: ffff8880188980e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.3.801/15805:
+ #0: ffff8880188980e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz-executor/16875:
+ #0: ffff888008412c40 (&bdev->bd_mutex){+.+.}-{3:3}, at: __blkdev_get+0x457/0x1900 fs/block_dev.c:1479
+1 lock held by syz.2.827/17068:
+ #0: ffff8880188980e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+
+=============================================
+

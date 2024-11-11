@@ -1,0 +1,71 @@
+R13: 0000000000000000 R14: 00007fcac9a23f80 R15: 00007ffd8203f1e8
+EXT4-fs (loop2): sb orphan head is 0
+sb_info orphan list:
+  inode loop2:16 at 00000000dbd97075: mode 100755, nlink 2, next 0
+------------[ cut here ]------------
+kernel BUG at fs/ext4/super.c:1243!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 10093 Comm: syz.2.423 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_put_super+0xe1f/0x11b0 fs/ext4/super.c:1243
+Code: 6c 24 50 e8 33 ca 81 ff 4c 89 e7 e8 4b d3 ea ff 4c 89 e7 e8 43 cb f5 ff 4c 89 e7 e8 6b 8b ec ff e9 1d fe ff ff e8 d1 11 92 ff <0f> 0b 48 c7 c7 40 d1 31 85 e8 d2 8e 2c 02 48 8b 7c 24 10 e8 09 42
+RSP: 0018:ffff888017ccf9e0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: dffffc0000000000 RCX: 0000000000000000
+RDX: ffff888017861a00 RSI: ffffffff81b3fcef RDI: ffffed1002f99f2d
+RBP: ffff88800bc30000 R08: 0000000000000042 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800c606000
+R13: ffff88801adcf958 R14: ffff88800bc30318 R15: ffff88800bc30318
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f84fa10dc30 CR3: 000000002c98c000 CR4: 0000000000350ef0
+EXT4-fs (loop0): revision level too high, forcing read-only mode
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+[EXT4 FS bs=4096, gc=1, bpg=26240, ipg=32, mo=8843e118, mo2=0000]
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+EXT4-fs (loop0): orphan cleanup on readonly fs
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+Quota error (device loop0): dq_insert_tree: Quota tree root isn't allocated!
+Quota error (device loop0): qtree_write_dquot: Error -5 occurred while creating quota
+EXT4-fs (loop0): ext4_orphan_cleanup: truncating inode 11 to 16384 bytes
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+EXT4-fs error (device loop0): ext4_free_blocks:5393: comm syz.0.432: Freeing blocks in system zone - Block = 8, count = 50
+EXT4-fs (loop0): 1 truncate cleaned up
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+EXT4-fs (loop0): mounted filesystem without journal. Opts: noblock_validity,max_dir_size_kb=0x000000000000000b,lazytime,norecovery,journal_dev=0x0000000000004d40,noauto_da_alloc,nogrpid,noload,resgid=0x00000000000000002,errors=continue
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fcac989dfe5
+Code: Unable to access opcode bytes at RIP 0x7fcac989dfbb.
+RSP: 002b:00007fcac84e4f80 EFLAGS: 00000293 ORIG_RAX: 00000000000000db
+RAX: fffffffffffffdfc RBX: 00007fcac9a23f80 RCX: 00007fcac989dfe5
+RDX: 00007fcac84e4fc0 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007fcac98deb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fcac9a23f80 R15: 00007ffd8203f1e8
+Modules linked in:
+---[ end trace 4877429097d43ead ]---
+RIP: 0010:ext4_put_super+0xe1f/0x11b0 fs/ext4/super.c:1243
+Code: 6c 24 50 e8 33 ca 81 ff 4c 89 e7 e8 4b d3 ea ff 4c 89 e7 e8 43 cb f5 ff 4c 89 e7 e8 6b 8b ec ff e9 1d fe ff ff e8 d1 11 92 ff <0f> 0b 48 c7 c7 40 d1 31 85 e8 d2 8e 2c 02 48 8b 7c 24 10 e8 09 42
+RSP: 0018:ffff888017ccf9e0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: dffffc0000000000 RCX: 0000000000000000
+RDX: ffff888017861a00 RSI: ffffffff81b3fcef RDI: ffffed1002f99f2d
+RBP: ffff88800bc30000 R08: 0000000000000042 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800c606000
+R13: ffff88801adcf958 R14: ffff88800bc30318 R15: ffff88800bc30318
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa4e1918000 CR3: 000000000aee8000 CR4: 0000000000350ee0
+Fixing recursive fault but reboot is needed!
+EXT4-fs: failed to create workqueue
+EXT4-fs (loop1): mount failed

@@ -1,0 +1,1953 @@
+EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,dioread_lock,grpquota,noauto_da_alloc,resgid=0x0000000000000000,barrier,auto_da_alloc,usrquota,
+ext4 filesystem being mounted at /43/file1 supports timestamps until 2038 (0x7fffffff)
+==================================================================
+BUG: KASAN: slab-out-of-bounds in ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+BUG: KASAN: slab-out-of-bounds in ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+Read of size 4 at addr ffff888018ef7de8 by task syz.0.226/6036
+
+CPU: 1 PID: 6036 Comm: syz.0.226 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+ ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+ ext4_ext_remove_space+0x1445/0x4470 fs/ext4/extents.c:2806
+ ext4_punch_hole+0x678/0x1130 fs/ext4/inode.c:4105
+ ext4_fallocate+0x10e7/0x3e70 fs/ext4/extents.c:4655
+ vfs_fallocate+0x494/0xdd0 fs/open.c:309
+ ioctl_preallocate+0x18e/0x200 fs/ioctl.c:494
+ file_ioctl fs/ioctl.c:537 [inline]
+ do_vfs_ioctl+0xe3c/0x1140 fs/ioctl.c:732
+ __do_sys_ioctl fs/ioctl.c:751 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x108/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f41ade40ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f41acaba038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f41adff8f80 RCX: 00007f41ade40ef9
+RDX: 0000000020000080 RSI: 0000000040305829 RDI: 0000000000000005
+RBP: 00007f41adeb3b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f41adff8f80 R15: 00007ffc2b00ed28
+
+Allocated by task 5916:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
+ getname_flags fs/namei.c:2647 [inline]
+ user_path_at_empty+0xa1/0x100 fs/namei.c:2647
+ user_path_at include/linux/namei.h:59 [inline]
+ vfs_statx+0x142/0x390 fs/stat.c:185
+ vfs_fstatat fs/stat.c:207 [inline]
+ vfs_stat include/linux/fs.h:3121 [inline]
+ __do_sys_newstat+0x91/0x110 fs/stat.c:349
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 5916:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ putname+0xe1/0x130 fs/namei.c:259
+ filename_lookup+0x3b1/0x560 fs/namei.c:2377
+ user_path_at include/linux/namei.h:59 [inline]
+ vfs_statx+0x142/0x390 fs/stat.c:185
+ vfs_fstatat fs/stat.c:207 [inline]
+ vfs_stat include/linux/fs.h:3121 [inline]
+ __do_sys_newstat+0x91/0x110 fs/stat.c:349
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff888018ef6600
+ which belongs to the cache names_cache of size 4096
+The buggy address is located 2024 bytes to the right of
+ 4096-byte region [ffff888018ef6600, ffff888018ef7600)
+The buggy address belongs to the page:
+page:00000000c52c67fd refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x18ef0
+head:00000000c52c67fd order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x100000000010200(slab|head)
+raw: 0100000000010200 dead000000000100 dead000000000122 ffff888008143b40
+raw: 0000000000000000 0000000000070007 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888018ef7c80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888018ef7d00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff888018ef7d80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+                                                          ^
+ ffff888018ef7e00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888018ef7e80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz.0.226: Freeing blocks not in datazone - block = 281471100091768, count = 2176
+EXT4-fs (loop0): Remounting filesystem read-only
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz.0.226: Freeing blocks not in datazone - block = 10883447097472, count = 4032
+================================================================================
+UBSAN: shift-out-of-bounds in lib/rhashtable.c:1178:34
+shift exponent 418653968 is too large for 32-bit type 'int'
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz.0.226: Freeing blocks not in datazone - block = 281470944685440, count = 2176
+CPU: 1 PID: 7 Comm: kworker/u4:0 Tainted: G    B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: netns cleanup_net
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+------------[ cut here ]------------
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+WARNING: CPU: 0 PID: 5826 at mm/vmalloc.c:80 vunmap_pte_range mm/vmalloc.c:80 [inline]
+WARNING: CPU: 0 PID: 5826 at mm/vmalloc.c:80 vunmap_pmd_range mm/vmalloc.c:104 [inline]
+WARNING: CPU: 0 PID: 5826 at mm/vmalloc.c:80 vunmap_pud_range mm/vmalloc.c:129 [inline]
+WARNING: CPU: 0 PID: 5826 at mm/vmalloc.c:80 vunmap_p4d_range mm/vmalloc.c:152 [inline]
+WARNING: CPU: 0 PID: 5826 at mm/vmalloc.c:80 unmap_kernel_range_noflush+0x775/0xa10 mm/vmalloc.c:185
+ __rht_bucket_nested+0x70c/0x860 lib/rhashtable.c:1178
+ rht_bucket_var include/linux/rhashtable.h:296 [inline]
+ __rhashtable_remove_fast_one include/linux/rhashtable.h:998 [inline]
+ __rhashtable_remove_fast include/linux/rhashtable.h:1083 [inline]
+ rhashtable_remove_fast include/linux/rhashtable.h:1112 [inline]
+ netlink_remove net/netlink/af_netlink.c:599 [inline]
+ netlink_release+0x124d/0x1e10 net/netlink/af_netlink.c:741
+Modules linked in:
+ __sock_release net/socket.c:596 [inline]
+ sock_release+0x8d/0x1b0 net/socket.c:624
+
+ netlink_kernel_release+0x4b/0x60 net/netlink/af_netlink.c:2107
+ xfrm_user_net_exit+0xfb/0x170 net/xfrm/xfrm_user.c:3430
+CPU: 0 PID: 5826 Comm: syz.1.217 Tainted: G    B             5.10.0 #1
+ ops_exit_list+0x113/0x160 net/core/net_namespace.c:190
+ cleanup_net+0x484/0x8e0 net/core/net_namespace.c:604
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+================================================================================
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz.0.226: Freeing blocks not in datazone - block = 27419071187072, count = 32360
+================================================================================
+RIP: 0010:vunmap_pte_range mm/vmalloc.c:80 [inline]
+RIP: 0010:vunmap_pmd_range mm/vmalloc.c:104 [inline]
+RIP: 0010:vunmap_pud_range mm/vmalloc.c:129 [inline]
+RIP: 0010:vunmap_p4d_range mm/vmalloc.c:152 [inline]
+RIP: 0010:unmap_kernel_range_noflush+0x775/0xa10 mm/vmalloc.c:185
+UBSAN: shift-out-of-bounds in lib/rhashtable.c:1179:32
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz.0.226: Freeing blocks not in datazone - block = 281470681743360, count = 2176
+shift exponent 4294967295 is too large for 32-bit type 'unsigned int'
+get_swap_device: Bad swap file entry c0048b7ed3fffff
+CPU: 1 PID: 7 Comm: kworker/u4:0 Tainted: G    B             5.10.0 #1
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz.0.226: Freeing blocks not in datazone - block = 141952964100095, count = 15650
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN NOPTI
+Workqueue: netns cleanup_net
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B             5.10.0 #1
+Call Trace:
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:do_swap_page+0xdb6/0x1df0 mm/memory.c:3280
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+Code: 85 22 f5 ff ff e9 7e f5 ff ff e8 15 89 df ff 48 8b 7c 24 08 e8 5b e4 08 00 48 ba 00 00 00 00 00 fc ff df 48 89 c1 48 c1 e9 03 <80> 3c 11 00 0f 85 05 0e 00 00 48 8b 18 31 ff 81 e3 00 10 00 00 48
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+RSP: 0018:ffff88800bd37ce0 EFLAGS: 00010256
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: dffffc0000000000 RSI: ffffffff816f6b06 RDI: 0000000000000004
+RBP: ffff88800bd37de0 R08: 0000000000000034 R09: ffff88806ce1ff9b
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800fc57c00
+R13: 1f6e902580000000 R14: 000ffffffffff000 R15: ffffffff84caa790
+FS:  00007fada36dd900(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+ __rht_bucket_nested+0x79e/0x860 lib/rhashtable.c:1179
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fada2cb3368 CR3: 000000000b760000 CR4: 0000000000350ef0
+ rht_bucket_var include/linux/rhashtable.h:296 [inline]
+ __rhashtable_remove_fast_one include/linux/rhashtable.h:998 [inline]
+ __rhashtable_remove_fast include/linux/rhashtable.h:1083 [inline]
+ rhashtable_remove_fast include/linux/rhashtable.h:1112 [inline]
+ netlink_remove net/netlink/af_netlink.c:599 [inline]
+ netlink_release+0x124d/0x1e10 net/netlink/af_netlink.c:741
+Call Trace:
+ handle_pte_fault mm/memory.c:4378 [inline]
+ __handle_mm_fault mm/memory.c:4509 [inline]
+ handle_mm_fault+0x1480/0x37e0 mm/memory.c:4607
+ __sock_release net/socket.c:596 [inline]
+ sock_release+0x8d/0x1b0 net/socket.c:624
+ netlink_kernel_release+0x4b/0x60 net/netlink/af_netlink.c:2107
+ xfrm_user_net_exit+0xfb/0x170 net/xfrm/xfrm_user.c:3430
+ do_user_addr_fault+0x645/0xc40 arch/x86/mm/fault.c:1372
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa2/0x1a0 arch/x86/mm/fault.c:1485
+ ops_exit_list+0x113/0x160 net/core/net_namespace.c:190
+ cleanup_net+0x484/0x8e0 net/core/net_namespace.c:604
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0x7fada426fa60
+Code: 83 ec 08 48 89 d1 41 b8 10 00 00 00 48 8d 44 24 10 31 d2 4d 89 f9 41 89 f6 50 e8 5b fe ff ff 5a 59 85 c0 78 a9 4c 8b 64 24 10 <4d> 8b 44 24 08 4d 85 c0 0f 84 32 01 00 00 49 83 f8 0f 0f 86 a0 01
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+Modules linked in:
+
+hpet: Lost 2 RTC interrupts
+Code: 4c 89 ee e8 2d 94 da ff 4d 85 ed 74 1f e8 43 9c da ff 81 e5 01 01 00 00 31 ff 89 ee e8 f4 93 da ff 85 ed 75 07 e8 2b 9c da ff <0f> 0b e8 24 9c da ff 49 81 c7 00 10 00 00 4c 89 e7 48 83 c3 08 4c
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+RSP: 0018:ffff888011d77910 EFLAGS: 00010293
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+
+================================================================================
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz.0.226: Freeing blocks not in datazone - block = 246286309654528, count = 31744
+general protection fault, probably for non-canonical address 0xdffffc0065cb8717: 0000 [#2] PREEMPT SMP KASAN NOPTI
+RAX: 0000000000000000 RBX: ffff888018f43ff0 RCX: ffffffff816b728c
+KASAN: probably user-memory-access in range [0x000000032e5c38b8-0x000000032e5c38bf]
+CPU: 1 PID: 7 Comm: kworker/u4:0 Tainted: G    B D           5.10.0 #1
+RDX: ffff8880196f0000 RSI: ffffffff816b7295 RDI: 0000000000000005
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: netns cleanup_net
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffff888018f43ff7
+RIP: 0010:__rht_bucket_nested+0x127/0x860 lib/rhashtable.c:1184
+Code: 48 c1 ea 03 80 3c 02 00 0f 85 92 05 00 00 49 8b 86 80 00 00 00 48 8d 2c e8 48 b8 00 00 00 00 00 fc ff df 48 89 ea 48 c1 ea 03 <80> 3c 02 00 0f 85 76 05 00 00 4c 8b 65 00 e8 f6 f1 eb 01 31 ff 89
+RSP: 0018:ffff88800821fa80 EFLAGS: 00010216
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffc90007200000
+RAX: dffffc0000000000 RBX: 0000000000000001 RCX: ffffffff81ff2e1b
+RDX: 0000000065cb8717 RSI: ffffffff81ff2e49 RDI: ffff888018f42780
+RBP: 000000032e5c38bb R08: 0000000000000050 R09: ffff88806cf2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffffffff814c940e R14: ffff88800813a1c0 R15: ffffc900071fe000
+R13: 00000000495f8702 R14: ffff888018f42700 R15: ffff888008f95000
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fb4cf2266f4 CR3: 000000000ab2c000 CR4: 0000000000350ee0
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+Call Trace:
+ rht_bucket_var include/linux/rhashtable.h:296 [inline]
+ __rhashtable_remove_fast_one include/linux/rhashtable.h:998 [inline]
+ __rhashtable_remove_fast include/linux/rhashtable.h:1083 [inline]
+ rhashtable_remove_fast include/linux/rhashtable.h:1112 [inline]
+ netlink_remove net/netlink/af_netlink.c:599 [inline]
+ netlink_release+0x124d/0x1e10 net/netlink/af_netlink.c:741
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ __sock_release net/socket.c:596 [inline]
+ sock_release+0x8d/0x1b0 net/socket.c:624
+ netlink_kernel_release+0x4b/0x60 net/netlink/af_netlink.c:2107
+ xfrm_user_net_exit+0xfb/0x170 net/xfrm/xfrm_user.c:3430
+CR2: 00007fada2cb3368 CR3: 000000001ef80000 CR4: 0000000000350ef0
+ ops_exit_list+0x113/0x160 net/core/net_namespace.c:190
+ cleanup_net+0x484/0x8e0 net/core/net_namespace.c:604
+Call Trace:
+ free_unmap_vmap_area mm/vmalloc.c:1435 [inline]
+ remove_vm_area+0x1ca/0x230 mm/vmalloc.c:2172
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ vm_remove_mappings mm/vmalloc.c:2199 [inline]
+ __vunmap+0x16e/0x990 mm/vmalloc.c:2261
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ __vfree mm/vmalloc.c:2318 [inline]
+ vfree+0x88/0x150 mm/vmalloc.c:2349
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ kcov_put kernel/kcov.c:408 [inline]
+ kcov_put+0x26/0x40 kernel/kcov.c:404
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+ kcov_close+0xc/0x10 kernel/kcov.c:510
+Modules linked in:
+---[ end trace 03818687c957b667 ]---
+ __fput+0x280/0x980 fs/file_table.c:281
+RIP: 0010:do_swap_page+0xdb6/0x1df0 mm/memory.c:3280
+Code: 85 22 f5 ff ff e9 7e f5 ff ff e8 15 89 df ff 48 8b 7c 24 08 e8 5b e4 08 00 48 ba 00 00 00 00 00 fc ff df 48 89 c1 48 c1 e9 03 <80> 3c 11 00 0f 85 05 0e 00 00 48 8b 18 31 ff 81 e3 00 10 00 00 48
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+RSP: 0018:ffff88800bd37ce0 EFLAGS: 00010256
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: dffffc0000000000 RSI: ffffffff816f6b06 RDI: 0000000000000004
+RBP: ffff88800bd37de0 R08: 0000000000000034 R09: ffff88806ce1ff9b
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800fc57c00
+R13: 1f6e902580000000 R14: 000ffffffffff000 R15: ffffffff84caa790
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fb4cf2266f4 CR3: 000000000ab2c000 CR4: 0000000000350ee0
+BUG: sleeping function called from invalid context at include/linux/percpu-rwsem.h:49
+in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 7, name: kworker/u4:0
+INFO: lockdep is turned off.
+Preemption disabled at:
+[<ffffffff812d75de>] wake_up_klogd kernel/printk/printk.c:3038 [inline]
+[<ffffffff812d75de>] wake_up_klogd+0x4e/0x140 kernel/printk/printk.c:3033
+CPU: 1 PID: 7 Comm: kworker/u4:0 Tainted: G    B D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: netns cleanup_net
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep.cold+0x65/0x79 kernel/sched/core.c:7304
+ percpu_down_read include/linux/percpu-rwsem.h:49 [inline]
+ cgroup_threadgroup_change_begin include/linux/cgroup-defs.h:733 [inline]
+ exit_signals+0x74/0x9e0 kernel/signal.c:2843
+ do_exit+0x237/0x28e0 kernel/exit.c:765
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0000:0x0
+Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+RSP: 0000:0000000000000000 EFLAGS: 00000000 ORIG_RAX: 0000000000000000
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+---[ end trace 03818687c957b668 ]---
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+general protection fault, probably for non-canonical address 0xbcacc6c0e8c5c0: 0000 [#3] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 116 Comm: systemd-udevd Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:compound_head include/linux/page-flags.h:185 [inline]
+RIP: 0010:virt_to_head_page include/linux/mm.h:860 [inline]
+RIP: 0010:qlink_to_cache mm/kasan/quarantine.c:130 [inline]
+RIP: 0010:qlist_free_all+0x8d/0xd0 mm/kasan/quarantine.c:167
+Code: df 48 85 db 75 cc 48 89 f0 4c 01 e8 72 56 4c 89 f2 48 2b 15 25 65 57 03 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 03 65 57 03 <48> 8b 50 08 48 8d 4a ff 83 e2 01 48 0f 45 c1 48 8b 78 18 eb 93 49
+RSP: 0018:ffff8880111d7c68 EFLAGS: 00010207
+RAX: 00bcacc6c0e8c5c0 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000777f80000000 RSI: 2f303a303a317465 RDI: 0000000000000000
+RBP: dffffc0000000000 R08: 0000000000000006 R09: 0000000000070006
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff8880111d7ca0
+R13: 0000000080000000 R14: ffffffff80000000 R15: 2f303a303a317465
+FS:  00007fb16267a8c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f583c0350c8 CR3: 000000000c1ac000 CR4: 0000000000350ef0
+Call Trace:
+ quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:267
+ __kasan_kmalloc.constprop.0+0x9e/0xd0 mm/kasan/common.c:442
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ getname_flags include/linux/audit.h:320 [inline]
+ getname+0x8e/0xd0 fs/namei.c:209
+ do_sys_openat2+0xf5/0x420 fs/open.c:1162
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+RIP: 0033:0x7fa5fb440ef9
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Code: Unable to access opcode bytes at RIP 0x7fa5fb440ecf.
+RIP: 0033:0x7fb162b2b528
+Code: 24 18 31 c0 41 83 e2 40 75 40 89 f0 25 00 00 41 00 3d 00 00 41 00 74 32 44 89 c2 4c 89 ce bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 40 48 8b 4c 24 18 64 48 2b 0c 25 28 00 00 00
+RSP: 002b:00007ffc9986bd50 EFLAGS: 00000287 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00007fb16267a6c0 RCX: 00007fb162b2b528
+RDX: 0000000000090800 RSI: 0000564bbac9f320 RDI: 00000000ffffff9c
+RSP: 002b:00007fa5fa0ba038 EFLAGS: 00000246
+RBP: 0000564bbacc6bf0 R08: 0000000000090800 R09: 0000564bbac9f320
+R10: 0000000000000000 R11: 0000000000000287 R12: 0000000000000000
+R13: 0000564bbac9f320 R14: 0000564bbac9f320 R15: 0000564bbac94940
+Modules linked in:
+ ORIG_RAX: 0000000000000009
+
+hpet: Lost 1 RTC interrupts
+RAX: 0000000020000000 RBX: 00007fa5fb5f8f80 RCX: 00007fa5fb440ef9
+RIP: 0010:do_swap_page+0xdb6/0x1df0 mm/memory.c:3280
+RDX: b635773f06ebbeea RSI: 0000000000b36000 RDI: 0000000020000000
+Code: 85 22 f5 ff ff e9 7e f5 ff ff e8 15 89 df ff 48 8b 7c 24 08 e8 5b e4 08 00 48 ba 00 00 00 00 00 fc ff df 48 89 c1 48 c1 e9 03 <80> 3c 11 00 0f 85 05 0e 00 00 48 8b 18 31 ff 81 e3 00 10 00 00 48
+RBP: 00007fa5fb4b3b76 R08: ffffffffffffffff R09: 0000000000000000
+RSP: 0018:ffff88800bd37ce0 EFLAGS: 00010256
+R10: 0000000000008031 R11: 0000000000000246 R12: 0000000000000000
+
+R13: 0000000000000000 R14: 00007fa5fb5f8f80 R15: 00007fff25c266c8
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+irq event stamp: 196262
+RDX: dffffc0000000000 RSI: ffffffff816f6b06 RDI: 0000000000000004
+hardirqs last  enabled at (196261): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RBP: ffff88800bd37de0 R08: 0000000000000034 R09: ffff88806ce1ff9b
+hardirqs last disabled at (196262): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800fc57c00
+softirqs last  enabled at (185494): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+R13: 1f6e902580000000 R14: 000ffffffffff000 R15: ffffffff84caa790
+softirqs last disabled at (185309): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+FS:  00007fada36dd900(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+---[ end trace 03818687c957b669 ]---
+------------[ cut here ]------------
+---[ end trace 03818687c957b66a ]---
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pte_range mm/vmalloc.c:80 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pmd_range mm/vmalloc.c:104 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pud_range mm/vmalloc.c:129 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_p4d_range mm/vmalloc.c:152 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 unmap_kernel_range_noflush+0x775/0xa10 mm/vmalloc.c:185
+RIP: 0010:do_swap_page+0xdb6/0x1df0 mm/memory.c:3280
+Modules linked in:
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+
+Code: 85 22 f5 ff ff e9 7e f5 ff ff e8 15 89 df ff 48 8b 7c 24 08 e8 5b e4 08 00 48 ba 00 00 00 00 00 fc ff df 48 89 c1 48 c1 e9 03 <80> 3c 11 00 0f 85 05 0e 00 00 48 8b 18 31 ff 81 e3 00 10 00 00 48
+CPU: 1 PID: 5826 Comm: syz.1.217 Tainted: G    B D W         5.10.0 #1
+RSP: 0018:ffff88800bd37ce0 EFLAGS: 00010256
+CR2: 00007f583c0350c8 CR3: 000000000b760000 CR4: 0000000000350ef0
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+
+RIP: 0010:vunmap_pte_range mm/vmalloc.c:80 [inline]
+RIP: 0010:vunmap_pmd_range mm/vmalloc.c:104 [inline]
+RIP: 0010:vunmap_pud_range mm/vmalloc.c:129 [inline]
+RIP: 0010:vunmap_p4d_range mm/vmalloc.c:152 [inline]
+RIP: 0010:unmap_kernel_range_noflush+0x775/0xa10 mm/vmalloc.c:185
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+Code: 4c 89 ee e8 2d 94 da ff 4d 85 ed 74 1f e8 43 9c da ff 81 e5 01 01 00 00 31 ff 89 ee e8 f4 93 da ff 85 ed 75 07 e8 2b 9c da ff <0f> 0b e8 24 9c da ff 49 81 c7 00 10 00 00 4c 89 e7 48 83 c3 08 4c
+RDX: dffffc0000000000 RSI: ffffffff816f6b06 RDI: 0000000000000004
+RBP: ffff88800bd37de0 R08: 0000000000000034 R09: ffff88806ce1ff9b
+RSP: 0018:ffff888011d77910 EFLAGS: 00010293
+swap_info_get: Bad swap file entry 8018467ed3fffff
+
+BUG: Bad page map in process systemd-journal  pte:14f7302580000000 pmd:18f25067
+addr:00007fada2c00000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:13b
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+RAX: 0000000000000000 RBX: ffff888018f43000 RCX: ffffffff816b728c
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+RDX: ffff8880196f0000 RSI: ffffffff816b7295 RDI: 0000000000000005
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffff888018f43007
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffc90007058000
+R13: 0c55516380000000 R14: ffff88800813a1c0 R15: ffffc90007000000
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+CR2: ffffffffffffffd6 CR3: 000000000ab2c000 CR4: 0000000000350ee0
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+Call Trace:
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+ free_unmap_vmap_area mm/vmalloc.c:1435 [inline]
+ remove_vm_area+0x1ca/0x230 mm/vmalloc.c:2172
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+ vm_remove_mappings mm/vmalloc.c:2199 [inline]
+ __vunmap+0x16e/0x990 mm/vmalloc.c:2261
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800fc57c00
+ __vfree mm/vmalloc.c:2318 [inline]
+ vfree+0x88/0x150 mm/vmalloc.c:2349
+R13: 1f6e902580000000 R14: 000ffffffffff000 R15: ffffffff84caa790
+FS:  00007fb16267a8c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f583c0350c8 CR3: 000000000c1ac000 CR4: 0000000000350ef0
+ kcov_put kernel/kcov.c:408 [inline]
+ kcov_put+0x26/0x40 kernel/kcov.c:404
+swap_info_get: Bad swap file entry 801e0bfed3fffff
+ kcov_close+0xc/0x10 kernel/kcov.c:510
+BUG: Bad page map in process systemd-journal  pte:143e802580000000 pmd:18f25067
+ __fput+0x280/0x980 fs/file_table.c:281
+addr:00007fada2c01000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:13c
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+general protection fault, probably for non-canonical address 0x2de82f64000000: 0000 [#4] PREEMPT SMP KASAN NOPTI
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+CPU: 0 PID: 6053 Comm: (md-udevd) Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:compound_head include/linux/page-flags.h:185 [inline]
+RIP: 0010:virt_to_head_page include/linux/mm.h:860 [inline]
+RIP: 0010:qlink_to_cache mm/kasan/quarantine.c:130 [inline]
+RIP: 0010:qlist_free_all+0x8d/0xd0 mm/kasan/quarantine.c:167
+Code: df 48 85 db 75 cc 48 89 f0 4c 01 e8 72 56 4c 89 f2 48 2b 15 25 65 57 03 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 03 65 57 03 <48> 8b 50 08 48 8d 4a ff 83 e2 01 48 0f 45 c1 48 8b 78 18 eb 93 49
+RSP: 0018:ffff8880185afbc0 EFLAGS: 00010207
+RAX: 002de82f64000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000777f80000000 RSI: 0b7f145900000000 RDI: 0000000000000000
+RBP: dffffc0000000000 R08: 000000000000000f R09: 000000000010000f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff8880185afbf8
+R13: 0000000080000000 R14: ffffffff80000000 R15: 0b7f145900000000
+FS:  00007f8547186900(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8547d46070 CR3: 000000000d208000 CR4: 0000000000350ef0
+Call Trace:
+ quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:267
+ __kasan_kmalloc.constprop.0+0x9e/0xd0 mm/kasan/common.c:442
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
+ getname_flags fs/namei.c:2647 [inline]
+ user_path_at_empty+0xa1/0x100 fs/namei.c:2647
+ user_path_at include/linux/namei.h:59 [inline]
+ vfs_statx+0x142/0x390 fs/stat.c:185
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ vfs_fstatat fs/stat.c:207 [inline]
+ vfs_stat include/linux/fs.h:3121 [inline]
+ __do_sys_newstat+0x91/0x110 fs/stat.c:349
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f854794f986
+Code: 00 00 75 05 48 83 c4 18 c3 e8 46 0c 02 00 66 0f 1f 44 00 00 41 89 f8 48 89 f7 48 89 d6 41 83 f8 01 77 29 b8 04 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 02 c3 90 48 8b 15 d9 34 0e 00 f7 d8 64 89 02
+RSP: 002b:00007ffc6b06b358 EFLAGS: 00000246
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ ORIG_RAX: 0000000000000004
+RAX: ffffffffffffffda RBX: 00007ffc6b06b470 RCX: 00007f854794f986
+RDX: 00007ffc6b06b360 RSI: 00007ffc6b06b360 RDI: 00007ffc6b06b470
+RBP: 00007ffc6b06b470 R08: 0000000000000001 R09: 0000000000000000
+R10: 00007f8547a33b80 R11: 0000000000000246 R12: 0000557a45328950
+R13: 0000000000001000 R14: 0000000000001000 R15: 00007f8547b0a264
+Modules linked in:
+RIP: 0033:0x7fa5fb440ef9
+
+swap_info_get: Bad swap file entry 801e0b7ed3fffff
+Code: Unable to access opcode bytes at RIP 0x7fa5fb440ecf.
+BUG: Bad page map in process systemd-journal  pte:143e902580000000 pmd:18f25067
+addr:00007fada2c02000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:13d
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+RSP: 002b:00007fa5fa0ba038 EFLAGS: 00000246
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ORIG_RAX: 0000000000000009
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+RAX: 0000000020000000 RBX: 00007fa5fb5f8f80 RCX: 00007fa5fb440ef9
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+RDX: b635773f06ebbeea RSI: 0000000000b36000 RDI: 0000000020000000
+RBP: 00007fa5fb4b3b76 R08: ffffffffffffffff R09: 0000000000000000
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+R10: 0000000000008031 R11: 0000000000000246 R12: 0000000000000000
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+R13: 0000000000000000 R14: 00007fa5fb5f8f80 R15: 00007fff25c266c8
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+irq event stamp: 196262
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+hardirqs last  enabled at (196261): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+hardirqs last disabled at (196262): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+softirqs last  enabled at (185494): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+---[ end trace 03818687c957b66b ]---
+softirqs last disabled at (185309): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+swap_info_get: Bad swap file entry 801e0afed3fffff
+---[ end trace 03818687c957b66c ]---
+BUG: Bad page map in process systemd-journal  pte:143ea02580000000 pmd:18f25067
+addr:00007fada2c03000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:13e
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+------------[ cut here ]------------
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pte_range mm/vmalloc.c:80 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pmd_range mm/vmalloc.c:104 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pud_range mm/vmalloc.c:129 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_p4d_range mm/vmalloc.c:152 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 unmap_kernel_range_noflush+0x775/0xa10 mm/vmalloc.c:185
+hpet_rtc_timer_reinit: 1 callbacks suppressed
+hpet: Lost 7 RTC interrupts
+Modules linked in:
+RIP: 0010:do_swap_page+0xdb6/0x1df0 mm/memory.c:3280
+Code: 85 22 f5 ff ff e9 7e f5 ff ff e8 15 89 df ff 48 8b 7c 24 08 e8 5b e4 08 00 48 ba 00 00 00 00 00 fc ff df 48 89 c1 48 c1 e9 03 <80> 3c 11 00 0f 85 05 0e 00 00 48 8b 18 31 ff 81 e3 00 10 00 00 48
+RSP: 0018:ffff88800bd37ce0 EFLAGS: 00010256
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: dffffc0000000000 RSI: ffffffff816f6b06 RDI: 0000000000000004
+RBP: ffff88800bd37de0 R08: 0000000000000034 R09: ffff88806ce1ff9b
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800fc57c00
+R13: 1f6e902580000000 R14: 000ffffffffff000 R15: ffffffff84caa790
+FS:  00007f8547186900(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f583c0360b8 CR3: 000000000d208000 CR4: 0000000000350ef0
+swap_info_get: Bad swap file entry 801e0a7cc3fffff
+
+BUG: Bad page map in process systemd-journal  pte:143eb06780000000 pmd:18f25067
+addr:00007fada2c04000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:13f
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+CPU: 1 PID: 5826 Comm: syz.1.217 Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+RIP: 0010:vunmap_pte_range mm/vmalloc.c:80 [inline]
+RIP: 0010:vunmap_pmd_range mm/vmalloc.c:104 [inline]
+RIP: 0010:vunmap_pud_range mm/vmalloc.c:129 [inline]
+RIP: 0010:vunmap_p4d_range mm/vmalloc.c:152 [inline]
+RIP: 0010:unmap_kernel_range_noflush+0x775/0xa10 mm/vmalloc.c:185
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+Code: 4c 89 ee e8 2d 94 da ff 4d 85 ed 74 1f e8 43 9c da ff 81 e5 01 01 00 00 31 ff 89 ee e8 f4 93 da ff 85 ed 75 07 e8 2b 9c da ff <0f> 0b e8 24 9c da ff 49 81 c7 00 10 00 00 4c 89 e7 48 83 c3 08 4c
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+RSP: 0018:ffff888011d77910 EFLAGS: 00010293
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+RAX: 0000000000000000 RBX: ffff888018f43008 RCX: ffffffff816b728c
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+RDX: ffff8880196f0000 RSI: ffffffff816b7295 RDI: 0000000000000005
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffff888018f4300f
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffc90007058000
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry 801e7ffed3fffff
+R13: 0a0aa16380000000 R14: ffff88800813a1c0 R15: ffffc90007001000
+BUG: Bad page map in process systemd-journal  pte:1430002580000000 pmd:18f25067
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+addr:00007fada2c05000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:140
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+CR2: 0000557a452ab8a0 CR3: 000000000cee0000 CR4: 0000000000350ee0
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+Call Trace:
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+ free_unmap_vmap_area mm/vmalloc.c:1435 [inline]
+ remove_vm_area+0x1ca/0x230 mm/vmalloc.c:2172
+ vm_remove_mappings mm/vmalloc.c:2199 [inline]
+ __vunmap+0x16e/0x990 mm/vmalloc.c:2261
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ __vfree mm/vmalloc.c:2318 [inline]
+ vfree+0x88/0x150 mm/vmalloc.c:2349
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ kcov_put kernel/kcov.c:408 [inline]
+ kcov_put+0x26/0x40 kernel/kcov.c:404
+ kcov_close+0xc/0x10 kernel/kcov.c:510
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+ __fput+0x280/0x980 fs/file_table.c:281
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry 801e7f7ed3fffff
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+BUG: Bad page map in process systemd-journal  pte:1430102580000000 pmd:18f25067
+addr:00007fada2c06000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:141
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry 801e7efcc3fffff
+BUG: Bad page map in process systemd-journal  pte:1430206780000000 pmd:18f25067
+addr:00007fada2c07000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:142
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+RIP: 0033:0x7fa5fb440ef9
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+Code: Unable to access opcode bytes at RIP 0x7fa5fb440ecf.
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+RSP: 002b:00007fa5fa0ba038 EFLAGS: 00000246
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+ ORIG_RAX: 0000000000000009
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+RAX: 0000000020000000 RBX: 00007fa5fb5f8f80 RCX: 00007fa5fb440ef9
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry 801e7e7ed3fffff
+BUG: Bad page map in process systemd-journal  pte:1430302580000000 pmd:18f25067
+addr:00007fada2c08000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:143
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry 8018e1fed3fffff
+BUG: Bad page map in process systemd-journal  pte:14e3c02580000000 pmd:18f25067
+addr:00007fada2c09000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:144
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+RDX: b635773f06ebbeea RSI: 0000000000b36000 RDI: 0000000020000000
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RBP: 00007fa5fb4b3b76 R08: ffffffffffffffff R09: 0000000000000000
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+R10: 0000000000008031 R11: 0000000000000246 R12: 0000000000000000
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+R13: 0000000000000000 R14: 00007fa5fb5f8f80 R15: 00007fff25c266c8
+irq event stamp: 196262
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+hardirqs last  enabled at (196261): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+hardirqs last disabled at (196262): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+softirqs last  enabled at (185494): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+softirqs last disabled at (185309): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+---[ end trace 03818687c957b66d ]---
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry 8018e17ed3fffff
+BUG: Bad page map in process systemd-journal  pte:14e3d02580000000 pmd:18f25067
+addr:00007fada2c0a000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:145
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+------------[ cut here ]------------
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry 8018e0fed3fffff
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pte_range mm/vmalloc.c:80 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pmd_range mm/vmalloc.c:104 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pud_range mm/vmalloc.c:129 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_p4d_range mm/vmalloc.c:152 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 unmap_kernel_range_noflush+0x775/0xa10 mm/vmalloc.c:185
+BUG: Bad page map in process systemd-journal  pte:14e3e02580000000 pmd:18f25067
+addr:00007fada2c0b000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:146
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Modules linked in:
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+CPU: 1 PID: 5826 Comm: syz.1.217 Tainted: G    B D W         5.10.0 #1
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+RIP: 0010:vunmap_pte_range mm/vmalloc.c:80 [inline]
+RIP: 0010:vunmap_pmd_range mm/vmalloc.c:104 [inline]
+RIP: 0010:vunmap_pud_range mm/vmalloc.c:129 [inline]
+RIP: 0010:vunmap_p4d_range mm/vmalloc.c:152 [inline]
+RIP: 0010:unmap_kernel_range_noflush+0x775/0xa10 mm/vmalloc.c:185
+hpet: Lost 11 RTC interrupts
+Code: 4c 89 ee e8 2d 94 da ff 4d 85 ed 74 1f e8 43 9c da ff 81 e5 01 01 00 00 31 ff 89 ee e8 f4 93 da ff 85 ed 75 07 e8 2b 9c da ff <0f> 0b e8 24 9c da ff 49 81 c7 00 10 00 00 4c 89 e7 48 83 c3 08 4c
+swap_info_get: Bad swap file entry 8018e07ed3fffff
+RSP: 0018:ffff888011d77910 EFLAGS: 00010293
+BUG: Bad page map in process systemd-journal  pte:14e3f02580000000 pmd:18f25067
+addr:00007fada2c0c000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:147
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+RAX: 0000000000000000 RBX: ffff888018f43010 RCX: ffffffff816b728c
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+RDX: ffff8880196f0000 RSI: ffffffff816b7295 RDI: 0000000000000005
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffff888018f43017
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffc90007058000
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+R13: 0c55316380000000 R14: ffff88800813a1c0 R15: ffffc90007002000
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+CR2: 00007f5849d64000 CR3: 000000000ab2c000 CR4: 0000000000350ee0
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Call Trace:
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+ free_unmap_vmap_area mm/vmalloc.c:1435 [inline]
+ remove_vm_area+0x1ca/0x230 mm/vmalloc.c:2172
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry 8017edfed3fffff
+ vm_remove_mappings mm/vmalloc.c:2199 [inline]
+ __vunmap+0x16e/0x990 mm/vmalloc.c:2261
+BUG: Bad page map in process systemd-journal  pte:1502402580000000 pmd:18f25067
+ __vfree mm/vmalloc.c:2318 [inline]
+ vfree+0x88/0x150 mm/vmalloc.c:2349
+addr:00007fada2c0d000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:148
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+ kcov_put kernel/kcov.c:408 [inline]
+ kcov_put+0x26/0x40 kernel/kcov.c:404
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+ kcov_close+0xc/0x10 kernel/kcov.c:510
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ __fput+0x280/0x980 fs/file_table.c:281
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry 8017ed7ed3fffff
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+BUG: Bad page map in process systemd-journal  pte:1502502580000000 pmd:18f25067
+addr:00007fada2c0e000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:149
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fa5fb440ef9
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+Code: Unable to access opcode bytes at RIP 0x7fa5fb440ecf.
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry 8017ecfed3fffff
+RSP: 002b:00007fa5fa0ba038 EFLAGS: 00000246
+BUG: Bad page map in process systemd-journal  pte:1502602580000000 pmd:18f25067
+addr:00007fada2c0f000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:14a
+ ORIG_RAX: 0000000000000009
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+RAX: 0000000020000000 RBX: 00007fa5fb5f8f80 RCX: 00007fa5fb440ef9
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+RDX: b635773f06ebbeea RSI: 0000000000b36000 RDI: 0000000020000000
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+RBP: 00007fa5fb4b3b76 R08: ffffffffffffffff R09: 0000000000000000
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+R10: 0000000000008031 R11: 0000000000000246 R12: 0000000000000000
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+R13: 0000000000000000 R14: 00007fa5fb5f8f80 R15: 00007fff25c266c8
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+irq event stamp: 196262
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+hardirqs last  enabled at (196261): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+hardirqs last disabled at (196262): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+softirqs last  enabled at (185494): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+softirqs last disabled at (185309): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry 8017ec7ed3fffff
+---[ end trace 03818687c957b66e ]---
+BUG: Bad page map in process systemd-journal  pte:1502702580000000 pmd:18f25067
+addr:00007fada2c10000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:14b
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+------------[ cut here ]------------
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pte_range mm/vmalloc.c:80 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pmd_range mm/vmalloc.c:104 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pud_range mm/vmalloc.c:129 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_p4d_range mm/vmalloc.c:152 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 unmap_kernel_range_noflush+0x775/0xa10 mm/vmalloc.c:185
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+Modules linked in:
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+
+CPU: 1 PID: 5826 Comm: syz.1.217 Tainted: G    B D W         5.10.0 #1
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+RIP: 0010:vunmap_pte_range mm/vmalloc.c:80 [inline]
+RIP: 0010:vunmap_pmd_range mm/vmalloc.c:104 [inline]
+RIP: 0010:vunmap_pud_range mm/vmalloc.c:129 [inline]
+RIP: 0010:vunmap_p4d_range mm/vmalloc.c:152 [inline]
+RIP: 0010:unmap_kernel_range_noflush+0x775/0xa10 mm/vmalloc.c:185
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+Code: 4c 89 ee e8 2d 94 da ff 4d 85 ed 74 1f e8 43 9c da ff 81 e5 01 01 00 00 31 ff 89 ee e8 f4 93 da ff 85 ed 75 07 e8 2b 9c da ff <0f> 0b e8 24 9c da ff 49 81 c7 00 10 00 00 4c 89 e7 48 83 c3 08 4c
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+RSP: 0018:ffff888011d77910 EFLAGS: 00010293
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RAX: 0000000000000000 RBX: ffff888018f43018 RCX: ffffffff816b728c
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry 8017ebfed3fffff
+RDX: ffff8880196f0000 RSI: ffffffff816b7295 RDI: 0000000000000005
+BUG: Bad page map in process systemd-journal  pte:1502802580000000 pmd:18f25067
+addr:00007fada2c11000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:14c
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffff888018f4301f
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffc90007058000
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+R13: 08d1e16380000000 R14: ffff88800813a1c0 R15: ffffc90007003000
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+CR2: 00007f5849d64000 CR3: 000000000ab2c000 CR4: 0000000000350ee0
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+Call Trace:
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ free_unmap_vmap_area mm/vmalloc.c:1435 [inline]
+ remove_vm_area+0x1ca/0x230 mm/vmalloc.c:2172
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ vm_remove_mappings mm/vmalloc.c:2199 [inline]
+ __vunmap+0x16e/0x990 mm/vmalloc.c:2261
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ __vfree mm/vmalloc.c:2318 [inline]
+ vfree+0x88/0x150 mm/vmalloc.c:2349
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+ kcov_put kernel/kcov.c:408 [inline]
+ kcov_put+0x26/0x40 kernel/kcov.c:404
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+ kcov_close+0xc/0x10 kernel/kcov.c:510
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry 8017eb7ed3fffff
+ __fput+0x280/0x980 fs/file_table.c:281
+BUG: Bad page map in process systemd-journal  pte:1502902580000000 pmd:18f25067
+addr:00007fada2c12000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:14d
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry 8017eafed3fffff
+BUG: Bad page map in process systemd-journal  pte:1502a02580000000 pmd:18f25067
+addr:00007fada2c13000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:14e
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+RIP: 0033:0x7fa5fb440ef9
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry 8017ea7ed3fffff
+Code: Unable to access opcode bytes at RIP 0x7fa5fb440ecf.
+BUG: Bad page map in process systemd-journal  pte:1502b02580000000 pmd:18f25067
+addr:00007fada2c14000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:14f
+RSP: 002b:00007fa5fa0ba038 EFLAGS: 00000246 ORIG_RAX: 0000000000000009
+RAX: 0000000020000000 RBX: 00007fa5fb5f8f80 RCX: 00007fa5fb440ef9
+RDX: b635773f06ebbeea RSI: 0000000000b36000 RDI: 0000000020000000
+RBP: 00007fa5fb4b3b76 R08: ffffffffffffffff R09: 0000000000000000
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+R10: 0000000000008031 R11: 0000000000000246 R12: 0000000000000000
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+R13: 0000000000000000 R14: 00007fa5fb5f8f80 R15: 00007fff25c266c8
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+irq event stamp: 196262
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+hardirqs last  enabled at (196261): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (196262): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+softirqs last  enabled at (185494): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+softirqs last disabled at (185309): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+---[ end trace 03818687c957b66f ]---
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+------------[ cut here ]------------
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pte_range mm/vmalloc.c:80 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pmd_range mm/vmalloc.c:104 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pud_range mm/vmalloc.c:129 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_p4d_range mm/vmalloc.c:152 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 unmap_kernel_range_noflush+0x775/0xa10 mm/vmalloc.c:185
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry 8018d9fcc3fffff
+Modules linked in:
+BUG: Bad page map in process systemd-journal  pte:14e4c06780000000 pmd:18f25067
+
+addr:00007fada2c15000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:150
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 1 PID: 5826 Comm: syz.1.217 Tainted: G    B D W         5.10.0 #1
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+RIP: 0010:vunmap_pte_range mm/vmalloc.c:80 [inline]
+RIP: 0010:vunmap_pmd_range mm/vmalloc.c:104 [inline]
+RIP: 0010:vunmap_pud_range mm/vmalloc.c:129 [inline]
+RIP: 0010:vunmap_p4d_range mm/vmalloc.c:152 [inline]
+RIP: 0010:unmap_kernel_range_noflush+0x775/0xa10 mm/vmalloc.c:185
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+Code: 4c 89 ee e8 2d 94 da ff 4d 85 ed 74 1f e8 43 9c da ff 81 e5 01 01 00 00 31 ff 89 ee e8 f4 93 da ff 85 ed 75 07 e8 2b 9c da ff <0f> 0b e8 24 9c da ff 49 81 c7 00 10 00 00 4c 89 e7 48 83 c3 08 4c
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+RSP: 0018:ffff888011d77910 EFLAGS: 00010293
+
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+RAX: 0000000000000000 RBX: ffff888018f43020 RCX: ffffffff816b728c
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+RDX: ffff8880196f0000 RSI: ffffffff816b7295 RDI: 0000000000000005
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffff888018f43027
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffc90007058000
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+R13: 0bef816380000000 R14: ffff88800813a1c0 R15: ffffc90007004000
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+hpet: Lost 1 RTC interrupts
+CR2: 0000557a453295e8 CR3: 000000000cee0000 CR4: 0000000000350ee0
+general protection fault, probably for non-canonical address 0x2234af64000000: 0000 [#5] PREEMPT SMP KASAN NOPTI
+Call Trace:
+CPU: 0 PID: 6054 Comm: systemd-udevd Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:compound_head include/linux/page-flags.h:185 [inline]
+RIP: 0010:virt_to_head_page include/linux/mm.h:860 [inline]
+RIP: 0010:qlink_to_cache mm/kasan/quarantine.c:130 [inline]
+RIP: 0010:qlist_free_all+0x8d/0xd0 mm/kasan/quarantine.c:167
+Code: df 48 85 db 75 cc 48 89 f0 4c 01 e8 72 56 4c 89 f2 48 2b 15 25 65 57 03 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 03 65 57 03 <48> 8b 50 08 48 8d 4a ff 83 e2 01 48 0f 45 c1 48 8b 78 18 eb 93 49
+ free_unmap_vmap_area mm/vmalloc.c:1435 [inline]
+ remove_vm_area+0x1ca/0x230 mm/vmalloc.c:2172
+RSP: 0018:ffff888011f9fc68 EFLAGS: 00010207
+RAX: 002234af64000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000777f80000000 RSI: 0892345900000000 RDI: 0000000000000000
+RBP: dffffc0000000000 R08: 000000000000000f R09: 000000000010000f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888011f9fca0
+R13: 0000000080000000 R14: ffffffff80000000 R15: 0892345900000000
+ vm_remove_mappings mm/vmalloc.c:2199 [inline]
+ __vunmap+0x16e/0x990 mm/vmalloc.c:2261
+FS:  00007fd27f5158c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ __vfree mm/vmalloc.c:2318 [inline]
+ vfree+0x88/0x150 mm/vmalloc.c:2349
+CR2: 0000558a7bad0278 CR3: 000000000fb30000 CR4: 0000000000350ef0
+Call Trace:
+ quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:267
+ kcov_put kernel/kcov.c:408 [inline]
+ kcov_put+0x26/0x40 kernel/kcov.c:404
+ __kasan_kmalloc.constprop.0+0x9e/0xd0 mm/kasan/common.c:442
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
+ kcov_close+0xc/0x10 kernel/kcov.c:510
+ getname_flags include/linux/audit.h:320 [inline]
+ getname+0x8e/0xd0 fs/namei.c:209
+ do_sys_openat2+0xf5/0x420 fs/open.c:1162
+ __fput+0x280/0x980 fs/file_table.c:281
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fd27f9c1342
+Code: c0 f6 c2 40 75 52 89 d0 45 31 d2 25 00 00 41 00 3d 00 00 41 00 74 41 64 8b 04 25 18 00 00 00 85 c0 75 65 b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 a2 00 00 00 48 8b 4c 24 38 64 48 2b 0c 25
+RSP: 002b:00007ffe4a894fc0 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007fd27f9c1342
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+RDX: 00000000002a0000 RSI: 0000558a7b287711 RDI: 000000000000000b
+RBP: 0000558a7b287710 R08: 0000558a7ab9d950 R09: 002f7665642f7379
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000558a7b28802e
+R13: 000000000000000b R14: 0000000000000006 R15: 0000558a7b287711
+Modules linked in:
+swap_info_get: Bad swap file entry 8018d97cc3fffff
+BUG: Bad page map in process systemd-journal  pte:14e4d06780000000 pmd:18f25067
+addr:00007fada2c16000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:151
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+---[ end trace 03818687c957b670 ]---
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+RIP: 0010:do_swap_page+0xdb6/0x1df0 mm/memory.c:3280
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+Code: 85 22 f5 ff ff e9 7e f5 ff ff e8 15 89 df ff 48 8b 7c 24 08 e8 5b e4 08 00 48 ba 00 00 00 00 00 fc ff df 48 89 c1 48 c1 e9 03 <80> 3c 11 00 0f 85 05 0e 00 00 48 8b 18 31 ff 81 e3 00 10 00 00 48
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RSP: 0018:ffff88800bd37ce0 EFLAGS: 00010256
+RIP: 0033:0x7fa5fb440ef9
+
+Code: Unable to access opcode bytes at RIP 0x7fa5fb440ecf.
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RSP: 002b:00007fa5fa0ba038 EFLAGS: 00000246
+RDX: dffffc0000000000 RSI: ffffffff816f6b06 RDI: 0000000000000004
+ ORIG_RAX: 0000000000000009
+RBP: ffff88800bd37de0 R08: 0000000000000034 R09: ffff88806ce1ff9b
+RAX: 0000000020000000 RBX: 00007fa5fb5f8f80 RCX: 00007fa5fb440ef9
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800fc57c00
+RDX: b635773f06ebbeea RSI: 0000000000b36000 RDI: 0000000020000000
+R13: 1f6e902580000000 R14: 000ffffffffff000 R15: ffffffff84caa790
+RBP: 00007fa5fb4b3b76 R08: ffffffffffffffff R09: 0000000000000000
+FS:  00007fd27f5158c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+R10: 0000000000008031 R11: 0000000000000246 R12: 0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+R13: 0000000000000000 R14: 00007fa5fb5f8f80 R15: 00007fff25c266c8
+CR2: 0000558a7bad0278 CR3: 000000000fb30000 CR4: 0000000000350ef0
+irq event stamp: 196262
+swap_info_get: Bad swap file entry 8018d8fed3fffff
+hardirqs last  enabled at (196261): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+BUG: Bad page map in process systemd-journal  pte:14e4e02580000000 pmd:18f25067
+addr:00007fada2c17000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:152
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+hardirqs last disabled at (196262): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+softirqs last  enabled at (185494): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+softirqs last disabled at (185309): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+---[ end trace 03818687c957b671 ]---
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+------------[ cut here ]------------
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pte_range mm/vmalloc.c:80 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pmd_range mm/vmalloc.c:104 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pud_range mm/vmalloc.c:129 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_p4d_range mm/vmalloc.c:152 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 unmap_kernel_range_noflush+0x775/0xa10 mm/vmalloc.c:185
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+Modules linked in:
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+CPU: 1 PID: 5826 Comm: syz.1.217 Tainted: G    B D W         5.10.0 #1
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry 8018d87ed3fffff
+BUG: Bad page map in process systemd-journal  pte:14e4f02580000000 pmd:18f25067
+addr:00007fada2c18000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:153
+RIP: 0010:vunmap_pte_range mm/vmalloc.c:80 [inline]
+RIP: 0010:vunmap_pmd_range mm/vmalloc.c:104 [inline]
+RIP: 0010:vunmap_pud_range mm/vmalloc.c:129 [inline]
+RIP: 0010:vunmap_p4d_range mm/vmalloc.c:152 [inline]
+RIP: 0010:unmap_kernel_range_noflush+0x775/0xa10 mm/vmalloc.c:185
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+Code: 4c 89 ee e8 2d 94 da ff 4d 85 ed 74 1f e8 43 9c da ff 81 e5 01 01 00 00 31 ff 89 ee e8 f4 93 da ff 85 ed 75 07 e8 2b 9c da ff <0f> 0b e8 24 9c da ff 49 81 c7 00 10 00 00 4c 89 e7 48 83 c3 08 4c
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+RSP: 0018:ffff888011d77910 EFLAGS: 00010293
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+RAX: 0000000000000000 RBX: ffff888018f43028 RCX: ffffffff816b728c
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+RDX: ffff8880196f0000 RSI: ffffffff816b7295 RDI: 0000000000000005
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffff888018f4302f
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffc90007058000
+R13: 13fe316380000000 R14: ffff88800813a1c0 R15: ffffc90007005000
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry 80170bfcc3fffff
+CR2: 0000557a453295e8 CR3: 000000000cee0000 CR4: 0000000000350ee0
+BUG: Bad page map in process systemd-journal  pte:151e806780000000 pmd:18f25067
+addr:00007fada2c19000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:154
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+Call Trace:
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+ free_unmap_vmap_area mm/vmalloc.c:1435 [inline]
+ remove_vm_area+0x1ca/0x230 mm/vmalloc.c:2172
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ vm_remove_mappings mm/vmalloc.c:2199 [inline]
+ __vunmap+0x16e/0x990 mm/vmalloc.c:2261
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+ __vfree mm/vmalloc.c:2318 [inline]
+ vfree+0x88/0x150 mm/vmalloc.c:2349
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+ kcov_put kernel/kcov.c:408 [inline]
+ kcov_put+0x26/0x40 kernel/kcov.c:404
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ kcov_close+0xc/0x10 kernel/kcov.c:510
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ __fput+0x280/0x980 fs/file_table.c:281
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+hpet: Lost 1 RTC interrupts
+swap_info_get: Bad swap file entry c02e257cc3fffff
+BUG: Bad page map in process systemd-journal  pte:1a3b506780000000 pmd:18f25067
+addr:00007fada2c1a000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:155
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap offset entry 3ffffffbfffff
+general protection fault, probably for non-canonical address 0x615b4764000000: 0000 [#6] PREEMPT SMP KASAN NOPTI
+BUG: Bad page map in process systemd-journal  pte:80000000 pmd:18f25067
+CPU: 1 PID: 1 Comm: systemd Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:compound_head include/linux/page-flags.h:185 [inline]
+RIP: 0010:virt_to_head_page include/linux/mm.h:860 [inline]
+RIP: 0010:qlink_to_cache mm/kasan/quarantine.c:130 [inline]
+RIP: 0010:qlist_free_all+0x8d/0xd0 mm/kasan/quarantine.c:167
+addr:00007fada2c1b000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:156
+Code: df 48 85 db 75 cc 48 89 f0 4c 01 e8 72 56 4c 89 f2 48 2b 15 25 65 57 03 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 03 65 57 03 <48> 8b 50 08 48 8d 4a ff 83 e2 01 48 0f 45 c1 48 8b 78 18 eb 93 49
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+RSP: 0018:ffff8880081cfc68 EFLAGS: 00010207
+RAX: 00615b4764000000 RBX: 0000000000000000 RCX: 000000008010000e
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+RDX: 0000777f80000000 RSI: 185bda5900000000 RDI: 0000000000000000
+RBP: dffffc0000000000 R08: 0000000000000001 R09: 000000008010000e
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff8880081cfca0
+R13: 0000000080000000 R14: ffffffff80000000 R15: 185bda5900000000
+Call Trace:
+FS:  00007f8547186900(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000557a453207a8 CR3: 000000000cee0000 CR4: 0000000000350ee0
+Call Trace:
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+ quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:267
+ __kasan_kmalloc.constprop.0+0x9e/0xd0 mm/kasan/common.c:442
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
+ getname_flags include/linux/audit.h:320 [inline]
+ getname+0x8e/0xd0 fs/namei.c:209
+ do_sys_openat2+0xf5/0x420 fs/open.c:1162
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f8547950244
+Code: 84 00 00 00 00 00 44 89 54 24 0c e8 46 58 f9 ff 44 8b 54 24 0c 44 89 e2 48 89 ee 41 89 c0 bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 34 44 89 c7 89 44 24 0c e8 78 58 f9 ff 8b 44
+RSP: 002b:00007ffc6b06cb00 EFLAGS: 00000293 ORIG_RAX: 0000000000000101
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RAX: ffffffffffffffda RBX: 0000557a45235b90 RCX: 00007f8547950244
+RIP: 0033:0x7fada426fa60
+RDX: 0000000000080000 RSI: 0000557a4531c890 RDI: 00000000ffffff9c
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RBP: 0000557a4531c890 R08: 0000000000000000 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000080000
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+R13: 0000557a45235b90 R14: 0000000000000001 R15: 0000557a42af2b4e
+Modules linked in:
+
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+hpet: Lost 2 RTC interrupts
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+swap_info_get: Bad swap file entry c02c71fed7fffff
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+BUG: Bad page map in process systemd-journal  pte:1a71c02500000000 pmd:18f25067
+addr:00007fada2c1c000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:157
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+RIP: 0033:0x7fa5fb440ef9
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+Code: Unable to access opcode bytes at RIP 0x7fa5fb440ecf.
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+RSP: 002b:00007fa5fa0ba038 EFLAGS: 00000246
+ ORIG_RAX: 0000000000000009
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+RAX: 0000000020000000 RBX: 00007fa5fb5f8f80 RCX: 00007fa5fb440ef9
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+RDX: b635773f06ebbeea RSI: 0000000000b36000 RDI: 0000000020000000
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+RBP: 00007fa5fb4b3b76 R08: ffffffffffffffff R09: 0000000000000000
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+R10: 0000000000008031 R11: 0000000000000246 R12: 0000000000000000
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+R13: 0000000000000000 R14: 00007fa5fb5f8f80 R15: 00007fff25c266c8
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+irq event stamp: 196262
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap file entry c01ed0fed3fffff
+hardirqs last  enabled at (196261): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+BUG: Bad page map in process systemd-journal  pte:1c25e02580000000 pmd:18f25067
+addr:00007fada2c1d000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:158
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+hardirqs last disabled at (196262): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+softirqs last  enabled at (185494): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (185309): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+---[ end trace 03818687c957b672 ]---
+------------[ cut here ]------------
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pte_range mm/vmalloc.c:80 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pmd_range mm/vmalloc.c:104 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_pud_range mm/vmalloc.c:129 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 vunmap_p4d_range mm/vmalloc.c:152 [inline]
+WARNING: CPU: 1 PID: 5826 at mm/vmalloc.c:80 unmap_kernel_range_noflush+0x775/0xa10 mm/vmalloc.c:185
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+Modules linked in:
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+
+CPU: 1 PID: 5826 Comm: syz.1.217 Tainted: G    B D W         5.10.0 #1
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+RIP: 0010:vunmap_pte_range mm/vmalloc.c:80 [inline]
+RIP: 0010:vunmap_pmd_range mm/vmalloc.c:104 [inline]
+RIP: 0010:vunmap_pud_range mm/vmalloc.c:129 [inline]
+RIP: 0010:vunmap_p4d_range mm/vmalloc.c:152 [inline]
+RIP: 0010:unmap_kernel_range_noflush+0x775/0xa10 mm/vmalloc.c:185
+swap_info_get: Bad swap file entry c01b4d7cc3fffff
+Code: 4c 89 ee e8 2d 94 da ff 4d 85 ed 74 1f e8 43 9c da ff 81 e5 01 01 00 00 31 ff 89 ee e8 f4 93 da ff 85 ed 75 07 e8 2b 9c da ff <0f> 0b e8 24 9c da ff 49 81 c7 00 10 00 00 4c 89 e7 48 83 c3 08 4c
+BUG: Bad page map in process systemd-journal  pte:1c96506780000000 pmd:18f25067
+addr:00007fada2c1e000 vm_flags:000000fb anon_vma:0000000000000000 mapping:ffff888010b167c0 index:159
+file:system.journal fault:ext4_filemap_fault mmap:ext4_file_mmap readpage:ext4_readpage
+CPU: 0 PID: 101 Comm: systemd-journal Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_bad_pte+0x781/0x8f0 mm/memory.c:548
+RSP: 0018:ffff888011d77910 EFLAGS: 00010293
+ zap_pte_range mm/memory.c:1299 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16d5/0x2070 mm/memory.c:1428
+
+---[ end trace 03818687c957b673 ]---
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+RIP: 0010:do_swap_page+0xdb6/0x1df0 mm/memory.c:3280
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+Code: 85 22 f5 ff ff e9 7e f5 ff ff e8 15 89 df ff 48 8b 7c 24 08 e8 5b e4 08 00 48 ba 00 00 00 00 00 fc ff df 48 89 c1 48 c1 e9 03 <80> 3c 11 00 0f 85 05 0e 00 00 48 8b 18 31 ff 81 e3 00 10 00 00 48
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+RSP: 0018:ffff88800bd37ce0 EFLAGS: 00010256
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+RAX: 0000000000000000 RBX: ffff888018f43030 RCX: ffffffff816b728c
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RDX: ffff8880196f0000 RSI: ffffffff816b7295 RDI: 0000000000000005
+RIP: 0033:0x7fada426fa60
+Code: Unable to access opcode bytes at RIP 0x7fada426fa36.
+RSP: 002b:00007ffdbcef7fb0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 00000000001ee360 RCX: 6b0f5b98978eeb00
+RDX: 00007ffdbcef7fb8 RSI: 00007ffdbcef7fb8 RDI: 0000555a0a65f680
+RBP: 00007ffdbcef8038 R08: 0000000000000001 R09: 00000000001ee360
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffff888018f43037
+R10: 0000000000000002 R11: 0000000000000000 R12: 00007fada2cb3360
+R13: 0000555a0a663210 R14: 0000000000000000 R15: 00007ffdbcef7fc0
+swap_info_get: Bad swap offset entry 3ffffffbfffff
+
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: dffffc0000000000 RSI: ffffffff816f6b06 RDI: 0000000000000004
+RBP: ffff88800bd37de0 R08: 0000000000000034 R09: ffff88806ce1ff9b
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800fc57c00
+R13: 1f6e902580000000 R14: 000ffffffffff000 R15: ffffffff84caa790
+FS:  00007f8547186900(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000557a453207a8 CR3: 000000000cee0000 CR4: 0000000000350ee0
+----------------
+Code disassembly (best guess), 4 bytes skipped:
+   0:	ff                   	ljmp   (bad)
+   1:	e9 7e f5 ff ff       	jmp    0xfffff584
+   6:	e8 15 89 df ff       	call   0xffdf8920
+   b:	48 8b 7c 24 08       	mov    0x8(%rsp),%rdi
+  10:	e8 5b e4 08 00       	call   0x8e470
+  15:	48 ba 00 00 00 00 00 	movabs $0xdffffc0000000000,%rdx
+  1c:	fc ff df
+  1f:	48 89 c1             	mov    %rax,%rcx
+  22:	48 c1 e9 03          	shr    $0x3,%rcx
+* 26:	80 3c 11 00          	cmpb   $0x0,(%rcx,%rdx,1) <-- trapping instruction
+  2a:	0f 85 05 0e 00 00    	jne    0xe35
+  30:	48 8b 18             	mov    (%rax),%rbx
+  33:	31 ff                	xor    %edi,%edi
+  35:	81 e3 00 10 00 00    	and    $0x1000,%ebx
+  3b:	48                   	rex.W

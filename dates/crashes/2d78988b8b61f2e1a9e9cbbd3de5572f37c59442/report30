@@ -1,0 +1,132 @@
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /23/file1 supports timestamps until 2038 (0x7fffffff)
+==================================================================
+BUG: KASAN: use-after-free in crc16+0xcb/0xe0 lib/crc16.c:58
+Read of size 1 at addr ffff888011fde000 by task syz-executor/238
+
+CPU: 1 PID: 238 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ crc16+0xcb/0xe0 lib/crc16.c:58
+ ext4_group_desc_csum+0x62d/0x8a0 fs/ext4/super.c:2837
+ ext4_group_desc_csum_set+0xc3/0x1a0 fs/ext4/super.c:2860
+ ext4_free_blocks+0xe32/0x22a0 fs/ext4/mballoc.c:5476
+ ext4_remove_blocks fs/ext4/extents.c:2498 [inline]
+ ext4_ext_rm_leaf fs/ext4/extents.c:2664 [inline]
+ ext4_ext_remove_space+0x20ff/0x4470 fs/ext4/extents.c:2912
+ ext4_ext_truncate+0x1fb/0x260 fs/ext4/extents.c:4370
+ ext4_truncate+0xed8/0x1390 fs/ext4/inode.c:4254
+ ext4_evict_inode+0xb59/0x1890 fs/ext4/inode.c:280
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ dentry_unlink_inode+0x2b4/0x3e0 fs/dcache.c:374
+ d_delete+0x167/0x1c0 fs/dcache.c:2470
+ vfs_rmdir.part.0+0x3d5/0x4b0 fs/namei.c:3727
+ vfs_rmdir fs/namei.c:3696 [inline]
+ do_rmdir+0x2f6/0x3c0 fs/namei.c:3774
+ __do_sys_unlinkat fs/namei.c:3937 [inline]
+ __se_sys_unlinkat fs/namei.c:3931 [inline]
+ __x64_sys_unlinkat+0xeb/0x130 fs/namei.c:3931
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f538ff0b4d7
+Code: 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 07 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff6ec621c8 EFLAGS: 00000207 ORIG_RAX: 0000000000000107
+RAX: ffffffffffffffda RBX: 0000000000000065 RCX: 00007f538ff0b4d7
+RDX: 0000000000000200 RSI: 00007fff6ec63370 RDI: 00000000ffffff9c
+RBP: 00007f538ff7ea14 R08: 000055555699954b R09: 0000000000000000
+R10: 0000000000001000 R11: 0000000000000207 R12: 00007fff6ec63370
+R13: 00007f538ff7ea14 R14: 0000000000008e3e R15: 00007fff6ec65520
+
+Allocated by task 2599:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ kmem_cache_alloc_node+0x155/0x340 mm/slub.c:2927
+ __alloc_skb+0x6d/0x590 net/core/skbuff.c:198
+ alloc_skb include/linux/skbuff.h:1094 [inline]
+ alloc_skb_with_frags+0x93/0x620 net/core/skbuff.c:5835
+ sock_alloc_send_pskb+0x742/0x8a0 net/core/sock.c:2329
+ __ip6_append_data+0x1d0c/0x3b50 net/ipv6/ip6_output.c:1581
+ ip6_append_data+0x1dd/0x300 net/ipv6/ip6_output.c:1757
+ icmp6_send+0x12a0/0x1f60 net/ipv6/icmp.c:618
+ icmpv6_send include/linux/icmpv6.h:24 [inline]
+ ip6_protocol_deliver_rcu+0x112d/0x1660 net/ipv6/ip6_input.c:455
+ ip6_input_finish+0x9c/0x1a0 net/ipv6/ip6_input.c:474
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ NF_HOOK include/linux/netfilter.h:295 [inline]
+ ip6_input+0x9c/0xd0 net/ipv6/ip6_input.c:483
+ dst_input include/net/dst.h:449 [inline]
+ ip6_rcv_finish net/ipv6/ip6_input.c:76 [inline]
+ ip6_rcv_finish net/ipv6/ip6_input.c:66 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ NF_HOOK include/linux/netfilter.h:295 [inline]
+ ipv6_rcv+0x13d/0x230 net/ipv6/ip6_input.c:307
+ __netif_receive_skb_one_core+0x12e/0x1e0 net/core/dev.c:5311
+ __netif_receive_skb+0x27/0x1c0 net/core/dev.c:5425
+ process_backlog+0x334/0x810 net/core/dev.c:6315
+ napi_poll net/core/dev.c:6759 [inline]
+ net_rx_action+0x463/0x11f0 net/core/dev.c:6829
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+
+Freed by task 2599:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ kfree_skbmem+0xef/0x1b0 net/core/skbuff.c:622
+ __kfree_skb net/core/skbuff.c:679 [inline]
+ kfree_skb net/core/skbuff.c:696 [inline]
+ kfree_skb+0x122/0x3c0 net/core/skbuff.c:690
+ icmpv6_rcv+0x809/0x1970 net/ipv6/icmp.c:985
+ ip6_protocol_deliver_rcu+0xf33/0x1660 net/ipv6/ip6_input.c:433
+ ip6_input_finish+0x9c/0x1a0 net/ipv6/ip6_input.c:474
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ NF_HOOK include/linux/netfilter.h:295 [inline]
+ ip6_input+0x9c/0xd0 net/ipv6/ip6_input.c:483
+ dst_input include/net/dst.h:449 [inline]
+ ip6_rcv_finish net/ipv6/ip6_input.c:76 [inline]
+ ip6_rcv_finish net/ipv6/ip6_input.c:66 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ NF_HOOK include/linux/netfilter.h:295 [inline]
+ ipv6_rcv+0x13d/0x230 net/ipv6/ip6_input.c:307
+ __netif_receive_skb_one_core+0x12e/0x1e0 net/core/dev.c:5311
+ __netif_receive_skb+0x27/0x1c0 net/core/dev.c:5425
+ process_backlog+0x334/0x810 net/core/dev.c:6315
+ napi_poll net/core/dev.c:6759 [inline]
+ net_rx_action+0x463/0x11f0 net/core/dev.c:6829
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+
+The buggy address belongs to the object at ffff888011fde000
+ which belongs to the cache skbuff_head_cache of size 224
+The buggy address is located 0 bytes inside of
+ 224-byte region [ffff888011fde000, ffff888011fde0e0)
+The buggy address belongs to the page:
+page:000000004dfb15b4 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x11fde
+flags: 0x100000000000200(slab)
+raw: 0100000000000200 dead000000000100 dead000000000122 ffff8880082d4640
+raw: 0000000000000000 00000000000c000c 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888011fddf00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888011fddf80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff888011fde000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff888011fde080: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+ ffff888011fde100: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
+==================================================================
+EXT4-fs warning (device loop3): __ext4_unlink:3233: inode #16: comm syz-executor: Deleting file 'file3' with no links
+EXT4-fs warning (device loop3): __ext4_unlink:3233: inode #16: comm syz-executor: Deleting file 'bus' with no links

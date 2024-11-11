@@ -1,0 +1,133 @@
+fuse: Bad value for 'rootmode'
+EXT4-fs error (device loop1): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 25 vs 150994969 free clusters
+======================================================
+WARNING: possible circular locking dependency detected
+5.10.0 #1 Tainted: G S               
+------------------------------------------------------
+syz.1.752/15464 is trying to acquire lock:
+ffff888029494628 (sb_internal){.+.+}-{0:0}, at: evict+0x284/0x6d0 fs/inode.c:578
+
+but task is already holding lock:
+ffff888013388aa0 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ffff888013388aa0 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x15e/0x12b0 fs/ext4/xattr.c:2306
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&ei->xattr_sem){++++}-{3:3}:
+       down_write+0x8d/0x150 kernel/locking/rwsem.c:1531
+       ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+       ext4_inline_data_truncate+0x19b/0xb20 fs/ext4/inline.c:1881
+       ext4_truncate+0xa4a/0x1390 fs/ext4/inode.c:4211
+       ext4_evict_inode+0xb59/0x1890 fs/ext4/inode.c:280
+       evict+0x284/0x6d0 fs/inode.c:578
+       iput_final fs/inode.c:1654 [inline]
+       iput+0x4e5/0x840 fs/inode.c:1680
+       dentry_unlink_inode+0x2b4/0x3e0 fs/dcache.c:374
+       d_delete+0x167/0x1c0 fs/dcache.c:2470
+       vfs_rmdir.part.0+0x3d5/0x4b0 fs/namei.c:3727
+       vfs_rmdir fs/namei.c:3696 [inline]
+       do_rmdir+0x2f6/0x3c0 fs/namei.c:3774
+       __do_sys_unlinkat fs/namei.c:3937 [inline]
+       __se_sys_unlinkat fs/namei.c:3931 [inline]
+       __x64_sys_unlinkat+0xeb/0x130 fs/namei.c:3931
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #0 (sb_internal){.+.+}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:2868 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+       validate_chain kernel/locking/lockdep.c:3608 [inline]
+       __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+       lock_acquire kernel/locking/lockdep.c:5437 [inline]
+       lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1594 [inline]
+       sb_start_intwrite include/linux/fs.h:1711 [inline]
+       ext4_evict_inode+0x5a1/0x1890 fs/ext4/inode.c:237
+       evict+0x284/0x6d0 fs/inode.c:578
+       iput_final fs/inode.c:1654 [inline]
+       iput+0x4e5/0x840 fs/inode.c:1680
+       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1525 [inline]
+       ext4_xattr_set_entry+0x2d7a/0x37c0 fs/ext4/xattr.c:1646
+       ext4_xattr_block_set+0x834/0x2f50 fs/ext4/xattr.c:1942
+       ext4_xattr_set_handle+0xd01/0x12b0 fs/ext4/xattr.c:2390
+       ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2491
+       __vfs_setxattr+0x10f/0x170 fs/xattr.c:177
+       __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+       __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+       vfs_setxattr+0xe8/0x270 fs/xattr.c:283
+       setxattr+0x23d/0x330 fs/xattr.c:548
+       path_setxattr+0x170/0x190 fs/xattr.c:567
+       __do_sys_setxattr fs/xattr.c:582 [inline]
+       __se_sys_setxattr fs/xattr.c:578 [inline]
+       __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:578
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ei->xattr_sem);
+                               lock(sb_internal);
+                               lock(&ei->xattr_sem);
+  lock(sb_internal);
+
+ *** DEADLOCK ***
+
+3 locks held by syz.1.752/15464:
+ #0: ffff888029494438 (sb_writers#3){.+.+}-{0:0}, at: path_setxattr+0xb5/0x190 fs/xattr.c:565
+ #1: ffff888013388e60 (&sb->s_type->i_mutex_key#14){++++}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ #1: ffff888013388e60 (&sb->s_type->i_mutex_key#14){++++}-{3:3}, at: vfs_setxattr+0xca/0x270 fs/xattr.c:282
+ #2: ffff888013388aa0 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ #2: ffff888013388aa0 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x15e/0x12b0 fs/ext4/xattr.c:2306
+
+stack backtrace:
+CPU: 1 PID: 15464 Comm: syz.1.752 Tainted: G S                5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
+ check_prev_add kernel/locking/lockdep.c:2868 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+ validate_chain kernel/locking/lockdep.c:3608 [inline]
+ __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+ __sb_start_write include/linux/fs.h:1594 [inline]
+ sb_start_intwrite include/linux/fs.h:1711 [inline]
+ ext4_evict_inode+0x5a1/0x1890 fs/ext4/inode.c:237
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1525 [inline]
+ ext4_xattr_set_entry+0x2d7a/0x37c0 fs/ext4/xattr.c:1646
+ ext4_xattr_block_set+0x834/0x2f50 fs/ext4/xattr.c:1942
+ ext4_xattr_set_handle+0xd01/0x12b0 fs/ext4/xattr.c:2390
+ ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2491
+ __vfs_setxattr+0x10f/0x170 fs/xattr.c:177
+ __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+ __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+ vfs_setxattr+0xe8/0x270 fs/xattr.c:283
+ setxattr+0x23d/0x330 fs/xattr.c:548
+ path_setxattr+0x170/0x190 fs/xattr.c:567
+ __do_sys_setxattr fs/xattr.c:582 [inline]
+ __se_sys_setxattr fs/xattr.c:578 [inline]
+ __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:578
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fe65964def9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe6582c7038 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
+RAX: ffffffffffffffda RBX: 00007fe659805f80 RCX: 00007fe65964def9
+RDX: 0000000020000100 RSI: 00000000200000c0 RDI: 0000000020000080
+RBP: 00007fe6596c0b76 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000002 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fe659805f80 R15: 00007ffdc2cdf6f8

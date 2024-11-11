@@ -1,0 +1,148 @@
+SELinux: unrecognized netlink message: protocol=0 nlmsg_type=12 sclass=netlink_route_socket pid=5018 comm=syz.3.152
+EXT4-fs (loop2): Unrecognized mount option "smackfstransmute=)@(''!/" or missing value
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+syz.3.158/5048 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff88800b1daea8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88800b1daea8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 396
+hardirqs last  enabled at (396): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (396): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (395): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (395): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (100): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (127): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+4 locks held by syz.3.158/5048:
+ #0: ffff88800fdbcb58 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ #0: ffff88800fdbcb58 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: zap_pte_range mm/memory.c:1211 [inline]
+ #0: ffff88800fdbcb58 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: zap_pmd_range mm/memory.c:1357 [inline]
+ #0: ffff88800fdbcb58 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: zap_pud_range mm/memory.c:1386 [inline]
+ #0: ffff88800fdbcb58 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: zap_p4d_range mm/memory.c:1407 [inline]
+ #0: ffff88800fdbcb58 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: unmap_page_range+0x978/0x2070 mm/memory.c:1428
+ #1: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: compound_head include/linux/page-flags.h:185 [inline]
+ #1: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: lock_page_memcg+0x30/0x260 mm/memcontrol.c:2129
+ #2: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #3: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 0 PID: 5048 Comm: syz.3.158 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:lock_is_held_type+0xc2/0x100 kernel/locking/lockdep.c:5481
+Code: 03 44 39 f0 41 0f 94 c4 48 c7 c7 c0 df 46 84 e8 94 12 00 00 b8 ff ff ff ff 65 0f c1 05 77 df 16 7c 83 f8 01 75 23 ff 34 24 9d <48> 83 c4 08 44 89 e0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 45 31 e4 eb
+RSP: 0018:ffff88800aaff658 EFLAGS: 00000202
+RAX: 0000000000000001 RBX: 0000000000000002 RCX: 1ffffffff0bacf77
+RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000000
+RBP: ffffffff850e7e40 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: fffffbfff0bacd81 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff88801760a350 R14: 00000000ffffffff R15: ffff88801760a378
+ lock_is_held include/linux/lockdep.h:271 [inline]
+ rcu_read_lock_sched_held+0x3a/0x70 kernel/rcu/update.c:123
+ trace_lock_release include/trace/events/lock.h:58 [inline]
+ lock_release+0x5a3/0x6f0 kernel/locking/lockdep.c:5448
+ zap_pte_range mm/memory.c:1253 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0xe32/0x2070 mm/memory.c:1428
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ff81d6b0ef9
+Code: Unable to access opcode bytes at RIP 0x7ff81d6b0ecf.
+RSP: 002b:00007ff81c2e8038 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: 00000000000000e0 RBX: 00007ff81d869130 RCX: 00007ff81d6b0ef9
+RDX: 000000000000c080 RSI: 0000000020000840 RDI: 0000000000000003
+RBP: 00007ff81d723b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000001 R14: 00007ff81d869130 R15: 00007ffeb0648688
+----------------
+Code disassembly (best guess):
+   0:	03 44 39 f0          	add    -0x10(%rcx,%rdi,1),%eax
+   4:	41 0f 94 c4          	sete   %r12b
+   8:	48 c7 c7 c0 df 46 84 	mov    $0xffffffff8446dfc0,%rdi
+   f:	e8 94 12 00 00       	call   0x12a8
+  14:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+  19:	65 0f c1 05 77 df 16 	xadd   %eax,%gs:0x7c16df77(%rip)        # 0x7c16df98
+  20:	7c
+  21:	83 f8 01             	cmp    $0x1,%eax
+  24:	75 23                	jne    0x49
+  26:	ff 34 24             	push   (%rsp)
+  29:	9d                   	popf
+* 2a:	48 83 c4 08          	add    $0x8,%rsp <-- trapping instruction
+  2e:	44 89 e0             	mov    %r12d,%eax
+  31:	5b                   	pop    %rbx
+  32:	5d                   	pop    %rbp
+  33:	41 5c                	pop    %r12
+  35:	41 5d                	pop    %r13
+  37:	41 5e                	pop    %r14
+  39:	41 5f                	pop    %r15
+  3b:	c3                   	ret
+  3c:	45 31 e4             	xor    %r12d,%r12d
+  3f:	eb                   	.byte 0xeb

@@ -1,0 +1,143 @@
+audit: type=1326 audit(1731324458.664:74): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=4503 comm="syz.3.216" exe="/syz-executor" sig=0 arch=c000003e syscall=202 compat=0 ip=0x7f4ee56b3ef9 code=0x7ffc0000
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+audit: type=1326 audit(1731324458.666:75): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=4503 comm="syz.3.216" exe="/syz-executor" sig=0 arch=c000003e syscall=202 compat=0 ip=0x7f4ee56b3ef9 code=0x7ffc0000
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+systemd-udevd/116 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff888008aeeea8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff888008aeeea8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 1876370
+hardirqs last  enabled at (1876370): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (1876370): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (1876369): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (1876369): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (1875996): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+audit: type=1326 audit(1731324458.670:76): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=4503 comm="syz.3.216" exe="/syz-executor" sig=0 arch=c000003e syscall=257 compat=0 ip=0x7f4ee56b3ef9 code=0x7ffc0000
+softirqs last disabled at (1876331): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+4 locks held by systemd-udevd/116:
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: fast_dput fs/dcache.c:746 [inline]
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: dput+0x35/0xc70 fs/dcache.c:865
+ #1: ffff888013510688 (&dentry->d_lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ #1: ffff888013510688 (&dentry->d_lock){+.+.}-{2:2}, at: fast_dput fs/dcache.c:761 [inline]
+ #1: ffff888013510688 (&dentry->d_lock){+.+.}-{2:2}, at: dput+0x541/0xc70 fs/dcache.c:865
+ #2: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #3: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 1 PID: 116 Comm: systemd-udevd Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:arch_local_irq_restore arch/x86/include/asm/irqflags.h:85 [inline]
+RIP: 0010:lock_acquire kernel/locking/lockdep.c:5440 [inline]
+RIP: 0010:lock_acquire+0x2bd/0x9b0 kernel/locking/lockdep.c:5402
+Code: 48 c7 c7 c0 df 46 84 48 83 c4 20 e8 6d 58 c0 02 b8 ff ff ff ff 65 0f c1 05 50 25 d7 7e 83 f8 01 0f 85 2d 04 00 00 ff 34 24 9d <e9> 40 fe ff ff 65 ff 05 b7 14 d7 7e 48 8b 05 90 87 a9 04 e8 3b 46
+RSP: 0018:ffff888010f97898 EFLAGS: 00000246
+RAX: 0000000000000001 RBX: 1ffff110021f2f15 RCX: 0000000000000001
+RDX: 1ffff110017e4ae9 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: 0000000000000001 R08: 0000000000000000 R09: ffffffff86e5f6af
+R10: fffffbfff0dcbed5 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff888013510688 R14: 0000000000000000 R15: 0000000000000000
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ fast_dput fs/dcache.c:761 [inline]
+ dput+0x541/0xc70 fs/dcache.c:865
+ step_into+0x2cf/0x1c90 fs/namei.c:1700
+ open_last_lookups fs/namei.c:3201 [inline]
+ path_openat+0x48a/0x26f0 fs/namei.c:3366
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f09d922b528
+Code: 24 18 31 c0 41 83 e2 40 75 40 89 f0 25 00 00 41 00 3d 00 00 41 00 74 32 44 89 c2 4c 89 ce bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 40 48 8b 4c 24 18 64 48 2b 0c 25 28 00 00 00
+RSP: 002b:00007ffccbd9cd50 EFLAGS: 00000287 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00007f09d8d7a6c0 RCX: 00007f09d922b528
+RDX: 0000000000090800 RSI: 0000562ad09b4d70 RDI: 00000000ffffff9c
+RBP: 0000562ad0a00610 R08: 0000000000090800 R09: 0000562ad09b4d70
+R10: 0000000000000000 R11: 0000000000000287 R12: 0000000000000000
+R13: 0000562ad09b4d70 R14: 0000562ad09b4d70 R15: 0000562ad09b0790
+capability: warning: `syz.2.217' uses deprecated v2 capabilities in a way that may be insecure
+audit: type=1326 audit(1731324458.670:77): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=4503 comm="syz.3.216" exe="/syz-executor" sig=0 arch=c000003e syscall=202 compat=0 ip=0x7f4ee56b3ef9 code=0x7ffc0000
+audit: type=1326 audit(1731324458.670:78): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=4503 comm="syz.3.216" exe="/syz-executor" sig=0 arch=c000003e syscall=202 compat=0 ip=0x7f4ee56b3ef9 code=0x7ffc0000
+audit: type=1326 audit(1731324458.670:79): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=4503 comm="syz.3.216" exe="/syz-executor" sig=0 arch=c000003e syscall=0 compat=0 ip=0x7f4ee56b3ef9 code=0x7ffc0000
+audit: type=1326 audit(1731324458.670:80): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=4503 comm="syz.3.216" exe="/syz-executor" sig=0 arch=c000003e syscall=202 compat=0 ip=0x7f4ee56b3ef9 code=0x7ffc0000
+audit: type=1326 audit(1731324458.671:81): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=4503 comm="syz.3.216" exe="/syz-executor" sig=0 arch=c000003e syscall=202 compat=0 ip=0x7f4ee56b3ef9 code=0x7ffc0000
+audit: type=1326 audit(1731324458.671:82): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=4503 comm="syz.3.216" exe="/syz-executor" sig=0 arch=c000003e syscall=0 compat=0 ip=0x7f4ee56b3ef9 code=0x7ffc0000
+audit: type=1326 audit(1731324458.671:83): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=4503 comm="syz.3.216" exe="/syz-executor" sig=0 arch=c000003e syscall=202 compat=0 ip=0x7f4ee56b3ef9 code=0x7ffc0000
+----------------
+Code disassembly (best guess):
+   0:	48 c7 c7 c0 df 46 84 	mov    $0xffffffff8446dfc0,%rdi
+   7:	48 83 c4 20          	add    $0x20,%rsp
+   b:	e8 6d 58 c0 02       	call   0x2c0587d
+  10:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+  15:	65 0f c1 05 50 25 d7 	xadd   %eax,%gs:0x7ed72550(%rip)        # 0x7ed7256d
+  1c:	7e
+  1d:	83 f8 01             	cmp    $0x1,%eax
+  20:	0f 85 2d 04 00 00    	jne    0x453
+  26:	ff 34 24             	push   (%rsp)
+  29:	9d                   	popf
+* 2a:	e9 40 fe ff ff       	jmp    0xfffffe6f <-- trapping instruction
+  2f:	65 ff 05 b7 14 d7 7e 	incl   %gs:0x7ed714b7(%rip)        # 0x7ed714ed
+  36:	48 8b 05 90 87 a9 04 	mov    0x4a98790(%rip),%rax        # 0x4a987cd
+  3d:	e8                   	.byte 0xe8
+  3e:	3b                   	.byte 0x3b
+  3f:	46                   	rex.RX

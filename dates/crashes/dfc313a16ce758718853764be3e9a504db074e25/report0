@@ -1,0 +1,58 @@
+ext4 filesystem being mounted at /21/file1 supports timestamps until 2038 (0x7fffffff)
+blk_update_request: I/O error, dev loop0, sector 0 op 0x0:(READ) flags 0x800 phys_seg 1 prio class 0
+------------[ cut here ]------------
+kernel BUG at fs/ext4/extents.c:3159!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 8340 Comm: syz.2.275 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_split_extent_at+0x70b/0xe90 fs/ext4/extents.c:3159
+Code: c8 4c 89 f1 e8 06 40 ff ff 31 ff 89 c6 89 04 24 e8 4a d7 a5 ff 8b 04 24 85 c0 0f 84 37 06 00 00 41 89 c7 eb 1f e8 75 df a5 ff <0f> 0b 48 c7 c7 20 d1 2e 85 e8 76 5c 40 02 41 89 df 48 8b 44 24 08
+RSP: 0018:ffff88802538f7a8 EFLAGS: 00010212
+RAX: 000000000000037b RBX: 000000001ff7fdfd RCX: ffffc900052a8000
+RDX: 0000000000040000 RSI: ffffffff81a02f4b RDI: 0000000000000004
+RBP: ffff888019add030 R08: 0000000000000000 R09: 0000000050000028
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801c43b1cc
+R13: 0000000000000000 R14: ffff88801376ef80 R15: 0000000000000000
+FS:  00007fb32230c6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005613f86a17a0 CR3: 000000002501a000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ ext4_force_split_extent_at fs/ext4/extents.c:305 [inline]
+ ext4_ext_remove_space+0x2dcf/0x4470 fs/ext4/extents.c:2853
+ ext4_punch_hole+0x678/0x1130 fs/ext4/inode.c:4105
+ ext4_fallocate+0x10e7/0x3e70 fs/ext4/extents.c:4655
+ vfs_fallocate+0x494/0xdd0 fs/open.c:309
+ ioctl_preallocate+0x18e/0x200 fs/ioctl.c:494
+ file_ioctl fs/ioctl.c:537 [inline]
+ do_vfs_ioctl+0xe3c/0x1140 fs/ioctl.c:732
+ __do_sys_ioctl fs/ioctl.c:751 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x108/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fb323692ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb32230c038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fb32384af80 RCX: 00007fb323692ef9
+RDX: 0000000020000080 RSI: 0000000040305829 RDI: 0000000000000004
+RBP: 00007fb323705b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fb32384af80 R15: 00007fffdeeaf2f8
+EXT4-fs (loop1): 1 truncate cleaned up
+Modules linked in:
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+audit: type=1400 audit(1731236172.140:46): avc:  denied  { write } for  pid=8269 comm="syz.1.264" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=perf_event permissive=1
+---[ end trace 64bc47b3f758ec12 ]---
+RIP: 0010:ext4_split_extent_at+0x70b/0xe90 fs/ext4/extents.c:3159
+Code: c8 4c 89 f1 e8 06 40 ff ff 31 ff 89 c6 89 04 24 e8 4a d7 a5 ff 8b 04 24 85 c0 0f 84 37 06 00 00 41 89 c7 eb 1f e8 75 df a5 ff <0f> 0b 48 c7 c7 20 d1 2e 85 e8 76 5c 40 02 41 89 df 48 8b 44 24 08
+RSP: 0018:ffff88802538f7a8 EFLAGS: 00010212
+RAX: 000000000000037b RBX: 000000001ff7fdfd RCX: ffffc900052a8000
+RDX: 0000000000040000 RSI: ffffffff81a02f4b RDI: 0000000000000004
+RBP: ffff888019add030 R08: 0000000000000000 R09: 0000000050000028
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801c43b1cc
+R13: 0000000000000000 R14: ffff88801376ef80 R15: 0000000000000000
+FS:  00007fb32230c6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b33020218 CR3: 000000002501a000 CR4: 0000000000350ee0

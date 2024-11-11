@@ -1,0 +1,62 @@
+EXT4-fs (loop3): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+EXT4-fs error (device loop3): ext4_orphan_get:1385: inode #15: comm syz.3.65: casefold flag without casefold feature
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 4172 at kernel/locking/lockdep.c:894 look_up_lock_class kernel/locking/lockdep.c:894 [inline]
+WARNING: CPU: 0 PID: 4172 at kernel/locking/lockdep.c:894 register_lock_class+0x223/0x1a00 kernel/locking/lockdep.c:1242
+Modules linked in:
+CPU: 0 PID: 4172 Comm: syz.3.65 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:look_up_lock_class kernel/locking/lockdep.c:894 [inline]
+RIP: 0010:register_lock_class+0x223/0x1a00 kernel/locking/lockdep.c:1242
+Code: 48 b8 00 00 00 00 00 fc ff df 48 89 fe 48 c1 ee 03 80 3c 06 00 0f 85 6a 15 00 00 4d 3b 6f 18 74 0b 49 81 3f c0 91 74 86 74 02 <0f> 0b 85 ed 0f 84 2d 01 00 00 f6 44 24 04 01 0f 85 22 01 00 00 83
+RSP: 0018:ffff88801959f640 EFLAGS: 00010087
+RAX: dffffc0000000000 RBX: 1ffff110032b3ecf RCX: 0000000000000000
+RDX: ffffffff871ec9a0 RSI: 1ffff11003523094 RDI: ffff88801a9184a0
+RBP: 0000000000000001 R08: 0000000000000003 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffffff86e828c0
+R13: ffffffff844f5200 R14: ffffffff85321149 R15: ffff88801a918488
+FS:  00007f642eec56c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000002000c000 CR3: 0000000019528000 CR4: 0000000000350ef0
+Call Trace:
+ lockdep_init_map_waits+0x385/0x720 kernel/locking/lockdep.c:4634
+ ext4_xattr_inode_set_class fs/ext4/xattr.c:126 [inline]
+ ext4_xattr_inode_iget+0x198/0x590 fs/ext4/xattr.c:414
+ ext4_xattr_inode_dec_ref_all+0x172/0xa10 fs/ext4/xattr.c:1145
+ ext4_xattr_delete_inode+0x4b9/0xda0 fs/ext4/xattr.c:2878
+ ext4_evict_inode+0xb87/0x1890 fs/ext4/inode.c:290
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ ext4_orphan_cleanup fs/ext4/super.c:3119 [inline]
+ ext4_fill_super+0x92ef/0xd960 fs/ext4/super.c:5067
+ mount_bdev+0x350/0x410 fs/super.c:1419
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f643024d69a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f642eec4e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f642eec4ef0 RCX: 00007f643024d69a
+RDX: 0000000020000180 RSI: 00000000200000c0 RDI: 00007f642eec4eb0
+RBP: 0000000020000180 R08: 00007f642eec4ef0 R09: 0000000000800714
+R10: 0000000000800714 R11: 0000000000000246 R12: 00000000200000c0
+R13: 00007f642eec4eb0 R14: 0000000000000448 R15: 0000000020000800
+irq event stamp: 2189
+hardirqs last  enabled at (2189): [<ffffffff81864465>] lookup_bh_lru fs/buffer.c:1312 [inline]
+hardirqs last  enabled at (2189): [<ffffffff81864465>] __find_get_block+0x225/0xcd0 fs/buffer.c:1324
+hardirqs last disabled at (2188): [<ffffffff818645e8>] lookup_bh_lru fs/buffer.c:1293 [inline]
+hardirqs last disabled at (2188): [<ffffffff818645e8>] __find_get_block+0x3a8/0xcd0 fs/buffer.c:1324
+softirqs last  enabled at (1928): [<ffffffff81832850>] __mark_inode_dirty+0x710/0x11a0 fs/fs-writeback.c:2351
+softirqs last disabled at (1924): [<ffffffff8161ef72>] spin_lock_bh include/linux/spinlock.h:359 [inline]
+softirqs last disabled at (1924): [<ffffffff8161ef72>] wb_wakeup_delayed+0x62/0xf0 mm/backing-dev.c:269
+---[ end trace 41007e85d3ab0d79 ]---
+
+======================================================

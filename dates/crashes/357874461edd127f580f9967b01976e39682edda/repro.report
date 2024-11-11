@@ -1,0 +1,326 @@
+audit: type=1400 audit(1730967993.987:6): avc:  denied  { execmem } for  pid=237 comm="syz-executor424" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+========================================================
+WARNING: possible irq lock inversion dependency detected
+5.10.0 #1 Not tainted
+--------------------------------------------------------
+syz-executor424/237 just changed the state of lock:
+ffff88800b0b6b38 (&f->f_owner.lock){.+..}-{2:2}, at: f_getown_ex fs/fcntl.c:206 [inline]
+ffff88800b0b6b38 (&f->f_owner.lock){.+..}-{2:2}, at: do_fcntl+0x74f/0xff0 fs/fcntl.c:387
+but this lock was taken by another, HARDIRQ-safe lock in the past:
+ (&dev->event_lock){-...}-{2:2}
+
+
+and interrupts could create inverse lock ordering between them.
+
+
+other info that might help us debug this:
+Chain exists of:
+  &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
+
+ Possible interrupt unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&f->f_owner.lock);
+                               local_irq_disable();
+                               lock(&dev->event_lock);
+                               lock(&new->fa_lock);
+  <Interrupt>
+    lock(&dev->event_lock);
+
+ *** DEADLOCK ***
+
+no locks held by syz-executor424/237.
+
+the shortest dependencies between 2nd lock and 1st lock:
+   -> (&dev->event_lock){-...}-{2:2} {
+      IN-HARDIRQ-W at:
+                          lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                          lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                          __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+                          _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
+                          input_event drivers/input/input.c:440 [inline]
+                          input_event+0x7b/0xb0 drivers/input/input.c:433
+                          input_report_key include/linux/input.h:417 [inline]
+                          psmouse_report_standard_buttons+0x2c/0x80 drivers/input/mouse/psmouse-base.c:123
+                          psmouse_report_standard_packet drivers/input/mouse/psmouse-base.c:141 [inline]
+                          psmouse_process_byte+0x398/0x8c0 drivers/input/mouse/psmouse-base.c:232
+                          psmouse_handle_byte+0x47/0x530 drivers/input/mouse/psmouse-base.c:274
+                          psmouse_interrupt+0x301/0x12b0 drivers/input/mouse/psmouse-base.c:426
+                          serio_interrupt+0x8d/0x150 drivers/input/serio/serio.c:1002
+                          i8042_interrupt+0x3fd/0x720 drivers/input/serio/i8042.c:602
+                          __handle_irq_event_percpu+0x2ef/0x940 kernel/irq/handle.c:156
+                          handle_irq_event_percpu+0x76/0x170 kernel/irq/handle.c:196
+                          handle_irq_event+0xa1/0x130 kernel/irq/handle.c:213
+                          handle_edge_irq+0x267/0xd20 kernel/irq/chip.c:819
+                          asm_call_irq_on_stack+0x12/0x20
+                          __run_irq_on_irqstack arch/x86/include/asm/irq_stack.h:48 [inline]
+                          run_irq_on_irqstack_cond arch/x86/include/asm/irq_stack.h:101 [inline]
+                          handle_irq arch/x86/kernel/irq.c:230 [inline]
+                          __common_interrupt arch/x86/kernel/irq.c:249 [inline]
+                          common_interrupt+0x12c/0x220 arch/x86/kernel/irq.c:239
+                          asm_common_interrupt+0x1e/0x40 arch/x86/include/asm/idtentry.h:622
+                          native_restore_fl arch/x86/include/asm/irqflags.h:41 [inline]
+                          arch_local_irq_restore arch/x86/include/asm/irqflags.h:84 [inline]
+                          lock_acquire kernel/locking/lockdep.c:5440 [inline]
+                          lock_acquire+0x2bd/0x9b0 kernel/locking/lockdep.c:5402
+                          __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+                          _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+                          spin_lock include/linux/spinlock.h:354 [inline]
+                          get_device_parent+0x123/0x590 drivers/base/core.c:2530
+                          device_add+0x295/0x1bc0 drivers/base/core.c:2855
+                          wakeup_source_device_create+0x21c/0x2a0 drivers/base/power/wakeup_stats.c:161
+                          wakeup_source_sysfs_add+0x1a/0x90 drivers/base/power/wakeup_stats.c:181
+                          wakeup_source_register+0x99/0x130 drivers/base/power/wakeup.c:227
+                          device_wakeup_enable+0xac/0x250 drivers/base/power/wakeup.c:347
+                          device_init_wakeup drivers/base/power/wakeup.c:522 [inline]
+                          device_init_wakeup+0x116/0x150 drivers/base/power/wakeup.c:513
+                          alarmtimer_rtc_add_device+0x1e5/0x350 kernel/time/alarmtimer.c:103
+                          device_add+0xd1a/0x1bc0 drivers/base/core.c:2951
+                          cdev_device_add+0x12a/0x210 fs/char_dev.c:549
+                          __rtc_register_device+0x389/0x740 drivers/rtc/class.c:408
+                          cmos_do_probe+0x80a/0xc70 drivers/rtc/rtc-cmos.c:867
+                          cmos_pnp_probe+0x12c/0x1f0 drivers/rtc/rtc-cmos.c:1316
+                          pnp_device_probe+0x2a6/0x4c0 drivers/pnp/driver.c:109
+                          really_probe+0x2a8/0xe70 drivers/base/dd.c:554
+                          driver_probe_device+0x118/0x1e0 drivers/base/dd.c:738
+                          device_driver_attach+0x27d/0x2f0 drivers/base/dd.c:1013
+                          __driver_attach drivers/base/dd.c:1090 [inline]
+                          __driver_attach+0x154/0x340 drivers/base/dd.c:1044
+                          bus_for_each_dev+0x136/0x1d0 drivers/base/bus.c:305
+                          bus_add_driver+0x346/0x670 drivers/base/bus.c:622
+                          driver_register+0x23c/0x4d0 drivers/base/driver.c:171
+                          cmos_init+0x14/0xed drivers/rtc/rtc-cmos.c:1463
+                          do_one_initcall+0xeb/0x600 init/main.c:1217
+                          do_initcall_level init/main.c:1290 [inline]
+                          do_initcalls init/main.c:1306 [inline]
+                          do_basic_setup init/main.c:1326 [inline]
+                          kernel_init_freeable+0x6a1/0x720 init/main.c:1526
+                          kernel_init+0xe/0x1f0 init/main.c:1415
+                          ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+      INITIAL USE at:
+                         lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                         lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                         __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+                         _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
+                         input_inject_event+0xa6/0x390 drivers/input/input.c:466
+                         __led_set_brightness drivers/leds/led-core.c:48 [inline]
+                         led_set_brightness_nopm drivers/leds/led-core.c:275 [inline]
+                         led_set_brightness_nosleep+0xe9/0x1a0 drivers/leds/led-core.c:292
+                         led_set_brightness+0x134/0x170 drivers/leds/led-core.c:267
+                         led_trigger_event drivers/leds/led-triggers.c:387 [inline]
+                         led_trigger_event+0x70/0xd0 drivers/leds/led-triggers.c:377
+                         kbd_led_trigger_activate+0xfa/0x130 drivers/tty/vt/keyboard.c:1010
+                         led_trigger_set+0x494/0xaa0 drivers/leds/led-triggers.c:195
+                         led_trigger_set_default+0x1a6/0x230 drivers/leds/led-triggers.c:259
+                         led_classdev_register_ext+0x539/0x750 drivers/leds/led-class.c:417
+                         led_classdev_register include/linux/leds.h:190 [inline]
+                         input_leds_connect+0x496/0x990 drivers/input/input-leds.c:139
+                         input_attach_handler+0x18b/0x260 drivers/input/input.c:1031
+                         input_register_device.cold+0x106/0x230 drivers/input/input.c:2229
+                         atkbd_connect+0x83a/0xb70 drivers/input/keyboard/atkbd.c:1293
+                         serio_connect_driver drivers/input/serio/serio.c:47 [inline]
+                         serio_driver_probe+0x77/0xa0 drivers/input/serio/serio.c:778
+                         really_probe+0x2a8/0xe70 drivers/base/dd.c:554
+                         driver_probe_device+0x118/0x1e0 drivers/base/dd.c:738
+                         device_driver_attach+0x27d/0x2f0 drivers/base/dd.c:1013
+                         __driver_attach drivers/base/dd.c:1090 [inline]
+                         __driver_attach+0x154/0x340 drivers/base/dd.c:1044
+                         bus_for_each_dev+0x136/0x1d0 drivers/base/bus.c:305
+                         serio_attach_driver drivers/input/serio/serio.c:808 [inline]
+                         serio_handle_event+0x279/0x8a0 drivers/input/serio/serio.c:227
+                         process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+                         worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+                         kthread+0x3b2/0x4a0 kernel/kthread.c:292
+                         ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+    }
+    ... key      at: [<ffffffff87a64ea0>] __key.5+0x0/0x40
+    ... acquired at:
+   __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+   _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+   spin_lock include/linux/spinlock.h:354 [inline]
+   evdev_pass_values.part.0+0xf6/0x9e0 drivers/input/evdev.c:261
+   evdev_pass_values drivers/input/evdev.c:253 [inline]
+   evdev_events+0x328/0x490 drivers/input/evdev.c:306
+   input_to_handler+0x297/0x4c0 drivers/input/input.c:115
+   input_pass_values.part.0+0x2e4/0x760 drivers/input/input.c:145
+   input_pass_values drivers/input/input.c:134 [inline]
+   input_handle_event+0x3e9/0x1560 drivers/input/input.c:399
+   input_inject_event+0x36a/0x390 drivers/input/input.c:471
+   evdev_write+0x326/0x470 drivers/input/evdev.c:530
+   vfs_write+0x29a/0xac0 fs/read_write.c:603
+   ksys_write+0x1ee/0x250 fs/read_write.c:658
+   do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+  -> (&client->buffer_lock){....}-{2:2} {
+     INITIAL USE at:
+                       lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                       lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                       __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+                       _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+                       spin_lock include/linux/spinlock.h:354 [inline]
+                       evdev_pass_values.part.0+0xf6/0x9e0 drivers/input/evdev.c:261
+                       evdev_pass_values drivers/input/evdev.c:253 [inline]
+                       evdev_events+0x328/0x490 drivers/input/evdev.c:306
+                       input_to_handler+0x297/0x4c0 drivers/input/input.c:115
+                       input_pass_values.part.0+0x2e4/0x760 drivers/input/input.c:145
+                       input_pass_values drivers/input/input.c:134 [inline]
+                       input_handle_event+0x3e9/0x1560 drivers/input/input.c:399
+                       input_inject_event+0x36a/0x390 drivers/input/input.c:471
+                       evdev_write+0x326/0x470 drivers/input/evdev.c:530
+                       vfs_write+0x29a/0xac0 fs/read_write.c:603
+                       ksys_write+0x1ee/0x250 fs/read_write.c:658
+                       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+                       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+   }
+   ... key      at: [<ffffffff87a65120>] __key.4+0x0/0x40
+   ... acquired at:
+   __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+   _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+   kill_fasync_rcu fs/fcntl.c:1002 [inline]
+   kill_fasync+0x1a1/0x4c0 fs/fcntl.c:1023
+   __pass_event drivers/input/evdev.c:240 [inline]
+   evdev_pass_values.part.0+0x697/0x9e0 drivers/input/evdev.c:278
+   evdev_pass_values drivers/input/evdev.c:253 [inline]
+   evdev_events+0x328/0x490 drivers/input/evdev.c:306
+   input_to_handler+0x297/0x4c0 drivers/input/input.c:115
+   input_pass_values.part.0+0x2e4/0x760 drivers/input/input.c:145
+   input_pass_values drivers/input/input.c:134 [inline]
+   input_handle_event+0x3e9/0x1560 drivers/input/input.c:399
+   input_inject_event+0x36a/0x390 drivers/input/input.c:471
+   evdev_write+0x326/0x470 drivers/input/evdev.c:530
+   vfs_write+0x29a/0xac0 fs/read_write.c:603
+   ksys_write+0x1ee/0x250 fs/read_write.c:658
+   do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+ -> (&new->fa_lock){....}-{2:2} {
+    INITIAL READ USE at:
+                          lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                          lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                          __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                          _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+                          kill_fasync_rcu fs/fcntl.c:1002 [inline]
+                          kill_fasync+0x1a1/0x4c0 fs/fcntl.c:1023
+                          __pass_event drivers/input/evdev.c:240 [inline]
+                          evdev_pass_values.part.0+0x697/0x9e0 drivers/input/evdev.c:278
+                          evdev_pass_values drivers/input/evdev.c:253 [inline]
+                          evdev_events+0x328/0x490 drivers/input/evdev.c:306
+                          input_to_handler+0x297/0x4c0 drivers/input/input.c:115
+                          input_pass_values.part.0+0x2e4/0x760 drivers/input/input.c:145
+                          input_pass_values drivers/input/input.c:134 [inline]
+                          input_handle_event+0x3e9/0x1560 drivers/input/input.c:399
+                          input_inject_event+0x36a/0x390 drivers/input/input.c:471
+                          evdev_write+0x326/0x470 drivers/input/evdev.c:530
+                          vfs_write+0x29a/0xac0 fs/read_write.c:603
+                          ksys_write+0x1ee/0x250 fs/read_write.c:658
+                          do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+                          entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  }
+  ... key      at: [<ffffffff8720a140>] __key.0+0x0/0x40
+  ... acquired at:
+   __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+   _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+   send_sigio+0x24/0x3b0 fs/fcntl.c:786
+   kill_fasync_rcu fs/fcntl.c:1009 [inline]
+   kill_fasync+0x25b/0x4c0 fs/fcntl.c:1023
+   __pass_event drivers/input/evdev.c:240 [inline]
+   evdev_pass_values.part.0+0x697/0x9e0 drivers/input/evdev.c:278
+   evdev_pass_values drivers/input/evdev.c:253 [inline]
+   evdev_events+0x328/0x490 drivers/input/evdev.c:306
+   input_to_handler+0x297/0x4c0 drivers/input/input.c:115
+   input_pass_values.part.0+0x2e4/0x760 drivers/input/input.c:145
+   input_pass_values drivers/input/input.c:134 [inline]
+   input_handle_event+0x3e9/0x1560 drivers/input/input.c:399
+   input_inject_event+0x36a/0x390 drivers/input/input.c:471
+   evdev_write+0x326/0x470 drivers/input/evdev.c:530
+   vfs_write+0x29a/0xac0 fs/read_write.c:603
+   ksys_write+0x1ee/0x250 fs/read_write.c:658
+   do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> (&f->f_owner.lock){.+..}-{2:2} {
+   HARDIRQ-ON-R at:
+                    lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                    lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                    __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                    _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+                    f_getown_ex fs/fcntl.c:206 [inline]
+                    do_fcntl+0x74f/0xff0 fs/fcntl.c:387
+                    __do_sys_fcntl fs/fcntl.c:463 [inline]
+                    __se_sys_fcntl fs/fcntl.c:448 [inline]
+                    __x64_sys_fcntl+0x165/0x1e0 fs/fcntl.c:448
+                    do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+                    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+   INITIAL READ USE at:
+                        lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                        lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                        __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                        _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+                        send_sigio+0x24/0x3b0 fs/fcntl.c:786
+                        kill_fasync_rcu fs/fcntl.c:1009 [inline]
+                        kill_fasync+0x25b/0x4c0 fs/fcntl.c:1023
+                        __pass_event drivers/input/evdev.c:240 [inline]
+                        evdev_pass_values.part.0+0x697/0x9e0 drivers/input/evdev.c:278
+                        evdev_pass_values drivers/input/evdev.c:253 [inline]
+                        evdev_events+0x328/0x490 drivers/input/evdev.c:306
+                        input_to_handler+0x297/0x4c0 drivers/input/input.c:115
+                        input_pass_values.part.0+0x2e4/0x760 drivers/input/input.c:145
+                        input_pass_values drivers/input/input.c:134 [inline]
+                        input_handle_event+0x3e9/0x1560 drivers/input/input.c:399
+                        input_inject_event+0x36a/0x390 drivers/input/input.c:471
+                        evdev_write+0x326/0x470 drivers/input/evdev.c:530
+                        vfs_write+0x29a/0xac0 fs/read_write.c:603
+                        ksys_write+0x1ee/0x250 fs/read_write.c:658
+                        do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+                        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ }
+ ... key      at: [<ffffffff87209360>] __key.5+0x0/0x40
+ ... acquired at:
+   mark_usage kernel/locking/lockdep.c:4312 [inline]
+   __lock_acquire+0x11f4/0x5ca0 kernel/locking/lockdep.c:4786
+   lock_acquire kernel/locking/lockdep.c:5437 [inline]
+   lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+   __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+   _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+   f_getown_ex fs/fcntl.c:206 [inline]
+   do_fcntl+0x74f/0xff0 fs/fcntl.c:387
+   __do_sys_fcntl fs/fcntl.c:463 [inline]
+   __se_sys_fcntl fs/fcntl.c:448 [inline]
+   __x64_sys_fcntl+0x165/0x1e0 fs/fcntl.c:448
+   do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+stack backtrace:
+CPU: 0 PID: 237 Comm: syz-executor424 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_irq_inversion_bug kernel/locking/lockdep.c:4397 [inline]
+ check_usage_backwards kernel/locking/lockdep.c:3884 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3974 [inline]
+ mark_lock.cold+0x1f/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4312 [inline]
+ __lock_acquire+0x11f4/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+ _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+ f_getown_ex fs/fcntl.c:206 [inline]
+ do_fcntl+0x74f/0xff0 fs/fcntl.c:387
+ __do_sys_fcntl fs/fcntl.c:463 [inline]
+ __se_sys_fcntl fs/fcntl.c:448 [inline]
+ __x64_sys_fcntl+0x165/0x1e0 fs/fcntl.c:448
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fe58876f1cd
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd2184d0e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000048
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007fe58876f1cd
+RDX: 0000000000000000 RSI: 0000000000000010 RDI: 0000000000000007
+RBP: 00007ffd2184d190 R08: 00007ffd2184d190 R09: 00007ffd2184d190
+R10: 00007ffd2184d190 R11: 0000000000000246 R12: 00007ffd2184d208
+R13: 00007ffd2184d218 R14: 00007fe588802d10 R15: 0000000000000001

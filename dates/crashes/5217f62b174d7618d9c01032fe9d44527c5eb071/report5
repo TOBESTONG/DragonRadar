@@ -1,0 +1,77 @@
+ext4 filesystem being mounted at /12/file1 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+==================================================================
+BUG: KASAN: slab-out-of-bounds in crc16+0xcb/0xe0 lib/crc16.c:58
+Read of size 1 at addr ffff8880113fc0a8 by task syz-executor/230
+
+CPU: 0 PID: 230 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ crc16+0xcb/0xe0 lib/crc16.c:58
+ ext4_group_desc_csum+0x62d/0x8a0 fs/ext4/super.c:2837
+ ext4_group_desc_csum_set+0xc3/0x1a0 fs/ext4/super.c:2860
+ ext4_free_inode+0xbe2/0x13b0 fs/ext4/ialloc.c:329
+ ext4_evict_inode+0x111d/0x1890 fs/ext4/inode.c:324
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ do_unlinkat+0x3ee/0x650 fs/namei.c:3903
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f30ebd894a7
+Code: 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 57 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff1a407f08 EFLAGS: 00000206 ORIG_RAX: 0000000000000057
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f30ebd894a7
+RDX: 00007fff1a407f30 RSI: 00007fff1a407fc0 RDI: 00007fff1a407fc0
+RBP: 00007fff1a407fc0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000100 R11: 0000000000000206 R12: 00007fff1a4090b0
+R13: 00007f30ebdfca14 R14: 0000000000007653 R15: 00007fff1a40a170
+
+Allocated by task 231:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ kmem_cache_zalloc include/linux/slab.h:654 [inline]
+ __kernfs_new_node+0xd4/0x930 fs/kernfs/dir.c:627
+ kernfs_new_node+0x93/0x120 fs/kernfs/dir.c:689
+ __kernfs_create_file+0x51/0x350 fs/kernfs/file.c:1002
+ cgroup_add_file kernel/cgroup/cgroup.c:3823 [inline]
+ cgroup_addrm_files+0x403/0x9b0 kernel/cgroup/cgroup.c:3883
+ css_populate_dir+0x19b/0x450 kernel/cgroup/cgroup.c:1689
+ cgroup_apply_control_enable+0x3b2/0xc50 kernel/cgroup/cgroup.c:3066
+ cgroup_mkdir+0xa51/0x1010 kernel/cgroup/cgroup.c:5360
+ kernfs_iop_mkdir+0x149/0x1d0 fs/kernfs/dir.c:1127
+ vfs_mkdir+0x45c/0x710 fs/namei.c:3650
+ do_mkdirat+0x145/0x2a0 fs/namei.c:3673
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff8880113fc000
+ which belongs to the cache kernfs_node_cache of size 168
+The buggy address is located 0 bytes to the right of
+ 168-byte region [ffff8880113fc000, ffff8880113fc0a8)
+The buggy address belongs to the page:
+page:00000000f368f93f refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x113fc
+flags: 0x100000000000200(slab)
+raw: 0100000000000200 ffffea0000310ac0 0000000e0000000e ffff888008144280
+raw: 0000000000000000 0000000000110011 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880113fbf80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff8880113fc000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff8880113fc080: 00 00 00 00 00 fc fc fc fc fc fc fc fc 00 00 00
+                                  ^
+ ffff8880113fc100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff8880113fc180: 00 00 fc fc fc fc fc fc fc fc 00 00 00 00 00 00
+==================================================================
+syz.3.65 (2374) used greatest stack depth: 24112 bytes left

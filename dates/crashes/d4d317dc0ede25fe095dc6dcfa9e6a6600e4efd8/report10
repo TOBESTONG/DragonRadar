@@ -1,0 +1,83 @@
+EXT4-fs error (device loop2): ext4_lookup:1708: inode #2: comm syz-executor: deleted inode referenced: 16
+EXT4-fs error (device loop2): ext4_lookup:1708: inode #2: comm syz-executor: deleted inode referenced: 16
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:833!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 3993 Comm: syz.2.100 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff888013f27000 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff110027e4e02 RCX: ffffffff81a5939b
+RDX: ffff88800f979a00 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff88801a0b6fa8 R08: 0000000000001400 R09: ffffffff86e5f757
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801a0b6f80
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fff202e2c08 CR3: 0000000004e26000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+ ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+ write_blk+0x12f/0x220 fs/quota/quota_tree.c:73
+ remove_free_dqentry+0x1eb/0x4b0 fs/quota/quota_tree.c:169
+ free_dqentry fs/quota/quota_tree.c:437 [inline]
+ remove_tree+0xa0f/0x1100 fs/quota/quota_tree.c:492
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+ qtree_delete_dquot fs/quota/quota_tree.c:528 [inline]
+ qtree_release_dquot fs/quota/quota_tree.c:674 [inline]
+ qtree_release_dquot+0x1a2/0x1e0 fs/quota/quota_tree.c:670
+ v2_release_dquot+0xce/0x120 fs/quota/quota_v2.c:350
+ dquot_release+0x1d5/0x450 fs/quota/dquot.c:504
+ ext4_release_dquot+0x2a9/0x340 fs/ext4/super.c:6202
+ dqput.part.0+0x1d2/0x7e0 fs/quota/dquot.c:799
+ dqput fs/quota/dquot.c:757 [inline]
+ dqput_all fs/quota/dquot.c:397 [inline]
+ __dquot_drop+0x1cc/0x2a0 fs/quota/dquot.c:1577
+ dquot_drop+0x151/0x1a0 fs/quota/dquot.c:1602
+ ext4_clear_inode+0x52/0x1e0 fs/ext4/super.c:1405
+ ext4_evict_inode+0x1cb/0x1890 fs/ext4/inode.c:332
+ evict+0x284/0x6d0 fs/inode.c:578
+ dispose_list fs/inode.c:613 [inline]
+ evict_inodes+0x3c1/0x5e0 fs/inode.c:663
+ generic_shutdown_super+0xa6/0x370 fs/super.c:454
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f32bc2cdfe5
+Code: Unable to access opcode bytes at RIP 0x7f32bc2cdfbb.
+RSP: 002b:00007f32baf14f80 EFLAGS: 00000293 ORIG_RAX: 00000000000000e6
+RAX: fffffffffffffdfc RBX: 00007f32bc453f80 RCX: 00007f32bc2cdfe5
+RDX: 00007f32baf14fc0 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007f32bc30eb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f32bc453f80 R15: 00007ffcb3c8fd08
+Modules linked in:
+FAT-fs (loop3): Invalid FSINFO signature: 0x04615252, 0x61417272 (sector = 1)
+---[ end trace 4e62e35e88bca31f ]---
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff888013f27000 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff110027e4e02 RCX: ffffffff81a5939b
+EXT4-fs warning (device loop1): ext4_multi_mount_protect:385: Unable to create kmmpd thread for loop1.
+RDX: ffff88800f979a00 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff88801a0b6fa8 R08: 0000000000001400 R09: ffffffff86e5f757
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801a0b6f80
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fff202e2c08 CR3: 000000000beb4000 CR4: 0000000000350ee0
+Fixing recursive fault but reboot is needed!

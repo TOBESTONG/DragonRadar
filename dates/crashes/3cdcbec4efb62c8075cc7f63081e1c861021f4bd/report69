@@ -1,0 +1,139 @@
+EXT4-fs (loop0): Unrecognized mount option "fowner<18446744073709551615" or missing value
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /70/file0 supports timestamps until 2038 (0x7fffffff)
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+syz-executor/6495 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff88800881e8a8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88800881e8a8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 266098
+hardirqs last  enabled at (266098): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (266098): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (266097): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (266097): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (265886): [<ffffffff81837375>] bdi_split_work_to_wbs fs/fs-writeback.c:1061 [inline]
+softirqs last  enabled at (265886): [<ffffffff81837375>] sync_inodes_sb+0x1a5/0x9a0 fs/fs-writeback.c:2558
+softirqs last disabled at (266045): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+3 locks held by syz-executor/6495:
+ #0: ffff88800dd1a0e0 (&type->s_umount_key#42){++++}-{3:3}, at: deactivate_super+0xa5/0xd0 fs/super.c:365
+ #1: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #2: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 1 PID: 6495 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:lock_release+0x3cc/0x6f0 kernel/locking/lockdep.c:5445
+Code: 0a 02 00 00 48 c7 c7 c0 df 46 84 e8 4e 5e c0 02 b8 ff ff ff ff 65 0f c1 05 31 2b d7 7e 83 f8 01 0f 85 6a 01 00 00 ff 34 24 9d <48> b8 00 00 00 00 00 fc ff df 48 01 c5 48 c7 45 00 00 00 00 00 c7
+RSP: 0018:ffff88800ff079e8 EFLAGS: 00000246
+RAX: 0000000000000001 RBX: a8afb0065758b726 RCX: ffff88800ff07a38
+RDX: 1ffff1100186e7a8 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 1ffff11001fe0f3f R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000001
+R13: 0000000000000002 R14: ffff88800c373d48 R15: ffff88800c373400
+ __mutex_unlock_slowpath+0x80/0x650 kernel/locking/mutex.c:1228
+ kernfs_drain fs/kernfs/dir.c:465 [inline]
+ __kernfs_remove+0x3ca/0xa50 fs/kernfs/dir.c:1323
+ kernfs_remove_by_name_ns+0x51/0xb0 fs/kernfs/dir.c:1516
+ kernfs_remove_by_name include/linux/kernfs.h:593 [inline]
+ remove_files+0x96/0x1c0 fs/sysfs/group.c:28
+ sysfs_remove_group+0x87/0x170 fs/sysfs/group.c:289
+ sysfs_remove_groups fs/sysfs/group.c:313 [inline]
+ sysfs_remove_groups+0x5c/0xa0 fs/sysfs/group.c:305
+ __kobject_del+0x8b/0x320 lib/kobject.c:611
+ kobject_del lib/kobject.c:643 [inline]
+ kobject_del+0x3c/0x60 lib/kobject.c:635
+ ext4_put_super+0xdb/0x11b0 fs/ext4/super.c:1191
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fa3c05de227
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007ffe2cc7f098 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007fa3c064fa14 RCX: 00007fa3c05de227
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffe2cc7f150
+RBP: 00007ffe2cc7f150 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffe2cc801d0
+R13: 00007fa3c064fa14 R14: 000000000001b173 R15: 00007ffe2cc80210
+----------------
+Code disassembly (best guess):
+   0:	0a 02                	or     (%rdx),%al
+   2:	00 00                	add    %al,(%rax)
+   4:	48 c7 c7 c0 df 46 84 	mov    $0xffffffff8446dfc0,%rdi
+   b:	e8 4e 5e c0 02       	call   0x2c05e5e
+  10:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+  15:	65 0f c1 05 31 2b d7 	xadd   %eax,%gs:0x7ed72b31(%rip)        # 0x7ed72b4e
+  1c:	7e
+  1d:	83 f8 01             	cmp    $0x1,%eax
+  20:	0f 85 6a 01 00 00    	jne    0x190
+  26:	ff 34 24             	push   (%rsp)
+  29:	9d                   	popf
+* 2a:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax <-- trapping instruction
+  31:	fc ff df
+  34:	48 01 c5             	add    %rax,%rbp
+  37:	48 c7 45 00 00 00 00 	movq   $0x0,0x0(%rbp)
+  3e:	00
+  3f:	c7                   	.byte 0xc7

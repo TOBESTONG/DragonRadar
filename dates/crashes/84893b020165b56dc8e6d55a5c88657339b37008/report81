@@ -1,0 +1,61 @@
+EXT4-fs (loop1): mounted filesystem without journal. Opts: quota,jqfmt=vfsv0,nouid32,,errors=continue
+ext4 filesystem being mounted at /19/file0 supports timestamps until 2038 (0x7fffffff)
+------------[ cut here ]------------
+Trying to write to read-only block-device sda (partno 0)
+WARNING: CPU: 0 PID: 3520 at block/blk-core.c:704 bio_check_ro block/blk-core.c:704 [inline]
+WARNING: CPU: 0 PID: 3520 at block/blk-core.c:704 submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Modules linked in:
+CPU: 0 PID: 3520 Comm: syz.0.49 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:bio_check_ro block/blk-core.c:704 [inline]
+RIP: 0010:submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Code: 03 00 00 45 8b a4 24 64 05 00 00 48 89 ef 48 8d 74 24 50 e8 43 37 fe ff 48 c7 c7 00 ee 5b 84 48 89 c6 44 89 e2 e8 bd 1c e7 01 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 80 3c 02
+RSP: 0018:ffff88800cd37160 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 1ffff110019a6e32 RCX: 0000000000000000
+RDX: ffff88800b55ce00 RSI: ffffffff812d93c5 RDI: ffffed10019a6e1e
+RBP: ffff88800adac600 R08: 0000000000000001 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff88800b966080 R14: ffff88800adac610 R15: ffff88800adac608
+FS:  00007fe7cd4b16c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe0973556f4 CR3: 00000000197f8000 CR4: 0000000000350ef0
+Call Trace:
+ submit_bio_noacct+0x82/0x1000 block/blk-core.c:1044
+ submit_bio+0xfd/0x540 block/blk-core.c:1129
+ __swap_writepage+0x353/0xd90 mm/page_io.c:373
+ swap_writepage+0x3d/0x70 mm/page_io.c:271
+ pageout mm/vmscan.c:830 [inline]
+ shrink_page_list+0x2964/0x4110 mm/vmscan.c:1353
+ reclaim_pages+0x2f1/0x8c0 mm/vmscan.c:2146
+ madvise_cold_or_pageout_pte_range+0x8e3/0xb00 mm/madvise.c:473
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fe7ce879ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe7cd4b1038 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 00007fe7cea32130 RCX: 00007fe7ce879ef9
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fe7ce8ecb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000001 R14: 00007fe7cea32130 R15: 00007ffdeaf1da88
+irq event stamp: 2181
+hardirqs last  enabled at (2193): [<ffffffff83ecb0ef>] __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:168 [inline]
+hardirqs last  enabled at (2193): [<ffffffff83ecb0ef>] _raw_spin_unlock_irq+0x1f/0x40 kernel/locking/spinlock.c:199
+hardirqs last disabled at (2204): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (2222): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (2213): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 7b648e18e43ff595 ]---

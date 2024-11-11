@@ -1,0 +1,115 @@
+ext4 filesystem being mounted at /2/file1 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop1): Unrecognized mount option "dont_hash" or missing value
+==================================================================
+BUG: KASAN: use-after-free in crc16+0xcb/0xe0 lib/crc16.c:58
+Read of size 1 at addr ffff88801d185000 by task syz.3.172/5294
+
+CPU: 0 PID: 5294 Comm: syz.3.172 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ crc16+0xcb/0xe0 lib/crc16.c:58
+ ext4_group_desc_csum+0x62d/0x8a0 fs/ext4/super.c:2837
+ ext4_group_desc_csum_set+0xc3/0x1a0 fs/ext4/super.c:2860
+ ext4_mb_mark_diskspace_used+0x8a4/0x16b0 fs/ext4/mballoc.c:3271
+ ext4_mb_new_blocks+0xcba/0x4b60 fs/ext4/mballoc.c:5015
+ ext4_ext_map_blocks+0x1f8e/0x5d50 fs/ext4/extents.c:4238
+ ext4_map_blocks+0x700/0x1740 fs/ext4/inode.c:628
+ ext4_getblk+0x144/0x6a0 fs/ext4/inode.c:838
+ ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+ ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+ write_blk+0x12f/0x220 fs/quota/quota_tree.c:73
+ get_free_dqblk+0xff/0x2d0 fs/quota/quota_tree.c:102
+ do_insert_tree+0x57b/0xf80 fs/quota/quota_tree.c:309
+ do_insert_tree+0xdb8/0xf80 fs/quota/quota_tree.c:340
+ do_insert_tree+0x677/0xf80 fs/quota/quota_tree.c:340
+ do_insert_tree+0x677/0xf80 fs/quota/quota_tree.c:340
+ dq_insert_tree fs/quota/quota_tree.c:366 [inline]
+ qtree_write_dquot+0x3bf/0x580 fs/quota/quota_tree.c:385
+ v2_write_dquot+0x11c/0x250 fs/quota/quota_v2.c:334
+ dquot_acquire+0x2cf/0x590 fs/quota/dquot.c:443
+ ext4_acquire_dquot+0x25e/0x3d0 fs/ext4/super.c:6186
+ dqget+0x681/0xfb0 fs/quota/dquot.c:901
+ dquot_transfer+0x3a7/0x4e0 fs/quota/dquot.c:2086
+ ext4_setattr+0x603/0x20c0 fs/ext4/inode.c:5363
+ notify_change+0xb9e/0x1090 fs/attr.c:336
+ chown_common+0x37e/0x570 fs/open.c:674
+ do_fchownat+0x126/0x1e0 fs/open.c:704
+ __do_sys_fchownat fs/open.c:719 [inline]
+ __se_sys_fchownat fs/open.c:716 [inline]
+ __x64_sys_fchownat+0xba/0x150 fs/open.c:716
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f72efcc0ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f72ee93a038 EFLAGS: 00000246 ORIG_RAX: 0000000000000104
+RAX: ffffffffffffffda RBX: 00007f72efe78f80 RCX: 00007f72efcc0ef9
+RDX: 00000000000041ed RSI: 0000000020000000 RDI: ffffffffffffff9c
+RBP: 00007f72efd33b76 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffffffffffff R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f72efe78f80 R15: 00007ffd9f7c3568
+
+Allocated by task 5234:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ vm_area_dup+0x78/0x290 kernel/fork.c:356
+ __split_vma+0xa8/0x560 mm/mmap.c:2740
+ __do_munmap+0x3e2/0x11e0 mm/mmap.c:2865
+ do_munmap mm/mmap.c:2919 [inline]
+ munmap_vma_range mm/mmap.c:600 [inline]
+ mmap_region+0x330/0x1450 mm/mmap.c:1752
+ do_mmap+0x807/0x11e0 mm/mmap.c:1583
+ vm_mmap_pgoff+0x194/0x1f0 mm/util.c:507
+ ksys_mmap_pgoff+0x483/0x5f0 mm/mmap.c:1634
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 5234:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ remove_vma+0x135/0x170 mm/mmap.c:184
+ remove_vma_list mm/mmap.c:2655 [inline]
+ __do_munmap+0x775/0x11e0 mm/mmap.c:2911
+ do_munmap mm/mmap.c:2919 [inline]
+ munmap_vma_range mm/mmap.c:600 [inline]
+ mmap_region+0x330/0x1450 mm/mmap.c:1752
+ do_mmap+0x807/0x11e0 mm/mmap.c:1583
+ vm_mmap_pgoff+0x194/0x1f0 mm/util.c:507
+ ksys_mmap_pgoff+0x483/0x5f0 mm/mmap.c:1634
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff88801d185000
+ which belongs to the cache vm_area_struct of size 192
+The buggy address is located 0 bytes inside of
+ 192-byte region [ffff88801d185000, ffff88801d1850c0)
+The buggy address belongs to the page:
+page:00000000512a5ba9 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1d185
+flags: 0x100000000000200(slab)
+raw: 0100000000000200 dead000000000100 dead000000000122 ffff888008141640
+raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88801d184f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88801d184f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff88801d185000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff88801d185080: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff88801d185100: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================

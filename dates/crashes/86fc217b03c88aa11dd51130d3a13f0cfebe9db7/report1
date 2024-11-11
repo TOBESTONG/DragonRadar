@@ -1,0 +1,83 @@
+EXT4-fs (loop2): Quota format mount options ignored when QUOTA feature is enabled
+EXT4-fs (loop2): Journaled quota options ignored when QUOTA feature is enabled
+EXT4-fs (loop2): couldn't mount as ext2 due to feature incompatibilities
+watchdog: BUG: soft lockup - CPU#1 stuck for 23s! [kworker/1:3:4220]
+Modules linked in:
+irq event stamp: 137602
+hardirqs last  enabled at (137601): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (137602): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+softirqs last  enabled at (103864): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (103819): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+CPU: 1 PID: 4220 Comm: kworker/1:3 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: events jump_label_update_timeout
+RIP: 0010:csd_lock_wait kernel/smp.c:227 [inline]
+RIP: 0010:smp_call_function_single+0x195/0x4c0 kernel/smp.c:512
+Code: 10 8b 7c 24 1c 48 8d 74 24 40 48 89 44 24 50 48 8b 44 24 08 48 89 44 24 58 e8 f7 fa ff ff 41 89 c5 eb 07 e8 9d ea 0a 00 f3 90 <44> 8b 64 24 48 31 ff 41 83 e4 01 44 89 e6 e8 48 e2 0a 00 45 85 e4
+RSP: 0018:ffff888018ad79e0 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 1ffff1100315af40 RCX: ffffffff813b2438
+RDX: ffff88800b6c4e00 RSI: ffffffff813b2423 RDI: 0000000000000005
+RBP: ffff888018ad7ac0 R08: 0000000000000001 R09: ffff88806ce34507
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000200
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f95183c56f4 CR3: 0000000004e26000 CR4: 0000000000350ee0
+Call Trace:
+ smp_call_function_many_cond+0x277/0xa80 kernel/smp.c:648
+ smp_call_function_many kernel/smp.c:711 [inline]
+ smp_call_function kernel/smp.c:733 [inline]
+ on_each_cpu+0x4f/0x110 kernel/smp.c:832
+ text_poke_sync arch/x86/kernel/alternative.c:1008 [inline]
+ text_poke_bp_batch+0x1ab/0x550 arch/x86/kernel/alternative.c:1193
+ text_poke_flush arch/x86/kernel/alternative.c:1347 [inline]
+ text_poke_flush arch/x86/kernel/alternative.c:1344 [inline]
+ text_poke_finish+0x16/0x30 arch/x86/kernel/alternative.c:1354
+ arch_jump_label_transform_apply+0x13/0x20 arch/x86/kernel/jump_label.c:126
+ jump_label_update kernel/jump_label.c:814 [inline]
+ jump_label_update+0x1b3/0x3a0 kernel/jump_label.c:793
+ __static_key_slow_dec_cpuslocked.part.0+0x59/0x60 kernel/jump_label.c:248
+ __static_key_slow_dec_cpuslocked kernel/jump_label.c:243 [inline]
+ __static_key_slow_dec kernel/jump_label.c:255 [inline]
+ jump_label_update_timeout+0x3c/0x50 kernel/jump_label.c:263
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 12556 Comm: syz.2.501 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:vga_arb_release+0x1d4/0x360 drivers/gpu/vga/vgaarb.c:1369
+Code: 42 ec a3 fe 48 8b 7b f8 be 01 00 00 00 e8 44 fd ff ff 41 0f b6 04 24 40 38 c5 7c 08 84 c0 0f 85 02 01 00 00 44 8b 7b 04 31 ff <41> 8d 57 ff 44 89 fe 89 53 04 e8 cd e3 a3 fe 45 85 ff 75 c1 e8 03
+RSP: 0018:ffff888008da7a70 EFLAGS: 00000046
+RAX: 0000000000000000 RBX: ffff88800b73ec20 RCX: 0000000000000000
+RDX: ffff8880132db400 RSI: ffffffff82a2228c RDI: 0000000000000000
+RBP: 0000000000000007 R08: 0000000000000000 R09: ffffffff857db323
+R10: fffffbfff0afb664 R11: 0000000000000001 R12: ffffed10016e7d84
+R13: 0000000000000000 R14: ffff88800b73ec24 R15: 00000000fc73fbc1
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000021000000 CR3: 0000000004e26000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f57e285aef9
+Code: Unable to access opcode bytes at RIP 0x7f57e285aecf.
+RSP: 002b:00007f57e14b3038 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
+RAX: 000000000003ffe3 RBX: 00007f57e2a13058 RCX: 00007f57e285aef9
+RDX: 00000000040002db RSI: 0000000020000740 RDI: 0000000000000006
+RBP: 00007f57e28cdb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000002 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f57e2a13058 R15: 00007ffeb17ca668

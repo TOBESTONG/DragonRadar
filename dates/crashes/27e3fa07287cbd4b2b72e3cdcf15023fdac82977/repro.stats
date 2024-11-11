@@ -1,0 +1,404 @@
+Extracting prog: 45.113589132s
+Minimizing prog: 7m27.491936291s
+Simplifying prog options: 0s
+Extracting C: 31.358245832s
+Simplifying C: 2m37.58413478s
+
+
+8 programs, timeouts [30s 1m40s 6m0s]
+extracting reproducer from 8 programs
+first checking the prog from the crash report
+single: executing 1 programs separately with timeout 30s
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown-openat$procfs-close-socket$nl_generic-syz_genetlink_get_family_id$ethtool-socket$nl_generic-ioctl$sock_SIOCGIFINDEX-syz_genetlink_get_family_id$ethtool-sendmsg$ETHTOOL_MSG_CHANNELS_SET-ioctl$sock_SIOCGIFINDEX-sendmsg$ETHTOOL_MSG_DEBUG_SET
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f00000005c0)='ext4\x00', &(0x7f0000000000)='./file2\x00', 0xa08006, &(0x7f0000000b00), 0x4, 0x4f3, &(0x7f0000000600)="$eJzs3U1vW1kZAODXzpeTyUwyZRaAgCnDQEFVncRto6oLKCuEUCVElyC1IXGjKHYcxU5pQhfpf0CiEitY8gNYd8WeDYIdm7JA4iMCNZVYGN3rm9RN4yQ0H87YzyNd3XvOsf2e0+ie07xW7gmgb12OiK2IGI6IBxExkdXnsiPutI7kdS+3n8zvbD+Zz0Wzee+fubQ9qYu29yTeyz6zEBE/+l7ET3Nvx61vbC7PVSrltaw81aiuTtU3Nq8tVecWy4vllVJpdmZ2+tb1m6VTG+vH1eHs6ssv/rD1rZ8n3RrPatrHcZpaQx/ai5MYjIgfnEWwLhjIxjPc7Y7wTvIRcSkiPknv/4kYSH+aAEAvazYnojnRXgYAel0+zYHl8sUsFzAe+Xyx2MrhfRRj+Uqt3rj6sLa+stDKlU3GUP7hUqU8neUKJ2Mol5Rn0uvX5dK+8vWI+DAifjEympaL87XKQjf/4wMAfey9fev/f0Za6z8A0OMK3e4AAHDurP8A0H+s/wDQfwqHlACA3mTFB4D+Y/0HgP5j/QeAvvLDu3eTo7mTPf964dHG+nLt0bWFcn25WF2fL87X1laLi7XaYvrMnupRn1ep1VZnbsT648lvr9YbU/WNzfvV2vpK4376XO/75aFzGRUAcJgPP37+51xEbN0eTY9o28vBWg29Ld/tDgBdM9DtDgBdY7cv6F8n+B1fegB6xAFb9L6hEBGj+yubzWbz7LoEnLErX+iY/5cagB4n/w/9yyIP/Uv+H/pXs5k77p7/cdwXAgAXmy/xgQ7f/1/Kzr/NHhHyk4X9r3h2lr0CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAi213/99ithf4eOTzxWLE+xExGUO5h0uV8nREfBARfxoZGknKM13uMwBwUvm/5bL9v65MfDq+v3U492okPUfEz35175eP5xqNtT8m9f/aq288y+pL3eg/AHCU3XU6Pbf9Iv9y+8n87nGe/fn7dyOi0Iq/sz0cO3vxB2MwPRdiKCLG/p3Lyi25ttzFSWw9jYjPHzT+XIynOZDWzqf74yex3z/X+Pk34ufTttY5+bf43Cn0BfrN82T+uXPQ/ZePy+n54Pu/kM5QJ5fNf8lHze+kc+Dr+Lvz30CH+e/ycWPc+P33W1ejb7c9jfjiYMRu7J22+Wc3fq5D/E+PGf8vX/rKJ53amr+OuBIHx2+PNdWork7VNzavLVXnFsuL5ZVSaXZmdvrW9ZulqTRHPdV5NfjH7asfdGpLxj/WIX7hiPF//Zjj/81/H/z4q4fE/+bXDoqfj48OiZ+sid84Zvy5sd8VOrUl8Rc6jP+on//VY8Z/8dfNt7YNBwC6p76xuTxXqZTXXBx5MRIRF6Abb1xcioh3fvvohRvOZ/niO+cVazj+r3c1m+8Uq9OMcRpZN+Ai2LvpI+JVtzsDAAAAAAAAAAAAAAAc6Dz+YqnbYwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKB3/S8AAP//4nnPvQ==")
+lchown(&(0x7f0000000140)='./file1\x00', 0xffffffffffffffff, 0xee00)
+r0 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000000)='/proc/sysvipc/shm\x00', 0x0, 0x0)
+close(r0)
+r1 = socket$nl_generic(0x10, 0x3, 0x10)
+r2 = syz_genetlink_get_family_id$ethtool(&(0x7f0000000180), 0xffffffffffffffff)
+r3 = socket$nl_generic(0x10, 0x3, 0x10)
+ioctl$sock_SIOCGIFINDEX(r3, 0x8933, &(0x7f0000000000)={'lo\x00', <r4=>0x0})
+r5 = syz_genetlink_get_family_id$ethtool(&(0x7f0000000200), r1)
+sendmsg$ETHTOOL_MSG_CHANNELS_SET(r0, &(0x7f0000000380)={0x0, 0x0, &(0x7f0000000340)={&(0x7f0000000280)={0x20, r5, 0x1, 0x0, 0x25dfdbfb, {}, [@ETHTOOL_A_CHANNELS_HEADER={0xc, 0x1, 0x0, 0x1, [@ETHTOOL_A_HEADER_DEV_INDEX={0x8, 0x1, r4}]}]}, 0x20}}, 0x0)
+ioctl$sock_SIOCGIFINDEX(0xffffffffffffffff, 0x8933, &(0x7f0000000080)={'ipvlan0\x00', <r6=>0x0})
+sendmsg$ETHTOOL_MSG_DEBUG_SET(r1, &(0x7f00000001c0)={&(0x7f0000000040)={0x10, 0x0, 0x0, 0x40}, 0xc, &(0x7f0000000180)={&(0x7f00000000c0)={0x60, r2, 0x18, 0x70bd2c, 0x25dfdbfe, {}, [@ETHTOOL_A_DEBUG_HEADER={0x48, 0x1, 0x0, 0x1, [@ETHTOOL_A_HEADER_DEV_NAME={0x14, 0x2, 'caif0\x00'}, @ETHTOOL_A_HEADER_DEV_NAME={0x14, 0x2, 'veth1_to_team\x00'}, @ETHTOOL_A_HEADER_DEV_NAME={0x14, 0x2, 'vcan0\x00'}, @ETHTOOL_A_HEADER_DEV_INDEX={0x8, 0x1, r6}]}, @ETHTOOL_A_DEBUG_HEADER={0x4}]}, 0x60}, 0x1, 0x0, 0x0, 0x48050}, 0xc800)
+
+program crashed: BUG: unable to handle kernel paging request in dquot_add_inodes
+single: successfully extracted reproducer
+found reproducer with 12 syscalls
+minimizing guilty program
+testing program (duration=37.449063934s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown-openat$procfs-close-socket$nl_generic-syz_genetlink_get_family_id$ethtool-socket$nl_generic-ioctl$sock_SIOCGIFINDEX-syz_genetlink_get_family_id$ethtool-sendmsg$ETHTOOL_MSG_CHANNELS_SET-ioctl$sock_SIOCGIFINDEX
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f00000005c0)='ext4\x00', &(0x7f0000000000)='./file2\x00', 0xa08006, &(0x7f0000000b00), 0x4, 0x4f3, &(0x7f0000000600)="$eJzs3U1vW1kZAODXzpeTyUwyZRaAgCnDQEFVncRto6oLKCuEUCVElyC1IXGjKHYcxU5pQhfpf0CiEitY8gNYd8WeDYIdm7JA4iMCNZVYGN3rm9RN4yQ0H87YzyNd3XvOsf2e0+ie07xW7gmgb12OiK2IGI6IBxExkdXnsiPutI7kdS+3n8zvbD+Zz0Wzee+fubQ9qYu29yTeyz6zEBE/+l7ET3Nvx61vbC7PVSrltaw81aiuTtU3Nq8tVecWy4vllVJpdmZ2+tb1m6VTG+vH1eHs6ssv/rD1rZ8n3RrPatrHcZpaQx/ai5MYjIgfnEWwLhjIxjPc7Y7wTvIRcSkiPknv/4kYSH+aAEAvazYnojnRXgYAel0+zYHl8sUsFzAe+Xyx2MrhfRRj+Uqt3rj6sLa+stDKlU3GUP7hUqU8neUKJ2Mol5Rn0uvX5dK+8vWI+DAifjEympaL87XKQjf/4wMAfey9fev/f0Za6z8A0OMK3e4AAHDurP8A0H+s/wDQfwqHlACA3mTFB4D+Y/0HgP5j/QeAvvLDu3eTo7mTPf964dHG+nLt0bWFcn25WF2fL87X1laLi7XaYvrMnupRn1ep1VZnbsT648lvr9YbU/WNzfvV2vpK4376XO/75aFzGRUAcJgPP37+51xEbN0eTY9o28vBWg29Ld/tDgBdM9DtDgBdY7cv6F8n+B1fegB6xAFb9L6hEBGj+yubzWbz7LoEnLErX+iY/5cagB4n/w/9yyIP/Uv+H/pXs5k77p7/cdwXAgAXmy/xgQ7f/1/Kzr/NHhHyk4X9r3h2lr0CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAi213/99ithf4eOTzxWLE+xExGUO5h0uV8nREfBARfxoZGknKM13uMwBwUvm/5bL9v65MfDq+v3U492okPUfEz35175eP5xqNtT8m9f/aq288y+pL3eg/AHCU3XU6Pbf9Iv9y+8n87nGe/fn7dyOi0Iq/sz0cO3vxB2MwPRdiKCLG/p3Lyi25ttzFSWw9jYjPHzT+XIynOZDWzqf74yex3z/X+Pk34ufTttY5+bf43Cn0BfrN82T+uXPQ/ZePy+n54Pu/kM5QJ5fNf8lHze+kc+Dr+Lvz30CH+e/ycWPc+P33W1ejb7c9jfjiYMRu7J22+Wc3fq5D/E+PGf8vX/rKJ53amr+OuBIHx2+PNdWork7VNzavLVXnFsuL5ZVSaXZmdvrW9ZulqTRHPdV5NfjH7asfdGpLxj/WIX7hiPF//Zjj/81/H/z4q4fE/+bXDoqfj48OiZ+sid84Zvy5sd8VOrUl8Rc6jP+on//VY8Z/8dfNt7YNBwC6p76xuTxXqZTXXBx5MRIRF6Abb1xcioh3fvvohRvOZ/niO+cVazj+r3c1m+8Uq9OMcRpZN+Ai2LvpI+JVtzsDAAAAAAAAAAAAAAAc6Dz+YqnbYwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKB3/S8AAP//4nnPvQ==")
+lchown(&(0x7f0000000140)='./file1\x00', 0xffffffffffffffff, 0xee00)
+r0 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000000)='/proc/sysvipc/shm\x00', 0x0, 0x0)
+close(r0)
+r1 = socket$nl_generic(0x10, 0x3, 0x10)
+syz_genetlink_get_family_id$ethtool(&(0x7f0000000180), 0xffffffffffffffff)
+r2 = socket$nl_generic(0x10, 0x3, 0x10)
+ioctl$sock_SIOCGIFINDEX(r2, 0x8933, &(0x7f0000000000)={'lo\x00', <r3=>0x0})
+r4 = syz_genetlink_get_family_id$ethtool(&(0x7f0000000200), r1)
+sendmsg$ETHTOOL_MSG_CHANNELS_SET(r0, &(0x7f0000000380)={0x0, 0x0, &(0x7f0000000340)={&(0x7f0000000280)={0x20, r4, 0x1, 0x0, 0x25dfdbfb, {}, [@ETHTOOL_A_CHANNELS_HEADER={0xc, 0x1, 0x0, 0x1, [@ETHTOOL_A_HEADER_DEV_INDEX={0x8, 0x1, r3}]}]}, 0x20}}, 0x0)
+ioctl$sock_SIOCGIFINDEX(0xffffffffffffffff, 0x8933, &(0x7f0000000080)={'ipvlan0\x00'})
+
+program crashed: BUG: unable to handle kernel paging request in dquot_add_inodes
+testing program (duration=37.449063934s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown-openat$procfs-close-socket$nl_generic-syz_genetlink_get_family_id$ethtool-socket$nl_generic-ioctl$sock_SIOCGIFINDEX-syz_genetlink_get_family_id$ethtool-sendmsg$ETHTOOL_MSG_CHANNELS_SET
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f00000005c0)='ext4\x00', &(0x7f0000000000)='./file2\x00', 0xa08006, &(0x7f0000000b00), 0x4, 0x4f3, &(0x7f0000000600)="$eJzs3U1vW1kZAODXzpeTyUwyZRaAgCnDQEFVncRto6oLKCuEUCVElyC1IXGjKHYcxU5pQhfpf0CiEitY8gNYd8WeDYIdm7JA4iMCNZVYGN3rm9RN4yQ0H87YzyNd3XvOsf2e0+ie07xW7gmgb12OiK2IGI6IBxExkdXnsiPutI7kdS+3n8zvbD+Zz0Wzee+fubQ9qYu29yTeyz6zEBE/+l7ET3Nvx61vbC7PVSrltaw81aiuTtU3Nq8tVecWy4vllVJpdmZ2+tb1m6VTG+vH1eHs6ssv/rD1rZ8n3RrPatrHcZpaQx/ai5MYjIgfnEWwLhjIxjPc7Y7wTvIRcSkiPknv/4kYSH+aAEAvazYnojnRXgYAel0+zYHl8sUsFzAe+Xyx2MrhfRRj+Uqt3rj6sLa+stDKlU3GUP7hUqU8neUKJ2Mol5Rn0uvX5dK+8vWI+DAifjEympaL87XKQjf/4wMAfey9fev/f0Za6z8A0OMK3e4AAHDurP8A0H+s/wDQfwqHlACA3mTFB4D+Y/0HgP5j/QeAvvLDu3eTo7mTPf964dHG+nLt0bWFcn25WF2fL87X1laLi7XaYvrMnupRn1ep1VZnbsT648lvr9YbU/WNzfvV2vpK4376XO/75aFzGRUAcJgPP37+51xEbN0eTY9o28vBWg29Ld/tDgBdM9DtDgBdY7cv6F8n+B1fegB6xAFb9L6hEBGj+yubzWbz7LoEnLErX+iY/5cagB4n/w/9yyIP/Uv+H/pXs5k77p7/cdwXAgAXmy/xgQ7f/1/Kzr/NHhHyk4X9r3h2lr0CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAi213/99ithf4eOTzxWLE+xExGUO5h0uV8nREfBARfxoZGknKM13uMwBwUvm/5bL9v65MfDq+v3U492okPUfEz35175eP5xqNtT8m9f/aq288y+pL3eg/AHCU3XU6Pbf9Iv9y+8n87nGe/fn7dyOi0Iq/sz0cO3vxB2MwPRdiKCLG/p3Lyi25ttzFSWw9jYjPHzT+XIynOZDWzqf74yex3z/X+Pk34ufTttY5+bf43Cn0BfrN82T+uXPQ/ZePy+n54Pu/kM5QJ5fNf8lHze+kc+Dr+Lvz30CH+e/ycWPc+P33W1ejb7c9jfjiYMRu7J22+Wc3fq5D/E+PGf8vX/rKJ53amr+OuBIHx2+PNdWork7VNzavLVXnFsuL5ZVSaXZmdvrW9ZulqTRHPdV5NfjH7asfdGpLxj/WIX7hiPF//Zjj/81/H/z4q4fE/+bXDoqfj48OiZ+sid84Zvy5sd8VOrUl8Rc6jP+on//VY8Z/8dfNt7YNBwC6p76xuTxXqZTXXBx5MRIRF6Abb1xcioh3fvvohRvOZ/niO+cVazj+r3c1m+8Uq9OMcRpZN+Ai2LvpI+JVtzsDAAAAAAAAAAAAAAAc6Dz+YqnbYwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKB3/S8AAP//4nnPvQ==")
+lchown(&(0x7f0000000140)='./file1\x00', 0xffffffffffffffff, 0xee00)
+r0 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000000)='/proc/sysvipc/shm\x00', 0x0, 0x0)
+close(r0)
+r1 = socket$nl_generic(0x10, 0x3, 0x10)
+syz_genetlink_get_family_id$ethtool(&(0x7f0000000180), 0xffffffffffffffff)
+r2 = socket$nl_generic(0x10, 0x3, 0x10)
+ioctl$sock_SIOCGIFINDEX(r2, 0x8933, &(0x7f0000000000)={'lo\x00', <r3=>0x0})
+r4 = syz_genetlink_get_family_id$ethtool(&(0x7f0000000200), r1)
+sendmsg$ETHTOOL_MSG_CHANNELS_SET(r0, &(0x7f0000000380)={0x0, 0x0, &(0x7f0000000340)={&(0x7f0000000280)={0x20, r4, 0x1, 0x0, 0x25dfdbfb, {}, [@ETHTOOL_A_CHANNELS_HEADER={0xc, 0x1, 0x0, 0x1, [@ETHTOOL_A_HEADER_DEV_INDEX={0x8, 0x1, r3}]}]}, 0x20}}, 0x0)
+
+program crashed: BUG: unable to handle kernel paging request in dquot_add_inodes
+testing program (duration=37.449063934s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown-openat$procfs-close-socket$nl_generic-syz_genetlink_get_family_id$ethtool-socket$nl_generic-ioctl$sock_SIOCGIFINDEX-syz_genetlink_get_family_id$ethtool
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f00000005c0)='ext4\x00', &(0x7f0000000000)='./file2\x00', 0xa08006, &(0x7f0000000b00), 0x4, 0x4f3, &(0x7f0000000600)="$eJzs3U1vW1kZAODXzpeTyUwyZRaAgCnDQEFVncRto6oLKCuEUCVElyC1IXGjKHYcxU5pQhfpf0CiEitY8gNYd8WeDYIdm7JA4iMCNZVYGN3rm9RN4yQ0H87YzyNd3XvOsf2e0+ie07xW7gmgb12OiK2IGI6IBxExkdXnsiPutI7kdS+3n8zvbD+Zz0Wzee+fubQ9qYu29yTeyz6zEBE/+l7ET3Nvx61vbC7PVSrltaw81aiuTtU3Nq8tVecWy4vllVJpdmZ2+tb1m6VTG+vH1eHs6ssv/rD1rZ8n3RrPatrHcZpaQx/ai5MYjIgfnEWwLhjIxjPc7Y7wTvIRcSkiPknv/4kYSH+aAEAvazYnojnRXgYAel0+zYHl8sUsFzAe+Xyx2MrhfRRj+Uqt3rj6sLa+stDKlU3GUP7hUqU8neUKJ2Mol5Rn0uvX5dK+8vWI+DAifjEympaL87XKQjf/4wMAfey9fev/f0Za6z8A0OMK3e4AAHDurP8A0H+s/wDQfwqHlACA3mTFB4D+Y/0HgP5j/QeAvvLDu3eTo7mTPf964dHG+nLt0bWFcn25WF2fL87X1laLi7XaYvrMnupRn1ep1VZnbsT648lvr9YbU/WNzfvV2vpK4376XO/75aFzGRUAcJgPP37+51xEbN0eTY9o28vBWg29Ld/tDgBdM9DtDgBdY7cv6F8n+B1fegB6xAFb9L6hEBGj+yubzWbz7LoEnLErX+iY/5cagB4n/w/9yyIP/Uv+H/pXs5k77p7/cdwXAgAXmy/xgQ7f/1/Kzr/NHhHyk4X9r3h2lr0CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAi213/99ithf4eOTzxWLE+xExGUO5h0uV8nREfBARfxoZGknKM13uMwBwUvm/5bL9v65MfDq+v3U492okPUfEz35175eP5xqNtT8m9f/aq288y+pL3eg/AHCU3XU6Pbf9Iv9y+8n87nGe/fn7dyOi0Iq/sz0cO3vxB2MwPRdiKCLG/p3Lyi25ttzFSWw9jYjPHzT+XIynOZDWzqf74yex3z/X+Pk34ufTttY5+bf43Cn0BfrN82T+uXPQ/ZePy+n54Pu/kM5QJ5fNf8lHze+kc+Dr+Lvz30CH+e/ycWPc+P33W1ejb7c9jfjiYMRu7J22+Wc3fq5D/E+PGf8vX/rKJ53amr+OuBIHx2+PNdWork7VNzavLVXnFsuL5ZVSaXZmdvrW9ZulqTRHPdV5NfjH7asfdGpLxj/WIX7hiPF//Zjj/81/H/z4q4fE/+bXDoqfj48OiZ+sid84Zvy5sd8VOrUl8Rc6jP+on//VY8Z/8dfNt7YNBwC6p76xuTxXqZTXXBx5MRIRF6Abb1xcioh3fvvohRvOZ/niO+cVazj+r3c1m+8Uq9OMcRpZN+Ai2LvpI+JVtzsDAAAAAAAAAAAAAAAc6Dz+YqnbYwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKB3/S8AAP//4nnPvQ==")
+lchown(&(0x7f0000000140)='./file1\x00', 0xffffffffffffffff, 0xee00)
+r0 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000000)='/proc/sysvipc/shm\x00', 0x0, 0x0)
+close(r0)
+r1 = socket$nl_generic(0x10, 0x3, 0x10)
+syz_genetlink_get_family_id$ethtool(&(0x7f0000000180), 0xffffffffffffffff)
+r2 = socket$nl_generic(0x10, 0x3, 0x10)
+ioctl$sock_SIOCGIFINDEX(r2, 0x8933, &(0x7f0000000000)={'lo\x00'})
+syz_genetlink_get_family_id$ethtool(&(0x7f0000000200), r1)
+
+program crashed: BUG: unable to handle kernel paging request in dquot_add_inodes
+testing program (duration=37.449063934s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown-openat$procfs-close-socket$nl_generic-syz_genetlink_get_family_id$ethtool-socket$nl_generic-ioctl$sock_SIOCGIFINDEX
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f00000005c0)='ext4\x00', &(0x7f0000000000)='./file2\x00', 0xa08006, &(0x7f0000000b00), 0x4, 0x4f3, &(0x7f0000000600)="$eJzs3U1vW1kZAODXzpeTyUwyZRaAgCnDQEFVncRto6oLKCuEUCVElyC1IXGjKHYcxU5pQhfpf0CiEitY8gNYd8WeDYIdm7JA4iMCNZVYGN3rm9RN4yQ0H87YzyNd3XvOsf2e0+ie07xW7gmgb12OiK2IGI6IBxExkdXnsiPutI7kdS+3n8zvbD+Zz0Wzee+fubQ9qYu29yTeyz6zEBE/+l7ET3Nvx61vbC7PVSrltaw81aiuTtU3Nq8tVecWy4vllVJpdmZ2+tb1m6VTG+vH1eHs6ssv/rD1rZ8n3RrPatrHcZpaQx/ai5MYjIgfnEWwLhjIxjPc7Y7wTvIRcSkiPknv/4kYSH+aAEAvazYnojnRXgYAel0+zYHl8sUsFzAe+Xyx2MrhfRRj+Uqt3rj6sLa+stDKlU3GUP7hUqU8neUKJ2Mol5Rn0uvX5dK+8vWI+DAifjEympaL87XKQjf/4wMAfey9fev/f0Za6z8A0OMK3e4AAHDurP8A0H+s/wDQfwqHlACA3mTFB4D+Y/0HgP5j/QeAvvLDu3eTo7mTPf964dHG+nLt0bWFcn25WF2fL87X1laLi7XaYvrMnupRn1ep1VZnbsT648lvr9YbU/WNzfvV2vpK4376XO/75aFzGRUAcJgPP37+51xEbN0eTY9o28vBWg29Ld/tDgBdM9DtDgBdY7cv6F8n+B1fegB6xAFb9L6hEBGj+yubzWbz7LoEnLErX+iY/5cagB4n/w/9yyIP/Uv+H/pXs5k77p7/cdwXAgAXmy/xgQ7f/1/Kzr/NHhHyk4X9r3h2lr0CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAi213/99ithf4eOTzxWLE+xExGUO5h0uV8nREfBARfxoZGknKM13uMwBwUvm/5bL9v65MfDq+v3U492okPUfEz35175eP5xqNtT8m9f/aq288y+pL3eg/AHCU3XU6Pbf9Iv9y+8n87nGe/fn7dyOi0Iq/sz0cO3vxB2MwPRdiKCLG/p3Lyi25ttzFSWw9jYjPHzT+XIynOZDWzqf74yex3z/X+Pk34ufTttY5+bf43Cn0BfrN82T+uXPQ/ZePy+n54Pu/kM5QJ5fNf8lHze+kc+Dr+Lvz30CH+e/ycWPc+P33W1ejb7c9jfjiYMRu7J22+Wc3fq5D/E+PGf8vX/rKJ53amr+OuBIHx2+PNdWork7VNzavLVXnFsuL5ZVSaXZmdvrW9ZulqTRHPdV5NfjH7asfdGpLxj/WIX7hiPF//Zjj/81/H/z4q4fE/+bXDoqfj48OiZ+sid84Zvy5sd8VOrUl8Rc6jP+on//VY8Z/8dfNt7YNBwC6p76xuTxXqZTXXBx5MRIRF6Abb1xcioh3fvvohRvOZ/niO+cVazj+r3c1m+8Uq9OMcRpZN+Ai2LvpI+JVtzsDAAAAAAAAAAAAAAAc6Dz+YqnbYwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKB3/S8AAP//4nnPvQ==")
+lchown(&(0x7f0000000140)='./file1\x00', 0xffffffffffffffff, 0xee00)
+r0 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000000)='/proc/sysvipc/shm\x00', 0x0, 0x0)
+close(r0)
+socket$nl_generic(0x10, 0x3, 0x10)
+syz_genetlink_get_family_id$ethtool(&(0x7f0000000180), 0xffffffffffffffff)
+r1 = socket$nl_generic(0x10, 0x3, 0x10)
+ioctl$sock_SIOCGIFINDEX(r1, 0x8933, &(0x7f0000000000)={'lo\x00'})
+
+program crashed: BUG: unable to handle kernel paging request in dquot_add_inodes
+testing program (duration=37.449063934s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown-openat$procfs-close-socket$nl_generic-syz_genetlink_get_family_id$ethtool-socket$nl_generic
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f00000005c0)='ext4\x00', &(0x7f0000000000)='./file2\x00', 0xa08006, &(0x7f0000000b00), 0x4, 0x4f3, &(0x7f0000000600)="$eJzs3U1vW1kZAODXzpeTyUwyZRaAgCnDQEFVncRto6oLKCuEUCVElyC1IXGjKHYcxU5pQhfpf0CiEitY8gNYd8WeDYIdm7JA4iMCNZVYGN3rm9RN4yQ0H87YzyNd3XvOsf2e0+ie07xW7gmgb12OiK2IGI6IBxExkdXnsiPutI7kdS+3n8zvbD+Zz0Wzee+fubQ9qYu29yTeyz6zEBE/+l7ET3Nvx61vbC7PVSrltaw81aiuTtU3Nq8tVecWy4vllVJpdmZ2+tb1m6VTG+vH1eHs6ssv/rD1rZ8n3RrPatrHcZpaQx/ai5MYjIgfnEWwLhjIxjPc7Y7wTvIRcSkiPknv/4kYSH+aAEAvazYnojnRXgYAel0+zYHl8sUsFzAe+Xyx2MrhfRRj+Uqt3rj6sLa+stDKlU3GUP7hUqU8neUKJ2Mol5Rn0uvX5dK+8vWI+DAifjEympaL87XKQjf/4wMAfey9fev/f0Za6z8A0OMK3e4AAHDurP8A0H+s/wDQfwqHlACA3mTFB4D+Y/0HgP5j/QeAvvLDu3eTo7mTPf964dHG+nLt0bWFcn25WF2fL87X1laLi7XaYvrMnupRn1ep1VZnbsT648lvr9YbU/WNzfvV2vpK4376XO/75aFzGRUAcJgPP37+51xEbN0eTY9o28vBWg29Ld/tDgBdM9DtDgBdY7cv6F8n+B1fegB6xAFb9L6hEBGj+yubzWbz7LoEnLErX+iY/5cagB4n/w/9yyIP/Uv+H/pXs5k77p7/cdwXAgAXmy/xgQ7f/1/Kzr/NHhHyk4X9r3h2lr0CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAi213/99ithf4eOTzxWLE+xExGUO5h0uV8nREfBARfxoZGknKM13uMwBwUvm/5bL9v65MfDq+v3U492okPUfEz35175eP5xqNtT8m9f/aq288y+pL3eg/AHCU3XU6Pbf9Iv9y+8n87nGe/fn7dyOi0Iq/sz0cO3vxB2MwPRdiKCLG/p3Lyi25ttzFSWw9jYjPHzT+XIynOZDWzqf74yex3z/X+Pk34ufTttY5+bf43Cn0BfrN82T+uXPQ/ZePy+n54Pu/kM5QJ5fNf8lHze+kc+Dr+Lvz30CH+e/ycWPc+P33W1ejb7c9jfjiYMRu7J22+Wc3fq5D/E+PGf8vX/rKJ53amr+OuBIHx2+PNdWork7VNzavLVXnFsuL5ZVSaXZmdvrW9ZulqTRHPdV5NfjH7asfdGpLxj/WIX7hiPF//Zjj/81/H/z4q4fE/+bXDoqfj48OiZ+sid84Zvy5sd8VOrUl8Rc6jP+on//VY8Z/8dfNt7YNBwC6p76xuTxXqZTXXBx5MRIRF6Abb1xcioh3fvvohRvOZ/niO+cVazj+r3c1m+8Uq9OMcRpZN+Ai2LvpI+JVtzsDAAAAAAAAAAAAAAAc6Dz+YqnbYwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKB3/S8AAP//4nnPvQ==")
+lchown(&(0x7f0000000140)='./file1\x00', 0xffffffffffffffff, 0xee00)
+r0 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000000)='/proc/sysvipc/shm\x00', 0x0, 0x0)
+close(r0)
+socket$nl_generic(0x10, 0x3, 0x10)
+syz_genetlink_get_family_id$ethtool(&(0x7f0000000180), 0xffffffffffffffff)
+socket$nl_generic(0x10, 0x3, 0x10)
+
+program crashed: BUG: unable to handle kernel paging request in dquot_add_inodes
+testing program (duration=37.449063934s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown-openat$procfs-close-socket$nl_generic-syz_genetlink_get_family_id$ethtool
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f00000005c0)='ext4\x00', &(0x7f0000000000)='./file2\x00', 0xa08006, &(0x7f0000000b00), 0x4, 0x4f3, &(0x7f0000000600)="$eJzs3U1vW1kZAODXzpeTyUwyZRaAgCnDQEFVncRto6oLKCuEUCVElyC1IXGjKHYcxU5pQhfpf0CiEitY8gNYd8WeDYIdm7JA4iMCNZVYGN3rm9RN4yQ0H87YzyNd3XvOsf2e0+ie07xW7gmgb12OiK2IGI6IBxExkdXnsiPutI7kdS+3n8zvbD+Zz0Wzee+fubQ9qYu29yTeyz6zEBE/+l7ET3Nvx61vbC7PVSrltaw81aiuTtU3Nq8tVecWy4vllVJpdmZ2+tb1m6VTG+vH1eHs6ssv/rD1rZ8n3RrPatrHcZpaQx/ai5MYjIgfnEWwLhjIxjPc7Y7wTvIRcSkiPknv/4kYSH+aAEAvazYnojnRXgYAel0+zYHl8sUsFzAe+Xyx2MrhfRRj+Uqt3rj6sLa+stDKlU3GUP7hUqU8neUKJ2Mol5Rn0uvX5dK+8vWI+DAifjEympaL87XKQjf/4wMAfey9fev/f0Za6z8A0OMK3e4AAHDurP8A0H+s/wDQfwqHlACA3mTFB4D+Y/0HgP5j/QeAvvLDu3eTo7mTPf964dHG+nLt0bWFcn25WF2fL87X1laLi7XaYvrMnupRn1ep1VZnbsT648lvr9YbU/WNzfvV2vpK4376XO/75aFzGRUAcJgPP37+51xEbN0eTY9o28vBWg29Ld/tDgBdM9DtDgBdY7cv6F8n+B1fegB6xAFb9L6hEBGj+yubzWbz7LoEnLErX+iY/5cagB4n/w/9yyIP/Uv+H/pXs5k77p7/cdwXAgAXmy/xgQ7f/1/Kzr/NHhHyk4X9r3h2lr0CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAi213/99ithf4eOTzxWLE+xExGUO5h0uV8nREfBARfxoZGknKM13uMwBwUvm/5bL9v65MfDq+v3U492okPUfEz35175eP5xqNtT8m9f/aq288y+pL3eg/AHCU3XU6Pbf9Iv9y+8n87nGe/fn7dyOi0Iq/sz0cO3vxB2MwPRdiKCLG/p3Lyi25ttzFSWw9jYjPHzT+XIynOZDWzqf74yex3z/X+Pk34ufTttY5+bf43Cn0BfrN82T+uXPQ/ZePy+n54Pu/kM5QJ5fNf8lHze+kc+Dr+Lvz30CH+e/ycWPc+P33W1ejb7c9jfjiYMRu7J22+Wc3fq5D/E+PGf8vX/rKJ53amr+OuBIHx2+PNdWork7VNzavLVXnFsuL5ZVSaXZmdvrW9ZulqTRHPdV5NfjH7asfdGpLxj/WIX7hiPF//Zjj/81/H/z4q4fE/+bXDoqfj48OiZ+sid84Zvy5sd8VOrUl8Rc6jP+on//VY8Z/8dfNt7YNBwC6p76xuTxXqZTXXBx5MRIRF6Abb1xcioh3fvvohRvOZ/niO+cVazj+r3c1m+8Uq9OMcRpZN+Ai2LvpI+JVtzsDAAAAAAAAAAAAAAAc6Dz+YqnbYwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKB3/S8AAP//4nnPvQ==")
+lchown(&(0x7f0000000140)='./file1\x00', 0xffffffffffffffff, 0xee00)
+r0 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000000)='/proc/sysvipc/shm\x00', 0x0, 0x0)
+close(r0)
+socket$nl_generic(0x10, 0x3, 0x10)
+syz_genetlink_get_family_id$ethtool(&(0x7f0000000180), 0xffffffffffffffff)
+
+program crashed: BUG: unable to handle kernel paging request in dquot_add_inodes
+testing program (duration=37.449063934s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown-openat$procfs-close-socket$nl_generic
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f00000005c0)='ext4\x00', &(0x7f0000000000)='./file2\x00', 0xa08006, &(0x7f0000000b00), 0x4, 0x4f3, &(0x7f0000000600)="$eJzs3U1vW1kZAODXzpeTyUwyZRaAgCnDQEFVncRto6oLKCuEUCVElyC1IXGjKHYcxU5pQhfpf0CiEitY8gNYd8WeDYIdm7JA4iMCNZVYGN3rm9RN4yQ0H87YzyNd3XvOsf2e0+ie07xW7gmgb12OiK2IGI6IBxExkdXnsiPutI7kdS+3n8zvbD+Zz0Wzee+fubQ9qYu29yTeyz6zEBE/+l7ET3Nvx61vbC7PVSrltaw81aiuTtU3Nq8tVecWy4vllVJpdmZ2+tb1m6VTG+vH1eHs6ssv/rD1rZ8n3RrPatrHcZpaQx/ai5MYjIgfnEWwLhjIxjPc7Y7wTvIRcSkiPknv/4kYSH+aAEAvazYnojnRXgYAel0+zYHl8sUsFzAe+Xyx2MrhfRRj+Uqt3rj6sLa+stDKlU3GUP7hUqU8neUKJ2Mol5Rn0uvX5dK+8vWI+DAifjEympaL87XKQjf/4wMAfey9fev/f0Za6z8A0OMK3e4AAHDurP8A0H+s/wDQfwqHlACA3mTFB4D+Y/0HgP5j/QeAvvLDu3eTo7mTPf964dHG+nLt0bWFcn25WF2fL87X1laLi7XaYvrMnupRn1ep1VZnbsT648lvr9YbU/WNzfvV2vpK4376XO/75aFzGRUAcJgPP37+51xEbN0eTY9o28vBWg29Ld/tDgBdM9DtDgBdY7cv6F8n+B1fegB6xAFb9L6hEBGj+yubzWbz7LoEnLErX+iY/5cagB4n/w/9yyIP/Uv+H/pXs5k77p7/cdwXAgAXmy/xgQ7f/1/Kzr/NHhHyk4X9r3h2lr0CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAi213/99ithf4eOTzxWLE+xExGUO5h0uV8nREfBARfxoZGknKM13uMwBwUvm/5bL9v65MfDq+v3U492okPUfEz35175eP5xqNtT8m9f/aq288y+pL3eg/AHCU3XU6Pbf9Iv9y+8n87nGe/fn7dyOi0Iq/sz0cO3vxB2MwPRdiKCLG/p3Lyi25ttzFSWw9jYjPHzT+XIynOZDWzqf74yex3z/X+Pk34ufTttY5+bf43Cn0BfrN82T+uXPQ/ZePy+n54Pu/kM5QJ5fNf8lHze+kc+Dr+Lvz30CH+e/ycWPc+P33W1ejb7c9jfjiYMRu7J22+Wc3fq5D/E+PGf8vX/rKJ53amr+OuBIHx2+PNdWork7VNzavLVXnFsuL5ZVSaXZmdvrW9ZulqTRHPdV5NfjH7asfdGpLxj/WIX7hiPF//Zjj/81/H/z4q4fE/+bXDoqfj48OiZ+sid84Zvy5sd8VOrUl8Rc6jP+on//VY8Z/8dfNt7YNBwC6p76xuTxXqZTXXBx5MRIRF6Abb1xcioh3fvvohRvOZ/niO+cVazj+r3c1m+8Uq9OMcRpZN+Ai2LvpI+JVtzsDAAAAAAAAAAAAAAAc6Dz+YqnbYwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKB3/S8AAP//4nnPvQ==")
+lchown(&(0x7f0000000140)='./file1\x00', 0xffffffffffffffff, 0xee00)
+r0 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000000)='/proc/sysvipc/shm\x00', 0x0, 0x0)
+close(r0)
+socket$nl_generic(0x10, 0x3, 0x10)
+
+program crashed: BUG: unable to handle kernel paging request in dquot_add_inodes
+testing program (duration=37.449063934s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown-openat$procfs-close
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f00000005c0)='ext4\x00', &(0x7f0000000000)='./file2\x00', 0xa08006, &(0x7f0000000b00), 0x4, 0x4f3, &(0x7f0000000600)="$eJzs3U1vW1kZAODXzpeTyUwyZRaAgCnDQEFVncRto6oLKCuEUCVElyC1IXGjKHYcxU5pQhfpf0CiEitY8gNYd8WeDYIdm7JA4iMCNZVYGN3rm9RN4yQ0H87YzyNd3XvOsf2e0+ie07xW7gmgb12OiK2IGI6IBxExkdXnsiPutI7kdS+3n8zvbD+Zz0Wzee+fubQ9qYu29yTeyz6zEBE/+l7ET3Nvx61vbC7PVSrltaw81aiuTtU3Nq8tVecWy4vllVJpdmZ2+tb1m6VTG+vH1eHs6ssv/rD1rZ8n3RrPatrHcZpaQx/ai5MYjIgfnEWwLhjIxjPc7Y7wTvIRcSkiPknv/4kYSH+aAEAvazYnojnRXgYAel0+zYHl8sUsFzAe+Xyx2MrhfRRj+Uqt3rj6sLa+stDKlU3GUP7hUqU8neUKJ2Mol5Rn0uvX5dK+8vWI+DAifjEympaL87XKQjf/4wMAfey9fev/f0Za6z8A0OMK3e4AAHDurP8A0H+s/wDQfwqHlACA3mTFB4D+Y/0HgP5j/QeAvvLDu3eTo7mTPf964dHG+nLt0bWFcn25WF2fL87X1laLi7XaYvrMnupRn1ep1VZnbsT648lvr9YbU/WNzfvV2vpK4376XO/75aFzGRUAcJgPP37+51xEbN0eTY9o28vBWg29Ld/tDgBdM9DtDgBdY7cv6F8n+B1fegB6xAFb9L6hEBGj+yubzWbz7LoEnLErX+iY/5cagB4n/w/9yyIP/Uv+H/pXs5k77p7/cdwXAgAXmy/xgQ7f/1/Kzr/NHhHyk4X9r3h2lr0CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAi213/99ithf4eOTzxWLE+xExGUO5h0uV8nREfBARfxoZGknKM13uMwBwUvm/5bL9v65MfDq+v3U492okPUfEz35175eP5xqNtT8m9f/aq288y+pL3eg/AHCU3XU6Pbf9Iv9y+8n87nGe/fn7dyOi0Iq/sz0cO3vxB2MwPRdiKCLG/p3Lyi25ttzFSWw9jYjPHzT+XIynOZDWzqf74yex3z/X+Pk34ufTttY5+bf43Cn0BfrN82T+uXPQ/ZePy+n54Pu/kM5QJ5fNf8lHze+kc+Dr+Lvz30CH+e/ycWPc+P33W1ejb7c9jfjiYMRu7J22+Wc3fq5D/E+PGf8vX/rKJ53amr+OuBIHx2+PNdWork7VNzavLVXnFsuL5ZVSaXZmdvrW9ZulqTRHPdV5NfjH7asfdGpLxj/WIX7hiPF//Zjj/81/H/z4q4fE/+bXDoqfj48OiZ+sid84Zvy5sd8VOrUl8Rc6jP+on//VY8Z/8dfNt7YNBwC6p76xuTxXqZTXXBx5MRIRF6Abb1xcioh3fvvohRvOZ/niO+cVazj+r3c1m+8Uq9OMcRpZN+Ai2LvpI+JVtzsDAAAAAAAAAAAAAAAc6Dz+YqnbYwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKB3/S8AAP//4nnPvQ==")
+lchown(&(0x7f0000000140)='./file1\x00', 0xffffffffffffffff, 0xee00)
+r0 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000000)='/proc/sysvipc/shm\x00', 0x0, 0x0)
+close(r0)
+
+program crashed: BUG: unable to handle kernel paging request in dquot_add_inodes
+testing program (duration=37.449063934s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown-openat$procfs
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f00000005c0)='ext4\x00', &(0x7f0000000000)='./file2\x00', 0xa08006, &(0x7f0000000b00), 0x4, 0x4f3, &(0x7f0000000600)="$eJzs3U1vW1kZAODXzpeTyUwyZRaAgCnDQEFVncRto6oLKCuEUCVElyC1IXGjKHYcxU5pQhfpf0CiEitY8gNYd8WeDYIdm7JA4iMCNZVYGN3rm9RN4yQ0H87YzyNd3XvOsf2e0+ie07xW7gmgb12OiK2IGI6IBxExkdXnsiPutI7kdS+3n8zvbD+Zz0Wzee+fubQ9qYu29yTeyz6zEBE/+l7ET3Nvx61vbC7PVSrltaw81aiuTtU3Nq8tVecWy4vllVJpdmZ2+tb1m6VTG+vH1eHs6ssv/rD1rZ8n3RrPatrHcZpaQx/ai5MYjIgfnEWwLhjIxjPc7Y7wTvIRcSkiPknv/4kYSH+aAEAvazYnojnRXgYAel0+zYHl8sUsFzAe+Xyx2MrhfRRj+Uqt3rj6sLa+stDKlU3GUP7hUqU8neUKJ2Mol5Rn0uvX5dK+8vWI+DAifjEympaL87XKQjf/4wMAfey9fev/f0Za6z8A0OMK3e4AAHDurP8A0H+s/wDQfwqHlACA3mTFB4D+Y/0HgP5j/QeAvvLDu3eTo7mTPf964dHG+nLt0bWFcn25WF2fL87X1laLi7XaYvrMnupRn1ep1VZnbsT648lvr9YbU/WNzfvV2vpK4376XO/75aFzGRUAcJgPP37+51xEbN0eTY9o28vBWg29Ld/tDgBdM9DtDgBdY7cv6F8n+B1fegB6xAFb9L6hEBGj+yubzWbz7LoEnLErX+iY/5cagB4n/w/9yyIP/Uv+H/pXs5k77p7/cdwXAgAXmy/xgQ7f/1/Kzr/NHhHyk4X9r3h2lr0CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAi213/99ithf4eOTzxWLE+xExGUO5h0uV8nREfBARfxoZGknKM13uMwBwUvm/5bL9v65MfDq+v3U492okPUfEz35175eP5xqNtT8m9f/aq288y+pL3eg/AHCU3XU6Pbf9Iv9y+8n87nGe/fn7dyOi0Iq/sz0cO3vxB2MwPRdiKCLG/p3Lyi25ttzFSWw9jYjPHzT+XIynOZDWzqf74yex3z/X+Pk34ufTttY5+bf43Cn0BfrN82T+uXPQ/ZePy+n54Pu/kM5QJ5fNf8lHze+kc+Dr+Lvz30CH+e/ycWPc+P33W1ejb7c9jfjiYMRu7J22+Wc3fq5D/E+PGf8vX/rKJ53amr+OuBIHx2+PNdWork7VNzavLVXnFsuL5ZVSaXZmdvrW9ZulqTRHPdV5NfjH7asfdGpLxj/WIX7hiPF//Zjj/81/H/z4q4fE/+bXDoqfj48OiZ+sid84Zvy5sd8VOrUl8Rc6jP+on//VY8Z/8dfNt7YNBwC6p76xuTxXqZTXXBx5MRIRF6Abb1xcioh3fvvohRvOZ/niO+cVazj+r3c1m+8Uq9OMcRpZN+Ai2LvpI+JVtzsDAAAAAAAAAAAAAAAc6Dz+YqnbYwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKB3/S8AAP//4nnPvQ==")
+lchown(&(0x7f0000000140)='./file1\x00', 0xffffffffffffffff, 0xee00)
+openat$procfs(0xffffffffffffff9c, &(0x7f0000000000)='/proc/sysvipc/shm\x00', 0x0, 0x0)
+
+program crashed: BUG: unable to handle kernel paging request in dquot_add_inodes
+testing program (duration=37.449063934s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f00000005c0)='ext4\x00', &(0x7f0000000000)='./file2\x00', 0xa08006, &(0x7f0000000b00), 0x4, 0x4f3, &(0x7f0000000600)="$eJzs3U1vW1kZAODXzpeTyUwyZRaAgCnDQEFVncRto6oLKCuEUCVElyC1IXGjKHYcxU5pQhfpf0CiEitY8gNYd8WeDYIdm7JA4iMCNZVYGN3rm9RN4yQ0H87YzyNd3XvOsf2e0+ie07xW7gmgb12OiK2IGI6IBxExkdXnsiPutI7kdS+3n8zvbD+Zz0Wzee+fubQ9qYu29yTeyz6zEBE/+l7ET3Nvx61vbC7PVSrltaw81aiuTtU3Nq8tVecWy4vllVJpdmZ2+tb1m6VTG+vH1eHs6ssv/rD1rZ8n3RrPatrHcZpaQx/ai5MYjIgfnEWwLhjIxjPc7Y7wTvIRcSkiPknv/4kYSH+aAEAvazYnojnRXgYAel0+zYHl8sUsFzAe+Xyx2MrhfRRj+Uqt3rj6sLa+stDKlU3GUP7hUqU8neUKJ2Mol5Rn0uvX5dK+8vWI+DAifjEympaL87XKQjf/4wMAfey9fev/f0Za6z8A0OMK3e4AAHDurP8A0H+s/wDQfwqHlACA3mTFB4D+Y/0HgP5j/QeAvvLDu3eTo7mTPf964dHG+nLt0bWFcn25WF2fL87X1laLi7XaYvrMnupRn1ep1VZnbsT648lvr9YbU/WNzfvV2vpK4376XO/75aFzGRUAcJgPP37+51xEbN0eTY9o28vBWg29Ld/tDgBdM9DtDgBdY7cv6F8n+B1fegB6xAFb9L6hEBGj+yubzWbz7LoEnLErX+iY/5cagB4n/w/9yyIP/Uv+H/pXs5k77p7/cdwXAgAXmy/xgQ7f/1/Kzr/NHhHyk4X9r3h2lr0CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAi213/99ithf4eOTzxWLE+xExGUO5h0uV8nREfBARfxoZGknKM13uMwBwUvm/5bL9v65MfDq+v3U492okPUfEz35175eP5xqNtT8m9f/aq288y+pL3eg/AHCU3XU6Pbf9Iv9y+8n87nGe/fn7dyOi0Iq/sz0cO3vxB2MwPRdiKCLG/p3Lyi25ttzFSWw9jYjPHzT+XIynOZDWzqf74yex3z/X+Pk34ufTttY5+bf43Cn0BfrN82T+uXPQ/ZePy+n54Pu/kM5QJ5fNf8lHze+kc+Dr+Lvz30CH+e/ycWPc+P33W1ejb7c9jfjiYMRu7J22+Wc3fq5D/E+PGf8vX/rKJ53amr+OuBIHx2+PNdWork7VNzavLVXnFsuL5ZVSaXZmdvrW9ZulqTRHPdV5NfjH7asfdGpLxj/WIX7hiPF//Zjj/81/H/z4q4fE/+bXDoqfj48OiZ+sid84Zvy5sd8VOrUl8Rc6jP+on//VY8Z/8dfNt7YNBwC6p76xuTxXqZTXXBx5MRIRF6Abb1xcioh3fvvohRvOZ/niO+cVazj+r3c1m+8Uq9OMcRpZN+Ai2LvpI+JVtzsDAAAAAAAAAAAAAAAc6Dz+YqnbYwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKB3/S8AAP//4nnPvQ==")
+lchown(&(0x7f0000000140)='./file1\x00', 0xffffffffffffffff, 0xee00)
+
+program crashed: BUG: unable to handle kernel paging request in dquot_add_inodes
+testing program (duration=37.449063934s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f00000005c0)='ext4\x00', &(0x7f0000000000)='./file2\x00', 0xa08006, &(0x7f0000000b00), 0x4, 0x4f3, &(0x7f0000000600)="$eJzs3U1vW1kZAODXzpeTyUwyZRaAgCnDQEFVncRto6oLKCuEUCVElyC1IXGjKHYcxU5pQhfpf0CiEitY8gNYd8WeDYIdm7JA4iMCNZVYGN3rm9RN4yQ0H87YzyNd3XvOsf2e0+ie07xW7gmgb12OiK2IGI6IBxExkdXnsiPutI7kdS+3n8zvbD+Zz0Wzee+fubQ9qYu29yTeyz6zEBE/+l7ET3Nvx61vbC7PVSrltaw81aiuTtU3Nq8tVecWy4vllVJpdmZ2+tb1m6VTG+vH1eHs6ssv/rD1rZ8n3RrPatrHcZpaQx/ai5MYjIgfnEWwLhjIxjPc7Y7wTvIRcSkiPknv/4kYSH+aAEAvazYnojnRXgYAel0+zYHl8sUsFzAe+Xyx2MrhfRRj+Uqt3rj6sLa+stDKlU3GUP7hUqU8neUKJ2Mol5Rn0uvX5dK+8vWI+DAifjEympaL87XKQjf/4wMAfey9fev/f0Za6z8A0OMK3e4AAHDurP8A0H+s/wDQfwqHlACA3mTFB4D+Y/0HgP5j/QeAvvLDu3eTo7mTPf964dHG+nLt0bWFcn25WF2fL87X1laLi7XaYvrMnupRn1ep1VZnbsT648lvr9YbU/WNzfvV2vpK4376XO/75aFzGRUAcJgPP37+51xEbN0eTY9o28vBWg29Ld/tDgBdM9DtDgBdY7cv6F8n+B1fegB6xAFb9L6hEBGj+yubzWbz7LoEnLErX+iY/5cagB4n/w/9yyIP/Uv+H/pXs5k77p7/cdwXAgAXmy/xgQ7f/1/Kzr/NHhHyk4X9r3h2lr0CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAi213/99ithf4eOTzxWLE+xExGUO5h0uV8nREfBARfxoZGknKM13uMwBwUvm/5bL9v65MfDq+v3U492okPUfEz35175eP5xqNtT8m9f/aq288y+pL3eg/AHCU3XU6Pbf9Iv9y+8n87nGe/fn7dyOi0Iq/sz0cO3vxB2MwPRdiKCLG/p3Lyi25ttzFSWw9jYjPHzT+XIynOZDWzqf74yex3z/X+Pk34ufTttY5+bf43Cn0BfrN82T+uXPQ/ZePy+n54Pu/kM5QJ5fNf8lHze+kc+Dr+Lvz30CH+e/ycWPc+P33W1ejb7c9jfjiYMRu7J22+Wc3fq5D/E+PGf8vX/rKJ53amr+OuBIHx2+PNdWork7VNzavLVXnFsuL5ZVSaXZmdvrW9ZulqTRHPdV5NfjH7asfdGpLxj/WIX7hiPF//Zjj/81/H/z4q4fE/+bXDoqfj48OiZ+sid84Zvy5sd8VOrUl8Rc6jP+on//VY8Z/8dfNt7YNBwC6p76xuTxXqZTXXBx5MRIRF6Abb1xcioh3fvvohRvOZ/niO+cVazj+r3c1m+8Uq9OMcRpZN+Ai2LvpI+JVtzsDAAAAAAAAAAAAAAAc6Dz+YqnbYwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKB3/S8AAP//4nnPvQ==")
+
+program did not crash
+testing program (duration=37.449063934s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): lchown
+detailed listing:
+executing program 0:
+lchown(&(0x7f0000000140)='./file1\x00', 0xffffffffffffffff, 0xee00)
+
+program did not crash
+testing program (duration=37.449063934s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f00000005c0)='ext4\x00', &(0x7f0000000000)='./file2\x00', 0xa08006, &(0x7f0000000b00), 0x4, 0x4f3, &(0x7f0000000600)="$eJzs3U1vW1kZAODXzpeTyUwyZRaAgCnDQEFVncRto6oLKCuEUCVElyC1IXGjKHYcxU5pQhfpf0CiEitY8gNYd8WeDYIdm7JA4iMCNZVYGN3rm9RN4yQ0H87YzyNd3XvOsf2e0+ie07xW7gmgb12OiK2IGI6IBxExkdXnsiPutI7kdS+3n8zvbD+Zz0Wzee+fubQ9qYu29yTeyz6zEBE/+l7ET3Nvx61vbC7PVSrltaw81aiuTtU3Nq8tVecWy4vllVJpdmZ2+tb1m6VTG+vH1eHs6ssv/rD1rZ8n3RrPatrHcZpaQx/ai5MYjIgfnEWwLhjIxjPc7Y7wTvIRcSkiPknv/4kYSH+aAEAvazYnojnRXgYAel0+zYHl8sUsFzAe+Xyx2MrhfRRj+Uqt3rj6sLa+stDKlU3GUP7hUqU8neUKJ2Mol5Rn0uvX5dK+8vWI+DAifjEympaL87XKQjf/4wMAfey9fev/f0Za6z8A0OMK3e4AAHDurP8A0H+s/wDQfwqHlACA3mTFB4D+Y/0HgP5j/QeAvvLDu3eTo7mTPf964dHG+nLt0bWFcn25WF2fL87X1laLi7XaYvrMnupRn1ep1VZnbsT648lvr9YbU/WNzfvV2vpK4376XO/75aFzGRUAcJgPP37+51xEbN0eTY9o28vBWg29Ld/tDgBdM9DtDgBdY7cv6F8n+B1fegB6xAFb9L6hEBGj+yubzWbz7LoEnLErX+iY/5cagB4n/w/9yyIP/Uv+H/pXs5k77p7/cdwXAgAXmy/xgQ7f/1/Kzr/NHhHyk4X9r3h2lr0CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAi213/99ithf4eOTzxWLE+xExGUO5h0uV8nREfBARfxoZGknKM13uMwBwUvm/5bL9v65MfDq+v3U492okPUfEz35175eP5xqNtT8m9f/aq288y+pL3eg/AHCU3XU6Pbf9Iv9y+8n87nGe/fn7dyOi0Iq/sz0cO3vxB2MwPRdiKCLG/p3Lyi25ttzFSWw9jYjPHzT+XIynOZDWzqf74yex3z/X+Pk34ufTttY5+bf43Cn0BfrN82T+uXPQ/ZePy+n54Pu/kM5QJ5fNf8lHze+kc+Dr+Lvz30CH+e/ycWPc+P33W1ejb7c9jfjiYMRu7J22+Wc3fq5D/E+PGf8vX/rKJ53amr+OuBIHx2+PNdWork7VNzavLVXnFsuL5ZVSaXZmdvrW9ZulqTRHPdV5NfjH7asfdGpLxj/WIX7hiPF//Zjj/81/H/z4q4fE/+bXDoqfj48OiZ+sid84Zvy5sd8VOrUl8Rc6jP+on//VY8Z/8dfNt7YNBwC6p76xuTxXqZTXXBx5MRIRF6Abb1xcioh3fvvohRvOZ/niO+cVazj+r3c1m+8Uq9OMcRpZN+Ai2LvpI+JVtzsDAAAAAAAAAAAAAAAc6Dz+YqnbYwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKB3/S8AAP//4nnPvQ==")
+lchown(0x0, 0xffffffffffffffff, 0xee00)
+
+program did not crash
+extracting C reproducer
+testing compiled C program (duration=37.449063934s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown
+program crashed: BUG: unable to handle kernel paging request in dquot_add_inodes
+simplifying C reproducer
+testing compiled C program (duration=37.449063934s, {Threaded:false Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown
+program crashed: BUG: unable to handle kernel paging request in dquot_add_inodes
+testing compiled C program (duration=37.449063934s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:false Cgroups:false BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown
+program crashed: BUG: unable to handle kernel paging request in dquot_add_inodes
+testing compiled C program (duration=37.449063934s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox: SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:false UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown
+program crashed: BUG: unable to handle kernel paging request in dquot_add_inodes
+testing compiled C program (duration=37.449063934s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox: SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:false UseTmpDir:false HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown
+program crashed: BUG: unable to handle kernel paging request in dquot_add_inodes
+testing compiled C program (duration=37.449063934s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox: SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:false UseTmpDir:false HandleSegv:false Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown
+program crashed: BUG: unable to handle kernel paging request in dquot_add_inodes
+testing compiled C program (duration=37.449063934s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox: SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:false Swap:false UseTmpDir:false HandleSegv:false Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-lchown
+program crashed: BUG: unable to handle kernel paging request in dquot_add_inodes
+reproducing took 11m21.547940785s
+repro crashed as (corrupted=false):
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /file2 supports timestamps until 2038 (0x7fffffff)
+Quota error (device loop0): qtree_write_dquot: Error -641722073 occurred while creating quota
+BUG: unable to handle page fault for address: fffffbfffb380341
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 80190067 P4D 80190067 PUD 6ddb4067 PMD 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 236 Comm: syz-executor336 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:__lock_acquire+0xde7/0x5ca0 kernel/locking/lockdep.c:4702
+Code: 74 05 41 bf 01 00 00 00 0f 86 8e 00 00 00 89 05 5f be 74 05 e9 83 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 d1 2e 00 00 49 81 3f c0 91 74 86 0f 84 e6 f2 ff
+RSP: 0018:ffff88800aaf7590 EFLAGS: 00010017
+RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 1ffffffffb380341 RSI: 0000000000000000 RDI: ffffffffd9c01a0f
+RBP: ffff888010d0ce00 R08: 0000000000000001 R09: 0000000000000000
+R10: fffffbfff0bacd81 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: ffffffffd9c01a0f
+FS:  0000555556ff5380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfffb380341 CR3: 000000000d1bc000 CR4: 0000000000350ef0
+Call Trace:
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ dquot_add_inodes+0x34/0xb00 fs/quota/dquot.c:1272
+ __dquot_transfer+0xe7b/0x1a60 fs/quota/dquot.c:2001
+ dquot_transfer+0x2d9/0x4e0 fs/quota/dquot.c:2107
+ ext4_setattr+0x603/0x20c0 fs/ext4/inode.c:5363
+ notify_change+0xb9e/0x1090 fs/attr.c:336
+ chown_common+0x37e/0x570 fs/open.c:674
+ do_fchownat+0x126/0x1e0 fs/open.c:704
+ __do_sys_lchown fs/open.c:729 [inline]
+ __se_sys_lchown fs/open.c:727 [inline]
+ __x64_sys_lchown+0x7a/0xc0 fs/open.c:727
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f9dc5deca0d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc8f4c5518 EFLAGS: 00000246 ORIG_RAX: 000000000000005e
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f9dc5deca0d
+RDX: 000000000000ee00 RSI: 00000000ffffffff RDI: 0000000020000140
+RBP: 00007ffc8f4c55d0 R08: 00000000000004ed R09: 0000000000000000
+R10: 00007ffc8f4c53d0 R11: 0000000000000246 R12: 00007ffc8f4c5648
+R13: 00007ffc8f4c5658 R14: 00007f9dc5e7ad10 R15: 0000000000000001
+Modules linked in:
+CR2: fffffbfffb380341
+---[ end trace 0227d51f0a57ec97 ]---
+RIP: 0010:__lock_acquire+0xde7/0x5ca0 kernel/locking/lockdep.c:4702
+Code: 74 05 41 bf 01 00 00 00 0f 86 8e 00 00 00 89 05 5f be 74 05 e9 83 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 d1 2e 00 00 49 81 3f c0 91 74 86 0f 84 e6 f2 ff
+RSP: 0018:ffff88800aaf7590 EFLAGS: 00010017
+RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 1ffffffffb380341 RSI: 0000000000000000 RDI: ffffffffd9c01a0f
+RBP: ffff888010d0ce00 R08: 0000000000000001 R09: 0000000000000000
+R10: fffffbfff0bacd81 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: ffffffffd9c01a0f
+FS:  0000555556ff5380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfffb380341 CR3: 000000000d1bc000 CR4: 0000000000350ef0
+note: syz-executor336[236] exited with preempt_count 3
+BUG: sleeping function called from invalid context at include/linux/percpu-rwsem.h:49
+in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 236, name: syz-executor336
+INFO: lockdep is turned off.
+irq event stamp: 13343
+hardirqs last  enabled at (13343): [<ffffffff81864465>] lookup_bh_lru fs/buffer.c:1312 [inline]
+hardirqs last  enabled at (13343): [<ffffffff81864465>] __find_get_block+0x225/0xcd0 fs/buffer.c:1324
+hardirqs last disabled at (13342): [<ffffffff818645e8>] lookup_bh_lru fs/buffer.c:1293 [inline]
+hardirqs last disabled at (13342): [<ffffffff818645e8>] __find_get_block+0x3a8/0xcd0 fs/buffer.c:1324
+softirqs last  enabled at (13330): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (13321): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+CPU: 0 PID: 236 Comm: syz-executor336 Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep.cold+0x65/0x79 kernel/sched/core.c:7304
+ percpu_down_read include/linux/percpu-rwsem.h:49 [inline]
+ cgroup_threadgroup_change_begin include/linux/cgroup-defs.h:733 [inline]
+ exit_signals+0x74/0x9e0 kernel/signal.c:2843
+ do_exit+0x237/0x28e0 kernel/exit.c:765
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7f9dc5deca0d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc8f4c5518 EFLAGS: 00000246 ORIG_RAX: 000000000000005e
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f9dc5deca0d
+RDX: 000000000000ee00 RSI: 00000000ffffffff RDI: 0000000020000140
+RBP: 00007ffc8f4c55d0 R08: 00000000000004ed R09: 0000000000000000
+R10: 00007ffc8f4c53d0 R11: 0000000000000246 R12: 00007ffc8f4c5648
+R13: 00007ffc8f4c5658 R14: 00007f9dc5e7ad10 R15: 0000000000000001
+----------------
+Code disassembly (best guess):
+   0:	74 05                	je     0x7
+   2:	41 bf 01 00 00 00    	mov    $0x1,%r15d
+   8:	0f 86 8e 00 00 00    	jbe    0x9c
+   e:	89 05 5f be 74 05    	mov    %eax,0x574be5f(%rip)        # 0x574be73
+  14:	e9 83 00 00 00       	jmp    0x9c
+  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  20:	fc ff df
+  23:	4c 89 fa             	mov    %r15,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 d1 2e 00 00    	jne    0x2f05
+  34:	49 81 3f c0 91 74 86 	cmpq   $0xffffffff867491c0,(%r15)
+  3b:	0f                   	.byte 0xf
+  3c:	84 e6                	test   %ah,%dh
+  3e:	f2                   	repnz
+  3f:	ff                   	.byte 0xff
+
+final repro crashed as (corrupted=false):
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /file2 supports timestamps until 2038 (0x7fffffff)
+Quota error (device loop0): qtree_write_dquot: Error -641722073 occurred while creating quota
+BUG: unable to handle page fault for address: fffffbfffb380341
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 80190067 P4D 80190067 PUD 6ddb4067 PMD 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 236 Comm: syz-executor336 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:__lock_acquire+0xde7/0x5ca0 kernel/locking/lockdep.c:4702
+Code: 74 05 41 bf 01 00 00 00 0f 86 8e 00 00 00 89 05 5f be 74 05 e9 83 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 d1 2e 00 00 49 81 3f c0 91 74 86 0f 84 e6 f2 ff
+RSP: 0018:ffff88800aaf7590 EFLAGS: 00010017
+RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 1ffffffffb380341 RSI: 0000000000000000 RDI: ffffffffd9c01a0f
+RBP: ffff888010d0ce00 R08: 0000000000000001 R09: 0000000000000000
+R10: fffffbfff0bacd81 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: ffffffffd9c01a0f
+FS:  0000555556ff5380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfffb380341 CR3: 000000000d1bc000 CR4: 0000000000350ef0
+Call Trace:
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ dquot_add_inodes+0x34/0xb00 fs/quota/dquot.c:1272
+ __dquot_transfer+0xe7b/0x1a60 fs/quota/dquot.c:2001
+ dquot_transfer+0x2d9/0x4e0 fs/quota/dquot.c:2107
+ ext4_setattr+0x603/0x20c0 fs/ext4/inode.c:5363
+ notify_change+0xb9e/0x1090 fs/attr.c:336
+ chown_common+0x37e/0x570 fs/open.c:674
+ do_fchownat+0x126/0x1e0 fs/open.c:704
+ __do_sys_lchown fs/open.c:729 [inline]
+ __se_sys_lchown fs/open.c:727 [inline]
+ __x64_sys_lchown+0x7a/0xc0 fs/open.c:727
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f9dc5deca0d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc8f4c5518 EFLAGS: 00000246 ORIG_RAX: 000000000000005e
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f9dc5deca0d
+RDX: 000000000000ee00 RSI: 00000000ffffffff RDI: 0000000020000140
+RBP: 00007ffc8f4c55d0 R08: 00000000000004ed R09: 0000000000000000
+R10: 00007ffc8f4c53d0 R11: 0000000000000246 R12: 00007ffc8f4c5648
+R13: 00007ffc8f4c5658 R14: 00007f9dc5e7ad10 R15: 0000000000000001
+Modules linked in:
+CR2: fffffbfffb380341
+---[ end trace 0227d51f0a57ec97 ]---
+RIP: 0010:__lock_acquire+0xde7/0x5ca0 kernel/locking/lockdep.c:4702
+Code: 74 05 41 bf 01 00 00 00 0f 86 8e 00 00 00 89 05 5f be 74 05 e9 83 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 d1 2e 00 00 49 81 3f c0 91 74 86 0f 84 e6 f2 ff
+RSP: 0018:ffff88800aaf7590 EFLAGS: 00010017
+RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 1ffffffffb380341 RSI: 0000000000000000 RDI: ffffffffd9c01a0f
+RBP: ffff888010d0ce00 R08: 0000000000000001 R09: 0000000000000000
+R10: fffffbfff0bacd81 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: ffffffffd9c01a0f
+FS:  0000555556ff5380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfffb380341 CR3: 000000000d1bc000 CR4: 0000000000350ef0
+note: syz-executor336[236] exited with preempt_count 3
+BUG: sleeping function called from invalid context at include/linux/percpu-rwsem.h:49
+in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 236, name: syz-executor336
+INFO: lockdep is turned off.
+irq event stamp: 13343
+hardirqs last  enabled at (13343): [<ffffffff81864465>] lookup_bh_lru fs/buffer.c:1312 [inline]
+hardirqs last  enabled at (13343): [<ffffffff81864465>] __find_get_block+0x225/0xcd0 fs/buffer.c:1324
+hardirqs last disabled at (13342): [<ffffffff818645e8>] lookup_bh_lru fs/buffer.c:1293 [inline]
+hardirqs last disabled at (13342): [<ffffffff818645e8>] __find_get_block+0x3a8/0xcd0 fs/buffer.c:1324
+softirqs last  enabled at (13330): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (13321): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+CPU: 0 PID: 236 Comm: syz-executor336 Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep.cold+0x65/0x79 kernel/sched/core.c:7304
+ percpu_down_read include/linux/percpu-rwsem.h:49 [inline]
+ cgroup_threadgroup_change_begin include/linux/cgroup-defs.h:733 [inline]
+ exit_signals+0x74/0x9e0 kernel/signal.c:2843
+ do_exit+0x237/0x28e0 kernel/exit.c:765
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7f9dc5deca0d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc8f4c5518 EFLAGS: 00000246 ORIG_RAX: 000000000000005e
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f9dc5deca0d
+RDX: 000000000000ee00 RSI: 00000000ffffffff RDI: 0000000020000140
+RBP: 00007ffc8f4c55d0 R08: 00000000000004ed R09: 0000000000000000
+R10: 00007ffc8f4c53d0 R11: 0000000000000246 R12: 00007ffc8f4c5648
+R13: 00007ffc8f4c5658 R14: 00007f9dc5e7ad10 R15: 0000000000000001
+----------------
+Code disassembly (best guess):
+   0:	74 05                	je     0x7
+   2:	41 bf 01 00 00 00    	mov    $0x1,%r15d
+   8:	0f 86 8e 00 00 00    	jbe    0x9c
+   e:	89 05 5f be 74 05    	mov    %eax,0x574be5f(%rip)        # 0x574be73
+  14:	e9 83 00 00 00       	jmp    0x9c
+  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  20:	fc ff df
+  23:	4c 89 fa             	mov    %r15,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 d1 2e 00 00    	jne    0x2f05
+  34:	49 81 3f c0 91 74 86 	cmpq   $0xffffffff867491c0,(%r15)
+  3b:	0f                   	.byte 0xf
+  3c:	84 e6                	test   %ah,%dh
+  3e:	f2                   	repnz
+  3f:	ff                   	.byte 0xff
+

@@ -1,0 +1,166 @@
+EXT4-fs (loop2): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /86/file0 supports timestamps until 2038 (0x7fffffff)
+======================================================
+WARNING: possible circular locking dependency detected
+5.10.0 #1 Not tainted
+------------------------------------------------------
+syz.2.584/9700 is trying to acquire lock:
+ffff88801a425b10 (&ei->i_data_sem/1){+.+.}-{3:3}, at: ext4_double_down_write_data_sem fs/ext4/move_extent.c:55 [inline]
+ffff88801a425b10 (&ei->i_data_sem/1){+.+.}-{3:3}, at: ext4_double_down_write_data_sem fs/ext4/move_extent.c:51 [inline]
+ffff88801a425b10 (&ei->i_data_sem/1){+.+.}-{3:3}, at: ext4_move_extents+0x390/0x3920 fs/ext4/move_extent.c:610
+
+but task is already holding lock:
+ffff88801a423d88 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_double_down_write_data_sem fs/ext4/move_extent.c:54 [inline]
+ffff88801a423d88 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_double_down_write_data_sem fs/ext4/move_extent.c:51 [inline]
+ffff88801a423d88 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_move_extents+0x383/0x3920 fs/ext4/move_extent.c:610
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #3 (&ei->i_data_sem/2){++++}-{3:3}:
+       down_read+0x96/0x450 kernel/locking/rwsem.c:1492
+       ext4_map_blocks+0x381/0x1740 fs/ext4/inode.c:551
+       ext4_getblk+0x144/0x6a0 fs/ext4/inode.c:838
+       ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+       ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+       write_blk+0x12f/0x220 fs/quota/quota_tree.c:73
+       get_free_dqblk+0xff/0x2d0 fs/quota/quota_tree.c:102
+       do_insert_tree+0x57b/0xf80 fs/quota/quota_tree.c:309
+       do_insert_tree+0xdb8/0xf80 fs/quota/quota_tree.c:340
+       dq_insert_tree fs/quota/quota_tree.c:366 [inline]
+       qtree_write_dquot+0x3bf/0x580 fs/quota/quota_tree.c:385
+       v2_write_dquot+0x11c/0x250 fs/quota/quota_v2.c:334
+       dquot_acquire+0x2cf/0x590 fs/quota/dquot.c:443
+       ext4_acquire_dquot+0x25e/0x3d0 fs/ext4/super.c:6186
+       dqget+0x681/0xfb0 fs/quota/dquot.c:901
+       __dquot_initialize+0x59d/0xd60 fs/quota/dquot.c:1479
+       ext4_unlink+0x113/0x8f0 fs/ext4/namei.c:3260
+       vfs_unlink+0x2d0/0x610 fs/namei.c:3833
+       do_unlinkat+0x39b/0x650 fs/namei.c:3897
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #2 (&s->s_dquot.dqio_sem){++++}-{3:3}:
+       down_read+0x96/0x450 kernel/locking/rwsem.c:1492
+       v2_read_dquot+0x49/0x120 fs/quota/quota_v2.c:308
+       dquot_acquire+0x133/0x590 fs/quota/dquot.c:434
+       ext4_acquire_dquot+0x25e/0x3d0 fs/ext4/super.c:6186
+       dqget+0x681/0xfb0 fs/quota/dquot.c:901
+       __dquot_initialize+0x59d/0xd60 fs/quota/dquot.c:1479
+       ext4_create+0x8b/0x4d0 fs/ext4/namei.c:2612
+       lookup_open+0xf52/0x1330 fs/namei.c:3104
+       open_last_lookups fs/namei.c:3178 [inline]
+       path_openat+0x93f/0x26f0 fs/namei.c:3366
+       do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+       do_sys_openat2+0x16d/0x420 fs/open.c:1168
+       do_sys_open fs/open.c:1184 [inline]
+       __do_sys_openat fs/open.c:1200 [inline]
+       __se_sys_openat fs/open.c:1195 [inline]
+       __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #1 (&dquot->dq_lock){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+       __mutex_lock+0x13b/0x10d0 kernel/locking/mutex.c:1103
+       dquot_commit+0x4d/0x380 fs/quota/dquot.c:476
+       ext4_write_dquot+0x24e/0x310 fs/ext4/super.c:6170
+       ext4_mark_dquot_dirty+0x111/0x1a0 fs/ext4/super.c:6221
+       mark_dquot_dirty fs/quota/dquot.c:347 [inline]
+       mark_all_dquot_dirty fs/quota/dquot.c:385 [inline]
+       __dquot_free_space+0x6af/0xa20 fs/quota/dquot.c:1894
+       dquot_free_space_nodirty include/linux/quotaops.h:376 [inline]
+       dquot_free_space include/linux/quotaops.h:381 [inline]
+       swap_inode_boot_loader fs/ext4/ioctl.c:235 [inline]
+       __ext4_ioctl+0x1d69/0x41e0 fs/ext4/ioctl.c:1054
+       ext4_ioctl+0x46/0x90 fs/ext4/ioctl.c:1319
+       vfs_ioctl fs/ioctl.c:48 [inline]
+       __do_sys_ioctl fs/ioctl.c:753 [inline]
+       __se_sys_ioctl fs/ioctl.c:739 [inline]
+       __x64_sys_ioctl+0x196/0x210 fs/ioctl.c:739
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #0 (&ei->i_data_sem/1){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:2868 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+       validate_chain kernel/locking/lockdep.c:3608 [inline]
+       __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+       lock_acquire kernel/locking/lockdep.c:5437 [inline]
+       lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+       down_write_nested+0x91/0x150 kernel/locking/rwsem.c:1627
+       ext4_double_down_write_data_sem fs/ext4/move_extent.c:55 [inline]
+       ext4_double_down_write_data_sem fs/ext4/move_extent.c:51 [inline]
+       ext4_move_extents+0x390/0x3920 fs/ext4/move_extent.c:610
+       __ext4_ioctl+0x307e/0x41e0 fs/ext4/ioctl.c:988
+       ext4_ioctl+0x46/0x90 fs/ext4/ioctl.c:1319
+       vfs_ioctl fs/ioctl.c:48 [inline]
+       __do_sys_ioctl fs/ioctl.c:753 [inline]
+       __se_sys_ioctl fs/ioctl.c:739 [inline]
+       __x64_sys_ioctl+0x196/0x210 fs/ioctl.c:739
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+other info that might help us debug this:
+
+Chain exists of:
+  &ei->i_data_sem/1 --> &s->s_dquot.dqio_sem --> &ei->i_data_sem/2
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ei->i_data_sem/2);
+                               lock(&s->s_dquot.dqio_sem);
+                               lock(&ei->i_data_sem/2);
+  lock(&ei->i_data_sem/1);
+
+ *** DEADLOCK ***
+
+4 locks held by syz.2.584/9700:
+ #0: ffff8880281a0438 (sb_writers#3){.+.+}-{0:0}, at: __ext4_ioctl+0x2876/0x41e0 fs/ext4/ioctl.c:984
+ #1: ffff88801a423f98 (&sb->s_type->i_mutex_key#14){++++}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ #1: ffff88801a423f98 (&sb->s_type->i_mutex_key#14){++++}-{3:3}, at: lock_two_nondirectories+0xec/0x110 fs/inode.c:1034
+ #2: ffff88801a425d20 (&sb->s_type->i_mutex_key#14/4){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+ #2: ffff88801a425d20 (&sb->s_type->i_mutex_key#14/4){+.+.}-{3:3}, at: lock_two_nondirectories+0xd1/0x110 fs/inode.c:1036
+ #3: ffff88801a423d88 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_double_down_write_data_sem fs/ext4/move_extent.c:54 [inline]
+ #3: ffff88801a423d88 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_double_down_write_data_sem fs/ext4/move_extent.c:51 [inline]
+ #3: ffff88801a423d88 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_move_extents+0x383/0x3920 fs/ext4/move_extent.c:610
+
+stack backtrace:
+CPU: 0 PID: 9700 Comm: syz.2.584 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
+ check_prev_add kernel/locking/lockdep.c:2868 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+ validate_chain kernel/locking/lockdep.c:3608 [inline]
+ __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ down_write_nested+0x91/0x150 kernel/locking/rwsem.c:1627
+ ext4_double_down_write_data_sem fs/ext4/move_extent.c:55 [inline]
+ ext4_double_down_write_data_sem fs/ext4/move_extent.c:51 [inline]
+ ext4_move_extents+0x390/0x3920 fs/ext4/move_extent.c:610
+ __ext4_ioctl+0x307e/0x41e0 fs/ext4/ioctl.c:988
+ ext4_ioctl+0x46/0x90 fs/ext4/ioctl.c:1319
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x196/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f7dc3e41ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f7dc2abb038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f7dc3ff9f80 RCX: 00007f7dc3e41ef9
+RDX: 00000000200000c0 RSI: 00000000c028660f RDI: 0000000000000006
+RBP: 00007f7dc3eb4b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f7dc3ff9f80 R15: 00007ffd018ad5c8
+netlink: 'syz.1.585': attribute type 4 has an invalid length.
+netlink: 17 bytes leftover after parsing attributes in process `syz.1.585'.

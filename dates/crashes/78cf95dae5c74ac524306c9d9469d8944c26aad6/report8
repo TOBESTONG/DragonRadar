@@ -1,0 +1,139 @@
+EXT4-fs error (device loop2): ext4_orphan_get:1411: comm syz.2.276: bad orphan inode 268369920
+EXT4-fs (loop2): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /0/file0 supports timestamps until 2038 (0x7fffffff)
+INFO: task syz.0.96:3046 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.0.96        state:D stack:25336 pid: 3046 ppid:   230 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ bit_wait_io+0x12/0xa0 kernel/sched/wait_bit.c:209
+ __wait_on_bit_lock+0x131/0x1c0 kernel/sched/wait_bit.c:90
+ out_of_line_wait_on_bit_lock+0xd5/0x110 kernel/sched/wait_bit.c:117
+ wait_on_bit_lock_io include/linux/wait_bit.h:208 [inline]
+ __lock_buffer fs/buffer.c:69 [inline]
+ lock_buffer include/linux/buffer_head.h:366 [inline]
+ write_dirty_buffer+0x15e/0x170 fs/buffer.c:3121
+ fsync_buffers_list fs/buffer.c:730 [inline]
+ sync_mapping_buffers+0x3ed/0xcf0 fs/buffer.c:548
+ ext4_sync_parent fs/ext4/fsync.c:70 [inline]
+ ext4_fsync_nojournal fs/ext4/fsync.c:97 [inline]
+ ext4_sync_file+0xc74/0xf40 fs/ext4/fsync.c:170
+ vfs_fsync_range+0x13d/0x230 fs/sync.c:200
+ generic_write_sync include/linux/fs.h:2739 [inline]
+ ext4_buffered_write_iter+0x36a/0x4d0 fs/ext4/file.c:278
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ call_write_iter include/linux/fs.h:1903 [inline]
+ new_sync_write+0x42c/0x670 fs/read_write.c:518
+ vfs_write+0x81b/0xac0 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f0fbf0abef9
+RSP: 002b:00007f0fbdd25038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f0fbf263f80 RCX: 00007f0fbf0abef9
+RDX: 000000006db6e571 RSI: 0000000020000400 RDI: 0000000000000005
+RBP: 00007f0fbf11eb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f0fbf263f80 R15: 00007ffcc7559038
+INFO: task syz.0.96:3079 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.0.96        state:D stack:27368 pid: 3079 ppid:   230 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ bit_wait_io+0x12/0xa0 kernel/sched/wait_bit.c:209
+ __wait_on_bit_lock+0x131/0x1c0 kernel/sched/wait_bit.c:90
+ out_of_line_wait_on_bit_lock+0xd5/0x110 kernel/sched/wait_bit.c:117
+ wait_on_bit_lock_io include/linux/wait_bit.h:208 [inline]
+ __lock_buffer fs/buffer.c:69 [inline]
+ lock_buffer include/linux/buffer_head.h:366 [inline]
+ __sync_dirty_buffer+0x34f/0x3e0 fs/buffer.c:3142
+ __ext4_handle_dirty_metadata+0x28b/0x9b0 fs/ext4/ext4_jbd2.c:364
+ ext4_finish_convert_inline_dir fs/ext4/inline.c:1164 [inline]
+ ext4_convert_inline_data_nolock+0x9b5/0xd60 fs/ext4/inline.c:1240
+ ext4_try_add_inline_entry+0x38f/0x650 fs/ext4/inline.c:1313
+ ext4_add_entry+0x34e/0xc60 fs/ext4/namei.c:2209
+ ext4_mkdir+0x41c/0xb10 fs/ext4/namei.c:2814
+ vfs_mkdir+0x45c/0x710 fs/namei.c:3650
+ do_mkdirat+0x145/0x2a0 fs/namei.c:3673
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f0fbf0abef9
+RSP: 002b:00007f0fbdd04038 EFLAGS: 00000246 ORIG_RAX: 0000000000000053
+RAX: ffffffffffffffda RBX: 00007f0fbf264058 RCX: 00007f0fbf0abef9
+RDX: 0000000000000000 RSI: 0000000000000188 RDI: 0000000020000040
+RBP: 00007f0fbf11eb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f0fbf264058 R15: 00007ffcc7559038
+INFO: task syz.0.96:3092 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.0.96        state:D stack:29048 pid: 3092 ppid:   230 flags:0x00000004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ rwsem_down_read_slowpath+0x2ad/0xb90 kernel/locking/rwsem.c:1099
+ __down_read kernel/locking/rwsem.c:1341 [inline]
+ down_read+0x1ec/0x450 kernel/locking/rwsem.c:1494
+ inode_lock_shared include/linux/fs.h:784 [inline]
+ lookup_slow fs/namei.c:1560 [inline]
+ walk_component+0x40b/0x6a0 fs/namei.c:1861
+ link_path_walk+0x6c4/0xc90 fs/namei.c:2184
+ path_openat+0x1fa/0x26f0 fs/namei.c:3365
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f0fbf0abef9
+RSP: 002b:00007f0fbdce3038 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00007f0fbf264130 RCX: 00007f0fbf0abef9
+RDX: 0000000000000000 RSI: 0000000020000640 RDI: ffffffffffffff9c
+RBP: 00007f0fbf11eb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000001 R14: 00007f0fbf264130 R15: 00007ffcc7559038
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/24:
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x28c kernel/locking/lockdep.c:6254
+3 locks held by kworker/u4:2/64:
+ #0: ffff88800838d938 ((wq_completion)writeback){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88800838d938 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff88800838d938 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88800838d938 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff88800838d938 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff88800838d938 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88800bc87da8 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+ #2: ffff8880081360e0 (&type->s_umount_key#30){++++}-{3:3}, at: trylock_super+0x1d/0x100 fs/super.c:418
+2 locks held by in:imklog/154:
+ #0: ffff88800c99d4f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+ #1: ffffffff850d2178 (logbuf_lock){-.-.}-{2:2}, at: rq_lock kernel/sched/sched.h:1292 [inline]
+ #1: ffffffff850d2178 (logbuf_lock){-.-.}-{2:2}, at: ttwu_queue kernel/sched/core.c:2699 [inline]
+ #1: ffffffff850d2178 (logbuf_lock){-.-.}-{2:2}, at: try_to_wake_up+0x58a/0x1460 kernel/sched/core.c:2979
+2 locks held by syz.0.96/3046:
+ #0: ffff88800b1ef4f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+ #1: ffff88800fc52438 (sb_writers#3){.+.+}-{0:0}, at: ksys_write+0x12d/0x250 fs/read_write.c:658
+3 locks held by syz.0.96/3079:
+ #0: ffff88800fc52438 (sb_writers#3){.+.+}-{0:0}, at: filename_create+0x104/0x490 fs/namei.c:3462
+ #1: ffff888013bb8488 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+ #1: ffff888013bb8488 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: filename_create+0x15a/0x490 fs/namei.c:3467
+ #2: ffff888013bb80c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ #2: ffff888013bb80c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_add_inline_entry+0x108/0x650 fs/ext4/inline.c:1271
+1 lock held by syz.0.96/3092:
+ #0: ffff888013bb8488 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: inode_lock_shared include/linux/fs.h:784 [inline]
+ #0: ffff888013bb8488 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: lookup_slow fs/namei.c:1560 [inline]
+ #0: ffff888013bb8488 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: walk_component+0x40b/0x6a0 fs/namei.c:1861
+
+=============================================
+

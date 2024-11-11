@@ -1,0 +1,71 @@
+ext4 filesystem being mounted at /5/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs warning (device loop0): ext4_resize_begin:62: won't resize using backup superblock at 0
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4.h:3196!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 3731 Comm: syz.0.70 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff88800a066b80 EFLAGS: 00010216
+EXT4-fs (loop2): Cannot turn on journaled quota: type 0: error -13
+RAX: 0000000000013be3 RBX: 0000000000000001 RCX: ffffc900051d2000
+RDX: 0000000000040000 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff888017e90000 R08: 0000000000000000 R09: ffff888013f5ec9f
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff888017e96000
+R13: ffff888017e96650 R14: 0000000000000001 R15: 0000000000000001
+FS:  00007f13aa2146c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+EXT4-fs error (device loop2): ext4_free_branches:1008: inode #13: comm syz.2.65: invalid indirect mapped block 1936876908 (level 1)
+CR2: 00007f6b935b96f4 CR3: 0000000013088000 CR4: 0000000000350ef0
+Call Trace:
+ ext4_mb_find_by_goal+0xf4/0x1030 fs/ext4/mballoc.c:1884
+EXT4-fs (loop2): Remounting filesystem read-only
+EXT4-fs error (device loop2): ext4_validate_block_bitmap:398: comm syz.2.65: bg 0: block 3: invalid block bitmap
+ ext4_mb_regular_allocator+0x235/0x1ee0 fs/ext4/mballoc.c:2320
+ ext4_mb_new_blocks+0x2322/0x4b60 fs/ext4/mballoc.c:4997
+EXT4-fs error (device loop2) in ext4_free_blocks:5518: Corrupt filesystem
+ ext4_ext_map_blocks+0x1f8e/0x5d50 fs/ext4/extents.c:4238
+EXT4-fs (loop2): 1 truncate cleaned up
+EXT4-fs (loop2): mounted filesystem without journal. Opts: noblock_validity,noinit_itable,errors=remount-ro,grpjquota=,jqfmt=vfsv0,usrjquota=..
+ ext4_map_blocks+0x700/0x1740 fs/ext4/inode.c:628
+ ext4_xattr_inode_write fs/ext4/xattr.c:1341 [inline]
+ ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1522 [inline]
+ ext4_xattr_set_entry+0x2378/0x37c0 fs/ext4/xattr.c:1646
+ ext4_xattr_block_set+0x834/0x2f50 fs/ext4/xattr.c:1942
+ ext4_xattr_set_handle+0xd01/0x12b0 fs/ext4/xattr.c:2390
+ ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2491
+ __vfs_setxattr+0x10f/0x170 fs/xattr.c:177
+ __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+ __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+ vfs_setxattr+0xe8/0x270 fs/xattr.c:283
+ setxattr+0x23d/0x330 fs/xattr.c:548
+ path_setxattr+0x170/0x190 fs/xattr.c:567
+ __do_sys_setxattr fs/xattr.c:582 [inline]
+ __se_sys_setxattr fs/xattr.c:578 [inline]
+ __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:578
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f13ab59aef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f13aa214038 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
+RAX: ffffffffffffffda RBX: 00007f13ab752f80 RCX: 00007f13ab59aef9
+RDX: 00000000200005c0 RSI: 0000000020000180 RDI: 0000000020000080
+RBP: 00007f13ab60db76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000002000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f13ab752f80 R15: 00007ffecf9dc4b8
+Modules linked in:
+---[ end trace 81d4719f1d1daae5 ]---
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff88800a066b80 EFLAGS: 00010216
+RAX: 0000000000013be3 RBX: 0000000000000001 RCX: ffffc900051d2000
+RDX: 0000000000040000 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff888017e90000 R08: 0000000000000000 R09: ffff888013f5ec9f
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff888017e96000
+R13: ffff888017e96650 R14: 0000000000000001 R15: 0000000000000001
+FS:  00007f13aa2146c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6b935b96f4 CR3: 0000000013088000 CR4: 0000000000350ef0

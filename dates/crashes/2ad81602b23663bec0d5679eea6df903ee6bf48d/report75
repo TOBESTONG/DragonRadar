@@ -1,0 +1,132 @@
+EXT4-fs warning (device loop0): ext4_enable_quotas:6403: Failed to enable quota tracking (type=1, err=-117). Please run e2fsck to fix.
+EXT4-fs (loop0): Cannot turn on quotas: error -117
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4.h:3196!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+
+CPU: 0 PID: 2831 Comm: syz.1.79 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+=============================
+RSP: 0018:ffff8880088e6f40 EFLAGS: 00010216
+RAX: 0000000000000e13 RBX: 0000000000000001 RCX: ffffc900025bc000
+RDX: 0000000000040000 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff8880113f6000 R08: 0000000000000000 R09: ffff888013b8e2c7
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880113f4000
+R13: ffff8880113f4650 R14: 0000000000000001 R15: 0000000000000001
+FS:  00007fc5174886c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc517487f98 CR3: 000000000891e000 CR4: 0000000000350ef0
+Call Trace:
+ ext4_mb_find_by_goal+0xf4/0x1030 fs/ext4/mballoc.c:1884
+ ext4_mb_regular_allocator+0x235/0x1ee0 fs/ext4/mballoc.c:2320
+WARNING: suspicious RCU usage
+ ext4_mb_new_blocks+0x2322/0x4b60 fs/ext4/mballoc.c:4997
+5.10.0 #1 Not tainted
+ ext4_ext_map_blocks+0x1f8e/0x5d50 fs/ext4/extents.c:4238
+-----------------------------
+kernel/sched/core.c:4298 Illegal context switch in RCU-bh read-side critical section!
+ ext4_map_blocks+0x700/0x1740 fs/ext4/inode.c:628
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 0
+ ext4_iomap_alloc fs/ext4/inode.c:3418 [inline]
+ ext4_iomap_begin+0x3ec/0x760 fs/ext4/inode.c:3468
+no locks held by syz.0.76/2792.
+
+stack backtrace:
+ iomap_apply+0x164/0xb10 fs/iomap/apply.c:46
+CPU: 1 PID: 2792 Comm: syz.0.76 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ __iomap_dio_rw+0x6cd/0x1200 fs/iomap/direct-io.c:517
+ schedule_debug kernel/sched/core.c:4298 [inline]
+ __schedule+0x136c/0x2030 kernel/sched/core.c:4423
+ preempt_schedule_common+0x45/0xc0 kernel/sched/core.c:4687
+ preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:40
+ __raw_spin_unlock include/linux/spinlock_api_smp.h:152 [inline]
+ _raw_spin_unlock+0x36/0x40 kernel/locking/spinlock.c:183
+ iomap_dio_rw+0x31/0x90 fs/iomap/direct-io.c:605
+ spin_unlock include/linux/spinlock.h:394 [inline]
+ bd_acquire+0x245/0x440 fs/block_dev.c:967
+ ext4_dio_write_iter fs/ext4/file.c:552 [inline]
+ ext4_file_write_iter+0xc55/0x1b20 fs/ext4/file.c:662
+ blkdev_open+0x128/0x300 fs/block_dev.c:1744
+ do_dentry_open+0x650/0x1090 fs/open.c:817
+ call_write_iter include/linux/fs.h:1903 [inline]
+ new_sync_write+0x42c/0x670 fs/read_write.c:518
+ do_open fs/namei.c:3252 [inline]
+ path_openat+0x196a/0x26f0 fs/namei.c:3369
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ vfs_write+0x81b/0xac0 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+RIP: 0033:0x7fc51882fef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fc517488038 EFLAGS: 00000246
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fc5189e8058 RCX: 00007fc51882fef9
+RDX: 000000000000000b RSI: 0000000020000640 RDI: 0000000000000006
+RBP: 00007fc5188a2b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+R13: 0000000000000001 R14: 00007fc5189e8058 R15: 00007ffc66087d68
+Modules linked in:
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+---[ end trace 47c9ff3cd2118e76 ]---
+RIP: 0033:0x7f12eb26e890
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: 48 89 44 24 20 75 93 44 89 54 24 0c e8 19 8f 02 00 44 8b 54 24 0c 89 da 48 89 ee 41 89 c0 bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 38 44 89 c7 89 44 24 0c e8 6c 8f 02 00 8b 44
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 002b:00007f12e9ee8df0 EFLAGS: 00000293 ORIG_RAX: 0000000000000101
+RSP: 0018:ffff8880088e6f40 EFLAGS: 00010216
+RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f12eb26e890
+RDX: 0000000000000002 RSI: 00007f12e9ee8eb0 RDI: 00000000ffffff9c
+
+RBP: 00007f12e9ee8eb0 R08: 0000000000000000 R09: 000000000000c901
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+R13: 00007f12e9ee8eb0 R14: 00000000000004bb R15: 0000000020000280
+RAX: 0000000000000e13 RBX: 0000000000000001 RCX: ffffc900025bc000
+RDX: 0000000000040000 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff8880113f6000 R08: 0000000000000000 R09: ffff888013b8e2c7
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880113f4000
+R13: ffff8880113f4650 R14: 0000000000000001 R15: 0000000000000001
+FS:  00007fc5174886c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd4d59606f4 CR3: 000000000891e000 CR4: 0000000000350ee0
+EXT4-fs warning (device loop1): kmmpd:182: kmmpd being stopped since MMP feature has been disabled.
+----------------
+Code disassembly (best guess):
+   0:	48 89 44 24 20       	mov    %rax,0x20(%rsp)
+   5:	75 93                	jne    0xffffff9a
+   7:	44 89 54 24 0c       	mov    %r10d,0xc(%rsp)
+   c:	e8 19 8f 02 00       	call   0x28f2a
+  11:	44 8b 54 24 0c       	mov    0xc(%rsp),%r10d
+  16:	89 da                	mov    %ebx,%edx
+  18:	48 89 ee             	mov    %rbp,%rsi
+  1b:	41 89 c0             	mov    %eax,%r8d
+  1e:	bf 9c ff ff ff       	mov    $0xffffff9c,%edi
+  23:	b8 01 01 00 00       	mov    $0x101,%eax
+  28:	0f 05                	syscall
+* 2a:	48 3d 00 f0 ff ff    	cmp    $0xfffffffffffff000,%rax <-- trapping instruction
+  30:	77 38                	ja     0x6a
+  32:	44 89 c7             	mov    %r8d,%edi
+  35:	89 44 24 0c          	mov    %eax,0xc(%rsp)
+  39:	e8 6c 8f 02 00       	call   0x28faa
+  3e:	8b                   	.byte 0x8b
+  3f:	44                   	rex.R

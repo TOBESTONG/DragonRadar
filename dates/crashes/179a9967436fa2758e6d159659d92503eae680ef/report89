@@ -1,0 +1,92 @@
+EXT4-fs error (device loop1): ext4_find_dest_de:1947: inode #2: block 13: comm syz.1.525: bad entry in directory: rec_len is smaller than minimal - offset=92, inode=219, rec_len=0, name_len=0, size=1024
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:2696!
+
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 2656 Comm: kworker/u4:6 Not tainted 5.10.0 #1
+=============================
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: writeback wb_workfn (flush-7:3)
+WARNING: suspicious RCU usage
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff888019a07448 EFLAGS: 00010293
+5.10.0 #1 Not tainted
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+RDX: ffff8880111f8000 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff888013f8ec98 R08: 0000000000000000 R09: ffff888013f8ec9f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+-----------------------------
+R13: 00000000000000bc R14: ffff888013f8ef80 R15: ffff888010d16000
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8fad228008 CR3: 0000000018ef0000 CR4: 0000000000350ee0
+kernel/sched/core.c:7270 Illegal context switch in RCU-bh read-side critical section!
+Call Trace:
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 0
+1 lock held by in:imklog/154:
+ #0: 
+ffff88800c789770
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ (
+&f->f_pos_lock
+ __writeback_single_inode+0x108/0x1090 fs/fs-writeback.c:1461
+){+.+.}-{3:3}
+ writeback_sb_inodes+0x56e/0x1010 fs/fs-writeback.c:1721
+, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+
+stack backtrace:
+CPU: 0 PID: 154 Comm: in:imklog Not tainted 5.10.0 #1
+ wb_writeback+0x28e/0xbe0 fs/fs-writeback.c:1894
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ wb_do_writeback fs/fs-writeback.c:2039 [inline]
+ wb_workfn+0x1a4/0x1140 fs/fs-writeback.c:2080
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep+0x3ed/0x4d0 kernel/sched/core.c:7270
+ slab_pre_alloc_hook mm/slab.h:516 [inline]
+ slab_alloc_node mm/slub.c:2816 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc_trace+0x233/0x270 mm/slub.c:2916
+ kmalloc include/linux/slab.h:552 [inline]
+ syslog_print+0xb2/0x460 kernel/printk/printk.c:1459
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ do_syslog.part.0+0x79c/0x880 kernel/printk/printk.c:1615
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ do_syslog+0x49/0x60 kernel/printk/printk.c:1596
+ kmsg_read+0x90/0xb0 fs/proc/kmsg.c:40
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+ pde_read fs/proc/inode.c:321 [inline]
+ proc_reg_read+0x11c/0x300 fs/proc/inode.c:331
+
+ vfs_read+0x228/0x580 fs/read_write.c:494
+ ksys_read+0x12d/0x250 fs/read_write.c:634
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ff2f5d9a08c
+Code: ec 28 48 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 89 fc ff ff 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 31 c0 0f 05 <48> 3d 00 f0 ff ff 77 34 44 89 c7 48 89 44 24 08 e8 bf fc ff ff 48
+RSP: 002b:00007ff2f53294d0 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007ff2f5d9a08c
+RDX: 0000000000001fa0 RSI: 00007ff2f5329d00 RDI: 0000000000000005
+RBP: 00005579e3f54500 R08: 0000000000000000 R09: 00005579e3f50ec8
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ff2f5329d00
+R13: 0000000000001fa0 R14: 00007ff2f5329d00 R15: 00007ff2f5329ddd
+---[ end trace 68dd4d46c96119d2 ]---
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff888019a07448 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+RDX: ffff8880111f8000 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff888013f8ec98 R08: 0000000000000000 R09: ffff888013f8ec9f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff888013f8ef80 R15: ffff888010d16000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ff2f574f000 CR3: 000000000c03e000 CR4: 0000000000350ef0

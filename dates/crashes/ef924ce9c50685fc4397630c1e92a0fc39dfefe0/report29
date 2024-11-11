@@ -1,0 +1,124 @@
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs (loop2): mounted filesystem without journal. Opts: ,errors=continue
+sr 1:0:0:0: [sr0] CDROM not ready.  Make sure there is a disc in the drive.
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+modprobe/9192 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff8880165600a8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff8880165600a8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 624
+hardirqs last  enabled at (624): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (624): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (623): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (623): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (80): [<ffffffff810984ea>] fpu__clear+0xda/0x260 arch/x86/kernel/fpu/core.c:378
+softirqs last disabled at (509): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+2 locks held by modprobe/9192:
+ #0: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #1: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 0 PID: 9192 Comm: modprobe Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:copy_page_to_iter+0x27e/0xfb0 lib/iov_iter.c:918
+Code: e8 37 e5 47 ff 4c 89 e2 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 0f b6 04 02 84 c0 74 08 3c 03 0f 8e 32 0a 00 00 41 8b 2c 24 <31> ff 41 89 ee 41 83 e6 18 44 89 f6 e8 c1 dc 47 ff 45 85 f6 0f 85
+RSP: 0018:ffff888020467aa8 EFLAGS: 00000246
+RAX: 0000000000000000 RBX: ffffea0001b3df80 RCX: ffffffff81fe2783
+RDX: 1ffff1100408cfad RSI: ffffffff81fe2989 RDI: 0000000000000007
+RBP: 0000000000000004 R08: 0000000000000000 R09: ffffea0001b3df87
+R10: 0000000000001000 R11: 0000000000000001 R12: ffff888020467d68
+R13: 0000000000001000 R14: 0000000000000000 R15: 0000000000001000
+ generic_file_buffered_read+0xa92/0x2980 mm/filemap.c:2340
+ generic_file_read_iter+0x33b/0x490 mm/filemap.c:2553
+ ext4_file_read_iter+0x184/0x4c0 fs/ext4/file.c:131
+ call_read_iter include/linux/fs.h:1897 [inline]
+ new_sync_read+0x424/0x6f0 fs/read_write.c:415
+ vfs_read+0x453/0x580 fs/read_write.c:496
+ ksys_read+0x12d/0x250 fs/read_write.c:634
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f695accdd74
+Code: 24 d0 48 89 44 24 c8 eb c8 0f 1f 44 00 00 f7 d8 89 05 e8 03 01 00 b8 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 31 c0 0f 05 <48> 3d 00 f0 ff ff 77 04 c3 0f 1f 00 f7 d8 89 05 c0 03 01 00 48 c7
+RSP: 002b:00007ffe3ef77328 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+RAX: ffffffffffffffda RBX: 0000000000000340 RCX: 00007f695accdd74
+RDX: 0000000000000340 RSI: 00007ffe3ef77408 RDI: 0000000000000000
+RBP: 00007ffe3ef77390 R08: 0000000000080000 R09: 00007f695acac4e0
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffe3ef773ef
+R13: 00007f695acac4e0 R14: 0000000000000000 R15: 00007ffe3ef77400
+----------------
+Code disassembly (best guess):
+   0:	e8 37 e5 47 ff       	call   0xff47e53c
+   5:	4c 89 e2             	mov    %r12,%rdx
+   8:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+   f:	fc ff df
+  12:	48 c1 ea 03          	shr    $0x3,%rdx
+  16:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax
+  1a:	84 c0                	test   %al,%al
+  1c:	74 08                	je     0x26
+  1e:	3c 03                	cmp    $0x3,%al
+  20:	0f 8e 32 0a 00 00    	jle    0xa58
+  26:	41 8b 2c 24          	mov    (%r12),%ebp
+* 2a:	31 ff                	xor    %edi,%edi <-- trapping instruction
+  2c:	41 89 ee             	mov    %ebp,%r14d
+  2f:	41 83 e6 18          	and    $0x18,%r14d
+  33:	44 89 f6             	mov    %r14d,%esi
+  36:	e8 c1 dc 47 ff       	call   0xff47dcfc
+  3b:	45 85 f6             	test   %r14d,%r14d
+  3e:	0f                   	.byte 0xf
+  3f:	85                   	.byte 0x85

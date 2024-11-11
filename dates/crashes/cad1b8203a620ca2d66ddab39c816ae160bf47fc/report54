@@ -1,0 +1,80 @@
+EXT4-fs (loop1): free_blocks=2415919104
+EXT4-fs (loop1): dirty_blocks=16
+EXT4-fs (loop1): Block reservation details
+EXT4-fs (loop1): i_reserved_data_blocks=1
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:2696!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 7 Comm: kworker/u4:0 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: writeback wb_workfn (flush-7:1)
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff88800821f448 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+RDX: ffff888008203400 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff88801e8658e8 R08: 0000000000000000 R09: ffff88801e8658ef
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff88801e865bd0 R15: ffff88800ce72000
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f175d8f84a1 CR3: 0000000018398000 CR4: 0000000000350ee0
+Call Trace:
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __writeback_single_inode+0x108/0x1090 fs/fs-writeback.c:1461
+ writeback_sb_inodes+0x56e/0x1010 fs/fs-writeback.c:1721
+
+=============================
+ wb_writeback+0x28e/0xbe0 fs/fs-writeback.c:1894
+ wb_do_writeback fs/fs-writeback.c:2039 [inline]
+ wb_workfn+0x1a4/0x1140 fs/fs-writeback.c:2080
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+WARNING: suspicious RCU usage
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+5.10.0 #1 Not tainted
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+-----------------------------
+kernel/sched/core.c:7270 Illegal context switch in RCU-bh read-side critical section!
+---[ end trace 8736ad9a6046e393 ]---
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff88800821f448 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+
+other info that might help us debug this:
+
+RDX: ffff888008203400 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff88801e8658e8 R08: 0000000000000000 R09: ffff88801e8658ef
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff88801e865bd0 R15: ffff88800ce72000
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ff67af22328 CR3: 0000000010d1a000 CR4: 0000000000350ee0
+
+rcu_scheduler_active = 2, debug_locks = 0
+no locks held by syz.2.301/6251.
+
+stack backtrace:
+CPU: 0 PID: 6251 Comm: syz.2.301 Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep+0x3ed/0x4d0 kernel/sched/core.c:7270
+ do_recvmmsg+0x45c/0x6c0 net/socket.c:2752
+ __sys_recvmmsg net/socket.c:2797 [inline]
+ __do_sys_recvmmsg net/socket.c:2820 [inline]
+ __se_sys_recvmmsg net/socket.c:2813 [inline]
+ __x64_sys_recvmmsg+0x20b/0x260 net/socket.c:2813
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7efe2ce22ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007efe2ba7b038 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
+RAX: ffffffffffffffda RBX: 00007efe2cfdb058 RCX: 00007efe2ce22ef9
+RDX: 0000000000010106 RSI: 00000000200000c0 RDI: 000000000000000d
+RBP: 00007efe2ce95b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000002 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007efe2cfdb058 R15: 00007ffc3ff49c78

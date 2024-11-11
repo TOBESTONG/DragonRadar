@@ -1,0 +1,77 @@
+audit: type=1400 audit(1731285794.836:534): avc:  denied  { open } for  pid=7035 comm="syz.3.376" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=perf_event permissive=1
+================================================================================
+UBSAN: shift-out-of-bounds in fs/ext4/super.c:4191:25
+shift exponent 255 is too large for 32-bit type 'int'
+CPU: 0 PID: 7040 Comm: syz.2.375 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ ext4_fill_super.cold+0x163/0x499 fs/ext4/super.c:4191
+ mount_bdev+0x350/0x410 fs/super.c:1419
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+EXT4-fs (loop1): Ignoring removed nobh option
+RIP: 0033:0x7fa75b6a369a
+EXT4-fs (loop1): couldn't mount as ext3 due to feature incompatibilities
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fa75a31ae68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fa75a31aef0 RCX: 00007fa75b6a369a
+RDX: 0000000020000000 RSI: 0000000020000500 RDI: 00007fa75a31aeb0
+RBP: 0000000020000000 R08: 00007fa75a31aef0 R09: 0000000000004500
+R10: 0000000000004500 R11: 0000000000000246 R12: 0000000020000500
+R13: 00007fa75a31aeb0 R14: 00000000000004cb R15: 000000000000002c
+hpet: Lost 1 RTC interrupts
+================================================================================
+EXT4-fs (loop2): Unsupported filesystem blocksize 0 (255 log_block_size)
+print_req_error: 44 callbacks suppressed
+blk_update_request: I/O error, dev loop3, sector 58 op 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
+blk_update_request: I/O error, dev loop3, sector 58 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+buffer_io_error: 38 callbacks suppressed
+Buffer I/O error on dev loop3p2, logical block 8, async page read
+blk_update_request: I/O error, dev loop3, sector 59 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Buffer I/O error on dev loop3p2, logical block 9, async page read
+blk_update_request: I/O error, dev loop3, sector 60 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+blk_update_request: I/O error, dev loop3, sector 1008 op 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
+Buffer I/O error on dev loop3p2, logical block 10, async page read
+blk_update_request: I/O error, dev loop3, sector 61 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Buffer I/O error on dev loop3p2, logical block 11, async page read
+blk_update_request: I/O error, dev loop3, sector 62 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Buffer I/O error on dev loop3p2, logical block 12, async page read
+blk_update_request: I/O error, dev loop3, sector 63 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Buffer I/O error on dev loop3p2, logical block 13, async page read
+blk_update_request: I/O error, dev loop3, sector 64 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Buffer I/O error on dev loop3p2, logical block 14, async page read
+blk_update_request: I/O error, dev loop3, sector 65 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Buffer I/O error on dev loop3p2, logical block 15, async page read
+Buffer I/O error on dev loop3p3, logical block 8, async page read
+Buffer I/O error on dev loop3p3, logical block 9, async page read
+----------------
+Code disassembly (best guess):
+   0:	d8 64 89 02          	fsubs  0x2(%rcx,%rcx,4)
+   4:	48 c7 c0 ff ff ff ff 	mov    $0xffffffffffffffff,%rax
+   b:	eb a6                	jmp    0xffffffb3
+   d:	e8 de 1a 00 00       	call   0x1af0
+  12:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
+  19:	00 00 00
+  1c:	0f 1f 40 00          	nopl   0x0(%rax)
+  20:	49 89 ca             	mov    %rcx,%r10
+  23:	b8 a5 00 00 00       	mov    $0xa5,%eax
+  28:	0f 05                	syscall
+* 2a:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax <-- trapping instruction
+  30:	73 01                	jae    0x33
+  32:	c3                   	ret
+  33:	48 c7 c1 a8 ff ff ff 	mov    $0xffffffffffffffa8,%rcx
+  3a:	f7 d8                	neg    %eax
+  3c:	64 89 01             	mov    %eax,%fs:(%rcx)
+  3f:	48                   	rex.W

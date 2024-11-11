@@ -1,0 +1,72 @@
+netlink: 12 bytes leftover after parsing attributes in process `syz.1.234'.
+EXT4-fs error (device loop0): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 25 vs 150994969 free clusters
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:2696!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 6173 Comm: syz.0.233 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff88801fcff050 EFLAGS: 00010202
+RAX: 00000000000128c0 RBX: 0000000000000001 RCX: ffffc90000a06000
+RDX: 0000000000040000 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff8880133e9400 R08: 0000000000000000 R09: ffff8880133e9407
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff8880133e96e8 R15: ffff88801a004000
+FS:  00007fd0f39d46c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f4d3a51a5f0 CR3: 000000001a128000 CR4: 0000000000350ee0
+Call Trace:
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __filemap_fdatawrite_range+0x24b/0x2f0 mm/filemap.c:422
+ file_write_and_wait_range+0xb2/0x120 mm/filemap.c:761
+ ext4_sync_file+0x225/0xf40 fs/ext4/fsync.c:151
+ vfs_fsync_range+0x13d/0x230 fs/sync.c:200
+ generic_write_sync include/linux/fs.h:2739 [inline]
+ ext4_buffered_write_iter+0x36a/0x4d0 fs/ext4/file.c:278
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ call_write_iter include/linux/fs.h:1903 [inline]
+ do_iter_readv_writev+0x476/0x760 fs/read_write.c:740
+ do_iter_write+0x18d/0x670 fs/read_write.c:866
+ vfs_iter_write+0x70/0xa0 fs/read_write.c:907
+ iter_file_splice_write+0x73a/0xc00 fs/splice.c:686
+ do_splice_from fs/splice.c:764 [inline]
+ direct_splice_actor+0x10f/0x170 fs/splice.c:933
+ splice_direct_to_actor+0x387/0x980 fs/splice.c:888
+ do_splice_direct+0x1c4/0x290 fs/splice.c:976
+ do_sendfile+0x54f/0x10e0 fs/read_write.c:1257
+ __do_sys_sendfile64 fs/read_write.c:1318 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1304 [inline]
+ __x64_sys_sendfile64+0x1cd/0x210 fs/read_write.c:1304
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fd0f4d5aef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fd0f39d4038 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007fd0f4f12f80 RCX: 00007fd0f4d5aef9
+RDX: 0000000000000000 RSI: 0000000000000005 RDI: 0000000000000004
+RBP: 00007fd0f4dcdb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000080000041 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fd0f4f12f80 R15: 00007fffc946b2a8
+Modules linked in:
+---[ end trace 89474da74bf2821b ]---
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff88801fcff050 EFLAGS: 00010202
+RAX: 00000000000128c0 RBX: 0000000000000001 RCX: ffffc90000a06000
+RDX: 0000000000040000 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff8880133e9400 R08: 0000000000000000 R09: ffff8880133e9407
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff8880133e96e8 R15: ffff88801a004000
+FS:  00007fd0f39d46c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f3b360616f4 CR3: 000000001a128000 CR4: 0000000000350ee0
+EXT4-fs (loop3): Delayed block allocation failed for inode 18 at logical offset 2 with max blocks 2 with error 28
+EXT4-fs (loop3): This should not happen!! Data will be lost
+
+EXT4-fs (loop3): Total free blocks count 0
+EXT4-fs (loop3): Free/Dirty block details
+EXT4-fs (loop3): free_blocks=2415919104
+EXT4-fs (loop3): dirty_blocks=224
+EXT4-fs (loop3): Block reservation details
+EXT4-fs (loop3): i_reserved_data_blocks=14

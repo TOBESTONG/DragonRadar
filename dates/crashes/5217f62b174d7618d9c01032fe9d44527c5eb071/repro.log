@@ -1,0 +1,388 @@
+Warning: Permanently added '[localhost]:9803' (ED25519) to the list of known hosts.
+syzkaller login: [  124.128010] audit: type=1400 audit(1730992075.862:6): avc:  denied  { execmem } for  pid=237 comm="syz-executor196" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+executing program
+[  124.177142] EXT4-fs (loop0): 1 orphan inode deleted
+[  124.178911] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  124.184095] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  124.188959] ext4 filesystem being mounted at /syzkaller.9YUxe2/0/file1 supports timestamps until 2038 (0x7fffffff)
+[  124.212634] ==================================================================
+[  124.213902] BUG: KASAN: slab-out-of-bounds in crc16+0xcb/0xe0
+[  124.214764] Read of size 1 at addr ffff88800c674078 by task syz-executor196/237
+[  124.215832] 
+[  124.216079] CPU: 1 PID: 237 Comm: syz-executor196 Not tainted 5.10.0 #1
+[  124.217392] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[  124.219519] Call Trace:
+[  124.219926]  dump_stack+0x107/0x163
+[  124.220783]  ? crc16+0xcb/0xe0
+[  124.221253]  ? crc16+0xcb/0xe0
+[  124.221730]  print_address_description.constprop.0+0x1c/0x210
+[  124.222568]  ? _raw_spin_lock_irqsave+0x4e/0x50
+[  124.223268]  ? vprintk_func+0x95/0x250
+[  124.223839]  ? crc16+0xcb/0xe0
+[  124.224290]  ? crc16+0xcb/0xe0
+[  124.224768]  kasan_report.cold+0x37/0x7c
+[  124.225369]  ? crc16+0xcb/0xe0
+[  124.225853]  crc16+0xcb/0xe0
+[  124.226289]  ext4_group_desc_csum+0x62d/0x8a0
+[  124.226964]  ? ext4_sync_fs+0x870/0x870
+[  124.227551]  ? ext4_block_bitmap_csum_set+0x2e4/0x3d0
+[  124.228320]  ? ext4_block_bitmap_csum_verify+0x410/0x410
+[  124.229131]  ext4_group_desc_csum_set+0xc3/0x1a0
+[  124.229854]  ext4_free_blocks+0xe32/0x22a0
+[  124.230488]  ? ext4_mb_new_blocks+0x4b60/0x4b60
+[  124.231210]  ext4_ext_remove_space+0x20ff/0x4470
+[  124.231935]  ? ext4_ext_index_trans_blocks+0x160/0x160
+[  124.232712]  ? ext4_es_remove_extent+0x103/0x460
+[  124.233414]  ? ext4_es_lookup_extent+0xc90/0xc90
+[  124.234124]  ? down_write+0xdb/0x150
+[  124.234693]  ? down_write_killable_nested+0x180/0x180
+[  124.235429]  ? ext4_journal_check_start+0x1ae/0x290
+[  124.236170]  ext4_ext_truncate+0x1fb/0x260
+[  124.236792]  ext4_truncate+0xed8/0x1390
+[  124.237365]  ? ext4_punch_hole+0x1130/0x1130
+[  124.238013]  ? ext4_journal_check_start+0x1ae/0x290
+[  124.238763]  ext4_evict_inode+0xb59/0x1890
+[  124.239387]  ? ext4_da_write_begin+0xe60/0xe60
+[  124.240063]  ? rwlock_bug.part.0+0x90/0x90
+[  124.240694]  ? ext4_da_write_begin+0xe60/0xe60
+[  124.241355]  evict+0x284/0x6d0
+[  124.241799]  ? ext4_nfs_commit_metadata+0x300/0x300
+[  124.242483]  iput+0x4e5/0x840
+[  124.243071]  dentry_unlink_inode+0x2b4/0x3e0
+[  124.243713]  d_delete+0x167/0x1c0
+[  124.244206]  vfs_rmdir.part.0+0x3d5/0x4b0
+[  124.244805]  do_rmdir+0x2f6/0x3c0
+[  124.245298]  ? do_file_open_root+0x4c0/0x4c0
+[  124.245952]  ? strncpy_from_user+0x9e/0x490
+[  124.246603]  do_syscall_64+0x33/0x40
+[  124.247139]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  124.247886] RIP: 0033:0x7f123a6b4c4b
+[  124.248413] Code: c7 c2 c0 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb ba e8 58 15 00 00 0f 1f 84 00 00 00 00 00 f3 0f 1e fa b8 54 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 05 c3 0f 1f 40 00 48 c7 c2 c0 ff ff ff f7 d8
+[  124.251199] RSP: 002b:00007ffda784be78 EFLAGS: 00000207 ORIG_RAX: 0000000000000054
+[  124.252323] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f123a6b4c4b
+[  124.253347] RDX: 0000000000008870 RSI: 00000000000108b0 RDI: 00007ffda784d030
+[  124.254376] RBP: 00007ffda784bf30 R08: 0000555556f0ad10 R09: 0000000000000000
+[  124.255404] R10: 0000000000000001 R11: 0000000000000207 R12: 00007ffda784d030
+[  124.256434] R13: 0000000000000065 R14: 00007ffda784be98 R15: 00007ffda784f1e0
+[  124.257472] 
+[  124.257717] Allocated by task 1:
+[  124.258194]  kasan_save_stack+0x1b/0x40
+[  124.258774]  __kasan_kmalloc.constprop.0+0xc2/0xd0
+[  124.259463]  kmem_cache_alloc+0x145/0x330
+[  124.260065]  security_inode_alloc+0x34/0x160
+[  124.260699]  inode_init_always+0x503/0xc90
+[  124.261293]  alloc_inode+0x84/0x230
+[  124.261822]  iget_locked+0x1c6/0x610
+[  124.262347]  kernfs_get_inode+0x47/0x520
+[  124.262952]  kernfs_iop_lookup+0x194/0x220
+[  124.263567]  __lookup_slow+0x252/0x490
+[  124.264154]  walk_component+0x41a/0x6a0
+[  124.264737]  path_lookupat+0x146/0x6c0
+[  124.265311]  filename_lookup+0x19f/0x560
+[  124.265906]  vfs_statx+0x142/0x390
+[  124.266412]  __do_sys_newfstatat+0x96/0x120
+[  124.267054]  do_syscall_64+0x33/0x40
+[  124.267592]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  124.268310] 
+[  124.268559] The buggy address belongs to the object at ffff88800c674000
+[  124.268559]  which belongs to the cache lsm_inode_cache of size 120
+[  124.270418] The buggy address is located 0 bytes to the right of
+[  124.270418]  120-byte region [ffff88800c674000, ffff88800c674078)
+[  124.272184] The buggy address belongs to the page:
+[  124.272884] page:0000000054147bc5 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xc674
+[  124.274220] flags: 0x100000000000200(slab)
+[  124.274855] raw: 0100000000000200 ffffea0000319780 0000001600000016 ffff888008141dc0
+[  124.275999] raw: 0000000000000000 0000000000160016 00000001ffffffff 0000000000000000
+[  124.277137] page dumped because: kasan: bad access detected
+[  124.277964] 
+[  124.278201] Memory state around the buggy address:
+[  124.278924]  ffff88800c673f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[  124.279983]  ffff88800c673f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[  124.281048] >ffff88800c674000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 fc
+[  124.282108]                                                                 ^
+[  124.283176]  ffff88800c674080: fc fc fc fc fc fc fc 00 00 00 00 00 00 00 00 00
+[  124.284234]  ffff88800c674100: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc 00 00
+[  124.285387] ==================================================================
+[  124.286438] Disabling lock debugging due to kernel taint
+[  124.297661] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  124.301438] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  124.346632] EXT4-fs (loop0): 1 orphan inode deleted
+[  124.347394] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  124.349096] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  124.351540] ext4 filesystem being mounted at /syzkaller.9YUxe2/1/file1 supports timestamps until 2038 (0x7fffffff)
+[  124.370372] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  124.374713] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  124.405701] EXT4-fs (loop0): 1 orphan inode deleted
+[  124.406509] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  124.407879] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  124.410352] ext4 filesystem being mounted at /syzkaller.9YUxe2/2/file1 supports timestamps until 2038 (0x7fffffff)
+[  124.446299] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  124.450996] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  124.481811] EXT4-fs (loop0): 1 orphan inode deleted
+[  124.482649] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  124.484661] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  124.487424] ext4 filesystem being mounted at /syzkaller.9YUxe2/3/file1 supports timestamps until 2038 (0x7fffffff)
+[  124.515416] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  124.518978] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  124.556270] EXT4-fs (loop0): 1 orphan inode deleted
+[  124.557113] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  124.558507] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  124.560851] ext4 filesystem being mounted at /syzkaller.9YUxe2/4/file1 supports timestamps until 2038 (0x7fffffff)
+[  124.588780] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  124.592835] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  124.632356] EXT4-fs (loop0): 1 orphan inode deleted
+[  124.633194] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  124.634591] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  124.636977] ext4 filesystem being mounted at /syzkaller.9YUxe2/5/file1 supports timestamps until 2038 (0x7fffffff)
+[  124.655567] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  124.659299] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  124.694446] EXT4-fs (loop0): 1 orphan inode deleted
+[  124.695261] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  124.696612] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  124.698996] ext4 filesystem being mounted at /syzkaller.9YUxe2/6/file1 supports timestamps until 2038 (0x7fffffff)
+[  124.740113] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  124.744311] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  124.778391] EXT4-fs (loop0): 1 orphan inode deleted
+[  124.780004] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  124.782344] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  124.786290] ext4 filesystem being mounted at /syzkaller.9YUxe2/7/file1 supports timestamps until 2038 (0x7fffffff)
+[  124.812267] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  124.816009] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  124.855921] EXT4-fs (loop0): 1 orphan inode deleted
+[  124.856785] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  124.858541] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  124.861010] ext4 filesystem being mounted at /syzkaller.9YUxe2/8/file1 supports timestamps until 2038 (0x7fffffff)
+[  124.882415] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  124.886313] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  124.927249] EXT4-fs (loop0): 1 orphan inode deleted
+[  124.928111] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  124.929523] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  124.931940] ext4 filesystem being mounted at /syzkaller.9YUxe2/9/file1 supports timestamps until 2038 (0x7fffffff)
+[  124.957980] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  124.963603] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  124.997136] EXT4-fs (loop0): 1 orphan inode deleted
+[  124.997980] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  124.999369] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  125.001711] ext4 filesystem being mounted at /syzkaller.9YUxe2/10/file1 supports timestamps until 2038 (0x7fffffff)
+[  125.017169] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  125.023666] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  125.054678] EXT4-fs (loop0): 1 orphan inode deleted
+[  125.055438] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  125.056817] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  125.059396] ext4 filesystem being mounted at /syzkaller.9YUxe2/11/file1 supports timestamps until 2038 (0x7fffffff)
+[  125.080872] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  125.086811] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  125.118126] EXT4-fs (loop0): 1 orphan inode deleted
+[  125.118936] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  125.120556] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  125.122874] ext4 filesystem being mounted at /syzkaller.9YUxe2/12/file1 supports timestamps until 2038 (0x7fffffff)
+[  125.146693] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  125.150122] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  125.178753] EXT4-fs (loop0): 1 orphan inode deleted
+[  125.179586] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  125.181708] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  125.184296] ext4 filesystem being mounted at /syzkaller.9YUxe2/13/file1 supports timestamps until 2038 (0x7fffffff)
+[  125.205152] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  125.209193] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  125.250311] EXT4-fs (loop0): 1 orphan inode deleted
+[  125.251127] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  125.252863] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  125.255359] ext4 filesystem being mounted at /syzkaller.9YUxe2/14/file1 supports timestamps until 2038 (0x7fffffff)
+[  125.281061] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  125.284787] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  125.320265] EXT4-fs (loop0): 1 orphan inode deleted
+[  125.321158] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  125.323247] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  125.325791] ext4 filesystem being mounted at /syzkaller.9YUxe2/15/file1 supports timestamps until 2038 (0x7fffffff)
+[  125.352321] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  125.355915] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  125.393950] EXT4-fs (loop0): 1 orphan inode deleted
+[  125.394797] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  125.396134] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  125.398462] ext4 filesystem being mounted at /syzkaller.9YUxe2/16/file1 supports timestamps until 2038 (0x7fffffff)
+[  125.422651] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  125.426349] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  125.470331] EXT4-fs (loop0): 1 orphan inode deleted
+[  125.471144] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  125.472487] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  125.474842] ext4 filesystem being mounted at /syzkaller.9YUxe2/17/file1 supports timestamps until 2038 (0x7fffffff)
+[  125.505167] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  125.509093] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  125.539278] EXT4-fs (loop0): 1 orphan inode deleted
+[  125.540104] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  125.542067] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  125.544612] ext4 filesystem being mounted at /syzkaller.9YUxe2/18/file1 supports timestamps until 2038 (0x7fffffff)
+[  125.568325] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  125.572094] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  125.612505] EXT4-fs (loop0): 1 orphan inode deleted
+[  125.613264] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  125.615091] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  125.617451] ext4 filesystem being mounted at /syzkaller.9YUxe2/19/file1 supports timestamps until 2038 (0x7fffffff)
+[  125.645746] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  125.649347] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  125.692778] EXT4-fs (loop0): 1 orphan inode deleted
+[  125.693588] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  125.695438] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  125.697951] ext4 filesystem being mounted at /syzkaller.9YUxe2/20/file1 supports timestamps until 2038 (0x7fffffff)
+[  125.736252] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  125.740129] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  125.797378] EXT4-fs (loop0): 1 orphan inode deleted
+[  125.798962] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  125.802061] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  125.806353] ext4 filesystem being mounted at /syzkaller.9YUxe2/21/file1 supports timestamps until 2038 (0x7fffffff)
+[  125.836887] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  125.840936] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  125.886021] EXT4-fs (loop0): 1 orphan inode deleted
+[  125.887959] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  125.891153] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  125.895348] ext4 filesystem being mounted at /syzkaller.9YUxe2/22/file1 supports timestamps until 2038 (0x7fffffff)
+[  125.924743] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  125.928333] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  125.968365] EXT4-fs (loop0): 1 orphan inode deleted
+[  125.969183] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  125.970537] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  125.972875] ext4 filesystem being mounted at /syzkaller.9YUxe2/23/file1 supports timestamps until 2038 (0x7fffffff)
+[  125.997994] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  126.001725] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  126.040397] EXT4-fs (loop0): 1 orphan inode deleted
+[  126.041236] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  126.042602] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  126.044940] ext4 filesystem being mounted at /syzkaller.9YUxe2/24/file1 supports timestamps until 2038 (0x7fffffff)
+[  126.070870] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  126.074527] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  126.116447] EXT4-fs (loop0): 1 orphan inode deleted
+[  126.117301] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  126.119242] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  126.121776] ext4 filesystem being mounted at /syzkaller.9YUxe2/25/file1 supports timestamps until 2038 (0x7fffffff)
+[  126.146128] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  126.149830] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  126.182126] EXT4-fs (loop0): 1 orphan inode deleted
+[  126.182967] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  126.184358] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  126.186738] ext4 filesystem being mounted at /syzkaller.9YUxe2/26/file1 supports timestamps until 2038 (0x7fffffff)
+[  126.206728] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'file3' with no links
+[  126.211870] EXT4-fs warning (device loop0): __ext4_unlink:3233: inode #16: comm syz-executor196: Deleting file 'bus' with no links
+executing program
+[  126.259126] EXT4-fs (loop0): 1 orphan inode deleted
+[  126.260061] EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+[  126.262259] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+[  126.265018] ext4 filesystem being mounted at /syzkaller.9YUxe2/27/file1 supports timestamps until 2038 (0x7fffffff)
+[  126.301878] EXT4-fs error (device loop0): ext4_lookup:1708: inode #2: comm syz-executor196: deleted inode referenced: 16
+[  126.303993] EXT4-fs (loop0): Remounting filesystem read-only
+[  126.305678] EXT4-fs error (device loop0): ext4_lookup:1708: inode #2: comm syz-executor196: deleted inode referenced: 16
+[  131.334945] EXT4-fs warning (device loop0): kmmpd:182: kmmpd being stopped since MMP feature has been disabled.
+
+VM DIAGNOSIS:
+23:07:56  Registers:
+info registers vcpu 0
+
+CPU#0
+RAX=0000564993577010 RBX=0000000000000016 RCX=0000000000000026 RDX=0000000000000001
+RSI=0000564993dbc770 RDI=0000000000000178 RBP=0000000000000178 RSP=00007ffd1d45b810
+R8 =0000564993ea4ab0 R9 =0000564993db8998 R10=0000000000000000 R11=0000000000000000
+R12=fffffffffffffdf8 R13=00007ffd1d45ba28 R14=0000000000000048 R15=0000564993dc3550
+RIP=00007f8aba4f2efb RFL=00000202 [-------] CPL=3 II=0 A20=1 SMM=0 HLT=0
+ES =0000 0000000000000000 00000000 00000000
+CS =0033 0000000000000000 ffffffff 00a0fb00 DPL=3 CS64 [-RA]
+SS =002b 0000000000000000 ffffffff 00c0f300 DPL=3 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 00007f8ab9d8e900 00000000 00000000
+GS =0000 0000000000000000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe0000003000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe0000001000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=0000564139388ff0 CR3=000000000cf30000 CR4=00350ef0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM01=0000000000000000 0000000000000000 7465677261742e79 636e656772656d65
+YMM02=0000000000000000 0000000000000000 ffffffffffffffff 0f0e0d0c0b0a0908
+YMM03=0000000000000000 0000000000000000 0000000000000073 66626c7465677568
+YMM04=0000000000000000 0000000000000000 2e2e2e2e2e2e2e2e 2e2e2e2e2e2e2e2e
+YMM05=0000000000000000 0000000000000000 0000564993dbbb20 0000000000000040
+YMM06=0000000000000000 0000000000000000 0000564993e0d910 0000000000000040
+YMM07=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM08=0000000000000000 0000000000000000 6564636261393837 3635343332313040
+YMM09=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM10=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+info registers vcpu 1
+
+CPU#1
+RAX=0000000000000000 RBX=0000000000000001 RCX=0000000000000000 RDX=00000000000003f9
+RSI=ffffffff823c0a41 RDI=ffffffff87a492e0 RBP=ffffffff87a492a0 RSP=ffff888008917078
+R8 =0000000000000001 R9 =0000000000000003 R10=000000000000001f R11=0000000000000001
+R12=0000000000000000 R13=0000000000000000 R14=0000000000000001 R15=ffffffff87a492f0
+RIP=ffffffff823c0a6c RFL=00000006 [-----P-] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 0000555556f0a380 00000000 00000000
+GS =0000 ffff88806cf00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe000003e000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe000003c000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=0000555556f23798 CR3=000000000fb24000 CR4=00350ee0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 2525252525252525 2525252525252525
+YMM01=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM02=0000000000000000 0000000000000000 0000000000000000 0000ff00000000ff
+YMM03=0000000000000000 0000000000000000 0000000000000000 0000ff00000000ff
+YMM04=0000000000000000 0000000000000000 00007f123a7373a0 00007f123a749b80
+YMM05=0000000000000000 0000000000000000 0000000000000001 0000000000000001
+YMM06=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM07=0000000000000000 0000000000000000 2f2f2f2f2f2f2f2f 2f2f2f2f2f2f2f2f
+YMM08=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM09=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM10=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000

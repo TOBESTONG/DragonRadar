@@ -1,0 +1,70 @@
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs error (device loop1): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 31 vs 150994969 free clusters
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:2696!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 2064 Comm: syz.1.2 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff88801974f548 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+RDX: ffff88800ae74e00 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff888013f34f10 R08: 0000000000000000 R09: ffff888013f34f17
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff888013f351f8 R15: ffff88801391a000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005569c16f4258 CR3: 000000000bfa0000 CR4: 0000000000350ef0
+Call Trace:
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __filemap_fdatawrite_range mm/filemap.c:422 [inline]
+ __filemap_fdatawrite mm/filemap.c:430 [inline]
+ filemap_flush+0x239/0x2e0 mm/filemap.c:457
+ ext4_alloc_da_blocks+0x1b9/0x300 fs/ext4/inode.c:3156
+ ext4_release_file+0x183/0x370 fs/ext4/file.c:142
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ ret_from_fork+0x15/0x30 arch/x86/entry/entry_64.S:289
+RIP: 0033:0x7f2f6d00ef29
+Code: Unable to access opcode bytes at RIP 0x7f2f6d00eeff.
+RSP: 002b:00007f2f6bbf11c0 EFLAGS: 00000202 ORIG_RAX: 00000000000001b3
+RAX: 0000000000000000 RBX: 00007f2f6cf91870 RCX: 00007f2f6d00ef29
+RDX: 00007f2f6cf91870 RSI: 0000000000000058 RDI: 00007ffcd8371160
+RBP: 00007f2f6bbf16c0 R08: 00007f2f6bbf16c0 R09: 00007ffcd8371247
+R10: 0000000000000008 R11: 0000000000000202 R12: ffffffffffffffa8
+R13: 0000000000000006 R14: 00007ffcd8371160 R15: 00007ffcd8371248
+Modules linked in:
+---[ end trace 50364cd6530f22c0 ]---
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff88801974f548 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+RDX: ffff88800ae74e00 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff888013f34f10 R08: 0000000000000000 R09: ffff888013f34f17
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff888013f351f8 R15: ffff88801391a000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005569c16f4258 CR3: 000000000bfa0000 CR4: 0000000000350ef0
+Fixing recursive fault but reboot is needed!
+EXT4-fs (loop2): Ignoring removed mblk_io_submit option
+EXT4-fs (loop2): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+EXT4-fs error (device loop2): ext4_xattr_inode_iget:389: comm syz.2.3: inode #1: comm syz.2.3: iget: illegal inode #
+EXT4-fs error (device loop2): ext4_xattr_inode_iget:392: comm syz.2.3: error while reading EA inode 1 err=-117
+EXT4-fs (loop2): 1 orphan inode deleted
+EXT4-fs (loop2): mounted filesystem without journal. Opts: dioread_nolock,grpquota,grpquota,noauto_da_alloc,mblk_io_submit,errors=continue,grpjquota=,,errors=continue
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs error (device loop0): ext4_lookup:1702: inode #2: comm syz-executor: '	.' linked to parent dir
+EXT4-fs error (device loop0): ext4_lookup:1702: inode #2: comm syz-executor: '	.' linked to parent dir
+syz-executor (230) used greatest stack depth: 24256 bytes left
+attempt to access beyond end of device
+loop3: rw=2049, want=2052, limit=2048

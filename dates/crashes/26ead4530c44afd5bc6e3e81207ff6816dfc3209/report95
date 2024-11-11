@@ -1,0 +1,213 @@
+EXT4-fs (loop1): Unrecognized mount option "uid<00000000000000000000" or missing value
+netlink: 60 bytes leftover after parsing attributes in process `syz.0.492'.
+================================
+=============================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+syz.3.495/11259 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff88800a1e80a8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88800a1e80a8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+WARNING: suspicious RCU usage
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+5.10.0 #1 Not tainted
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+-----------------------------
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 73364
+kernel/sched/core.c:7270 Illegal context switch in RCU-sched read-side critical section!
+hardirqs last  enabled at (73364): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (73364): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (73363): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (73363): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+
+other info that might help us debug this:
+
+softirqs last  enabled at (69486): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (73271): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+
+rcu_scheduler_active = 2, debug_locks = 0
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+5 locks held by syz.3.495/11259:
+ #0: 
+3 locks held by systemd-udevd/11263:
+ffff88801b509568 (
+ #0: 
+&mm->mmap_lock#2){++++}-{3:3}, at: mmap_read_lock include/linux/mmap_lock.h:46 [inline]
+&mm->mmap_lock#2){++++}-{3:3}, at: __mm_populate+0x24e/0x340 mm/gup.c:1458
+ #1: 
+ffff88800ddd4438
+ffff88801966e3d8 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88801966e3d8 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: follow_page_pte mm/gup.c:418 [inline]
+ffff88801966e3d8 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: follow_pmd_mask mm/gup.c:607 [inline]
+ffff88801966e3d8 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: follow_pud_mask mm/gup.c:702 [inline]
+ffff88801966e3d8 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: follow_p4d_mask mm/gup.c:728 [inline]
+ffff88801966e3d8 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: follow_page_mask+0xe1f/0x1840 mm/gup.c:787
+ #2: ffff88806cf30100 (lock#5){+.+.}-{2:2}, at: lru_add_drain+0x7b/0x4b0 mm/swap.c:733
+ #3: 
+ (
+ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #4: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 1 PID: 11259 Comm: syz.3.495 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+sb_writers
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+#8
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+){.+.+}-{0:0}
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+, at: chmod_common+0xec/0x3c0 fs/open.c:573
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:161 [inline]
+RIP: 0010:_raw_spin_unlock_irqrestore+0x25/0x50 kernel/locking/spinlock.c:191
+Code: fd 5d c3 66 90 55 48 89 fd 48 83 c7 18 53 48 89 f3 48 8b 74 24 10 e8 6a 1f 3e fd 48 89 ef e8 42 e2 3e fd f6 c7 02 75 1a 53 9d <bf> 01 00 00 00 e8 41 08 34 fd 65 8b 05 ba 3d 15 7c 85 c0 74 0a 5b
+RSP: 0018:ffff888019cdfb60 EFLAGS: 00000246
+ #1: 
+
+ffff88800fe9cf00
+RAX: 0000000000011e35 RBX: 0000000000000246 RCX: ffffffff812a3195
+RDX: 0000000000000000 RSI: 0000000000000003 RDI: 0000000000000000
+RBP: ffff8880801df680 R08: 0000000000000001 R09: ffffffff86e5f6e7
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880801dc000
+R13: ffff88806cf30130 R14: 0000000000000000 R15: dffffc0000000000
+ (
+ spin_unlock_irqrestore include/linux/spinlock.h:409 [inline]
+ pagevec_lru_move_fn+0x18c/0x250 mm/swap.c:230
+&sb->s_type->i_mutex_key
+ __pagevec_lru_add mm/swap.c:1070 [inline]
+ lru_add_drain_cpu+0x69d/0xb10 mm/swap.c:630
+ lru_add_drain+0x12f/0x4b0 mm/swap.c:734
+ follow_page_pte mm/gup.c:529 [inline]
+ follow_pmd_mask mm/gup.c:607 [inline]
+ follow_pud_mask mm/gup.c:702 [inline]
+ follow_p4d_mask mm/gup.c:728 [inline]
+ follow_page_mask+0x142d/0x1840 mm/gup.c:787
+ __get_user_pages+0x52d/0x1510 mm/gup.c:1095
+#12
+ populate_vma_page_range+0x24d/0x370 mm/gup.c:1430
+ __mm_populate+0x1ea/0x340 mm/gup.c:1478
+){+.+.}-{3:3}
+ mm_populate include/linux/mm.h:2590 [inline]
+ __do_sys_mlockall+0x445/0x520 mm/mlock.c:828
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+, at: inode_lock include/linux/fs.h:774 [inline]
+, at: chmod_common+0x166/0x3c0 fs/open.c:577
+RIP: 0033:0x7fad68c85ef9
+ #2: 
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+ffff88806ce33318
+RSP: 002b:00007fad678ff038 EFLAGS: 00000246 ORIG_RAX: 0000000000000097
+RAX: ffffffffffffffda RBX: 00007fad68e3df80 RCX: 00007fad68c85ef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000001
+RBP: 00007fad68cf8b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+ (
+R13: 0000000000000000 R14: 00007fad68e3df80 R15: 00007ffde8860238
+Unable to read rock-ridge attributes
+&rq->lock){-.-.}-{2:2}, at: rq_lock kernel/sched/sched.h:1292 [inline]
+&rq->lock){-.-.}-{2:2}, at: __schedule+0x21a/0x2030 kernel/sched/core.c:4446
+
+stack backtrace:
+CPU: 0 PID: 11263 Comm: systemd-udevd Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep+0x42a/0x4d0 kernel/sched/core.c:7270
+ __inode_security_revalidate+0x12c/0x150 security/selinux/hooks.c:259
+ dentry_has_perm security/selinux/hooks.c:1654 [inline]
+ selinux_inode_setattr+0x326/0x380 security/selinux/hooks.c:3087
+ security_inode_setattr+0xbf/0x130 security/security.c:1268
+ notify_change+0x562/0x1090 fs/attr.c:328
+ chmod_common+0x1bb/0x3c0 fs/open.c:583
+ vfs_fchmod fs/open.c:598 [inline]
+ __do_sys_fchmod fs/open.c:607 [inline]
+ __se_sys_fchmod fs/open.c:601 [inline]
+ __x64_sys_fchmod+0x10e/0x190 fs/open.c:601
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fb1b5cf4027
+Code: 73 01 c3 48 8b 0d 69 2e 0e 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 5b 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 39 2e 0e 00 f7 d8 64 89 01 48
+RSP: 002b:00007fffdb04cfd8 EFLAGS: 00000202 ORIG_RAX: 000000000000005b
+RAX: ffffffffffffffda RBX: 00005640375a4740 RCX: 00007fb1b5cf4027
+RDX: 00000000fbada484 RSI: 00000000000001a4 RDI: 0000000000000010
+RBP: 00007fffdb04d090 R08: 00007fb1b5dd3f40 R09: 00007fffdb1e8090
+R10: 0000000000000180 R11: 0000000000000202 R12: 00007fffdb04cfe0
+R13: 0000000000000001 R14: 0000000000000000 R15: 00007fffdb04d0e0
+Unable to read rock-ridge attributes
+Unable to read rock-ridge attributes
+iso9660: Corrupted directory entry in block 4 of inode 1792
+----------------
+Code disassembly (best guess):
+   0:	fd                   	std
+   1:	5d                   	pop    %rbp
+   2:	c3                   	ret
+   3:	66 90                	xchg   %ax,%ax
+   5:	55                   	push   %rbp
+   6:	48 89 fd             	mov    %rdi,%rbp
+   9:	48 83 c7 18          	add    $0x18,%rdi
+   d:	53                   	push   %rbx
+   e:	48 89 f3             	mov    %rsi,%rbx
+  11:	48 8b 74 24 10       	mov    0x10(%rsp),%rsi
+  16:	e8 6a 1f 3e fd       	call   0xfd3e1f85
+  1b:	48 89 ef             	mov    %rbp,%rdi
+  1e:	e8 42 e2 3e fd       	call   0xfd3ee265
+  23:	f6 c7 02             	test   $0x2,%bh
+  26:	75 1a                	jne    0x42
+  28:	53                   	push   %rbx
+  29:	9d                   	popf
+* 2a:	bf 01 00 00 00       	mov    $0x1,%edi <-- trapping instruction
+  2f:	e8 41 08 34 fd       	call   0xfd340875
+  34:	65 8b 05 ba 3d 15 7c 	mov    %gs:0x7c153dba(%rip),%eax        # 0x7c153df5
+  3b:	85 c0                	test   %eax,%eax
+  3d:	74 0a                	je     0x49
+  3f:	5b                   	pop    %rbx

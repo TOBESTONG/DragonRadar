@@ -1,0 +1,135 @@
+SELinux: unrecognized netlink message: protocol=0 nlmsg_type=0 sclass=netlink_route_socket pid=2072 comm=syz.3.8
+netlink: 33 bytes leftover after parsing attributes in process `syz.3.8'.
+netlink: 1280 bytes leftover after parsing attributes in process `syz.1.7'.
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+EXT4-fs (loop0): 1 orphan inode deleted
+systemd-udevd/116 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff88800dd808a8 (&file_data->lock
+EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,norecovery,noblock_validity,errors=remount-ro,noauto_da_alloc,resgid=0x0000000000000000,barrier,auto_da_alloc,max_dir_size_kb=0x00000000000004e1,
+){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ext4 filesystem being mounted at /0/file1 supports timestamps until 2038 (0x7fffffff)
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 229746
+hardirqs last  enabled at (229746): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (229746): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (229745): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (229745): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (229336): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (229621): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+2 locks held by systemd-udevd/116:
+ #0: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #1: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 0 PID: 116 Comm: systemd-udevd Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+syz.2.11 (2099): attempted to duplicate a private mapping with mremap.  This is not supported.
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:__phys_addr_nodebug arch/x86/include/asm/page_64.h:23 [inline]
+RIP: 0010:virt_to_head_page include/linux/mm.h:858 [inline]
+RIP: 0010:kmem_cache_free+0x5a/0x340 mm/slub.c:3158
+Code: 00 00 bd 00 00 00 80 49 8d 1c 2c 4c 8b 6c 24 50 48 8b 2d 69 08 70 03 49 39 dc 77 0e 48 c7 c5 00 00 00 80 48 2b 2d d6 af 57 03 <48> 01 dd 48 89 e6 4c 89 f7 4c 89 24 24 48 c7 44 24 08 00 00 00 00
+RSP: 0018:ffff88800bf97d40 EFLAGS: 00000206
+RAX: 0000000000000000 RBX: ffff888099785500 RCX: ffffffff817b75ab
+RDX: ffff888010573400 RSI: ffff888019785500 RDI: ffff888008143b40
+RBP: 0000777f80000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888019785500
+R13: ffffffff817b7631 R14: ffff888008143b40 R15: ffff8880131baeb0
+ putname+0xe1/0x130 fs/namei.c:259
+ do_sys_openat2+0x153/0x420 fs/open.c:1177
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f068d537342
+Code: c0 f6 c2 40 75 52 89 d0 45 31 d2 25 00 00 41 00 3d 00 00 41 00 74 41 64 8b 04 25 18 00 00 00 85 c0 75 65 b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 a2 00 00 00 48 8b 4c 24 38 64 48 2b 0c 25
+RSP: 002b:00007ffe36eea3c0 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f068d537342
+RDX: 00000000002a0000 RSI: 00005571606a2871 RDI: 0000000000000011
+RBP: 00005571606a2870 R08: 000055715ea13950 R09: 006c617574726976
+R10: 0000000000000000 R11: 0000000000000246 R12: 00005571606a28de
+R13: 0000000000000011 R14: 0000000000000008 R15: 00005571606a2871
+EXT4-fs (loop2): Ignoring removed oldalloc option
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs error (device loop2): ext4_mb_mark_diskspace_used:3233: comm syz.2.11: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs (loop2): ext4_orphan_cleanup: truncating inode 16 to 9000 bytes
+EXT4-fs (loop2): 1 truncate cleaned up
+EXT4-fs (loop2): mounting with "discard" option, but the device does not support discard
+EXT4-fs (loop2): mounted filesystem without journal. Opts: oldalloc,noblock_validity,stripe=0x0000000000000006,barrier=0x000000007fff0038,discard,sysvgroups,resuid=0x000000000000ee00,resgid=0x000000000000ee01,barrier=0x00000000000041db2,errors=continue
+ext4 filesystem being mounted at /1/file0 supports timestamps until 2038 (0x7fffffff)
+syz.2.11 (2099) used greatest stack depth: 24144 bytes left
+----------------
+Code disassembly (best guess):
+   0:	00 00                	add    %al,(%rax)
+   2:	bd 00 00 00 80       	mov    $0x80000000,%ebp
+   7:	49 8d 1c 2c          	lea    (%r12,%rbp,1),%rbx
+   b:	4c 8b 6c 24 50       	mov    0x50(%rsp),%r13
+  10:	48 8b 2d 69 08 70 03 	mov    0x3700869(%rip),%rbp        # 0x3700880
+  17:	49 39 dc             	cmp    %rbx,%r12
+  1a:	77 0e                	ja     0x2a
+  1c:	48 c7 c5 00 00 00 80 	mov    $0xffffffff80000000,%rbp
+  23:	48 2b 2d d6 af 57 03 	sub    0x357afd6(%rip),%rbp        # 0x357b000
+* 2a:	48 01 dd             	add    %rbx,%rbp <-- trapping instruction
+  2d:	48 89 e6             	mov    %rsp,%rsi
+  30:	4c 89 f7             	mov    %r14,%rdi
+  33:	4c 89 24 24          	mov    %r12,(%rsp)
+  37:	48 c7 44 24 08 00 00 	movq   $0x0,0x8(%rsp)
+  3e:	00 00

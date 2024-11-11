@@ -1,0 +1,200 @@
+Warning: Permanently added '[localhost]:43692' (ED25519) to the list of known hosts.
+syzkaller login: [   43.826422] audit: type=1400 audit(1731238434.368:6): avc:  denied  { execmem } for  pid=236 comm="syz-executor158" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+[   43.842003] cgroup: Unknown subsys name 'net'
+[   43.843330] cgroup: Unknown subsys name 'net_prio'
+[   43.845068] cgroup: Unknown subsys name 'devices'
+[   43.846685] cgroup: Unknown subsys name 'blkio'
+[   43.894057] cgroup: Unknown subsys name 'hugetlb'
+[   43.895466] cgroup: Unknown subsys name 'rlimit'
+Setting up swapspace version 1, size = 122.1 MiB (127995904 bytes)
+no label, UUID=2c13ec0e-a499-48d6-8c22-f46ea083600b
+[   43.971933] Adding 124996k swap on ./swap-file.  Priority:0 extents:1 across:124996k 
+executing program
+executing program
+executing program
+[   44.095392] EXT4-fs (loop2): 1 orphan inode deleted
+[   44.097077] EXT4-fs (loop2): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,dioread_lock,grpquota,noauto_da_alloc,resgid=0x0000000000000000,barrier,auto_da_alloc,usrquota,
+[   44.100182] ext4 filesystem being mounted at /0/file1 supports timestamps until 2038 (0x7fffffff)
+[   44.103510] EXT4-fs (loop1): 1 orphan inode deleted
+[   44.104437] EXT4-fs (loop1): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,dioread_lock,grpquota,noauto_da_alloc,resgid=0x0000000000000000,barrier,auto_da_alloc,usrquota,
+[   44.107345] ext4 filesystem being mounted at /0/file1 supports timestamps until 2038 (0x7fffffff)
+executing program
+[   44.133780] EXT4-fs error (device loop1): ext4_ext_remove_space:2817: inode #15: comm syz-executor158: path[1].p_hdr == NULL
+[   44.139284] EXT4-fs (loop1): Remounting filesystem read-only
+[   44.143859] EXT4-fs (loop3): 1 orphan inode deleted
+[   44.144323] EXT4-fs error (device loop2): ext4_ext_remove_space:2817: inode #15: comm syz-executor158: path[1].p_hdr == NULL
+[   44.144785] EXT4-fs (loop3): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,dioread_lock,grpquota,noauto_da_alloc,resgid=0x0000000000000000,barrier,auto_da_alloc,usrquota,
+[   44.150715] EXT4-fs (loop2): Remounting filesystem read-only
+[   44.151016] ext4 filesystem being mounted at /0/file1 supports timestamps until 2038 (0x7fffffff)
+[   44.155339] syz-executor158 (256) used greatest stack depth: 23696 bytes left
+[   44.161616] EXT4-fs error (device loop1): ext4_lookup:1708: inode #2: comm syz-executor158: deleted inode referenced: 11
+[   44.164354] EXT4-fs error (device loop3): ext4_ext_remove_space:2817: inode #15: comm syz-executor158: path[1].p_hdr == NULL
+[   44.168549] EXT4-fs error (device loop2): ext4_lookup:1708: inode #2: comm syz-executor158: deleted inode referenced: 11
+[   44.170970] EXT4-fs (loop3): Remounting filesystem read-only
+[   44.177705] EXT4-fs error (device loop3): ext4_lookup:1708: inode #2: comm syz-executor158: deleted inode referenced: 11
+[   44.179145] EXT4-fs error (device loop2): ext4_lookup:1708: inode #2: comm syz-executor158: deleted inode referenced: 11
+[   44.180096] EXT4-fs error (device loop3): ext4_lookup:1708: inode #2: comm syz-executor158: deleted inode referenced: 11
+[   44.182611] EXT4-fs error (device loop1): ext4_lookup:1708: inode #2: comm syz-executor158: deleted inode referenced: 11
+[   44.190453] EXT4-fs (loop0): 1 orphan inode deleted
+[   44.191368] EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,dioread_lock,grpquota,noauto_da_alloc,resgid=0x0000000000000000,barrier,auto_da_alloc,usrquota,
+[   44.194387] ext4 filesystem being mounted at /0/file1 supports timestamps until 2038 (0x7fffffff)
+[   44.250056] ==================================================================
+[   44.251423] BUG: KASAN: out-of-bounds in ext4_ext_remove_space+0x1a22/0x4470
+[   44.252641] Read of size 18446744073709551556 at addr ffff888011030048 by task syz-executor158/293
+[   44.254485] 
+[   44.254778] CPU: 1 PID: 293 Comm: syz-executor158 Not tainted 5.10.0 #1
+[   44.256662] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[   44.258810] Call Trace:
+[   44.259471]  dump_stack+0x107/0x163
+[   44.260311]  ? ext4_ext_remove_space+0x1a22/0x4470
+[   44.261400]  ? ext4_ext_remove_space+0x1a22/0x4470
+[   44.262409]  print_address_description.constprop.0+0x1c/0x210
+[   44.263746]  ? _raw_spin_lock_irqsave+0x4e/0x50
+[   44.264717]  ? vprintk_func+0x95/0x250
+[   44.265519]  ? ext4_ext_remove_space+0x1a22/0x4470
+[   44.266555]  ? ext4_ext_remove_space+0x1a22/0x4470
+[   44.267664]  kasan_report.cold+0x37/0x7c
+[   44.268517]  ? ext4_ext_remove_space+0x1a22/0x4470
+[   44.269630]  check_memory_region+0xf9/0x1e0
+[   44.270459]  memmove+0x20/0x60
+[   44.271158]  ext4_ext_remove_space+0x1a22/0x4470
+[   44.272175]  ? ext4_ext_index_trans_blocks+0x160/0x160
+[   44.273311]  ? ext4_es_remove_extent+0x103/0x460
+[   44.274279]  ? ext4_es_lookup_extent+0xc90/0xc90
+[   44.275282]  ? down_write_killable_nested+0x180/0x180
+[   44.276357]  ? __ext4_journal_start_sb+0x11c/0x490
+[   44.277379]  ext4_punch_hole+0x678/0x1130
+[   44.278079]  ext4_fallocate+0x10e7/0x3e70
+[   44.278979]  ? lock_release+0x6f0/0x6f0
+[   44.279837]  ? ext4_ext_truncate+0x260/0x260
+[   44.280755]  ? ext4_ext_truncate+0x260/0x260
+[   44.281763]  vfs_fallocate+0x494/0xdd0
+[   44.282519]  ioctl_preallocate+0x18e/0x200
+[   44.283415]  ? fiemap_prep+0x220/0x220
+[   44.284247]  do_vfs_ioctl+0xe3c/0x1140
+[   44.285076]  ? generic_block_fiemap+0x60/0x60
+[   44.285982]  ? selinux_bprm_creds_for_exec+0xac0/0xac0
+[   44.287056]  ? sigprocmask+0xee/0x340
+[   44.287792]  ? __fget_files+0x2ee/0x460
+[   44.288527]  __x64_sys_ioctl+0x108/0x210
+[   44.289205]  do_syscall_64+0x33/0x40
+[   44.289820]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   44.290868] RIP: 0033:0x7f77fc74475d
+[   44.291693] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+[   44.295744] RSP: 002b:00007f77fc6d3208 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+[   44.297324] RAX: ffffffffffffffda RBX: 00007f77fc7efd80 RCX: 00007f77fc74475d
+[   44.298521] RDX: 0000000020000080 RSI: 0000000040305829 RDI: 0000000000000004
+[   44.300007] RBP: 00007f77fc7bee18 R08: 00007f77fc6d36c0 R09: 0000000000000000
+[   44.301460] R10: 0000000000000000 R11: 0000000000000246 R12: 0031656c69662f2e
+[   44.302971] R13: 6f6f6c2f7665642f R14: 000001ff7fdfd000 R15: 00007f77fc7efd88
+[   44.304532] 
+[   44.304869] The buggy address belongs to the page:
+[   44.305982] page:000000007241e315 refcount:3 mapcount:0 mapping:00000000925866f6 index:0x26 pfn:0x11030
+[   44.307910] aops:def_blk_aops ino:0
+[   44.308596] flags: 0x100000000022034(uptodate|lru|active|private|mappedtodisk)
+[   44.310239] raw: 0100000000022034 ffffea0000547e48 ffff88800b05c030 ffff888009e38a30
+[   44.311513] raw: 0000000000000026 ffff8880190343a0 00000003ffffffff ffff888010764000
+[   44.312816] page dumped because: kasan: bad access detected
+[   44.313748] page->mem_cgroup:ffff888010764000
+[   44.314470] 
+[   44.314752] Memory state around the buggy address:
+[   44.315560]  ffff88801102ff00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[   44.316768]  ffff88801102ff80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[   44.317974] >ffff888011030000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[   44.319161]                                               ^
+[   44.320161]  ffff888011030080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[   44.321432]  ffff888011030100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[   44.322660] ==================================================================
+[   44.323898] Disabling lock debugging due to kernel taint
+[   44.338622] EXT4-fs error (device loop0): ext4_lookup:1708: inode #2: comm syz-executor158: deleted inode referenced: 11
+[   44.347120] EXT4-fs (loop0): Remounting filesystem read-only
+[   44.348197] EXT4-fs error (device loop0): ext4_lookup:1708: inode #2: comm syz-executor158: deleted inode referenced: 11
+
+VM DIAGNOSIS:
+19:33:54  Registers:
+info registers vcpu 0
+
+CPU#0
+RAX=dffffc0000000000 RBX=ffffffff8516fde8 RCX=ffffffff81469208 RDX=1ffffffff0a2dfbd
+RSI=ffffffff81469083 RDI=0000000000000001 RBP=0000000000000001 RSP=ffff88801117eff8
+R8 =0000000000000000 R9 =ffffffff86e5f6a7 R10=0000000000000000 R11=0000000000000001
+R12=00007f77fc74475d R13=0000000000000000 R14=ffffffff8516fde8 R15=00000000000000a0
+RIP=ffffffff814690ac RFL=00000246 [---Z-P-] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 00007f77fc7156c0 00000000 00000000
+GS =0000 ffff88806ce00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe0000003000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe0000001000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=00007f77fc7efe60 CR3=0000000008fa4000 CR4=00350ef0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 2525252525252525 2525252525252525
+YMM01=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM02=0000000000000000 0000000000000000 0000000000ff0000 00000000000000ff
+YMM03=0000000000000000 0000000000000000 0000000000ff0000 00000000000000ff
+YMM04=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM05=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM06=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM07=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM08=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM09=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM10=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+info registers vcpu 1
+
+CPU#1
+RAX=0000000000000051 RBX=0000000000000000 RCX=0000000000000000 RDX=00000000000003f8
+RSI=ffffffff823c0a41 RDI=ffffffff87a492e0 RBP=ffffffff87a492a0 RSP=ffff88800b30f2f8
+R8 =0000000000000001 R9 =0000000000000003 R10=000000000000001f R11=0000000000000001
+R12=0000000000000051 R13=0000000000000000 R14=ffffffff87a492a0 R15=dffffc0000000000
+RIP=ffffffff823c0a6c RFL=00000002 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 00007f77fc6d36c0 00000000 00000000
+GS =0000 ffff88806cf00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe000003e000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe000003c000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=00007f77fc6d2b30 CR3=0000000008fa4000 CR4=00350ee0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM01=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM02=0000000000000000 0000000000000000 0000000000000000 00000000000000ff
+YMM03=0000000000000000 0000000000000000 0000000000000000 00000000000000ff
+YMM04=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM05=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM06=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM07=0000000000000000 0000000000000000 0000000000000018 0000000000000000
+YMM08=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM09=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM10=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000

@@ -1,0 +1,491 @@
+EXT4-fs (loop0): mounted filesystem without journal. Opts: debug,orlov,nodiscard,test_dummy_encryption,nojournal_checksum,init_itable=0x0000000000000000,usrquota,usrquota,,errors=continue
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 1 PID: 13754 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 1 PID: 13754 Comm: syz.0.521 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800cc5f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff812d93c5 RDI: ffffed100198bf0a
+RBP: ffffea0000978c40 R08: 0000000000000001 R09: ffff88806cf1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea0000978c48
+R13: ffffea0000978c34 R14: ffffea0000978c01 R15: ffff888017eb2008
+FS:  00007febf1a7b6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000017e58000 CR4: 0000000000350ee0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7febf2e22ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007febf1a7b038 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 00007febf2fdb058 RCX: 00007febf2e22ef9
+RDX: 0000000000000015 RSI: 0000000000400000 RDI: 0000000020000000
+RBP: 00007febf2e95b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007febf2fdb058 R15: 00007ffc043ae678
+irq event stamp: 7699
+hardirqs last  enabled at (7723): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (7760): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+softirqs last  enabled at (1354): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (555): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 56d782f539fe33b8 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 1 PID: 13754 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 1 PID: 13754 Comm: syz.0.521 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800cc5f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff812d93c5 RDI: ffffed100198bf0a
+RBP: ffffea0000978c80 R08: 0000000000000001 R09: ffff88806cf1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea0000978c88
+R13: ffffea0000978c34 R14: ffffea0000978c01 R15: ffff888017eb2010
+FS:  00007febf1a7b6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000017e58000 CR4: 0000000000350ee0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7febf2e22ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007febf1a7b038 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 00007febf2fdb058 RCX: 00007febf2e22ef9
+RDX: 0000000000000015 RSI: 0000000000400000 RDI: 0000000020000000
+RBP: 00007febf2e95b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007febf2fdb058 R15: 00007ffc043ae678
+irq event stamp: 13561
+hardirqs last  enabled at (13587): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (13604): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+softirqs last  enabled at (1354): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (555): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 56d782f539fe33b9 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 1 PID: 13754 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 1 PID: 13754 Comm: syz.0.521 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800cc5f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff812d93c5 RDI: ffffed100198bf0a
+RBP: ffffea0000978cc0 R08: 0000000000000001 R09: ffff88806cf1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea0000978cc8
+R13: ffffea0000978c34 R14: ffffea0000978c01 R15: ffff888017eb2018
+FS:  00007febf1a7b6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000017e58000 CR4: 0000000000350ee0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7febf2e22ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007febf1a7b038 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 00007febf2fdb058 RCX: 00007febf2e22ef9
+RDX: 0000000000000015 RSI: 0000000000400000 RDI: 0000000020000000
+RBP: 00007febf2e95b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007febf2fdb058 R15: 00007ffc043ae678
+irq event stamp: 19771
+hardirqs last  enabled at (19833): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (19870): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+softirqs last  enabled at (1354): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (555): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 56d782f539fe33ba ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 1 PID: 13754 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 1 PID: 13754 Comm: syz.0.521 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800cc5f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff812d93c5 RDI: ffffed100198bf0a
+RBP: ffffea0000978d00 R08: 0000000000000001 R09: ffff88806cf1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea0000978d08
+R13: ffffea0000978c34 R14: ffffea0000978c01 R15: ffff888017eb2020
+FS:  00007febf1a7b6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000017e58000 CR4: 0000000000350ee0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7febf2e22ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007febf1a7b038 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 00007febf2fdb058 RCX: 00007febf2e22ef9
+RDX: 0000000000000015 RSI: 0000000000400000 RDI: 0000000020000000
+RBP: 00007febf2e95b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007febf2fdb058 R15: 00007ffc043ae678
+irq event stamp: 26561
+hardirqs last  enabled at (26655): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (26722): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+softirqs last  enabled at (1354): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (555): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 56d782f539fe33bb ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 1 PID: 13754 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 1 PID: 13754 Comm: syz.0.521 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800cc5f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff812d93c5 RDI: ffffed100198bf0a
+RBP: ffffea0000978d40 R08: 0000000000000001 R09: ffff88806cf1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea0000978d48
+R13: ffffea0000978c34 R14: ffffea0000978c01 R15: ffff888017eb2028
+FS:  00007febf1a7b6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000017e58000 CR4: 0000000000350ee0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7febf2e22ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007febf1a7b038 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 00007febf2fdb058 RCX: 00007febf2e22ef9
+RDX: 0000000000000015 RSI: 0000000000400000 RDI: 0000000020000000
+RBP: 00007febf2e95b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007febf2fdb058 R15: 00007ffc043ae678
+irq event stamp: 32047
+hardirqs last  enabled at (32073): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (32090): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+softirqs last  enabled at (1354): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (555): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 56d782f539fe33bc ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 1 PID: 13754 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 1 PID: 13754 Comm: syz.0.521 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800cc5f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff812d93c5 RDI: ffffed100198bf0a
+RBP: ffffea0000978d80 R08: 0000000000000001 R09: ffff88806cf1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea0000978d88
+R13: ffffea0000978c34 R14: ffffea0000978c01 R15: ffff888017eb2030
+FS:  00007febf1a7b6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000017e58000 CR4: 0000000000350ee0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7febf2e22ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007febf1a7b038 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 00007febf2fdb058 RCX: 00007febf2e22ef9
+RDX: 0000000000000015 RSI: 0000000000400000 RDI: 0000000020000000
+RBP: 00007febf2e95b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007febf2fdb058 R15: 00007ffc043ae678
+irq event stamp: 37471
+hardirqs last  enabled at (37521): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (37598): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+softirqs last  enabled at (1354): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (555): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 56d782f539fe33bd ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 1 PID: 13754 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 1 PID: 13754 Comm: syz.0.521 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800cc5f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff812d93c5 RDI: ffffed100198bf0a
+RBP: ffffea0000978dc0 R08: 0000000000000001 R09: ffff88806cf2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea0000978dc8
+R13: ffffea0000978c34 R14: ffffea0000978c01 R15: ffff888017eb2038
+FS:  00007febf1a7b6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000017e58000 CR4: 0000000000350ee0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7febf2e22ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007febf1a7b038 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 00007febf2fdb058 RCX: 00007febf2e22ef9
+RDX: 0000000000000015 RSI: 0000000000400000 RDI: 0000000020000000
+RBP: 00007febf2e95b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007febf2fdb058 R15: 00007ffc043ae678
+irq event stamp: 45631
+hardirqs last  enabled at (45703): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (45754): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+softirqs last  enabled at (1354): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (555): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 56d782f539fe33be ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 1 PID: 13754 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 1 PID: 13754 Comm: syz.0.521 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800cc5f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff812d93c5 RDI: ffffed100198bf0a
+RBP: ffffea000041e640 R08: 0000000000000001 R09: ffff88806cf1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000041e648
+R13: ffffea000041e634 R14: ffffea000041e601 R15: ffff888017eb2048
+FS:  00007febf1a7b6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000017e58000 CR4: 0000000000350ee0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7febf2e22ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007febf1a7b038 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 00007febf2fdb058 RCX: 00007febf2e22ef9
+RDX: 0000000000000015 RSI: 0000000000400000 RDI: 0000000020000000
+RBP: 00007febf2e95b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007febf2fdb058 R15: 00007ffc043ae678
+irq event stamp: 52951
+hardirqs last  enabled at (53139): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (53222): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+softirqs last  enabled at (1354): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (555): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 56d782f539fe33bf ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 1 PID: 13754 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 1 PID: 13754 Comm: syz.0.521 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800cc5f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff812d93c5 RDI: ffffed100198bf0a
+RBP: ffffea000041e680 R08: 0000000000000001 R09: ffff88806cf1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000041e688
+R13: ffffea000041e634 R14: ffffea000041e601 R15: ffff888017eb2050
+FS:  00007febf1a7b6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000017e58000 CR4: 0000000000350ee0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7febf2e22ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007febf1a7b038 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 00007febf2fdb058 RCX: 00007febf2e22ef9
+RDX: 0000000000000015 RSI: 0000000000400000 RDI: 0000000020000000
+RBP: 00007febf2e95b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007febf2fdb058 R15: 00007ffc043ae678
+irq event stamp: 57797
+hardirqs last  enabled at (57827): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (57844): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+softirqs last  enabled at (1354): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (555): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 56d782f539fe33c0 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 1 PID: 13754 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 1 PID: 13754 Comm: syz.0.521 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800cc5f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff812d93c5 RDI: ffffed100198bf0a
+RBP: ffffea000041e6c0 R08: 0000000000000001 R09: ffff88806cf1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000041e6c8
+R13: ffffea000041e634 R14: ffffea000041e601 R15: ffff888017eb2058
+FS:  00007febf1a7b6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000017e58000 CR4: 0000000000350ee0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7febf2e22ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007febf1a7b038 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 00007febf2fdb058 RCX: 00007febf2e22ef9
+RDX: 0000000000000015 RSI: 0000000000400000 RDI: 0000000020000000
+RBP: 00007febf2e95b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007febf2fdb058 R15: 00007ffc043ae678
+irq event stamp: 61239
+hardirqs last  enabled at (61259): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (61292): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+softirqs last  enabled at (1354): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (555): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 56d782f539fe33c1 ]---

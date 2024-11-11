@@ -1,0 +1,50 @@
+EXT4-fs error (device loop2): ext4_search_dir:1398: inode #12: block 13: comm syz.2.365: bad entry in directory: inode out of bounds - offset=24, inode=131085, rec_len=16, name_len=5, size=4096
+==================================================================
+BUG: KASAN: use-after-free in do_update_region+0x59b/0x670 drivers/tty/vt/vt.c:664
+Read of size 2 at addr ffff888000100000 by task systemd/1
+
+CPU: 1 PID: 1 Comm: systemd Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ do_update_region+0x59b/0x670 drivers/tty/vt/vt.c:664
+ csi_J+0x2d5/0xab0 drivers/tty/vt/vt.c:1568
+ do_con_trol+0x1ee9/0x5c10 drivers/tty/vt/vt.c:2420
+ do_con_write+0xe04/0x1f60 drivers/tty/vt/vt.c:2911
+ con_write+0x22/0xb0 drivers/tty/vt/vt.c:3255
+ process_output_block drivers/tty/n_tty.c:595 [inline]
+ n_tty_write+0x3d4/0xf80 drivers/tty/n_tty.c:2333
+ do_tty_write drivers/tty/tty_io.c:962 [inline]
+ tty_write+0x4f0/0x910 drivers/tty/tty_io.c:1046
+ vfs_write+0x29a/0xac0 fs/read_write.c:603
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fb9dafc354f
+Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 39 55 f9 ff 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 6c 55 f9 ff 48
+RSP: 002b:00007ffce1c03140 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 000000000000000a RCX: 00007fb9dafc354f
+RDX: 000000000000000a RSI: 00007fb9db3ef8f6 RDI: 000000000000000d
+RBP: 00007fb9db3ef8f6 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000293 R12: 000000000000000d
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
+
+The buggy address belongs to the page:
+page:00000000177a52cc refcount:0 mapcount:-128 mapping:0000000000000000 index:0x0 pfn:0x100
+flags: 0x0()
+raw: 0000000000000000 ffff8880801dc300 ffff8880801dc300 0000000000000000
+raw: 0000000000000000 0000000000000008 00000000ffffff7f 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880000fff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff8880000fff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff888000100000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                   ^
+ ffff888000100080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff888000100100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================

@@ -1,0 +1,61 @@
+EXT4-fs error (device loop0): ext4_xattr_ibody_find:2175: inode #18: comm syz.0.186: corrupted in-inode xattr
+EXT4-fs warning (device loop0): ext4_da_update_reserve_space:355: ext4_da_update_reserve_space: ino 18, used 1 with only 0 reserved data blocks
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 3982 at fs/ext4/inode.c:359 ext4_da_update_reserve_space+0x62e/0x7b0 fs/ext4/inode.c:355
+Modules linked in:
+CPU: 1 PID: 3982 Comm: syz.0.186 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_da_update_reserve_space+0x62e/0x7b0 fs/ext4/inode.c:359
+Code: 11 00 0f 85 76 01 00 00 48 8b 7d 28 41 55 ba 63 01 00 00 49 c7 c0 c0 b5 52 84 53 48 c7 c1 20 9f 52 84 4c 89 c6 e8 b2 df 0e 00 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 48 8b 54 24 10 48 c1 ea 03 0f
+RSP: 0018:ffff8880201bf228 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffc900045d3000
+RDX: 0000000000040000 RSI: ffffffff81b43718 RDI: ffffed1004037e14
+RBP: ffff888013ffdbd0 R08: 000000000000008f R09: ffff88806cf2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 0000000000000000 R14: ffff888013042000 R15: ffff888013ffe188
+FS:  00007fe312af16c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f37fe9ef688 CR3: 000000000b5c6000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_map_blocks+0xab6/0x1740 fs/ext4/inode.c:649
+ mpage_map_one_extent fs/ext4/inode.c:2387 [inline]
+ mpage_map_and_submit_extent fs/ext4/inode.c:2440 [inline]
+ ext4_writepages+0x1c38/0x3a00 fs/ext4/inode.c:2792
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __filemap_fdatawrite_range+0x24b/0x2f0 mm/filemap.c:422
+ file_write_and_wait_range+0xb2/0x120 mm/filemap.c:761
+ ext4_sync_file+0x225/0xf40 fs/ext4/fsync.c:151
+ vfs_fsync_range+0x13d/0x230 fs/sync.c:200
+ generic_write_sync include/linux/fs.h:2739 [inline]
+ ext4_buffered_write_iter+0x36a/0x4d0 fs/ext4/file.c:278
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ call_write_iter include/linux/fs.h:1903 [inline]
+ do_iter_readv_writev+0x476/0x760 fs/read_write.c:740
+ do_iter_write+0x18d/0x670 fs/read_write.c:866
+ vfs_writev+0x1aa/0x660 fs/read_write.c:939
+ do_pwritev+0x1bc/0x270 fs/read_write.c:1036
+ __do_sys_pwritev2 fs/read_write.c:1095 [inline]
+ __se_sys_pwritev2 fs/read_write.c:1086 [inline]
+ __x64_sys_pwritev2+0xeb/0x150 fs/read_write.c:1086
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fe313e98ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe312af1038 EFLAGS: 00000246 ORIG_RAX: 0000000000000148
+RAX: ffffffffffffffda RBX: 00007fe314051058 RCX: 00007fe313e98ef9
+RDX: 0000000000000004 RSI: 0000000020000040 RDI: 0000000000000005
+RBP: 00007fe313f0bb76 R08: 0000000000000000 R09: 0000000000000003
+R10: 000000000000782d R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fe314051058 R15: 00007ffd6fe3b268
+irq event stamp: 11571
+hardirqs last  enabled at (11579): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (11588): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (11500): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (11493): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace d920b22d1f2b0cf7 ]---
+EXT4-fs error (device loop0): ext4_map_blocks:708: inode #18: block 4: comm syz.0.186: lblock 1 mapped to illegal pblock 4 (length 1)
+EXT4-fs (loop0): Delayed block allocation failed for inode 18 at logical offset 1 with max blocks 1 with error 117
+EXT4-fs (loop0): This should not happen!! Data will be lost
+
+EXT4-fs error (device loop0): ext4_xattr_ibody_find:2175: inode #18: comm kworker/u4:2: corrupted in-inode xattr
+EXT4-fs error (device loop0): ext4_xattr_ibody_find:2175: inode #18: comm kworker/u4:2: corrupted in-inode xattr

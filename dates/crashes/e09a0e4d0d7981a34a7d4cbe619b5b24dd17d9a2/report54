@@ -1,0 +1,219 @@
+EXT4-fs (loop2): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /64/file0 supports timestamps until 2038 (0x7fffffff)
+======================================================
+WARNING: possible circular locking dependency detected
+5.10.0 #1 Not tainted
+------------------------------------------------------
+syz.2.187/3867 is trying to acquire lock:
+ffff88801ac26ec0 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_map_blocks+0x381/0x1740 fs/ext4/inode.c:551
+
+but task is already holding lock:
+ffff8880196081e0 (&s->s_dquot.dqio_sem){++++}-{3:3}, at: v2_write_dquot+0x8b/0x250 fs/quota/quota_v2.c:330
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&s->s_dquot.dqio_sem){++++}-{3:3}:
+       down_read+0x96/0x450 kernel/locking/rwsem.c:1492
+       v2_read_dquot+0x49/0x120 fs/quota/quota_v2.c:308
+       dquot_acquire+0x133/0x590 fs/quota/dquot.c:434
+       ext4_acquire_dquot+0x25e/0x3d0 fs/ext4/super.c:6186
+       dqget+0x681/0xfb0 fs/quota/dquot.c:901
+       __dquot_initialize+0x59d/0xd60 fs/quota/dquot.c:1479
+       ext4_tmpfile+0x87/0x490 fs/ext4/namei.c:2680
+       vfs_tmpfile+0x132/0x280 fs/namei.c:3284
+       do_tmpfile fs/namei.c:3317 [inline]
+       path_openat+0x166e/0x26f0 fs/namei.c:3360
+       do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+       do_sys_openat2+0x16d/0x420 fs/open.c:1168
+       do_sys_open fs/open.c:1184 [inline]
+       __do_sys_openat fs/open.c:1200 [inline]
+       __se_sys_openat fs/open.c:1195 [inline]
+       __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #1 (&dquot->dq_lock){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+       __mutex_lock+0x13b/0x10d0 kernel/locking/mutex.c:1103
+       dquot_commit+0x4d/0x380 fs/quota/dquot.c:476
+       ext4_write_dquot+0x24e/0x310 fs/ext4/super.c:6170
+       ext4_mark_dquot_dirty+0x111/0x1a0 fs/ext4/super.c:6221
+       mark_dquot_dirty fs/quota/dquot.c:347 [inline]
+       mark_all_dquot_dirty fs/quota/dquot.c:385 [inline]
+       __dquot_alloc_space+0x528/0xa80 fs/quota/dquot.c:1709
+       dquot_alloc_space_nodirty include/linux/quotaops.h:297 [inline]
+       dquot_alloc_space include/linux/quotaops.h:310 [inline]
+       dquot_alloc_block include/linux/quotaops.h:334 [inline]
+       ext4_mb_new_blocks+0x55a/0x4b60 fs/ext4/mballoc.c:4959
+       ext4_ext_map_blocks+0x1f8e/0x5d50 fs/ext4/extents.c:4238
+       ext4_map_blocks+0x700/0x1740 fs/ext4/inode.c:628
+       ext4_getblk+0x144/0x6a0 fs/ext4/inode.c:838
+       ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+       ext4_append+0x17f/0x390 fs/ext4/namei.c:67
+       ext4_init_new_dir+0x25a/0x4e0 fs/ext4/namei.c:2764
+       ext4_mkdir+0x3c1/0xb10 fs/ext4/namei.c:2809
+       vfs_mkdir+0x45c/0x710 fs/namei.c:3650
+       do_mkdirat+0x145/0x2a0 fs/namei.c:3673
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #0 (&ei->i_data_sem/2){++++}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:2868 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+       validate_chain kernel/locking/lockdep.c:3608 [inline]
+       __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+       lock_acquire kernel/locking/lockdep.c:5437 [inline]
+       lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+       down_read+0x96/0x450 kernel/locking/rwsem.c:1492
+       ext4_map_blocks+0x381/0x1740 fs/ext4/inode.c:551
+       ext4_getblk+0x144/0x6a0 fs/ext4/inode.c:838
+       ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+       ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+       write_blk+0x12f/0x220 fs/quota/quota_tree.c:73
+       get_free_dqblk+0xff/0x2d0 fs/quota/quota_tree.c:102
+       do_insert_tree+0x57b/0xf80 fs/quota/quota_tree.c:309
+       do_insert_tree+0xdb8/0xf80 fs/quota/quota_tree.c:340
+       dq_insert_tree fs/quota/quota_tree.c:366 [inline]
+       qtree_write_dquot+0x3bf/0x580 fs/quota/quota_tree.c:385
+       v2_write_dquot+0x11c/0x250 fs/quota/quota_v2.c:334
+       dquot_acquire+0x2cf/0x590 fs/quota/dquot.c:443
+       ext4_acquire_dquot+0x25e/0x3d0 fs/ext4/super.c:6186
+       dqget+0x681/0xfb0 fs/quota/dquot.c:901
+       __dquot_initialize+0x59d/0xd60 fs/quota/dquot.c:1479
+       ext4_cross_rename+0x35f/0x16f0 fs/ext4/namei.c:3968
+       ext4_rename2+0x1df/0x240 fs/ext4/namei.c:4105
+       vfs_rename+0xf1b/0x1960 fs/namei.c:4310
+       do_renameat2+0x732/0xb80 fs/namei.c:4457
+       __do_sys_renameat2 fs/namei.c:4492 [inline]
+       __se_sys_renameat2 fs/namei.c:4489 [inline]
+       __x64_sys_renameat2+0xba/0x150 fs/namei.c:4489
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+other info that might help us debug this:
+
+Chain exists of:
+  &ei->i_data_sem/2 --> &dquot->dq_lock --> &s->s_dquot.dqio_sem
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&s->s_dquot.dqio_sem);
+                               lock(&dquot->dq_lock);
+                               lock(&s->s_dquot.dqio_sem);
+  lock(&ei->i_data_sem/2);
+
+ *** DEADLOCK ***
+
+7 locks held by syz.2.187/3867:
+ #0: ffff888019608438 (sb_writers#3){.+.+}-{0:0}, at: do_renameat2+0x353/0xb80 fs/namei.c:4402
+ #1: ffff888019608720 (&type->s_vfs_rename_key#2){+.+.}-{3:3}, at: lock_rename+0x54/0x280 fs/namei.c:2760
+ #2: ffff88801ac22be8 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+ #2: ffff88801ac22be8 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: lock_rename+0x132/0x280 fs/namei.c:2771
+ #3: ffff88801373dd20 (&type->i_mutex_dir_key#3/2){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+ #3: ffff88801373dd20 (&type->i_mutex_dir_key#3/2){+.+.}-{3:3}, at: lock_rename+0x166/0x280 fs/namei.c:2772
+ #4: ffff88801373faa8 (&sb->s_type->i_mutex_key#14){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ #4: ffff88801373faa8 (&sb->s_type->i_mutex_key#14){+.+.}-{3:3}, at: lock_two_nondirectories+0xec/0x110 fs/inode.c:1034
+ #5: ffff88801378eb28 (&dquot->dq_lock){+.+.}-{3:3}, at: dquot_acquire+0x54/0x590 fs/quota/dquot.c:432
+ #6: ffff8880196081e0 (&s->s_dquot.dqio_sem){++++}-{3:3}, at: v2_write_dquot+0x8b/0x250 fs/quota/quota_v2.c:330
+
+stack backtrace:
+CPU: 0 PID: 3867 Comm: syz.2.187 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
+ check_prev_add kernel/locking/lockdep.c:2868 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+ validate_chain kernel/locking/lockdep.c:3608 [inline]
+ __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ down_read+0x96/0x450 kernel/locking/rwsem.c:1492
+ ext4_map_blocks+0x381/0x1740 fs/ext4/inode.c:551
+ ext4_getblk+0x144/0x6a0 fs/ext4/inode.c:838
+ ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+ ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+ write_blk+0x12f/0x220 fs/quota/quota_tree.c:73
+ get_free_dqblk+0xff/0x2d0 fs/quota/quota_tree.c:102
+ do_insert_tree+0x57b/0xf80 fs/quota/quota_tree.c:309
+ do_insert_tree+0xdb8/0xf80 fs/quota/quota_tree.c:340
+ dq_insert_tree fs/quota/quota_tree.c:366 [inline]
+ qtree_write_dquot+0x3bf/0x580 fs/quota/quota_tree.c:385
+ v2_write_dquot+0x11c/0x250 fs/quota/quota_v2.c:334
+ dquot_acquire+0x2cf/0x590 fs/quota/dquot.c:443
+ ext4_acquire_dquot+0x25e/0x3d0 fs/ext4/super.c:6186
+ dqget+0x681/0xfb0 fs/quota/dquot.c:901
+ __dquot_initialize+0x59d/0xd60 fs/quota/dquot.c:1479
+ ext4_cross_rename+0x35f/0x16f0 fs/ext4/namei.c:3968
+ ext4_rename2+0x1df/0x240 fs/ext4/namei.c:4105
+ vfs_rename+0xf1b/0x1960 fs/namei.c:4310
+ do_renameat2+0x732/0xb80 fs/namei.c:4457
+ __do_sys_renameat2 fs/namei.c:4492 [inline]
+ __se_sys_renameat2 fs/namei.c:4489 [inline]
+ __x64_sys_renameat2+0xba/0x150 fs/namei.c:4489
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f472ff74ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f472ebee038 EFLAGS: 00000246 ORIG_RAX: 000000000000013c
+RAX: ffffffffffffffda RBX: 00007f473012cf80 RCX: 00007f472ff74ef9
+RDX: 0000000000000006 RSI: 00000000200002c0 RDI: 0000000000000006
+RBP: 00007f472ffe7b76 R08: 0000000000000002 R09: 0000000000000000
+R10: 0000000020000180 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f473012cf80 R15: 00007ffedbf4f578
+
+=============================
+WARNING: suspicious RCU usage
+5.10.0 #1 Not tainted
+-----------------------------
+kernel/sched/core.c:7270 Illegal context switch in RCU-bh read-side critical section!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 0
+1 lock held by syz.1.175/3792:
+ #0: ffffffff87a740a0 (nfnl_subsys_ctnetlink){+.+.}-{3:3}, at: nfnl_lock net/netfilter/nfnetlink.c:80 [inline]
+ #0: ffffffff87a740a0 (nfnl_subsys_ctnetlink){+.+.}-{3:3}, at: nfnetlink_rcv_msg+0xadb/0x1250 net/netfilter/nfnetlink.c:247
+
+stack backtrace:
+CPU: 1 PID: 3792 Comm: syz.1.175 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep+0x3ed/0x4d0 kernel/sched/core.c:7270
+ get_next_corpse net/netfilter/nf_conntrack_core.c:2222 [inline]
+ nf_ct_iterate_cleanup+0x132/0x3b0 net/netfilter/nf_conntrack_core.c:2244
+ nf_ct_iterate_cleanup_net net/netfilter/nf_conntrack_core.c:2329 [inline]
+ nf_ct_iterate_cleanup_net+0x113/0x170 net/netfilter/nf_conntrack_core.c:2314
+9pnet: Could not find request transport: 
+ ctnetlink_flush_conntrack net/netfilter/nf_conntrack_netlink.c:1521 [inline]
+ ctnetlink_del_conntrack+0x5fc/0x820 net/netfilter/nf_conntrack_netlink.c:1554
+ nfnetlink_rcv_msg+0xf49/0x1250 net/netfilter/nfnetlink.c:252
+ netlink_rcv_skb+0x14b/0x430 net/netlink/af_netlink.c:2494
+ nfnetlink_rcv+0x1ac/0x420 net/netfilter/nfnetlink.c:600
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x53a/0x7e0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x912/0xe20 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0x15c/0x190 net/socket.c:671
+ ____sys_sendmsg+0x709/0x880 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f9fa435aef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f9fa2fd4038 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007f9fa4512f80 RCX: 00007f9fa435aef9
+RDX: 0000000000000000 RSI: 0000000020000300 RDI: 0000000000000005
+RBP: 00007f9fa43cdb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f9fa4512f80 R15: 00007ffe4c062508

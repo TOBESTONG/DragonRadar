@@ -1,0 +1,120 @@
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /15/bus supports timestamps until 2038 (0x7fffffff)
+kernel profiling enabled (shift: 262141)
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:110:31
+shift exponent 262141 is too large for 64-bit type 'long int'
+CPU: 1 PID: 9663 Comm: syz.0.352 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ profile_init+0xfc/0x110 kernel/profile.c:110
+ profiling_store+0x5e/0xd0 kernel/ksysfs.c:80
+ kobj_attr_store+0x53/0x80 lib/kobject.c:856
+audit: type=1400 audit(1731332427.158:92): avc:  denied  { node_bind } for  pid=9620 comm="syz.3.350" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:object_r:node_t:s0 tclass=icmp_socket permissive=1
+ sysfs_kf_write+0x113/0x170 fs/sysfs/file.c:139
+ kernfs_fop_write+0x26a/0x490 fs/kernfs/file.c:315
+ vfs_write+0x29a/0xac0 fs/read_write.c:603
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f34f9dfbef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f34f8a75038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f34f9fb3f80 RCX: 00007f34f9dfbef9
+RDX: 0000000000000012 RSI: 0000000020000000 RDI: 0000000000000005
+RBP: 00007f34f9e6eb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f34f9fb3f80 R15: 00007ffd5d5454c8
+EXT4-fs error (device loop3): ext4_find_dest_de:1947: inode #2: block 16: comm syz.3.350: bad entry in directory: rec_len is smaller than minimal - offset=108, inode=646161, rec_len=0, name_len=0, size=4096
+================================================================================
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:291:7
+shift exponent 262141 is too large for 64-bit type 'long unsigned int'
+CPU: 0 PID: 9668 Comm: syz.3.350 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ do_profile_hits.constprop.0.cold+0x17/0x1c kernel/profile.c:291
+ profile_hits kernel/profile.c:398 [inline]
+ profile_hit include/linux/profile.h:64 [inline]
+ profile_tick+0xe7/0x100 kernel/profile.c:408
+ tick_sched_timer+0x10f/0x150 kernel/time/tick-sched.c:1328
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x1c1/0xba0 kernel/time/hrtimer.c:1583
+ hrtimer_interrupt+0x357/0x9b0 kernel/time/hrtimer.c:1645
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+ __sysvec_apic_timer_interrupt+0x170/0x560 arch/x86/kernel/apic/apic.c:1097
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
+ run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
+ sysvec_apic_timer_interrupt+0xb8/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:preempt_count arch/x86/include/asm/preempt.h:26 [inline]
+RIP: 0010:preempt_latency_start kernel/sched/core.c:4165 [inline]
+RIP: 0010:preempt_count_add+0x5b/0x140 kernel/sched/core.c:4191
+Code: 00 8b 15 68 f0 fd 05 65 01 1d c1 15 e1 7e 85 d2 75 11 65 8b 05 b6 15 e1 7e 0f b6 c0 3d f4 00 00 00 7f 64 65 8b 05 a5 15 e1 7e <25> ff ff ff 7f 39 c3 74 03 5b 5d c3 48 8b 5c 24 10 48 89 df e8 1c
+RSP: 0018:ffff88801d3f7550 EFLAGS: 00000293
+RAX: 0000000080000001 RBX: 0000000000000001 RCX: 1ffffffff0e3d934
+RDX: 0000000000000000 RSI: ffffffff81a1ebed RDI: 0000000000000001
+RBP: ffff88801b4c7418 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000000 R14: ffff88801d3f7734 R15: 0000000000000000
+ __raw_read_lock include/linux/rwlock_api_smp.h:148 [inline]
+ _raw_read_lock+0xe/0x70 kernel/locking/spinlock.c:223
+ ext4_es_lookup_extent+0x144/0xc90 fs/ext4/extents_status.c:933
+ ext4_map_blocks+0x1f1/0x1740 fs/ext4/inode.c:520
+ ext4_getblk+0x52b/0x6a0 fs/ext4/inode.c:838
+ ext4_bread_batch+0x7c/0x5a0 fs/ext4/inode.c:911
+ __ext4_find_entry+0x483/0x10d0 fs/ext4/namei.c:1522
+ ext4_lookup_entry fs/ext4/namei.c:1622 [inline]
+ ext4_lookup fs/ext4/namei.c:1690 [inline]
+ ext4_lookup+0x16b/0x650 fs/ext4/namei.c:1681
+ __lookup_slow+0x252/0x490 fs/namei.c:1544
+ lookup_slow fs/namei.c:1561 [inline]
+ walk_component+0x41a/0x6a0 fs/namei.c:1861
+ lookup_last fs/namei.c:2310 [inline]
+ path_lookupat+0x146/0x6c0 fs/namei.c:2334
+ filename_lookup+0x19f/0x560 fs/namei.c:2367
+ user_path_at include/linux/namei.h:59 [inline]
+ path_listxattr+0x87/0x140 fs/xattr.c:736
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fb2b7a8bef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb2b66c3038 EFLAGS: 00000246 ORIG_RAX: 00000000000000c3
+RAX: ffffffffffffffda RBX: 00007fb2b7c44130 RCX: 00007fb2b7a8bef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000200001c0
+RBP: 00007fb2b7afeb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fb2b7c44130 R15: 00007fffeac76398
+================================================================================
+----------------
+Code disassembly (best guess):
+   0:	00 8b 15 68 f0 fd    	add    %cl,-0x20f97eb(%rbx)
+   6:	05 65 01 1d c1       	add    $0xc11d0165,%eax
+   b:	15 e1 7e 85 d2       	adc    $0xd2857ee1,%eax
+  10:	75 11                	jne    0x23
+  12:	65 8b 05 b6 15 e1 7e 	mov    %gs:0x7ee115b6(%rip),%eax        # 0x7ee115cf
+  19:	0f b6 c0             	movzbl %al,%eax
+  1c:	3d f4 00 00 00       	cmp    $0xf4,%eax
+  21:	7f 64                	jg     0x87
+  23:	65 8b 05 a5 15 e1 7e 	mov    %gs:0x7ee115a5(%rip),%eax        # 0x7ee115cf
+* 2a:	25 ff ff ff 7f       	and    $0x7fffffff,%eax <-- trapping instruction
+  2f:	39 c3                	cmp    %eax,%ebx
+  31:	74 03                	je     0x36
+  33:	5b                   	pop    %rbx
+  34:	5d                   	pop    %rbp
+  35:	c3                   	ret
+  36:	48 8b 5c 24 10       	mov    0x10(%rsp),%rbx
+  3b:	48 89 df             	mov    %rbx,%rdi
+  3e:	e8                   	.byte 0xe8
+  3f:	1c                   	.byte 0x1c

@@ -1,0 +1,53 @@
+=============================
+ fail_dump lib/fault-inject.c:52 [inline]
+ should_fail.cold+0x5/0x1f lib/fault-inject.c:146
+ should_failslab+0x5/0x10 mm/slab_common.c:1194
+ slab_pre_alloc_hook mm/slab.h:518 [inline]
+ slab_alloc_node mm/slub.c:2816 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ __kmalloc+0x72/0x2e0 mm/slub.c:3966
+ kmalloc include/linux/slab.h:557 [inline]
+ tty_buffer_alloc+0x23f/0x2a0 drivers/tty/tty_buffer.c:175
+WARNING: suspicious RCU usage
+ __tty_buffer_request_room+0x156/0x2a0 drivers/tty/tty_buffer.c:273
+ tty_insert_flip_string_fixed_flag+0x91/0x250 drivers/tty/tty_buffer.c:318
+5.10.0 #1 Not tainted
+ tty_insert_flip_string include/linux/tty_flip.h:37 [inline]
+ pty_write+0x126/0x1f0 drivers/tty/pty.c:122
+ tty_put_char+0x129/0x150 drivers/tty/tty_io.c:3037
+-----------------------------
+kernel/sched/core.c:7270 Illegal context switch in RCU-bh read-side critical section!
+ __process_echoes+0x57c/0x9f0 drivers/tty/n_tty.c:728
+ flush_echoes drivers/tty/n_tty.c:829 [inline]
+ __receive_buf drivers/tty/n_tty.c:1648 [inline]
+ n_tty_receive_buf_common+0xb1c/0x2a20 drivers/tty/n_tty.c:1742
+
+other info that might help us debug this:
+
+ tiocsti drivers/tty/tty_io.c:2198 [inline]
+ tty_ioctl+0x4eb/0x1560 drivers/tty/tty_io.c:2572
+
+rcu_scheduler_active = 2, debug_locks = 0
+1 lock held by syz.1.863/13137:
+ #0: 
+ffff888010d8a9a8
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x196/0x210 fs/ioctl.c:739
+ (
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f6353421ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f635209b038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f63535d9f80 RCX: 00007f6353421ef9
+&mm->mmap_lock
+RDX: 0000000020000080 RSI: 0000000000005412 RDI: 0000000000000004
+RBP: 00007f635209b090 R08: 0000000000000000 R09: 0000000000000000
+#2
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 0000000000000000 R14: 00007f63535d9f80 R15: 00007ffdeee5c188
+){++++}-{3:3}
+
+======================================================

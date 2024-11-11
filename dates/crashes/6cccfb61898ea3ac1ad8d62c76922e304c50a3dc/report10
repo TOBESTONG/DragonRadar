@@ -1,0 +1,122 @@
+audit: type=1400 audit(1731218315.507:11): avc:  denied  { block_suspend } for  pid=2135 comm="syz.2.17" capability=36  scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=capability2 permissive=1
+kernel profiling enabled (shift: 348)
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:110:31
+shift exponent 348 is too large for 64-bit type 'long int'
+CPU: 0 PID: 2136 Comm: syz.2.17 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ profile_init+0xfc/0x110 kernel/profile.c:110
+ profiling_store+0x5e/0xd0 kernel/ksysfs.c:80
+ kobj_attr_store+0x53/0x80 lib/kobject.c:856
+ sysfs_kf_write+0x113/0x170 fs/sysfs/file.c:139
+ kernfs_fop_write+0x26a/0x490 fs/kernfs/file.c:315
+ vfs_write+0x29a/0xac0 fs/read_write.c:603
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f7440dd9ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f743fa53038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f7440f91f80 RCX: 00007f7440dd9ef9
+RDX: 0000000000000012 RSI: 0000000020000040 RDI: 0000000000000007
+RBP: 00007f7440e4cb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f7440f91f80 R15: 00007ffe7c5ebd38
+================================================================================
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:291:7
+shift exponent 348 is too large for 64-bit type 'long unsigned int'
+CPU: 1 PID: 2087 Comm: syz.3.9 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ do_profile_hits.constprop.0.cold+0x17/0x1c kernel/profile.c:291
+ profile_hits kernel/profile.c:398 [inline]
+ profile_hit include/linux/profile.h:64 [inline]
+ profile_tick+0xe7/0x100 kernel/profile.c:408
+ tick_sched_timer+0x10f/0x150 kernel/time/tick-sched.c:1328
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x1c1/0xba0 kernel/time/hrtimer.c:1583
+ hrtimer_interrupt+0x357/0x9b0 kernel/time/hrtimer.c:1645
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+ __sysvec_apic_timer_interrupt+0x170/0x560 arch/x86/kernel/apic/apic.c:1097
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
+ run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
+ sysvec_apic_timer_interrupt+0xb8/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:rcu_read_lock include/linux/rcupdate.h:642 [inline]
+RIP: 0010:lock_page_memcg+0x74/0x260 mm/memcontrol.c:2144
+Code: c0 68 20 92 74 81 b9 02 00 00 00 31 f6 48 c7 c7 00 7f 0e 85 e8 2d 45 b6 ff e8 38 8e 76 02 5a 85 c0 74 1a 0f b6 2d 86 94 5f 04 <40> 80 fd 01 0f 87 33 9b 69 02 83 e5 01 0f 84 e0 00 00 00 0f 1f 44
+RSP: 0018:ffff88800ccf7968 EFLAGS: 00000202
+RAX: 0000000000000001 RBX: ffffea00005cad80 RCX: 0000000000000001
+RDX: ffffffff81749220 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff86e5f6a7
+R10: fffffbfff0dcbed4 R11: 0000000000000001 R12: 0000000000000000
+R13: ffffea00005cad88 R14: dffffc0000000000 R15: 00007f38a03c9000
+ page_remove_rmap+0x21/0x7d0 mm/rmap.c:1328
+ zap_pte_range mm/memory.c:1253 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0xe32/0x2070 mm/memory.c:1428
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f38a0a4aef9
+Code: Unable to access opcode bytes at RIP 0x7f38a0a4aecf.
+RSP: 002b:00007ffd3a621708 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f38a0a4aef9
+RDX: 0000000000000064 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007ffd3a62175c R08: 00007ffd3a6217ef R09: 00000000000064ff
+R10: 00007f38a0bef000 R11: 0000000000000246 R12: 0000000000000032
+R13: 00000000000064ff R14: 000000000000617e R15: 00007ffd3a6217b0
+================================================================================
+EXT4-fs error (device loop1): ext4_map_blocks:708: inode #18: block 52: comm syz.1.14: lblock 15 mapped to illegal pblock 52 (length 1)
+EXT4-fs error (device loop1): ext4_free_branches:1008: inode #18: comm syz.1.14: invalid indirect mapped block 253 (level 0)
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop1): ext4_truncate:4277: inode #18: comm syz.1.14: mark_inode_dirty error
+EXT4-fs error (device loop1): ext4_map_blocks:584: inode #2: block 255: comm syz-executor: lblock 0 mapped to illegal pblock 255 (length 1)
+EXT4-fs warning (device loop1): htree_dirblock_to_tree:1003: inode #2: lblock 0: comm syz-executor: error -117 reading directory block
+syz-executor (230) used greatest stack depth: 24152 bytes left
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+----------------
+Code disassembly (best guess):
+   0:	c0 68 20 92          	shrb   $0x92,0x20(%rax)
+   4:	74 81                	je     0xffffff87
+   6:	b9 02 00 00 00       	mov    $0x2,%ecx
+   b:	31 f6                	xor    %esi,%esi
+   d:	48 c7 c7 00 7f 0e 85 	mov    $0xffffffff850e7f00,%rdi
+  14:	e8 2d 45 b6 ff       	call   0xffb64546
+  19:	e8 38 8e 76 02       	call   0x2768e56
+  1e:	5a                   	pop    %rdx
+  1f:	85 c0                	test   %eax,%eax
+  21:	74 1a                	je     0x3d
+  23:	0f b6 2d 86 94 5f 04 	movzbl 0x45f9486(%rip),%ebp        # 0x45f94b0
+* 2a:	40 80 fd 01          	cmp    $0x1,%bpl <-- trapping instruction
+  2e:	0f 87 33 9b 69 02    	ja     0x2699b67
+  34:	83 e5 01             	and    $0x1,%ebp
+  37:	0f 84 e0 00 00 00    	je     0x11d
+  3d:	0f                   	.byte 0xf
+  3e:	1f                   	(bad)
+  3f:	44                   	rex.R

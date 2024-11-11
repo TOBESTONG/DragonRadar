@@ -1,0 +1,61 @@
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Corrupt filesystem
+EXT4-fs error (device loop1): ext4_dirty_inode:5942: inode #12: comm syz.1.239: mark_inode_dirty error
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inline.c:221!
+EXT4-fs error (device loop1): ext4_get_max_inline_size:101: inode #18: comm syz.1.239: can't get inode location 18
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 6629 Comm: syz.1.239 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_write_inline_data+0x33a/0x3f0 fs/ext4/inline.c:221
+Code: 41 5c 41 5d 41 5e 41 5f e9 f3 08 a2 ff e8 ee 08 a2 ff b8 3c 00 00 00 48 29 e8 4c 63 e8 41 29 c4 e9 eb fe ff ff e8 d6 08 a2 ff <0f> 0b 48 c7 c7 e0 bf 2f 85 e8 d7 85 3c 02 e8 c3 08 a2 ff 0f 0b 48
+RSP: 0018:ffff88800b5d7968 EFLAGS: 00010212
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Corrupt filesystem
+RAX: 000000000001486e RBX: ffff88801b81aa98 RCX: ffffc900035b5000
+RDX: 0000000000040000 RSI: ffffffff81a405ea RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff88801884e3bf
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000080
+R13: 0000000000000000 R14: ffff88800b5d7af8 R15: ffff88801b81afa2
+EXT4-fs error (device loop1): ext4_dirty_inode:5942: inode #18: comm syz.1.239: mark_inode_dirty error
+FS:  00007f4e8cbe66c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f81c7e85ffc CR3: 00000000186aa000 CR4: 0000000000350ef0
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Corrupt filesystem
+Call Trace:
+EXT4-fs error (device loop1): ext4_dirty_inode:5942: inode #18: comm syz.1.239: mark_inode_dirty error
+ ext4_restore_inline_data fs/ext4/inline.c:1123 [inline]
+ ext4_convert_inline_data_nolock+0x252/0xd60 fs/ext4/inline.c:1247
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Corrupt filesystem
+ ext4_try_add_inline_entry+0x38f/0x650 fs/ext4/inline.c:1313
+EXT4-fs error (device loop1): ext4_ext_truncate:4353: inode #18: comm syz.1.239: mark_inode_dirty error
+ ext4_add_entry+0x34e/0xc60 fs/ext4/namei.c:2209
+ __ext4_link+0x45e/0x5c0 fs/ext4/namei.c:3443
+ ext4_link+0x207/0x280 fs/ext4/namei.c:3484
+ vfs_link+0x83e/0xc20 fs/namei.c:4074
+ do_linkat+0x3c5/0x560 fs/namei.c:4142
+ __do_sys_linkat fs/namei.c:4166 [inline]
+ __se_sys_linkat fs/namei.c:4163 [inline]
+ __x64_sys_linkat+0xba/0x150 fs/namei.c:4163
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f4e8df6cef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f4e8cbe6038 EFLAGS: 00000246 ORIG_RAX: 0000000000000109
+RAX: ffffffffffffffda RBX: 00007f4e8e124f80 RCX: 00007f4e8df6cef9
+RDX: 0000000000000009 RSI: 00000000200002c0 RDI: 0000000000000007
+RBP: 00007f4e8dfdfb76 R08: 0000000000001000 R09: 0000000000000000
+R10: 0000000020000340 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f4e8e124f80 R15: 00007fffa954db58
+Modules linked in:
+---[ end trace 10656951d2b043ef ]---
+RIP: 0010:ext4_write_inline_data+0x33a/0x3f0 fs/ext4/inline.c:221
+Code: 41 5c 41 5d 41 5e 41 5f e9 f3 08 a2 ff e8 ee 08 a2 ff b8 3c 00 00 00 48 29 e8 4c 63 e8 41 29 c4 e9 eb fe ff ff e8 d6 08 a2 ff <0f> 0b 48 c7 c7 e0 bf 2f 85 e8 d7 85 3c 02 e8 c3 08 a2 ff 0f 0b 48
+RSP: 0018:ffff88800b5d7968 EFLAGS: 00010212
+RAX: 000000000001486e RBX: ffff88801b81aa98 RCX: ffffc900035b5000
+RDX: 0000000000040000 RSI: ffffffff81a405ea RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff88801884e3bf
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000080
+R13: 0000000000000000 R14: ffff88800b5d7af8 R15: ffff88801b81afa2
+FS:  00007f4e8cbe66c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f4e8c981d58 CR3: 00000000186aa000 CR4: 0000000000350ee0
+EXT4-fs warning (device loop1): kmmpd:182: kmmpd being stopped since MMP feature has been disabled.

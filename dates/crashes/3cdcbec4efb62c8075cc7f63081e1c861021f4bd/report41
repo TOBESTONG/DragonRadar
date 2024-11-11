@@ -1,0 +1,122 @@
+audit: type=1326 audit(1731327603.524:45): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=9548 comm="syz.0.454" exe="/syz-executor" sig=0 arch=c000003e syscall=202 compat=0 ip=0x7f751d6f8ef9 code=0x7ffc0000
+netlink: 'syz.0.455': attribute type 6 has an invalid length.
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+kworker/u4:3/9592 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff88801919f0a8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88801919f0a8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 102
+hardirqs last  enabled at (102): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (102): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (101): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (101): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (0): [<ffffffff8115f59c>] copy_process+0x185c/0x69f0 kernel/fork.c:2044
+softirqs last disabled at (37): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+4 locks held by kworker/u4:3/9592:
+ #0: ffff888016da5348 (&sig->cred_guard_mutex){+.+.}-{3:3}, at: prepare_bprm_creds fs/exec.c:1449 [inline]
+ #0: ffff888016da5348 (&sig->cred_guard_mutex){+.+.}-{3:3}, at: bprm_execve+0x1c6/0x1bb0 fs/exec.c:1791
+ #1: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: security_compute_sid.part.0+0x0/0x17e0
+ #2: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #3: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 1 PID: 9592 Comm: kworker/u4:3 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:rangetr_cmp security/selinux/ss/policydb.c:471 [inline]
+RIP: 0010:hashtab_search security/selinux/ss/hashtab.h:108 [inline]
+RIP: 0010:policydb_rangetr_search+0x1d2/0x360 security/selinux/ss/policydb.c:492
+Code: 01 00 00 e8 c0 8f 5d ff 48 89 e8 48 c1 e8 03 42 80 3c 20 00 0f 85 38 01 00 00 4c 8b 7d 00 4c 89 fa 48 c1 ea 03 42 0f b6 0c 22 <4c> 89 fa 83 e2 07 83 c2 03 38 ca 7c 08 84 c9 0f 85 20 01 00 00 44
+RSP: 0018:ffff88800dd07920 EFLAGS: 00000216
+RAX: 1ffff11001b5b6a5 RBX: ffff88800db62ac8 RCX: 0000000000000000
+RDX: 1ffff11001b5b3fc RSI: ffffffff81e87f00 RDI: ffff888012be4a08
+RBP: ffff88800dadb528 R08: 0000000000000010 R09: ffff88800dd07ba0
+R10: 0000000000000000 R11: 0000000000000001 R12: dffffc0000000000
+R13: 00000000000002f1 R14: 0000000000000555 R15: ffff88800dad9fe0
+ mls_compute_sid+0x19c/0x1050 security/selinux/ss/mls.c:510
+ security_compute_sid.part.0+0xd42/0x17e0 security/selinux/ss/services.c:1858
+ security_compute_sid security/selinux/ss/services.c:1897 [inline]
+ security_transition_sid+0x14b/0x1c0 security/selinux/ss/services.c:1897
+ selinux_bprm_creds_for_exec+0x4c3/0xac0 security/selinux/hooks.c:2326
+ security_bprm_creds_for_exec+0x46/0xa0 security/security.c:829
+ bprm_execve+0x742/0x1bb0 fs/exec.c:1816
+ kernel_execve+0x371/0x460 fs/exec.c:1969
+ call_usermodehelper_exec_async+0x2e1/0x4f0 kernel/umh.c:110
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+EXT4-fs (loop0): Ignoring removed oldalloc option
+EXT4-fs warning (device loop0): ext4_multi_mount_protect:385: Unable to create kmmpd thread for loop0.
+----------------
+Code disassembly (best guess):
+   0:	01 00                	add    %eax,(%rax)
+   2:	00 e8                	add    %ch,%al
+   4:	c0 8f 5d ff 48 89 e8 	rorb   $0xe8,-0x76b700a3(%rdi)
+   b:	48 c1 e8 03          	shr    $0x3,%rax
+   f:	42 80 3c 20 00       	cmpb   $0x0,(%rax,%r12,1)
+  14:	0f 85 38 01 00 00    	jne    0x152
+  1a:	4c 8b 7d 00          	mov    0x0(%rbp),%r15
+  1e:	4c 89 fa             	mov    %r15,%rdx
+  21:	48 c1 ea 03          	shr    $0x3,%rdx
+  25:	42 0f b6 0c 22       	movzbl (%rdx,%r12,1),%ecx
+* 2a:	4c 89 fa             	mov    %r15,%rdx <-- trapping instruction
+  2d:	83 e2 07             	and    $0x7,%edx
+  30:	83 c2 03             	add    $0x3,%edx
+  33:	38 ca                	cmp    %cl,%dl
+  35:	7c 08                	jl     0x3f
+  37:	84 c9                	test   %cl,%cl
+  39:	0f 85 20 01 00 00    	jne    0x15f
+  3f:	44                   	rex.R

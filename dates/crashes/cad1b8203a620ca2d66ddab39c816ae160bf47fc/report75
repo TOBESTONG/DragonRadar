@@ -1,0 +1,187 @@
+EXT4-fs (loop2): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs error (device loop2): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 25 vs 150994969 free clusters
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:2696!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 2341 Comm: syz.2.61 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff88801a3ef900 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+RDX: ffff888011214e00 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff88801c4662c0 R08: 0000000000000000 R09: ffff88801c4662c7
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff88801c4665a8 R15: ffff88800c932000
+FS:  0000555557200500(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000110c2c4943 CR3: 000000001197a000 CR4: 0000000000350ef0
+Call Trace:
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __filemap_fdatawrite_range mm/filemap.c:422 [inline]
+ __filemap_fdatawrite mm/filemap.c:430 [inline]
+ filemap_flush+0x239/0x2e0 mm/filemap.c:457
+ ext4_alloc_da_blocks+0x1b9/0x300 fs/ext4/inode.c:3156
+ ext4_release_file+0x183/0x370 fs/ext4/file.c:142
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fdcb1a99ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffec964a298 EFLAGS: 00000246 ORIG_RAX: 00000000000001b4
+RAX: 0000000000000000 RBX: 0000000000007b62 RCX: 00007fdcb1a99ef9
+RDX: 0000000000000000 RSI: 000000000000001e RDI: 0000000000000003
+RBP: 00007fdcb1c53a80 R08: 0000000000000001 R09: 00007ffec964a58f
+R10: 00007fdcb191c000 R11: 0000000000000246 R12: 0000000000007ff7
+R13: 00007ffec964a3a0 R14: 0000000000000032 R15: ffffffffffffffff
+Modules linked in:
+---[ end trace aff1cb705b02eca2 ]---
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff88801a3ef900 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+RDX: ffff888011214e00 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff88801c4662c0 R08: 0000000000000000 R09: ffff88801c4662c7
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff88801c4665a8 R15: ffff88800c932000
+FS:  0000555557200500(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000002047833f CR3: 000000001197a000 CR4: 0000000000350ef0
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:2696!
+invalid opcode: 0000 [#2] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 59 Comm: kworker/u4:1 Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: writeback wb_workfn (flush-7:2)
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff88800aa273e0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+RDX: ffff88800a973400 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff88801c4662c0 R08: 0000000000000000 R09: ffff88801c4662c7
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff88801c4665a8 R15: ffff88800c932000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000002001d000 CR3: 000000000c26e000 CR4: 0000000000350ef0
+Call Trace:
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __writeback_single_inode+0x108/0x1090 fs/fs-writeback.c:1461
+ writeback_sb_inodes+0x56e/0x1010 fs/fs-writeback.c:1721
+ __writeback_inodes_wb+0xbe/0x270 fs/fs-writeback.c:1790
+ wb_writeback+0x773/0xbe0 fs/fs-writeback.c:1896
+ wb_check_background_flush fs/fs-writeback.c:1964 [inline]
+ wb_do_writeback fs/fs-writeback.c:2052 [inline]
+ wb_workfn+0xa33/0x1140 fs/fs-writeback.c:2080
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+---[ end trace aff1cb705b02eca3 ]---
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff88801a3ef900 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+RDX: ffff888011214e00 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff88801c4662c0 R08: 0000000000000000 R09: ffff88801c4662c7
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff88801c4665a8 R15: ffff88800c932000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000002001d000 CR3: 000000000c26e000 CR4: 0000000000350ef0
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 59 at kernel/exit.c:724 do_exit+0xd8/0x28e0 kernel/exit.c:724
+Modules linked in:
+CPU: 0 PID: 59 Comm: kworker/u4:1 Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: writeback wb_workfn (flush-7:2)
+RIP: 0010:do_exit+0xd8/0x28e0 kernel/exit.c:724
+Code: 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 bd 23 00 00 49 8b 04 24 49 39 c4 0f 84 10 08 00 00 e8 58 5a 2e 00 <0f> 0b e8 51 5a 2e 00 31 ff 65 8b 05 88 3a ea 7e 25 00 ff ff 00 41
+RSP: 0018:ffff88800aa27e30 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 000000000000000b RCX: 0000000000000000
+RDX: ffff88800a973400 RSI: ffffffff8117b468 RDI: ffff88800a9744e8
+RBP: ffff88800a973400 R08: 0000000000000000 R09: ffffed1001544000
+R10: fffffbfff0baca80 R11: 0000000000000001 R12: ffff88800aa27af8
+R13: ffff88800a973400 R14: 0000000000000000 R15: ffff88800a974930
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000002001d000 CR3: 000000000c26e000 CR4: 0000000000350ef0
+Call Trace:
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0000:0x0
+Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+RSP: 0000:0000000000000000 EFLAGS: 00000000 ORIG_RAX: 0000000000000000
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+irq event stamp: 184236
+hardirqs last  enabled at (184235): [<ffffffff83ecb0ef>] __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:168 [inline]
+hardirqs last  enabled at (184235): [<ffffffff83ecb0ef>] _raw_spin_unlock_irq+0x1f/0x40 kernel/locking/spinlock.c:199
+hardirqs last disabled at (184236): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (184064): [<ffffffff81099056>] memcpy include/linux/string.h:399 [inline]
+softirqs last  enabled at (184064): [<ffffffff81099056>] fpu__copy+0x176/0x640 arch/x86/kernel/fpu/core.c:240
+softirqs last disabled at (184062): [<ffffffff81098f81>] fpu__copy+0xa1/0x640 arch/x86/kernel/fpu/core.c:228
+---[ end trace aff1cb705b02eca4 ]---
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:2696!
+invalid opcode: 0000 [#3] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 2357 Comm: syz.2.61 Tainted: G      D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff88800c36f548 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+RDX: ffff88800b0cb400 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff88801c4662c0 R08: 0000000000000000 R09: ffff88801c4662c7
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff88801c4665a8 R15: ffff88800c932000
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ff281deb0e8 CR3: 000000000c26e000 CR4: 0000000000350ee0
+Call Trace:
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __filemap_fdatawrite_range mm/filemap.c:422 [inline]
+ __filemap_fdatawrite mm/filemap.c:430 [inline]
+ filemap_flush+0x239/0x2e0 mm/filemap.c:457
+ ext4_alloc_da_blocks+0x1b9/0x300 fs/ext4/inode.c:3156
+ ext4_release_file+0x183/0x370 fs/ext4/file.c:142
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fdcb1a99ef9
+Code: Unable to access opcode bytes at RIP 0x7fdcb1a99ecf.
+RSP: 002b:00007fdcb06d10e8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 00007fdcb1c52138 RCX: 00007fdcb1a99ef9
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007fdcb1c52138
+RBP: 00007fdcb1c52130 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007fdcb1c5213c
+R13: 0000000000000000 R14: 00007ffec964a050 R15: 00007ffec964a138
+Modules linked in:
+---[ end trace aff1cb705b02eca5 ]---
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff88801a3ef900 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+RDX: ffff888011214e00 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff88801c4662c0 R08: 0000000000000000 R09: ffff88801c4662c7
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff88801c4665a8 R15: ffff88800c932000
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ff281deb0e8 CR3: 000000000c26e000 CR4: 0000000000350ee0
+Fixing recursive fault but reboot is needed!

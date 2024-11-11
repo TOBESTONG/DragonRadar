@@ -1,0 +1,52 @@
+tc_dump_action: action bad kind
+netlink: 72 bytes leftover after parsing attributes in process `syz.3.383'.
+------------[ cut here ]------------
+Trying to write to read-only block-device sda (partno 0)
+WARNING: CPU: 1 PID: 239 at block/blk-core.c:704 bio_check_ro block/blk-core.c:704 [inline]
+WARNING: CPU: 1 PID: 239 at block/blk-core.c:704 submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Modules linked in:
+CPU: 1 PID: 239 Comm: kworker/u4:4 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: writeback wb_workfn (flush-8:0)
+RIP: 0010:bio_check_ro block/blk-core.c:704 [inline]
+RIP: 0010:submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Code: 03 00 00 45 8b a4 24 64 05 00 00 48 89 ef 48 8d 74 24 50 e8 43 37 fe ff 48 c7 c7 00 ee 5b 84 48 89 c6 44 89 e2 e8 bd 1c e7 01 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 80 3c 02
+RSP: 0018:ffff8880116dee50 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 1ffff110022dbdd0 RCX: 0000000000000000
+RDX: ffff888019693400 RSI: ffffffff812d93c5 RDI: ffffed10022dbdbc
+RBP: ffff88800f9a7300 R08: 0000000000000001 R09: ffff88806cf2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff88800be58000 R14: ffff88800f9a7310 R15: ffff88800f9a7308
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f01fa0ee000 CR3: 0000000017800000 CR4: 0000000000350ef0
+Call Trace:
+ submit_bio_noacct+0x82/0x1000 block/blk-core.c:1044
+ submit_bio+0xfd/0x540 block/blk-core.c:1129
+ ext4_io_submit fs/ext4/page-io.c:382 [inline]
+ io_submit_add_bh fs/ext4/page-io.c:425 [inline]
+ ext4_bio_write_page+0x96e/0x1330 fs/ext4/page-io.c:552
+ mpage_submit_page+0x14b/0x260 fs/ext4/inode.c:2092
+ mpage_process_page_bufs+0x63b/0x7d0 fs/ext4/inode.c:2206
+ mpage_prepare_extent_to_map+0x696/0xc40 fs/ext4/inode.c:2618
+ ext4_writepages+0xa0f/0x3a00 fs/ext4/inode.c:2746
+EXT4-fs: failed to create workqueue
+EXT4-fs (loop3): mount failed
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __writeback_single_inode+0x108/0x1090 fs/fs-writeback.c:1461
+ writeback_sb_inodes+0x56e/0x1010 fs/fs-writeback.c:1721
+ __writeback_inodes_wb+0xbe/0x270 fs/fs-writeback.c:1790
+ wb_writeback+0x773/0xbe0 fs/fs-writeback.c:1896
+ wb_check_old_data_flush fs/fs-writeback.c:1998 [inline]
+ wb_do_writeback fs/fs-writeback.c:2051 [inline]
+ wb_workfn+0x847/0x1140 fs/fs-writeback.c:2080
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+irq event stamp: 1167277
+hardirqs last  enabled at (1167287): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (1167308): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (1167476): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (1167489): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 39b6c8369ba43242 ]---

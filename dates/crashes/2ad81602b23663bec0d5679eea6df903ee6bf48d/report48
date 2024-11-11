@@ -1,0 +1,55 @@
+EXT4-fs (loop1): mounted filesystem without journal. Opts: dioread_nolock,user_xattr,debug_want_extra_isize=0x000000000000005c,debug,mblk_io_submit,errors=continue,usrjquota=,prjquota,nodiscard,,errors=continue
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4.h:3196!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 2375 Comm: syz.1.28 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff888008a97c48 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 00000000fff92090 RCX: ffffffff81a81b22
+RDX: ffff888011339a00 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff88800cf8c000 R08: 0000000000000000 R09: ffff888013fbfda3
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff888019e18000
+R13: ffff888019e18650 R14: 0000000000000001 R15: 00000000fff92090
+FS:  000055555640e500(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f3a4b351000 CR3: 000000001104e000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ ext4_mb_load_buddy_gfp+0xe3/0x13d0 fs/ext4/mballoc.c:1174
+ ext4_discard_preallocations+0x86a/0xe70 fs/ext4/mballoc.c:4422
+ ext4_release_file+0x2f0/0x370 fs/ext4/file.c:150
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f101d46cef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff721e5608 EFLAGS: 00000246 ORIG_RAX: 00000000000001b4
+RAX: 0000000000000000 RBX: 00007f101d626a80 RCX: 00007f101d46cef9
+RDX: 0000000000000000 RSI: 000000000000001e RDI: 0000000000000003
+RBP: 00007f101d626a80 R08: 0000000000000006 R09: 00007fff721e58ff
+R10: 00000000003ffbf4 R11: 0000000000000246 R12: 00000000000075c5
+R13: 00007fff721e5710 R14: 0000000000000032 R15: ffffffffffffffff
+Modules linked in:
+---[ end trace e51d41c368dce0ce ]---
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff888008a97c48 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 00000000fff92090 RCX: ffffffff81a81b22
+RDX: ffff888011339a00 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff88800cf8c000 R08: 0000000000000000 R09: ffff888013fbfda3
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff888019e18000
+R13: ffff888019e18650 R14: 0000000000000001 R15: 00000000fff92090
+FS:  000055555640e500(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f1b69a0e000 CR3: 000000001104e000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600

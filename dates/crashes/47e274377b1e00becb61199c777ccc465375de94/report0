@@ -1,0 +1,54 @@
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+------------[ cut here ]------------
+EXT4-fs error (device loop1): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 25 vs 150994969 free clusters
+kernel BUG at fs/buffer.c:2073!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 2209 Comm: syz.1.35 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:__block_commit_write.constprop.0.isra.0+0x287/0x310 fs/buffer.c:2073
+Code: 5d 41 5e 41 5f e9 09 ab bf ff e8 04 ab bf ff be 08 00 00 00 48 89 df e8 b7 b5 ec ff f0 80 0b 01 e9 4d ff ff ff e8 e9 aa bf ff <0f> 0b 48 c7 c7 80 33 29 85 e8 ea 27 5a 02 e8 d6 aa bf ff 48 8b 7c
+RSP: 0018:ffff88801fc07930 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff818661b2
+RDX: ffff888008b28000 RSI: ffffffff818663d7 RDI: 0000000000000001
+RBP: ffffea0000553380 R08: 0000000000000000 R09: ffffea0000553387
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000004 R14: ffff888013728d10 R15: 0000000000000000
+FS:  00007f6c246c16c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe169bd0808 CR3: 000000000ad6c000 CR4: 0000000000350ef0
+Call Trace:
+ block_write_end fs/buffer.c:2162 [inline]
+ generic_write_end+0xc9/0x400 fs/buffer.c:2176
+ ext4_da_write_end+0x20a/0xb20 fs/ext4/inode.c:3102
+ generic_perform_write+0x2b3/0x4d0 mm/filemap.c:3340
+ ext4_buffered_write_iter+0x244/0x4d0 fs/ext4/file.c:270
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ call_write_iter include/linux/fs.h:1903 [inline]
+ new_sync_write+0x42c/0x670 fs/read_write.c:518
+ vfs_write+0x81b/0xac0 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f6c25a47ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f6c246c1038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f6c25bfff80 RCX: 00007f6c25a47ef9
+RDX: 0000000000000004 RSI: 0000000020000200 RDI: 0000000000000004
+RBP: 00007f6c25abab76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f6c25bfff80 R15: 00007ffc8c2e81f8
+Modules linked in:
+---[ end trace bce6954d3bc137db ]---
+RIP: 0010:__block_commit_write.constprop.0.isra.0+0x287/0x310 fs/buffer.c:2073
+Code: 5d 41 5e 41 5f e9 09 ab bf ff e8 04 ab bf ff be 08 00 00 00 48 89 df e8 b7 b5 ec ff f0 80 0b 01 e9 4d ff ff ff e8 e9 aa bf ff <0f> 0b 48 c7 c7 80 33 29 85 e8 ea 27 5a 02 e8 d6 aa bf ff 48 8b 7c
+RSP: 0018:ffff88801fc07930 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff818661b2
+RDX: ffff888008b28000 RSI: ffffffff818663d7 RDI: 0000000000000001
+RBP: ffffea0000553380 R08: 0000000000000000 R09: ffffea0000553387
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000004 R14: ffff888013728d10 R15: 0000000000000000
+FS:  00007f6c246c16c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b325e5ff8 CR3: 000000000ad6c000 CR4: 0000000000350ee0
+EXT4-fs error (device loop1): __ext4_iget:4839: inode #13: block 127754: comm syz-executor: invalid block
+EXT4-fs error (device loop1): __ext4_iget:4839: inode #13: block 127754: comm syz-executor: invalid block

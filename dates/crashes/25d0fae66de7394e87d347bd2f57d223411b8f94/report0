@@ -1,0 +1,418 @@
+EXT4-fs (loop1): free_blocks=2415919104
+EXT4-fs (loop1): dirty_blocks=32
+EXT4-fs (loop1): Block reservation details
+EXT4-fs (loop1): i_reserved_data_blocks=2
+rock: corrupted directory entry. extent=32, offset=2044, size=237
+INFO: task jbd2/sda-8:75 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:jbd2/sda-8      state:D stack:27024 pid:   75 ppid:     2 flags:0x00004000
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ blk_mq_get_tag+0x49c/0xb80 block/blk-mq-tag.c:143
+ __blk_mq_alloc_request+0x161/0x520 block/blk-mq.c:383
+ blk_mq_submit_bio+0x40d/0x1660 block/blk-mq.c:2177
+ __submit_bio_noacct_mq block/blk-core.c:1026 [inline]
+ submit_bio_noacct+0xc51/0x1000 block/blk-core.c:1059
+ submit_bio+0xfd/0x540 block/blk-core.c:1129
+ submit_bh_wbc+0x580/0x7c0 fs/buffer.c:3054
+ jbd2_journal_commit_transaction+0x1fcb/0x67e0 fs/jbd2/commit.c:775
+ kjournald2+0x1d3/0x870 fs/jbd2/journal.c:213
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+INFO: task journal-offline:2225 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:journal-offline state:D stack:26848 pid: 2225 ppid:     1 flags:0x00000320
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ blk_mq_get_tag+0x49c/0xb80 block/blk-mq-tag.c:143
+ __blk_mq_alloc_request+0x161/0x520 block/blk-mq.c:383
+ blk_mq_submit_bio+0x40d/0x1660 block/blk-mq.c:2177
+ __submit_bio_noacct_mq block/blk-core.c:1026 [inline]
+ submit_bio_noacct+0xc51/0x1000 block/blk-core.c:1059
+ submit_bio+0xfd/0x540 block/blk-core.c:1129
+ ext4_io_submit fs/ext4/page-io.c:382 [inline]
+ io_submit_add_bh fs/ext4/page-io.c:425 [inline]
+ ext4_bio_write_page+0x96e/0x1330 fs/ext4/page-io.c:552
+ mpage_submit_page+0x14b/0x260 fs/ext4/inode.c:2092
+ mpage_process_page_bufs+0x63b/0x7d0 fs/ext4/inode.c:2206
+ mpage_prepare_extent_to_map+0x696/0xc40 fs/ext4/inode.c:2618
+ ext4_writepages+0xa0f/0x3a00 fs/ext4/inode.c:2746
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __filemap_fdatawrite_range+0x24b/0x2f0 mm/filemap.c:422
+ file_write_and_wait_range+0xb2/0x120 mm/filemap.c:761
+ ext4_sync_file+0x225/0xf40 fs/ext4/fsync.c:151
+ vfs_fsync_range+0x13d/0x230 fs/sync.c:200
+ vfs_fsync fs/sync.c:214 [inline]
+ do_fsync fs/sync.c:224 [inline]
+ __do_sys_fsync fs/sync.c:232 [inline]
+ __se_sys_fsync fs/sync.c:230 [inline]
+ __x64_sys_fsync+0x6b/0xc0 fs/sync.c:230
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fcef80d10cb
+RSP: 002b:00007fcef6bfbcf0 EFLAGS: 00000293 ORIG_RAX: 000000000000004a
+RAX: ffffffffffffffda RBX: 000055f23d8c9160 RCX: 00007fcef80d10cb
+RDX: 00007fcef84138d4 RSI: 00007fcef84138d4 RDI: 0000000000000015
+RBP: 00007fcef84161f0 R08: 0000000000000000 R09: 00007fcef6bfc700
+R10: 00007fcef6bfc700 R11: 0000000000000293 R12: 0000000000000002
+R13: 00007ffec5da212f R14: 00007fcef6bfbe00 R15: 000055f23d8c6880
+INFO: task rs:main Q:Reg:155 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:rs:main Q:Reg   state:D stack:27200 pid:  155 ppid:     1 flags:0x00000000
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ bit_wait_io+0x12/0xa0 kernel/sched/wait_bit.c:209
+ __wait_on_bit+0x59/0x1b0 kernel/sched/wait_bit.c:49
+ out_of_line_wait_on_bit+0xd5/0x110 kernel/sched/wait_bit.c:64
+ wait_on_bit_io include/linux/wait_bit.h:101 [inline]
+ do_get_write_access+0x873/0x1070 fs/jbd2/transaction.c:1076
+ jbd2_journal_get_write_access+0x122/0x190 fs/jbd2/transaction.c:1211
+ __ext4_journal_get_write_access+0x1a4/0x2b0 fs/ext4/ext4_jbd2.c:231
+ ext4_reserve_inode_write+0x15a/0x230 fs/ext4/inode.c:5734
+ __ext4_mark_inode_dirty+0x15c/0x860 fs/ext4/inode.c:5898
+ ext4_dirty_inode+0xf3/0x130 fs/ext4/inode.c:5942
+ __mark_inode_dirty+0x893/0x11a0 fs/fs-writeback.c:2260
+ generic_update_time+0x21c/0x370 fs/inode.c:1764
+ update_time fs/inode.c:1777 [inline]
+ file_update_time+0x463/0x550 fs/inode.c:1992
+ file_modified fs/inode.c:2015 [inline]
+ file_modified+0x7d/0xa0 fs/inode.c:2000
+ ext4_write_checks fs/ext4/file.c:248 [inline]
+ ext4_buffered_write_iter+0xff/0x4d0 fs/ext4/file.c:265
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ call_write_iter include/linux/fs.h:1903 [inline]
+ new_sync_write+0x42c/0x670 fs/read_write.c:518
+ vfs_write+0x81b/0xac0 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f2fd4a95fef
+RSP: 002b:00007f2fd3c44860 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f2fc80212c0 RCX: 00007f2fd4a95fef
+RDX: 000000000000005b RSI: 00007f2fc8021560 RDI: 0000000000000007
+RBP: 000000000000005b R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000293 R12: 00007f2fc8021560
+R13: 0000000000000000 R14: 000000000000005b R15: 00007f2fc80212c0
+INFO: task syz-executor:222 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor    state:D stack:26224 pid:  222 ppid:   216 flags:0x00000002
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ bit_wait_io+0x12/0xa0 kernel/sched/wait_bit.c:209
+ __wait_on_bit+0x59/0x1b0 kernel/sched/wait_bit.c:49
+ out_of_line_wait_on_bit+0xd5/0x110 kernel/sched/wait_bit.c:64
+ wait_on_bit_io include/linux/wait_bit.h:101 [inline]
+ do_get_write_access+0x873/0x1070 fs/jbd2/transaction.c:1076
+ jbd2_journal_get_write_access+0x122/0x190 fs/jbd2/transaction.c:1211
+ __ext4_journal_get_write_access+0x1a4/0x2b0 fs/ext4/ext4_jbd2.c:231
+ ext4_reserve_inode_write+0x15a/0x230 fs/ext4/inode.c:5734
+ __ext4_mark_inode_dirty+0x15c/0x860 fs/ext4/inode.c:5898
+ ext4_dirty_inode+0xf3/0x130 fs/ext4/inode.c:5942
+ __mark_inode_dirty+0x893/0x11a0 fs/fs-writeback.c:2260
+ generic_update_time+0x21c/0x370 fs/inode.c:1764
+ update_time fs/inode.c:1777 [inline]
+ file_update_time+0x463/0x550 fs/inode.c:1992
+ ext4_page_mkwrite+0x32c/0x18d0 fs/ext4/inode.c:6062
+ do_page_mkwrite+0x1ac/0x480 mm/memory.c:2703
+ do_shared_fault mm/memory.c:4070 [inline]
+ do_fault mm/memory.c:4138 [inline]
+ handle_pte_fault mm/memory.c:4374 [inline]
+ __handle_mm_fault mm/memory.c:4509 [inline]
+ handle_mm_fault+0x1df2/0x37e0 mm/memory.c:4607
+ do_user_addr_fault+0x645/0xc40 arch/x86/mm/fault.c:1372
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa2/0x1a0 arch/x86/mm/fault.c:1485
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0x7fc214bed2e5
+RSP: 002b:00007ffdfa31a270 EFLAGS: 00010202
+RAX: 00007fc211597000 RBX: 00007ffdfa31a370 RCX: 00007fc210797210
+RDX: 00007fc211596ffc RSI: 0000000000000008 RDI: 00007ffdfa31a370
+RBP: 00000000000003e6 R08: 0000000000000000 R09: 0000000000000000
+R10: 00007ffdfa31a350 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+INFO: task syz.0.14:2113 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.0.14        state:D stack:27640 pid: 2113 ppid:   230 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ wait_on_page_bit_common+0x2a6/0xab0 mm/filemap.c:1273
+ wait_on_page_writeback mm/page-writeback.c:2831 [inline]
+ wait_on_page_writeback+0x10c/0x330 mm/page-writeback.c:2827
+ shmem_swapin_page+0x76f/0x1b20 mm/shmem.c:1737
+ shmem_getpage_gfp.constprop.0+0xb4a/0x19a0 mm/shmem.c:1824
+ shmem_fault+0x1fd/0x820 mm/shmem.c:2114
+ __do_fault+0x113/0x410 mm/memory.c:3612
+ do_shared_fault mm/memory.c:4060 [inline]
+ do_fault mm/memory.c:4138 [inline]
+ handle_pte_fault mm/memory.c:4374 [inline]
+ __handle_mm_fault mm/memory.c:4509 [inline]
+ handle_mm_fault+0x1d66/0x37e0 mm/memory.c:4607
+ do_user_addr_fault+0x645/0xc40 arch/x86/mm/fault.c:1372
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa2/0x1a0 arch/x86/mm/fault.c:1485
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0010:copy_user_generic_string+0x2c/0x40 arch/x86/lib/copy_user_64.S:169
+Code: cb 83 fa 08 72 27 89 f9 83 e1 07 74 15 83 e9 08 f7 d9 29 ca 8a 06 88 07 48 ff c6 48 ff c7 ff c9 75 f2 89 d1 c1 e9 03 83 e2 07 <f3> 48 a5 89 d1 f3 a4 31 c0 0f 01 ca c3 0f 1f 80 00 00 00 00 0f 01
+RSP: 0018:ffff8880088efcb0 EFLAGS: 00050246
+RAX: 0000000000000001 RBX: 0000000000000010 RCX: 0000000000000002
+RDX: 0000000000000000 RSI: ffff88800a797100 RDI: 0000000020000008
+RBP: 0000000020000018 R08: 0000000000000000 R09: ffff88800a79710f
+R10: ffffed10014f2e21 R11: 0000000000000001 R12: 0000000020000008
+R13: ffff88800a797100 R14: 00007ffffffff000 R15: 0000000000000000
+ copy_user_generic arch/x86/include/asm/uaccess_64.h:37 [inline]
+ raw_copy_to_user arch/x86/include/asm/uaccess_64.h:58 [inline]
+ _copy_to_user lib/usercopy.c:33 [inline]
+ _copy_to_user+0x136/0x170 lib/usercopy.c:26
+ copy_to_user include/linux/uaccess.h:200 [inline]
+ sg_scsi_ioctl+0x42a/0x7f0 block/scsi_ioctl.c:503
+ sg_ioctl_common+0xe34/0x2690 drivers/scsi/sg.c:1109
+ sg_ioctl+0x8f/0x120 drivers/scsi/sg.c:1163
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x196/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fef7065eef9
+RSP: 002b:00007fef6f2d8038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fef70816f80 RCX: 00007fef7065eef9
+RDX: 0000000020000000 RSI: 0000000000000001 RDI: 0000000000000004
+RBP: 00007fef706d1b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fef70816f80 R15: 00007ffe59cbda48
+INFO: task syz.1.45:2288 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.1.45        state:D stack:28016 pid: 2288 ppid:   239 flags:0x00000004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ bit_wait_io+0x12/0xa0 kernel/sched/wait_bit.c:209
+ __wait_on_bit+0x59/0x1b0 kernel/sched/wait_bit.c:49
+ out_of_line_wait_on_bit+0xd5/0x110 kernel/sched/wait_bit.c:64
+ wait_on_bit_io include/linux/wait_bit.h:101 [inline]
+ do_get_write_access+0x873/0x1070 fs/jbd2/transaction.c:1076
+ jbd2_journal_get_write_access+0x122/0x190 fs/jbd2/transaction.c:1211
+ __ext4_journal_get_write_access+0x1a4/0x2b0 fs/ext4/ext4_jbd2.c:231
+ ext4_reserve_inode_write+0x15a/0x230 fs/ext4/inode.c:5734
+ __ext4_mark_inode_dirty+0x15c/0x860 fs/ext4/inode.c:5898
+ ext4_dirty_inode+0xf3/0x130 fs/ext4/inode.c:5942
+ __mark_inode_dirty+0x893/0x11a0 fs/fs-writeback.c:2260
+ generic_update_time+0x21c/0x370 fs/inode.c:1764
+ update_time fs/inode.c:1777 [inline]
+ file_update_time+0x463/0x550 fs/inode.c:1992
+ ext4_page_mkwrite+0x32c/0x18d0 fs/ext4/inode.c:6062
+ do_page_mkwrite+0x1ac/0x480 mm/memory.c:2703
+ do_shared_fault mm/memory.c:4070 [inline]
+ do_fault mm/memory.c:4138 [inline]
+ handle_pte_fault mm/memory.c:4374 [inline]
+ __handle_mm_fault mm/memory.c:4509 [inline]
+ handle_mm_fault+0x1df2/0x37e0 mm/memory.c:4607
+ do_user_addr_fault+0x645/0xc40 arch/x86/mm/fault.c:1372
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa2/0x1a0 arch/x86/mm/fault.c:1485
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0x7fe27bf77a84
+RSP: 002b:00007fff59722db0 EFLAGS: 00010246
+RAX: 00000000003ffdf0 RBX: 0000000000000000 RCX: 00007fe27c0a2b60
+RDX: 0000001b31f20000 RSI: 0000000000400000 RDI: 00007fe27c197b10
+RBP: 00007fff5972300c R08: 0000000000000004 R09: 0000000000040000
+R10: 0000000000000011 R11: 0000000000000202 R12: 0000000000000032
+R13: 00000000000074e3 R14: 00000000000074af R15: 00007fff59723060
+INFO: task syz.3.46:2291 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.3.46        state:D stack:28120 pid: 2291 ppid:   231 flags:0x00000004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ bit_wait_io+0x12/0xa0 kernel/sched/wait_bit.c:209
+ __wait_on_bit+0x59/0x1b0 kernel/sched/wait_bit.c:49
+ out_of_line_wait_on_bit+0xd5/0x110 kernel/sched/wait_bit.c:64
+ wait_on_bit_io include/linux/wait_bit.h:101 [inline]
+ do_get_write_access+0x873/0x1070 fs/jbd2/transaction.c:1076
+ jbd2_journal_get_write_access+0x122/0x190 fs/jbd2/transaction.c:1211
+ __ext4_journal_get_write_access+0x1a4/0x2b0 fs/ext4/ext4_jbd2.c:231
+ ext4_reserve_inode_write+0x15a/0x230 fs/ext4/inode.c:5734
+ __ext4_mark_inode_dirty+0x15c/0x860 fs/ext4/inode.c:5898
+ ext4_dirty_inode+0xf3/0x130 fs/ext4/inode.c:5942
+ __mark_inode_dirty+0x893/0x11a0 fs/fs-writeback.c:2260
+ generic_update_time+0x21c/0x370 fs/inode.c:1764
+ update_time fs/inode.c:1777 [inline]
+ file_update_time+0x463/0x550 fs/inode.c:1992
+ ext4_page_mkwrite+0x32c/0x18d0 fs/ext4/inode.c:6062
+ do_page_mkwrite+0x1ac/0x480 mm/memory.c:2703
+ do_shared_fault mm/memory.c:4070 [inline]
+ do_fault mm/memory.c:4138 [inline]
+ handle_pte_fault mm/memory.c:4374 [inline]
+ __handle_mm_fault mm/memory.c:4509 [inline]
+ handle_mm_fault+0x1df2/0x37e0 mm/memory.c:4607
+ do_user_addr_fault+0x645/0xc40 arch/x86/mm/fault.c:1372
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa2/0x1a0 arch/x86/mm/fault.c:1485
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0x7f89f9585a84
+RSP: 002b:00007ffdaaabaae0 EFLAGS: 00010246
+RAX: 000000000003fdf0 RBX: 0000000000000000 RCX: 00007f89f96b0b60
+RDX: 0000001b32120000 RSI: 0000000000040000 RDI: 00007f89f97a5b10
+RBP: 00007ffdaaabad3c R08: 0000000000000008 R09: 00007ffdaaaba826
+R10: 0000000000000001 R11: 0000000000000202 R12: 0000000000000032
+R13: 0000000000007357 R14: 00000000000072f8 R15: 00007ffdaaabad90
+INFO: task syz.2.47:2292 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.2.47        state:D stack:28120 pid: 2292 ppid:   235 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ bit_wait_io+0x12/0xa0 kernel/sched/wait_bit.c:209
+ __wait_on_bit+0x59/0x1b0 kernel/sched/wait_bit.c:49
+ out_of_line_wait_on_bit+0xd5/0x110 kernel/sched/wait_bit.c:64
+ wait_on_bit_io include/linux/wait_bit.h:101 [inline]
+ do_get_write_access+0x873/0x1070 fs/jbd2/transaction.c:1076
+ jbd2_journal_get_write_access+0x122/0x190 fs/jbd2/transaction.c:1211
+ __ext4_journal_get_write_access+0x1a4/0x2b0 fs/ext4/ext4_jbd2.c:231
+ ext4_reserve_inode_write+0x15a/0x230 fs/ext4/inode.c:5734
+ __ext4_mark_inode_dirty+0x15c/0x860 fs/ext4/inode.c:5898
+ ext4_dirty_inode+0xf3/0x130 fs/ext4/inode.c:5942
+ __mark_inode_dirty+0x893/0x11a0 fs/fs-writeback.c:2260
+ generic_update_time+0x21c/0x370 fs/inode.c:1764
+ update_time fs/inode.c:1777 [inline]
+ file_update_time+0x463/0x550 fs/inode.c:1992
+ ext4_page_mkwrite+0x32c/0x18d0 fs/ext4/inode.c:6062
+ do_page_mkwrite+0x1ac/0x480 mm/memory.c:2703
+ do_shared_fault mm/memory.c:4070 [inline]
+ do_fault mm/memory.c:4138 [inline]
+ handle_pte_fault mm/memory.c:4374 [inline]
+ __handle_mm_fault mm/memory.c:4509 [inline]
+ handle_mm_fault+0x1df2/0x37e0 mm/memory.c:4607
+ do_user_addr_fault+0x645/0xc40 arch/x86/mm/fault.c:1372
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa2/0x1a0 arch/x86/mm/fault.c:1485
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0x7fb71eab2a84
+RSP: 002b:00007ffe1edd0880 EFLAGS: 00010246
+RAX: 00000000003ffdf0 RBX: 0000000000000000 RCX: 00007fb71ebddb60
+RDX: 0000001b32020000 RSI: 0000000000400000 RDI: 00007fb71ecd2b10
+RBP: 00007ffe1edd0adc R08: 0000000000000004 R09: 0000000000040000
+R10: 0000000000000011 R11: 0000000000000202 R12: 0000000000000032
+R13: 0000000000007656 R14: 000000000000748e R15: 00007ffe1edd0b30
+INFO: task syz-executor:2293 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor    state:D stack:28104 pid: 2293 ppid:   222 flags:0x00000000
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ bit_wait_io+0x12/0xa0 kernel/sched/wait_bit.c:209
+ __wait_on_bit+0x59/0x1b0 kernel/sched/wait_bit.c:49
+ out_of_line_wait_on_bit+0xd5/0x110 kernel/sched/wait_bit.c:64
+ wait_on_bit_io include/linux/wait_bit.h:101 [inline]
+ do_get_write_access+0x873/0x1070 fs/jbd2/transaction.c:1076
+ jbd2_journal_get_write_access+0x122/0x190 fs/jbd2/transaction.c:1211
+ __ext4_journal_get_write_access+0x1a4/0x2b0 fs/ext4/ext4_jbd2.c:231
+ ext4_reserve_inode_write+0x15a/0x230 fs/ext4/inode.c:5734
+ __ext4_mark_inode_dirty+0x15c/0x860 fs/ext4/inode.c:5898
+ ext4_dirty_inode+0xf3/0x130 fs/ext4/inode.c:5942
+ __mark_inode_dirty+0x893/0x11a0 fs/fs-writeback.c:2260
+ generic_update_time fs/inode.c:1764 [inline]
+ update_time fs/inode.c:1777 [inline]
+ touch_atime+0x63f/0x740 fs/inode.c:1848
+ file_accessed include/linux/fs.h:2220 [inline]
+ ext4_file_mmap+0x1d1/0x250 fs/ext4/file.c:764
+ call_mmap include/linux/fs.h:1908 [inline]
+ mmap_region+0xa0c/0x1450 mm/mmap.c:1807
+ do_mmap+0x807/0x11e0 mm/mmap.c:1583
+ vm_mmap_pgoff+0x194/0x1f0 mm/util.c:507
+ ksys_mmap_pgoff+0x483/0x5f0 mm/mmap.c:1634
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f2c75a03f33
+RSP: 002b:00007ffd2976fe88 EFLAGS: 00000246 ORIG_RAX: 0000000000000009
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f2c75a03f33
+RDX: 0000000000000001 RSI: 0000000000400000 RDI: 0000000000000000
+RBP: 0000000000000002 R08: 0000000000000003 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000246 R12: 00007ffd2976fef0
+R13: 00007ffd2976fef8 R14: 0000000000000009 R15: 0000000000000000
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/23:
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x28c kernel/locking/lockdep.c:6254
+3 locks held by kworker/u4:2/64:
+ #0: ffff8880083d2138 ((wq_completion)writeback){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff8880083d2138 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff8880083d2138 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff8880083d2138 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff8880083d2138 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff8880083d2138 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88800bc9fda8 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+ #2: ffff8880081360e0 (&type->s_umount_key#30){.+.+}-{3:3}, at: trylock_super+0x1d/0x100 fs/super.c:418
+1 lock held by journal-offline/2225:
+ #0: ffff88800cf66a38 (&sbi->s_writepages_rwsem){.+.+}-{0:0}, at: do_writepages+0xee/0x290 mm/page-writeback.c:2352
+1 lock held by in:imklog/154:
+4 locks held by rs:main Q:Reg/155:
+ #0: ffff88800cad14f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+ #1: ffff88800cf64438 (sb_writers#3){.+.+}-{0:0}, at: ksys_write+0x12d/0x250 fs/read_write.c:658
+ #2: ffff8880139c66f8 (&sb->s_type->i_mutex_key#14){++++}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ #2: ffff8880139c66f8 (&sb->s_type->i_mutex_key#14){++++}-{3:3}, at: ext4_buffered_write_iter+0xb6/0x4d0 fs/ext4/file.c:264
+ #3: ffff88800cf788e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0x100a/0x1440 fs/jbd2/transaction.c:444
+3 locks held by syz-executor/222:
+ #0: ffff88801100b728 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_read_lock include/linux/mmap_lock.h:46 [inline]
+ #0: ffff88801100b728 (&mm->mmap_lock#2){++++}-{3:3}, at: do_user_addr_fault+0x991/0xc40 arch/x86/mm/fault.c:1323
+ #1: ffff88800cf64530 (sb_pagefaults){.+.+}-{0:0}, at: do_page_mkwrite+0x1ac/0x480 mm/memory.c:2703
+ #2: ffff88800cf788e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0x100a/0x1440 fs/jbd2/transaction.c:444
+1 lock held by syz.0.14/2113:
+ #0: ffff88800afff3e8 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ #0: ffff88800afff3e8 (&mm->mmap_lock#2){++++}-{3:3}, at: do_user_addr_fault+0x339/0xc40 arch/x86/mm/fault.c:1313
+3 locks held by syz.1.45/2288:
+ #0: ffff8880107a9568 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ #0: ffff8880107a9568 (&mm->mmap_lock#2){++++}-{3:3}, at: do_user_addr_fault+0x339/0xc40 arch/x86/mm/fault.c:1313
+ #1: ffff88800cf64530 (sb_pagefaults){.+.+}-{0:0}, at: do_page_mkwrite+0x1ac/0x480 mm/memory.c:2703
+ #2: ffff88800cf788e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0x100a/0x1440 fs/jbd2/transaction.c:444
+3 locks held by syz.3.46/2291:
+ #0: ffff8880107af3e8 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ #0: ffff8880107af3e8 (&mm->mmap_lock#2){++++}-{3:3}, at: do_user_addr_fault+0x339/0xc40 arch/x86/mm/fault.c:1313
+ #1: ffff88800cf64530 (sb_pagefaults){.+.+}-{0:0}, at: do_page_mkwrite+0x1ac/0x480 mm/memory.c:2703
+ #2: ffff88800cf788e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0x100a/0x1440 fs/jbd2/transaction.c:444
+3 locks held by syz.2.47/2292:
+ #0: ffff88800affb728 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ #0: ffff88800affb728 (&mm->mmap_lock#2){++++}-{3:3}, at: do_user_addr_fault+0x339/0xc40 arch/x86/mm/fault.c:1313
+ #1: ffff88800cf64530 (sb_pagefaults){.+.+}-{0:0}, at: do_page_mkwrite+0x1ac/0x480 mm/memory.c:2703
+ #2: ffff88800cf788e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0x100a/0x1440 fs/jbd2/transaction.c:444
+3 locks held by syz-executor/2293:
+ #0: ffff8880107acb68 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_write_lock_killable include/linux/mmap_lock.h:26 [inline]
+ #0: ffff8880107acb68 (&mm->mmap_lock#2){++++}-{3:3}, at: vm_mmap_pgoff+0x153/0x1f0 mm/util.c:505
+ #1: ffff88800cf64438 (sb_writers#3){.+.+}-{0:0}, at: file_accessed include/linux/fs.h:2220 [inline]
+ #1: ffff88800cf64438 (sb_writers#3){.+.+}-{0:0}, at: ext4_file_mmap+0x1d1/0x250 fs/ext4/file.c:764
+ #2: ffff88800cf788e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0x100a/0x1440 fs/jbd2/transaction.c:444
+
+=============================================
+

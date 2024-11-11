@@ -1,0 +1,117 @@
+sr 1:0:0:0: [sr0] CDROM not ready.  Make sure there is a disc in the drive.
+EXT4-fs (loop2): mounted filesystem without journal. Opts: ,errors=continue
+kernel profiling enabled (shift: 348)
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:110:31
+shift exponent 348 is too large for 64-bit type 'long int'
+CPU: 1 PID: 9344 Comm: syz.3.320 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ profile_init+0xfc/0x110 kernel/profile.c:110
+ profiling_store+0x5e/0xd0 kernel/ksysfs.c:80
+ kobj_attr_store+0x53/0x80 lib/kobject.c:856
+ sysfs_kf_write+0x113/0x170 fs/sysfs/file.c:139
+ kernfs_fop_write+0x26a/0x490 fs/kernfs/file.c:315
+ vfs_write+0x29a/0xac0 fs/read_write.c:603
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fb2a9d03ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb2a897d038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fb2a9ebbf80 RCX: 00007fb2a9d03ef9
+RDX: 0000000000000012 RSI: 0000000020000040 RDI: 0000000000000003
+RBP: 00007fb2a9d76b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fb2a9ebbf80 R15: 00007fff7c8911d8
+EXT4-fs (loop1): #clusters per group too big: 16384
+================================================================================
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:291:7
+shift exponent 348 is too large for 64-bit type 'long unsigned int'
+CPU: 1 PID: 9328 Comm: syz.0.317 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ do_profile_hits.constprop.0.cold+0x17/0x1c kernel/profile.c:291
+ profile_hits kernel/profile.c:398 [inline]
+ profile_hit include/linux/profile.h:64 [inline]
+ profile_tick+0xe7/0x100 kernel/profile.c:408
+ tick_sched_timer+0x10f/0x150 kernel/time/tick-sched.c:1328
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x1c1/0xba0 kernel/time/hrtimer.c:1583
+ hrtimer_interrupt+0x357/0x9b0 kernel/time/hrtimer.c:1645
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+ __sysvec_apic_timer_interrupt+0x170/0x560 arch/x86/kernel/apic/apic.c:1097
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
+ run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
+ sysvec_apic_timer_interrupt+0xb8/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:lock_is_held_type+0xc2/0x100 kernel/locking/lockdep.c:5481
+Code: 03 44 39 f0 41 0f 94 c4 48 c7 c7 c0 df 46 84 e8 94 12 00 00 b8 ff ff ff ff 65 0f c1 05 77 df 16 7c 83 f8 01 75 23 ff 34 24 9d <48> 83 c4 08 44 89 e0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 45 31 e4 eb
+RSP: 0018:ffff88800f8f7808 EFLAGS: 00000202
+RAX: 0000000000000001 RBX: 0000000000000003 RCX: 1ffffffff0bacf77
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffffff850e7f00 R08: 0000000000000001 R09: ffffffff86e5f6a7
+R10: fffffbfff0dcbed4 R11: 0000000000000001 R12: 0000000000000001
+R13: ffff88800fe90950 R14: 00000000ffffffff R15: ffff88800fe909c8
+ task_css include/linux/cgroup.h:494 [inline]
+ mem_cgroup_from_task mm/memcontrol.c:1010 [inline]
+ get_mem_cgroup_from_mm+0x2e8/0x4c0 mm/memcontrol.c:1039
+ mem_cgroup_charge+0x87/0x830 mm/memcontrol.c:6799
+ shmem_add_to_page_cache+0x70e/0x1230 mm/shmem.c:688
+ shmem_getpage_gfp.constprop.0+0x64d/0x19a0 mm/shmem.c:1927
+ shmem_getpage mm/shmem.c:155 [inline]
+ shmem_write_begin+0xf7/0x1d0 mm/shmem.c:2533
+ generic_perform_write+0x1fe/0x4d0 mm/filemap.c:3329
+ __generic_file_write_iter+0x399/0x5d0 mm/filemap.c:3458
+ generic_file_write_iter+0xd7/0x220 mm/filemap.c:3490
+ call_write_iter include/linux/fs.h:1903 [inline]
+ new_sync_write+0x42c/0x670 fs/read_write.c:518
+ vfs_write+0x81b/0xac0 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f81b23a7ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f81b1021038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f81b255ff80 RCX: 00007f81b23a7ef9
+RDX: 00000000fffffd9d RSI: 0000000020000180 RDI: 0000000000000007
+RBP: 00007f81b241ab76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f81b255ff80 R15: 00007ffdefd9ce48
+================================================================================
+----------------
+Code disassembly (best guess):
+   0:	03 44 39 f0          	add    -0x10(%rcx,%rdi,1),%eax
+   4:	41 0f 94 c4          	sete   %r12b
+   8:	48 c7 c7 c0 df 46 84 	mov    $0xffffffff8446dfc0,%rdi
+   f:	e8 94 12 00 00       	call   0x12a8
+  14:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+  19:	65 0f c1 05 77 df 16 	xadd   %eax,%gs:0x7c16df77(%rip)        # 0x7c16df98
+  20:	7c
+  21:	83 f8 01             	cmp    $0x1,%eax
+  24:	75 23                	jne    0x49
+  26:	ff 34 24             	push   (%rsp)
+  29:	9d                   	popf
+* 2a:	48 83 c4 08          	add    $0x8,%rsp <-- trapping instruction
+  2e:	44 89 e0             	mov    %r12d,%eax
+  31:	5b                   	pop    %rbx
+  32:	5d                   	pop    %rbp
+  33:	41 5c                	pop    %r12
+  35:	41 5d                	pop    %r13
+  37:	41 5e                	pop    %r14
+  39:	41 5f                	pop    %r15
+  3b:	c3                   	ret
+  3c:	45 31 e4             	xor    %r12d,%r12d
+  3f:	eb                   	.byte 0xeb

@@ -1,0 +1,125 @@
+audit: type=1400 audit(1731338710.337:14): avc:  denied  { getattr } for  pid=230 comm="syz-executor" path="/6" dev="tmpfs" ino=46 scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:object_r:urandom_device_t:s0 tclass=dir permissive=1
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+audit: type=1400 audit(1731338710.337:15): avc:  denied  { write } for  pid=230 comm="syz-executor" name="6" dev="tmpfs" ino=46 scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:object_r:urandom_device_t:s0 tclass=dir permissive=1
+syz.1.29/2187 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff88800d2b52a8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88800d2b52a8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+audit: type=1400 audit(1731338710.337:16): avc:  denied  { remove_name } for  pid=230 comm="syz-executor" name="cgroup.controllers" dev="tmpfs" ino=52 scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:object_r:urandom_device_t:s0 tclass=dir permissive=1
+irq event stamp: 4382
+hardirqs last  enabled at (4382): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (4382): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (4381): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (4381): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (3872): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (4311): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+2 locks held by syz.1.29/2187:
+ #0: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #1: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 1 PID: 2187 Comm: syz.1.29 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:down_read_trylock+0x14/0x360 kernel/locking/rwsem.c:1516
+Code: e9 99 fe ff ff e8 6c 30 4a 00 e9 dc fe ff ff 0f 1f 80 00 00 00 00 48 ba 00 00 00 00 00 fc ff df 41 57 41 56 41 55 41 54 55 53 <48> 89 fb 48 83 ec 60 48 89 e5 48 c7 04 24 b3 8a b5 41 48 c7 44 24
+RSP: 0000:ffff88801a03fe80 EFLAGS: 00000212
+RAX: ffff888019ec0778 RBX: ffff888019ec06c0 RCX: ffffc90000db7000
+RDX: dffffc0000000000 RSI: ffffffff81134fd5 RDI: ffff888019ec0778
+RBP: ffff88801a03ff58 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffffff600000 R11: 0000000000000001 R12: 00007f407027e000
+R13: 0000000000000004 R14: 00007f407027e000 R15: 0000000000000000
+ mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ do_user_addr_fault+0x339/0xc40 arch/x86/mm/fault.c:1313
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa2/0x1a0 arch/x86/mm/fault.c:1485
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0x7f4079653cb6
+Code: f0 72 6e 48 63 cd 48 01 c1 49 39 4f 08 72 4c 8d 4d ff 85 ed 74 33 66 0f 1f 44 00 00 48 39 f0 72 1b 4d 8b 07 49 89 c1 49 29 f1 <47> 0f b6 0c 08 45 84 c9 74 08 45 88 0c 00 49 8b 47 10 48 83 c0 01
+RSP: 002b:00007f40784084a0 EFLAGS: 00010206
+RAX: 0000000000295001 RBX: 00007f4078408540 RCX: 0000000000000060
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 00007f40784085e0
+RBP: 0000000000000102 R08: 00007f406ffe9000 R09: 0000000000295000
+R10: 0000000000000000 R11: 00007f4078408550 R12: 0000000000000001
+R13: 00007f4079816ec0 R14: 0000000000000000 R15: 00007f40784085e0
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /7/file0 supports timestamps until 2038 (0x7fffffff)
+FAT-fs (loop0): Unrecognized mount option "errors=kemount-ro" or missing value
+----------------
+Code disassembly (best guess):
+   0:	e9 99 fe ff ff       	jmp    0xfffffe9e
+   5:	e8 6c 30 4a 00       	call   0x4a3076
+   a:	e9 dc fe ff ff       	jmp    0xfffffeeb
+   f:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+  16:	48 ba 00 00 00 00 00 	movabs $0xdffffc0000000000,%rdx
+  1d:	fc ff df
+  20:	41 57                	push   %r15
+  22:	41 56                	push   %r14
+  24:	41 55                	push   %r13
+  26:	41 54                	push   %r12
+  28:	55                   	push   %rbp
+  29:	53                   	push   %rbx
+* 2a:	48 89 fb             	mov    %rdi,%rbx <-- trapping instruction
+  2d:	48 83 ec 60          	sub    $0x60,%rsp
+  31:	48 89 e5             	mov    %rsp,%rbp
+  34:	48 c7 04 24 b3 8a b5 	movq   $0x41b58ab3,(%rsp)
+  3b:	41
+  3c:	48                   	rex.W
+  3d:	c7                   	.byte 0xc7
+  3e:	44                   	rex.R
+  3f:	24                   	.byte 0x24

@@ -1,0 +1,39 @@
+audit: type=1400 audit(1731059340.620:6): avc:  denied  { execmem } for  pid=236 comm="syz-executor372" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 236 at fs/read_write.c:440 __kernel_read+0x907/0xb00 fs/read_write.c:440
+audit: type=1400 audit(1731059340.623:7): avc:  denied  { module_load } for  pid=236 comm="syz-executor372" path="/sys/power/pm_test" dev="sysfs" ino=107 scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:object_r:sysfs_t:s0 tclass=system permissive=1
+Modules linked in:
+CPU: 0 PID: 236 Comm: syz-executor372 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:__kernel_read+0x907/0xb00 fs/read_write.c:440
+Code: c7 00 e9 26 85 e8 19 44 95 00 31 ff 89 c3 89 c6 e8 ae 76 ce ff 85 db 75 59 49 c7 c5 ea ff ff ff e9 47 fe ff ff e8 d9 7e ce ff <0f> 0b 49 c7 c5 ea ff ff ff e9 34 fe ff ff e8 06 af fb ff e9 ad f7
+RSP: 0018:ffff88800ace7b50 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000001000 RCX: ffffffff817787c8
+RDX: ffff8880088c0000 RSI: ffffffff81778fe7 RDI: 0000000000000005
+RBP: 000000000008800c R08: 0000000000000001 R09: ffffffff871fc4e7
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800c192f00
+R13: 0000000000000001 R14: ffff88800ace7d20 R15: 1ffff1100159cf6d
+FS:  0000555556ff9380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fce6695c6f8 CR3: 000000000fbdc000 CR4: 0000000000350ef0
+Call Trace:
+ kernel_read+0x52/0x70 fs/read_write.c:472
+ kernel_read_file+0x3b8/0x790 fs/kernel_read_file.c:93
+ kernel_read_file_from_fd+0x62/0xb0 fs/kernel_read_file.c:184
+ __do_sys_finit_module+0xe8/0x180 kernel/module.c:4065
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f61e43dff1d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc32c9dee8 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f61e43dff1d
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 00007ffc32c9df90 R08: 0000000000000000 R09: 00007ffc32c9df90
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc32c9e008
+R13: 00007ffc32c9e018 R14: 00007f61e4474d10 R15: 0000000000000001
+irq event stamp: 10483
+hardirqs last  enabled at (10491): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (10500): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (10214): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (10201): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace d25bd7908b53b2b5 ]---

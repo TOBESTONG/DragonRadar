@@ -1,0 +1,167 @@
+EXT4-fs (loop2): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+ext4 filesystem being mounted at /15/file1 supports timestamps until 2038 (0x7fffffff)
+==================================================================
+BUG: KASAN: use-after-free in crc16+0xcb/0xe0 lib/crc16.c:58
+Read of size 1 at addr ffff8880199de000 by task syz.2.47/2896
+
+CPU: 0 PID: 2896 Comm: syz.2.47 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ crc16+0xcb/0xe0 lib/crc16.c:58
+ ext4_group_desc_csum+0x62d/0x8a0 fs/ext4/super.c:2837
+ ext4_group_desc_csum_set+0xc3/0x1a0 fs/ext4/super.c:2860
+ __ext4_new_inode+0x1d15/0x55b0 fs/ext4/ialloc.c:1221
+ ext4_create+0x2ce/0x4d0 fs/ext4/namei.c:2619
+ lookup_open+0xf52/0x1330 fs/namei.c:3104
+ open_last_lookups fs/namei.c:3178 [inline]
+ path_openat+0x93f/0x26f0 fs/namei.c:3366
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ file_open_name+0x28d/0x400 fs/open.c:1113
+ filp_open+0x47/0x70 fs/open.c:1133
+ do_coredump+0x2460/0x3380 fs/coredump.c:762
+ get_signal+0x20ac/0x2480 kernel/signal.c:2752
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ irqentry_exit_to_user_mode+0x5/0x40 kernel/entry/common.c:279
+ exc_page_fault+0xca/0x1a0 arch/x86/mm/fault.c:1488
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0x7f3fc48d8f01
+Code: 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 48 3d 01 f0 ff ff 73 01 <c3> 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f
+RSP: 002b:0000000000000030 EFLAGS: 00010217
+RAX: 0000000000000000 RBX: 00007f3fc4a90f80 RCX: 00007f3fc48d8ef9
+RDX: 0000000000000000 RSI: 0000000000000030 RDI: 0000000044088000
+RBP: 00007f3fc494bb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000206 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f3fc4a90f80 R15: 00007fffdd154d78
+
+Allocated by task 2822:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ vm_area_dup+0x78/0x290 kernel/fork.c:356
+ __split_vma+0xa8/0x560 mm/mmap.c:2740
+ split_vma+0x95/0xd0 mm/mmap.c:2798
+ mprotect_fixup+0x6eb/0x8e0 mm/mprotect.c:473
+ do_mprotect_pkey+0x52e/0x960 mm/mprotect.c:619
+ __do_sys_mprotect mm/mprotect.c:644 [inline]
+ __se_sys_mprotect mm/mprotect.c:641 [inline]
+ __x64_sys_mprotect+0x74/0xb0 mm/mprotect.c:641
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 2822:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ remove_vma+0x135/0x170 mm/mmap.c:184
+ exit_mmap+0x31f/0x4e0 mm/mmap.c:3231
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff8880199de000
+ which belongs to the cache vm_area_struct of size 192
+The buggy address is located 0 bytes inside of
+ 192-byte region [ffff8880199de000, ffff8880199de0c0)
+The buggy address belongs to the page:
+page:00000000d3e9e33a refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x199de
+flags: 0x100000000000200(slab)
+raw: 0100000000000200 dead000000000100 dead000000000122 ffff888008141640
+raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880199ddf00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff8880199ddf80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff8880199de000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff8880199de080: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff8880199de100: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4.h:3196!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 2896 Comm: syz.2.47 Tainted: G    B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff88801d52e490 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000024 RCX: ffffffff81a81b22
+RDX: ffff888019970000 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff88800bc2c000 R08: 0000000000000000 R09: ffff888013ba0057
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880090a0000
+R13: ffff8880090a0650 R14: 0000000000000001 R15: 0000000000000024
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2cd0281000 CR3: 000000001d688000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_mb_find_by_goal+0xf4/0x1030 fs/ext4/mballoc.c:1884
+ ext4_mb_regular_allocator+0x235/0x1ee0 fs/ext4/mballoc.c:2320
+ ext4_mb_new_blocks+0x2322/0x4b60 fs/ext4/mballoc.c:4997
+ ext4_ext_map_blocks+0x1f8e/0x5d50 fs/ext4/extents.c:4238
+ ext4_map_blocks+0x700/0x1740 fs/ext4/inode.c:628
+ _ext4_get_block+0x241/0x590 fs/ext4/inode.c:784
+ __block_write_begin_int+0x3f2/0x1b40 fs/buffer.c:2011
+ ext4_write_begin+0x649/0x1170 fs/ext4/inode.c:1200
+ ext4_da_write_begin+0x61e/0xe60 fs/ext4/inode.c:2952
+ generic_perform_write+0x1fe/0x4d0 mm/filemap.c:3329
+ ext4_buffered_write_iter+0x244/0x4d0 fs/ext4/file.c:270
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ __kernel_write+0x593/0xb00 fs/read_write.c:550
+ dump_emit+0x1db/0x2e0 fs/coredump.c:848
+ dump_user_range+0xbb/0x2a0 fs/coredump.c:901
+ elf_core_dump+0x290a/0x3540 fs/binfmt_elf.c:2274
+ do_coredump+0x2246/0x3380 fs/coredump.c:810
+ get_signal+0x20ac/0x2480 kernel/signal.c:2752
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ irqentry_exit_to_user_mode+0x5/0x40 kernel/entry/common.c:279
+ exc_page_fault+0xca/0x1a0 arch/x86/mm/fault.c:1488
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0x7f3fc48d8f01
+Code: 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 48 3d 01 f0 ff ff 73 01 <c3> 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f
+RSP: 002b:0000000000000030 EFLAGS: 00010217
+RAX: 0000000000000000 RBX: 00007f3fc4a90f80 RCX: 00007f3fc48d8ef9
+RDX: 0000000000000000 RSI: 0000000000000030 RDI: 0000000044088000
+RBP: 00007f3fc494bb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000206 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f3fc4a90f80 R15: 00007fffdd154d78
+Modules linked in:
+---[ end trace 4fb526e62f1fea9f ]---
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff88801d52e490 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000024 RCX: ffffffff81a81b22
+RDX: ffff888019970000 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff88800bc2c000 R08: 0000000000000000 R09: ffff888013ba0057
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880090a0000
+R13: ffff8880090a0650 R14: 0000000000000001 R15: 0000000000000024
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2dd79116f4 CR3: 000000001d688000 CR4: 0000000000350ef0
+EXT4-fs warning (device loop2): kmmpd:182: kmmpd being stopped since MMP feature has been disabled.

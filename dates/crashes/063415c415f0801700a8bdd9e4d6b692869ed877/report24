@@ -1,0 +1,163 @@
+9pnet: Insufficient options for proto=fd
+audit: type=1400 audit(1731300546.965:812): avc:  denied  { open } for  pid=17792 comm="syz.2.1015" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=perf_event permissive=0
+INFO: task syz.2.17:2125 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.2.17        state:D stack:25416 pid: 2125 ppid:   236 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ bit_wait_io+0x12/0xa0 kernel/sched/wait_bit.c:209
+ __wait_on_bit_lock+0x131/0x1c0 kernel/sched/wait_bit.c:90
+ out_of_line_wait_on_bit_lock+0xd5/0x110 kernel/sched/wait_bit.c:117
+ wait_on_bit_lock_io include/linux/wait_bit.h:208 [inline]
+ __lock_buffer fs/buffer.c:69 [inline]
+ lock_buffer include/linux/buffer_head.h:366 [inline]
+ __sync_dirty_buffer+0x34f/0x3e0 fs/buffer.c:3142
+ __ext4_handle_dirty_metadata+0x28b/0x9b0 fs/ext4/ext4_jbd2.c:364
+ ext4_finish_convert_inline_dir fs/ext4/inline.c:1164 [inline]
+ ext4_convert_inline_data_nolock+0x9b5/0xd60 fs/ext4/inline.c:1240
+ ext4_try_add_inline_entry+0x38f/0x650 fs/ext4/inline.c:1313
+ ext4_add_entry+0x34e/0xc60 fs/ext4/namei.c:2209
+ ext4_add_nondir+0x90/0x290 fs/ext4/namei.c:2582
+ ext4_create+0x374/0x4d0 fs/ext4/namei.c:2627
+ lookup_open+0xf52/0x1330 fs/namei.c:3104
+ open_last_lookups fs/namei.c:3178 [inline]
+ path_openat+0x93f/0x26f0 fs/namei.c:3366
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f3822c32ef9
+RSP: 002b:00007f38218ac038 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00007f3822deaf80 RCX: 00007f3822c32ef9
+RDX: 000000000000275a RSI: 0000000020000080 RDI: ffffffffffffff9c
+RBP: 00007f3822ca5b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f3822deaf80 R15: 00007ffe1bef3608
+INFO: task syz.2.17:2141 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.2.17        state:D stack:26520 pid: 2141 ppid:   236 flags:0x00000004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ rwsem_down_read_slowpath+0x2ad/0xb90 kernel/locking/rwsem.c:1099
+ __down_read kernel/locking/rwsem.c:1341 [inline]
+ down_read+0x1ec/0x450 kernel/locking/rwsem.c:1494
+ inode_lock_shared include/linux/fs.h:784 [inline]
+ lookup_slow fs/namei.c:1560 [inline]
+ walk_component+0x40b/0x6a0 fs/namei.c:1861
+ lookup_last fs/namei.c:2310 [inline]
+ path_lookupat+0x146/0x6c0 fs/namei.c:2334
+ filename_lookup+0x19f/0x560 fs/namei.c:2367
+ user_path_at include/linux/namei.h:59 [inline]
+ vfs_statx+0x142/0x390 fs/stat.c:185
+ vfs_fstatat fs/stat.c:207 [inline]
+ __do_sys_newfstatat+0x96/0x120 fs/stat.c:376
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f3822c32ef9
+RSP: 002b:00007f382188b038 EFLAGS: 00000246 ORIG_RAX: 0000000000000106
+RAX: ffffffffffffffda RBX: 00007f3822deb058 RCX: 00007f3822c32ef9
+RDX: 0000000020000200 RSI: 0000000020000140 RDI: ffffffffffffff9c
+RBP: 00007f3822ca5b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000006000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f3822deb058 R15: 00007ffe1bef3608
+INFO: task syz.2.17:2164 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.2.17        state:D stack:27704 pid: 2164 ppid:   236 flags:0x00000004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ rwsem_down_read_slowpath+0x2ad/0xb90 kernel/locking/rwsem.c:1099
+ __down_read kernel/locking/rwsem.c:1341 [inline]
+ down_read+0x1ec/0x450 kernel/locking/rwsem.c:1494
+ inode_lock_shared include/linux/fs.h:784 [inline]
+ lookup_slow fs/namei.c:1560 [inline]
+ walk_component+0x40b/0x6a0 fs/namei.c:1861
+ lookup_last fs/namei.c:2310 [inline]
+ path_lookupat+0x146/0x6c0 fs/namei.c:2334
+ filename_lookup+0x19f/0x560 fs/namei.c:2367
+ user_path_at include/linux/namei.h:59 [inline]
+ do_mount fs/namespace.c:3215 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x1e9/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f3822c32ef9
+RSP: 002b:00007f382186a038 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f3822deb130 RCX: 00007f3822c32ef9
+RDX: 00000000200000c0 RSI: 0000000020000080 RDI: 0000000000000000
+RBP: 00007f3822ca5b76 R08: 0000000020000340 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f3822deb130 R15: 00007ffe1bef3608
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/23:
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x28c kernel/locking/lockdep.c:6254
+3 locks held by kworker/u4:2/64:
+3 locks held by kworker/u4:3/65:
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88800beafda8 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+ #2: ffff8880081360e0 (&type->s_umount_key#30){.+.+}-{3:3}, at: trylock_super+0x1d/0x100 fs/super.c:418
+1 lock held by in:imklog/154:
+ #0: ffff88800e38a0f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+2 locks held by agetty/195:
+ #0: ffff88800bbc2098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc9000079a2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x223/0x1960 drivers/tty/n_tty.c:2156
+3 locks held by syz.2.17/2125:
+ #0: ffff888019e44438 (sb_writers#3){.+.+}-{0:0}, at: open_last_lookups fs/namei.c:3165 [inline]
+ #0: ffff888019e44438 (sb_writers#3){.+.+}-{0:0}, at: path_openat+0x24cc/0x26f0 fs/namei.c:3366
+ #1: ffff888013330e60 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ #1: ffff888013330e60 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: open_last_lookups fs/namei.c:3175 [inline]
+ #1: ffff888013330e60 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: path_openat+0x925/0x26f0 fs/namei.c:3366
+ #2: ffff888013330aa0 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ #2: ffff888013330aa0 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_add_inline_entry+0x108/0x650 fs/ext4/inline.c:1271
+1 lock held by syz.2.17/2141:
+ #0: ffff888013330e60 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: inode_lock_shared include/linux/fs.h:784 [inline]
+ #0: ffff888013330e60 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: lookup_slow fs/namei.c:1560 [inline]
+ #0: ffff888013330e60 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: walk_component+0x40b/0x6a0 fs/namei.c:1861
+1 lock held by syz.2.17/2164:
+ #0: ffff888013330e60 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: inode_lock_shared include/linux/fs.h:784 [inline]
+ #0: ffff888013330e60 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: lookup_slow fs/namei.c:1560 [inline]
+ #0: ffff888013330e60 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: walk_component+0x40b/0x6a0 fs/namei.c:1861
+1 lock held by syz.1.211/7460:
+ #0: ffff888019e440e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.2.272/8273:
+ #0: ffff888019e440e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.2.443/10908:
+ #0: ffff888019e440e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.0.454/10968:
+ #0: ffff888019e440e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.1.550/11776:
+ #0: ffff888019e440e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.3.554/12406:
+ #0: ffff888019e440e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+3 locks held by syz.3.745/15627:
+ #0: ffff88800c638438 (sb_writers#3){.+.+}-{0:0}, at: filename_create+0x104/0x490 fs/namei.c:3462
+ #1: ffff888013333f98 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+ #1: ffff888013333f98 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: filename_create+0x15a/0x490 fs/namei.c:3467
+ #2: ffff888013333bd8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ #2: ffff888013333bd8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_add_inline_entry+0x108/0x650 fs/ext4/inline.c:1271
+1 lock held by syz.1.865/17031:
+ #0: ffff888019e440e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+
+=============================================
+
+audit: type=1400 audit(1731300547.949:813): avc:  denied  { execmem } for  pid=17801 comm="syz-executor" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=0

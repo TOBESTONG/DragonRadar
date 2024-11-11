@@ -1,0 +1,119 @@
+Quota error (device loop3): dqput: Can't write quota structure (error -30). Quota may get out of sync!
+9pnet: Insufficient options for proto=fd
+kernel profiling enabled (shift: 348)
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:110:31
+shift exponent 348 is too large for 64-bit type 'long int'
+CPU: 1 PID: 14022 Comm: syz.1.601 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ profile_init+0xfc/0x110 kernel/profile.c:110
+ profiling_store+0x5e/0xd0 kernel/ksysfs.c:80
+ kobj_attr_store+0x53/0x80 lib/kobject.c:856
+ sysfs_kf_write+0x113/0x170 fs/sysfs/file.c:139
+ kernfs_fop_write+0x26a/0x490 fs/kernfs/file.c:315
+ vfs_write+0x29a/0xac0 fs/read_write.c:603
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f35f63b9ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f35f5033038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f35f6571f80 RCX: 00007f35f63b9ef9
+RDX: 0000000000000012 RSI: 0000000020000040 RDI: 0000000000000008
+RBP: 00007f35f642cb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f35f6571f80 R15: 00007ffd7ea33898
+================================================================================
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:291:7
+shift exponent 348 is too large for 64-bit type 'long unsigned int'
+CPU: 0 PID: 12236 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ do_profile_hits.constprop.0.cold+0x17/0x1c kernel/profile.c:291
+ profile_hits kernel/profile.c:398 [inline]
+ profile_hit include/linux/profile.h:64 [inline]
+ profile_tick+0xe7/0x100 kernel/profile.c:408
+ tick_sched_timer+0x10f/0x150 kernel/time/tick-sched.c:1328
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x1c1/0xba0 kernel/time/hrtimer.c:1583
+ hrtimer_interrupt+0x357/0x9b0 kernel/time/hrtimer.c:1645
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+ __sysvec_apic_timer_interrupt+0x170/0x560 arch/x86/kernel/apic/apic.c:1097
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
+ run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
+ sysvec_apic_timer_interrupt+0xb8/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:constant_test_bit arch/x86/include/asm/bitops.h:207 [inline]
+RIP: 0010:test_bit include/asm-generic/bitops/instrumented-non-atomic.h:135 [inline]
+RIP: 0010:PageCompound include/linux/page-flags.h:199 [inline]
+RIP: 0010:PageHuge+0x2e/0x170 mm/hugetlb.c:1551
+Code: 48 89 fb e8 a4 60 d6 ff be 08 00 00 00 48 89 df e8 47 6b 03 00 48 89 da 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 80 3c 02 00 <0f> 85 13 01 00 00 48 8b 2b 31 ff 48 c1 ed 10 83 e5 01 89 ee e8 e9
+RSP: 0018:ffff888019dff718 EFLAGS: 00000246
+RAX: dffffc0000000000 RBX: ffffea000062a9c0 RCX: ffffffff816fae29
+RDX: 1ffffd40000c5538 RSI: 0000000000000008 RDI: ffffea000062a9c0
+RBP: ffffea000062a9c0 R08: 0000000000000000 R09: ffffea000062a9c7
+R10: fffff940000c5538 R11: 0000000000000001 R12: 0000000000000000
+R13: ffffea000062a9c8 R14: 0000000000000000 R15: dead000000000100
+ page_remove_file_rmap mm/rmap.c:1241 [inline]
+ page_remove_rmap+0x365/0x7d0 mm/rmap.c:1331
+ zap_pte_range mm/memory.c:1253 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0xe32/0x2070 mm/memory.c:1428
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f35f63ebfa3
+Code: Unable to access opcode bytes at RIP 0x7f35f63ebf79.
+RSP: 002b:00007ffd7ea33be8 EFLAGS: 00000202 ORIG_RAX: 00000000000000e6
+RAX: fffffffffffffdfc RBX: 0000000000000042 RCX: 00007f35f63ebfa3
+RDX: 00007ffd7ea33c00 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007ffd7ea33c5c R08: 0000000000000000 R09: 00007ffd7eab0090
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000032
+R13: 000000000001f3dd R14: 000000000001eff3 R15: 00007ffd7ea33cb0
+================================================================================
+----------------
+Code disassembly (best guess):
+   0:	48 89 fb             	mov    %rdi,%rbx
+   3:	e8 a4 60 d6 ff       	call   0xffd660ac
+   8:	be 08 00 00 00       	mov    $0x8,%esi
+   d:	48 89 df             	mov    %rbx,%rdi
+  10:	e8 47 6b 03 00       	call   0x36b5c
+  15:	48 89 da             	mov    %rbx,%rdx
+  18:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  1f:	fc ff df
+  22:	48 c1 ea 03          	shr    $0x3,%rdx
+  26:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+* 2a:	0f 85 13 01 00 00    	jne    0x143 <-- trapping instruction
+  30:	48 8b 2b             	mov    (%rbx),%rbp
+  33:	31 ff                	xor    %edi,%edi
+  35:	48 c1 ed 10          	shr    $0x10,%rbp
+  39:	83 e5 01             	and    $0x1,%ebp
+  3c:	89 ee                	mov    %ebp,%esi
+  3e:	e8                   	.byte 0xe8
+  3f:	e9                   	.byte 0xe9

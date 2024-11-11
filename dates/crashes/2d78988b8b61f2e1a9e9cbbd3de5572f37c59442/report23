@@ -1,0 +1,56 @@
+EXT4-fs error (device loop1): ext4_read_block_bitmap_nowait:436: comm syz-executor: Invalid block bitmap block 46857 in block_group 0
+EXT4-fs error (device loop1) in ext4_free_blocks:5518: Corrupt filesystem
+==================================================================
+BUG: KASAN: use-after-free in crc16+0xcb/0xe0 lib/crc16.c:58
+Read of size 1 at addr ffff888015d95000 by task syz-executor/234
+
+CPU: 0 PID: 234 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ crc16+0xcb/0xe0 lib/crc16.c:58
+ ext4_group_desc_csum+0x62d/0x8a0 fs/ext4/super.c:2837
+ ext4_group_desc_csum_set+0xc3/0x1a0 fs/ext4/super.c:2860
+ ext4_free_inode+0xbe2/0x13b0 fs/ext4/ialloc.c:329
+ ext4_evict_inode+0x111d/0x1890 fs/ext4/inode.c:324
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ dentry_unlink_inode+0x2b4/0x3e0 fs/dcache.c:374
+ d_delete+0x167/0x1c0 fs/dcache.c:2470
+ vfs_rmdir.part.0+0x3d5/0x4b0 fs/namei.c:3727
+ vfs_rmdir fs/namei.c:3696 [inline]
+ do_rmdir+0x2f6/0x3c0 fs/namei.c:3774
+ __do_sys_unlinkat fs/namei.c:3937 [inline]
+ __se_sys_unlinkat fs/namei.c:3931 [inline]
+ __x64_sys_unlinkat+0xeb/0x130 fs/namei.c:3931
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fb8108734d7
+Code: 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 07 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe1d075c48 EFLAGS: 00000207 ORIG_RAX: 0000000000000107
+RAX: ffffffffffffffda RBX: 0000000000000065 RCX: 00007fb8108734d7
+RDX: 0000000000000200 RSI: 00007ffe1d076df0 RDI: 00000000ffffff9c
+RBP: 00007fb8108e6a14 R08: 00005555572e454b R09: 0000000000000000
+R10: 0000000000001000 R11: 0000000000000207 R12: 00007ffe1d076df0
+R13: 00007fb8108e6a14 R14: 0000000000007d4b R15: 00007ffe1d078fa0
+
+The buggy address belongs to the page:
+page:00000000299013f3 refcount:0 mapcount:-128 mapping:0000000000000000 index:0x0 pfn:0x15d95
+flags: 0x100000000000000()
+raw: 0100000000000000 ffffea00002dc6c8 ffffea000033f7c8 0000000000000000
+raw: 0000000000000000 0000000000000000 00000000ffffff7f 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888015d94f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888015d94f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff888015d95000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                   ^
+ ffff888015d95080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff888015d95100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================

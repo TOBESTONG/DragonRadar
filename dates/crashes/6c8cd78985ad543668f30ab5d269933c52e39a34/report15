@@ -1,0 +1,117 @@
+EXT4-fs (loop2): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,dioread_lock,quota,noauto_da_alloc,resgid=0x0000000000000000,barrier,auto_da_alloc,usrquota,
+ext4 filesystem being mounted at /1/file1 supports timestamps until 2038 (0x7fffffff)
+==================================================================
+BUG: KASAN: use-after-free in ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+BUG: KASAN: use-after-free in ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+Read of size 4 at addr ffff88801c2f956c by task syz.2.373/10717
+
+CPU: 0 PID: 10717 Comm: syz.2.373 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+ ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+ ext4_ext_map_blocks+0x1c8/0x5d50 fs/ext4/extents.c:4054
+ ext4_map_blocks+0x700/0x1740 fs/ext4/inode.c:628
+ ext4_alloc_file_blocks+0x2f9/0xae0 fs/ext4/extents.c:4426
+ ext4_zero_range fs/ext4/extents.c:4573 [inline]
+ ext4_fallocate+0x2c3f/0x3e70 fs/ext4/extents.c:4674
+ vfs_fallocate+0x494/0xdd0 fs/open.c:309
+ ioctl_preallocate+0x18e/0x200 fs/ioctl.c:494
+ file_ioctl fs/ioctl.c:539 [inline]
+ do_vfs_ioctl+0xd2b/0x1140 fs/ioctl.c:732
+ __do_sys_ioctl fs/ioctl.c:751 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x108/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7feadf118ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007feaddd92038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007feadf2d0f80 RCX: 00007feadf118ef9
+RDX: 0000000020000080 RSI: 0000000040305839 RDI: 0000000000000006
+RBP: 00007feadf18bb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007feadf2d0f80 R15: 00007ffc29c2e7a8
+
+The buggy address belongs to the page:
+page:000000005bc7bec6 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x1c2f9
+flags: 0x100000000000000()
+raw: 0100000000000000 ffffea00007f6588 ffffea000070be88 0000000000000000
+raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88801c2f9400: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff88801c2f9480: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>ffff88801c2f9500: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                                                          ^
+ ffff88801c2f9580: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff88801c2f9600: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4_extents.h:199!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 10717 Comm: syz.2.373 Tainted: G    B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_ext_mark_unwritten fs/ext4/ext4_extents.h:199 [inline]
+RIP: 0010:ext4_ext_mark_unwritten fs/ext4/ext4_extents.h:196 [inline]
+RIP: 0010:convert_initialized_extent fs/ext4/extents.c:3779 [inline]
+RIP: 0010:ext4_ext_map_blocks+0x5233/0x5d50 fs/ext4/extents.c:4106
+Code: 53 34 a5 ff 0f b7 db 81 eb 00 80 00 00 e9 01 fe ff ff e8 40 34 a5 ff 0f 0b 48 c7 c7 20 cf 2e 85 e8 41 b1 3f 02 e8 2d 34 a5 ff <0f> 0b 48 c7 c7 60 cf 2e 85 e8 2e b1 3f 02 e8 6a 64 d2 ff e9 cf ae
+RSP: 0018:ffff88801facf658 EFLAGS: 00010216
+RAX: 000000000002ba31 RBX: 0000000000000000 RCX: ffffc9000366d000
+RDX: 0000000000040000 RSI: ffffffff81a0da93 RDI: 0000000000000007
+RBP: ffff88801facfadc R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801c2fe06c
+R13: ffff8880196e1800 R14: 0000000000000000 R15: ffff8880196e1830
+FS:  00007feaddd926c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f09590e43b8 CR3: 00000000194a0000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ ext4_map_blocks+0x700/0x1740 fs/ext4/inode.c:628
+ ext4_alloc_file_blocks+0x2f9/0xae0 fs/ext4/extents.c:4426
+ ext4_zero_range fs/ext4/extents.c:4573 [inline]
+ ext4_fallocate+0x2c3f/0x3e70 fs/ext4/extents.c:4674
+ vfs_fallocate+0x494/0xdd0 fs/open.c:309
+ ioctl_preallocate+0x18e/0x200 fs/ioctl.c:494
+ file_ioctl fs/ioctl.c:539 [inline]
+ do_vfs_ioctl+0xd2b/0x1140 fs/ioctl.c:732
+ __do_sys_ioctl fs/ioctl.c:751 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x108/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7feadf118ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007feaddd92038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007feadf2d0f80 RCX: 00007feadf118ef9
+RDX: 0000000020000080 RSI: 0000000040305839 RDI: 0000000000000006
+RBP: 00007feadf18bb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007feadf2d0f80 R15: 00007ffc29c2e7a8
+Modules linked in:
+---[ end trace ad3024e6e64c7df8 ]---
+RIP: 0010:ext4_ext_mark_unwritten fs/ext4/ext4_extents.h:199 [inline]
+RIP: 0010:ext4_ext_mark_unwritten fs/ext4/ext4_extents.h:196 [inline]
+RIP: 0010:convert_initialized_extent fs/ext4/extents.c:3779 [inline]
+RIP: 0010:ext4_ext_map_blocks+0x5233/0x5d50 fs/ext4/extents.c:4106
+Code: 53 34 a5 ff 0f b7 db 81 eb 00 80 00 00 e9 01 fe ff ff e8 40 34 a5 ff 0f 0b 48 c7 c7 20 cf 2e 85 e8 41 b1 3f 02 e8 2d 34 a5 ff <0f> 0b 48 c7 c7 60 cf 2e 85 e8 2e b1 3f 02 e8 6a 64 d2 ff e9 cf ae
+RSP: 0018:ffff88801facf658 EFLAGS: 00010216
+RAX: 000000000002ba31 RBX: 0000000000000000 RCX: ffffc9000366d000
+RDX: 0000000000040000 RSI: ffffffff81a0da93 RDI: 0000000000000007
+RBP: ffff88801facfadc R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801c2fe06c
+R13: ffff8880196e1800 R14: 0000000000000000 R15: ffff8880196e1830
+FS:  00007feaddd926c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f095a634088 CR3: 00000000194a0000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+EXT4-fs warning (device loop2): kmmpd:182: kmmpd being stopped since MMP feature has been disabled.

@@ -1,0 +1,122 @@
+EXT4-fs (loop2): mounted filesystem without journal. Opts: noload,resuid=0x0000000000000000,i_version,lazytime,i_version,quota,,errors=continue
+EXT4-fs error (device loop2): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 191 vs 220 free clusters
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 2321 at fs/ext4/xattr.c:1640 ext4_xattr_set_entry+0x2917/0x37c0 fs/ext4/xattr.c:1640
+Modules linked in:
+CPU: 0 PID: 2321 Comm: syz.2.45 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_xattr_set_entry+0x2917/0x37c0 fs/ext4/xattr.c:1640
+Code: 00 e9 98 db ff ff e8 c8 f8 8f ff 48 8b 7c 24 08 45 31 ed e8 4b c3 df ff 48 8b ac 24 18 01 00 00 e9 79 db ff ff e8 a9 f8 8f ff <0f> 0b e9 71 e1 ff ff e8 9d f8 8f ff 48 8b 54 24 38 31 f6 4c 89 e7
+RSP: 0018:ffff88800b47f378 EFLAGS: 00010212
+RAX: 0000000000009ef5 RBX: ffff88801a30b820 RCX: ffffc90001dc0000
+RDX: 0000000000040000 RSI: ffffffff81b61617 RDI: 0000000000000007
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: 00000000000003dc
+R13: 00000000ffffffc3 R14: ffff88800b47f6c0 R15: ffff88800b47f7e8
+FS:  00007f88405376c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffea30b0188 CR3: 0000000010d86000 CR4: 0000000000350ef0
+Call Trace:
+ ext4_xattr_block_set+0x834/0x2f50 fs/ext4/xattr.c:1942
+ ext4_xattr_set_handle+0xd01/0x12b0 fs/ext4/xattr.c:2390
+ ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2491
+ ext4_xattr_user_set+0xbc/0x100 fs/ext4/xattr_user.c:40
+audit: type=1400 audit(1731304082.281:12): avc:  denied  { watch watch_reads } for  pid=2369 comm="syz.3.55" path="/proc/85/map_files" dev="proc" ino=11230 scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=dir permissive=1
+ __vfs_setxattr+0x10f/0x170 fs/xattr.c:177
+ __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+ __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+ vfs_setxattr+0xe8/0x270 fs/xattr.c:283
+ setxattr+0x23d/0x330 fs/xattr.c:548
+ path_setxattr+0x170/0x190 fs/xattr.c:567
+ __do_sys_setxattr fs/xattr.c:582 [inline]
+ __se_sys_setxattr fs/xattr.c:578 [inline]
+ __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:578
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f88418bdef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f8840537038 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
+RAX: ffffffffffffffda RBX: 00007f8841a75f80 RCX: 00007f88418bdef9
+RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000020000080
+RBP: 00007f8841930b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f8841a75f80 R15: 00007fffda92f448
+irq event stamp: 116601
+hardirqs last  enabled at (116671): [<ffffffff83ecb0ef>] __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:168 [inline]
+hardirqs last  enabled at (116671): [<ffffffff83ecb0ef>] _raw_spin_unlock_irq+0x1f/0x40 kernel/locking/spinlock.c:199
+hardirqs last disabled at (116690): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (116710): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (116755): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 1996750699f48a03 ]---
+
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Tainted: G        W        
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+ksoftirqd/0/9 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff88800d148ea8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88800d148ea8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 56504
+hardirqs last  enabled at (56504): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (56504): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (56503): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (56503): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (56466): [<ffffffff81180dcd>] run_ksoftirqd kernel/softirq.c:653 [inline]
+softirqs last  enabled at (56466): [<ffffffff81180dcd>] run_ksoftirqd+0x2d/0x50 kernel/softirq.c:645
+softirqs last disabled at (56471): [<ffffffff81180dcd>] run_ksoftirqd kernel/softirq.c:653 [inline]
+softirqs last disabled at (56471): [<ffffffff81180dcd>] run_ksoftirqd+0x2d/0x50 kernel/softirq.c:645
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+2 locks held by ksoftirqd/0/9:
+ #0: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #1: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 0 PID: 9 Comm: ksoftirqd/0 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ run_ksoftirqd kernel/softirq.c:653 [inline]
+ run_ksoftirqd+0x2d/0x50 kernel/softirq.c:645
+ smpboot_thread_fn+0x684/0xa40 kernel/smpboot.c:165
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296

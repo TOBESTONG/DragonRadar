@@ -1,0 +1,369 @@
+Warning: Permanently added '[localhost]:59348' (ED25519) to the list of known hosts.
+2024/11/07 08:52:24 ignoring optional flag "sandboxArg"="0"
+2024/11/07 08:52:24 parsed 1 programs
+syzkaller login: [  169.544679] cgroup: Unknown subsys name 'net'
+[  169.545636] cgroup: Unknown subsys name 'net_prio'
+[  169.546594] cgroup: Unknown subsys name 'devices'
+[  169.547498] cgroup: Unknown subsys name 'blkio'
+[  169.576567] cgroup: Unknown subsys name 'hugetlb'
+[  169.577409] cgroup: Unknown subsys name 'rlimit'
+[  169.665377] Adding 124996k swap on ./swap-file.  Priority:0 extents:1 across:124996k 
+[  169.983638] audit: type=1400 audit(1730969545.579:6): avc:  denied  { execmem } for  pid=252 comm="syz-executor" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+[  170.788237] audit: type=1401 audit(1730969546.383:7): op=setxattr invalid_context="u:object_r:app_data_file:s0:c512,c768"
+2024/11/07 08:52:29 executed programs: 0
+[  174.191638] syz-executor (256) used greatest stack depth: 23784 bytes left
+2024/11/07 08:52:36 executed programs: 8
+[  180.412818] audit: type=1400 audit(1730969556.008:8): avc:  denied  { open } for  pid=2632 comm="syz.0.15" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=perf_event permissive=1
+[  180.423212] hrtimer: interrupt took 29740 ns
+[  180.427073] audit: type=1400 audit(1730969556.022:9): avc:  denied  { kernel } for  pid=2632 comm="syz.0.15" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=perf_event permissive=1
+2024/11/07 08:52:41 executed programs: 44
+2024/11/07 08:52:46 executed programs: 78
+2024/11/07 08:52:51 executed programs: 117
+2024/11/07 08:52:56 executed programs: 153
+2024/11/07 08:53:01 executed programs: 192
+2024/11/07 08:53:07 executed programs: 230
+2024/11/07 08:53:12 executed programs: 260
+2024/11/07 08:53:17 executed programs: 296
+2024/11/07 08:53:22 executed programs: 334
+2024/11/07 08:53:27 executed programs: 370
+2024/11/07 08:53:32 executed programs: 402
+2024/11/07 08:53:37 executed programs: 443
+2024/11/07 08:53:42 executed programs: 482
+2024/11/07 08:53:48 executed programs: 527
+2024/11/07 08:53:53 executed programs: 568
+2024/11/07 08:53:58 executed programs: 607
+2024/11/07 08:54:03 executed programs: 649
+2024/11/07 08:54:08 executed programs: 695
+2024/11/07 08:54:13 executed programs: 728
+2024/11/07 08:54:18 executed programs: 764
+2024/11/07 08:54:23 executed programs: 811
+2024/11/07 08:54:28 executed programs: 849
+2024/11/07 08:54:33 executed programs: 886
+2024/11/07 08:54:38 executed programs: 925
+[  303.977680] ------------[ cut here ]------------
+[  303.978623] percpu_ref_kill_and_confirm called more than once on io_ring_ctx_ref_free!
+[  303.978719] WARNING: CPU: 0 PID: 13755 at lib/percpu-refcount.c:382 percpu_ref_kill_and_confirm+0x169/0x1d0
+[  303.981433] Modules linked in:
+[  303.981941] CPU: 0 PID: 13755 Comm: syz.0.937 Not tainted 5.10.0 #1
+[  303.982903] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[  303.985361] RIP: 0010:percpu_ref_kill_and_confirm+0x169/0x1d0
+[  303.986263] Code: 5d 08 48 8d 7b 08 48 89 fa 48 c1 ea 03 80 3c 02 00 75 68 48 8b 53 08 48 c7 c6 00 e0 5c 84 48 c7 c7 20 df 5c 84 e8 53 ab dc 01 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 48 89 ea 48 c1 ea 03 80 3c 02
+[  303.989537] RSP: 0018:ffff88800c4a7bb8 EFLAGS: 00010082
+[  303.990358] RAX: 0000000000000000 RBX: ffff88801fa4c580 RCX: 0000000000000000
+[  303.991523] RDX: ffff88800af01a00 RSI: ffffffff812d93c5 RDI: ffffed1001894f69
+[  303.992602] RBP: ffff88801ea31000 R08: 0000000000000001 R09: ffff88806ce1ff9b
+[  303.993656] R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000293
+[  303.994735] R13: 0000000000000000 R14: 0000000000000002 R15: ffff88800817eda0
+[  303.995824] FS:  00007fae8604c6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+[  303.997050] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  303.997950] CR2: 00007f244a3b2f98 CR3: 000000001fffc000 CR4: 0000000000350ef0
+[  303.999033] Call Trace:
+[  303.999431]  io_ring_ctx_wait_and_kill+0x2b/0x440
+[  304.000170]  io_uring_release+0x3e/0x50
+[  304.000779]  __fput+0x280/0x980
+[  304.001278]  ? io_ring_ctx_wait_and_kill+0x440/0x440
+[  304.002062]  task_work_run+0xe2/0x1a0
+[  304.002657]  get_signal+0x1056/0x2480
+[  304.003242]  arch_do_signal+0x88/0x1a90
+[  304.003859]  ? io_uring_setup+0x4b1/0x3110
+[  304.004494]  ? ktime_get+0x90/0x210
+[  304.005054]  ? restore_sigcontext+0x620/0x620
+[  304.005746]  ? io_link_timeout_fn+0x570/0x570
+[  304.006418]  ? io_issue_sqe+0x3c10/0x3c10
+[  304.007048]  ? io_uring_poll+0x2a0/0x2a0
+[  304.007685]  ? tick_program_event+0xb4/0x140
+[  304.008384]  exit_to_user_mode_prepare+0xf7/0x160
+[  304.009140]  syscall_exit_to_user_mode+0x3d/0x270
+[  304.009896]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  304.010687] RIP: 0033:0x7fae865caef9
+[  304.011249] Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+[  304.014106] RSP: 002b:00007fae8604bfc8 EFLAGS: 00000246 ORIG_RAX: 00000000000001a9
+[  304.015291] RAX: fffffffffffffff4 RBX: 00007fae86782f80 RCX: 00007fae865caef9
+[  304.016388] RDX: 0000000000000000 RSI: 0000000020000000 RDI: 000000000000627d
+[  304.017488] RBP: 0000000020000000 R08: 0000000000000000 R09: 0000000000000000
+[  304.018618] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+[  304.019713] R13: 0000000020000b40 R14: 000000000000627d R15: 0000000000000000
+[  304.020828] irq event stamp: 21146
+[  304.021368] hardirqs last  enabled at (21145): [<ffffffff83ecb0ef>] _raw_spin_unlock_irq+0x1f/0x40
+[  304.022719] hardirqs last disabled at (21146): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50
+[  304.024123] softirqs last  enabled at (21058): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+[  304.025503] softirqs last disabled at (21051): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+[  304.026913] ---[ end trace 6d251bb8f907decf ]---
+[  304.038263] ==================================================================
+[  304.039473] BUG: KASAN: use-after-free in __percpu_ref_switch_mode+0x7a4/0x8a0
+[  304.040638] Read of size 8 at addr ffff88801fa4c590 by task syz.0.937/13755
+[  304.041700] 
+[  304.041949] CPU: 0 PID: 13755 Comm: syz.0.937 Tainted: G        W         5.10.0 #1
+[  304.043118] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[  304.044638] Call Trace:
+[  304.045043]  dump_stack+0x107/0x163
+[  304.045608]  ? __percpu_ref_switch_mode+0x7a4/0x8a0
+[  304.046357]  ? __percpu_ref_switch_mode+0x7a4/0x8a0
+[  304.047117]  print_address_description.constprop.0+0x1c/0x210
+[  304.047984]  ? do_raw_spin_unlock+0x4f/0x210
+[  304.048640]  ? vprintk_func+0x95/0x250
+[  304.049206]  ? __percpu_ref_switch_mode+0x7a4/0x8a0
+[  304.049950]  ? __percpu_ref_switch_mode+0x7a4/0x8a0
+[  304.050732]  kasan_report.cold+0x37/0x7c
+[  304.051356]  ? __percpu_ref_switch_mode+0x7a4/0x8a0
+[  304.052124]  __percpu_ref_switch_mode+0x7a4/0x8a0
+[  304.052862]  ? percpu_ref_switch_to_atomic_rcu+0x420/0x420
+[  304.053713]  ? asm_exc_invalid_op+0x12/0x20
+[  304.054370]  ? wait_woken+0x250/0x250
+[  304.054956]  ? vprintk_func+0x95/0x250
+[  304.055554]  percpu_ref_kill_and_confirm+0x8a/0x1d0
+[  304.056342]  io_ring_ctx_wait_and_kill+0x2b/0x440
+[  304.057084]  io_uring_release+0x3e/0x50
+[  304.057719]  __fput+0x280/0x980
+[  304.058210]  ? io_ring_ctx_wait_and_kill+0x440/0x440
+[  304.058996]  task_work_run+0xe2/0x1a0
+[  304.059605]  get_signal+0x1056/0x2480
+[  304.060200]  arch_do_signal+0x88/0x1a90
+[  304.060814]  ? io_uring_setup+0x4b1/0x3110
+[  304.061451]  ? ktime_get+0x90/0x210
+[  304.062017]  ? restore_sigcontext+0x620/0x620
+[  304.062728]  ? io_link_timeout_fn+0x570/0x570
+[  304.063400]  ? io_issue_sqe+0x3c10/0x3c10
+[  304.064016]  ? io_uring_poll+0x2a0/0x2a0
+[  304.064623]  ? tick_program_event+0xb4/0x140
+[  304.065301]  exit_to_user_mode_prepare+0xf7/0x160
+[  304.066041]  syscall_exit_to_user_mode+0x3d/0x270
+[  304.066770]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  304.067541] RIP: 0033:0x7fae865caef9
+[  304.068113] Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+[  304.070936] RSP: 002b:00007fae8604bfc8 EFLAGS: 00000246 ORIG_RAX: 00000000000001a9
+[  304.072104] RAX: fffffffffffffff4 RBX: 00007fae86782f80 RCX: 00007fae865caef9
+[  304.073212] RDX: 0000000000000000 RSI: 0000000020000000 RDI: 000000000000627d
+[  304.074296] RBP: 0000000020000000 R08: 0000000000000000 R09: 0000000000000000
+[  304.075380] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+[  304.076483] R13: 0000000020000b40 R14: 000000000000627d R15: 0000000000000000
+[  304.077618] 
+[  304.077867] Allocated by task 13755:
+[  304.078422]  kasan_save_stack+0x1b/0x40
+[  304.079034]  __kasan_kmalloc.constprop.0+0xc2/0xd0
+[  304.079788]  percpu_ref_init+0x10b/0x410
+[  304.080397]  io_uring_setup+0x718/0x3110
+[  304.081026]  do_syscall_64+0x33/0x40
+[  304.081594]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  304.082357] 
+[  304.082617] Freed by task 59:
+[  304.083081]  kasan_save_stack+0x1b/0x40
+[  304.083685]  kasan_set_track+0x1c/0x30
+[  304.084259]  kasan_set_free_info+0x1b/0x30
+[  304.084911]  __kasan_slab_free+0x110/0x150
+[  304.085544]  slab_free_freelist_hook+0x53/0x130
+[  304.086251]  kfree+0xc7/0x370
+[  304.086729]  percpu_ref_exit+0xf7/0x140
+[  304.087317]  io_ring_exit_work+0x43e/0x670
+[  304.087962]  process_one_work+0x7ce/0x16c0
+[  304.088625]  worker_thread+0x61d/0x1310
+[  304.089217]  kthread+0x3b2/0x4a0
+[  304.089732]  ret_from_fork+0x22/0x30
+[  304.090281] 
+[  304.090525] Last call_rcu():
+[  304.091084]  kasan_save_stack+0x1b/0x40
+[  304.091685]  kasan_record_aux_stack+0x9e/0xb0
+[  304.092337]  call_rcu+0xe6/0x13b0
+[  304.092832]  __percpu_ref_switch_mode+0x404/0x8a0
+[  304.093512]  percpu_ref_kill_and_confirm+0x8a/0x1d0
+[  304.094224]  io_ring_ctx_wait_and_kill+0x2b/0x440
+[  304.094924]  io_uring_setup+0x16d1/0x3110
+[  304.095511]  do_syscall_64+0x33/0x40
+[  304.096054]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  304.096807] 
+[  304.097045] The buggy address belongs to the object at ffff88801fa4c580
+[  304.097045]  which belongs to the cache kmalloc-64 of size 64
+[  304.098863] The buggy address is located 16 bytes inside of
+[  304.098863]  64-byte region [ffff88801fa4c580, ffff88801fa4c5c0)
+[  304.100598] The buggy address belongs to the page:
+[  304.101328] page:00000000f5ebfb58 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1fa4c
+[  304.102720] flags: 0x100000000000200(slab)
+[  304.103346] raw: 0100000000000200 ffffea000023fb00 0000000900000004 ffff8880080418c0
+[  304.104515] raw: 0000000000000000 0000000000200020 00000001ffffffff ffff888008b47801
+[  304.105715] page dumped because: kasan: bad access detected
+[  304.106573] page->mem_cgroup:ffff888008b47801
+[  304.107248] 
+[  304.107490] Memory state around the buggy address:
+[  304.108236]  ffff88801fa4c480: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+[  304.109360]  ffff88801fa4c500: 00 00 00 00 00 00 00 05 fc fc fc fc fc fc fc fc
+[  304.110475] >ffff88801fa4c580: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+[  304.111597]                          ^
+[  304.112189]  ffff88801fa4c600: 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc fc
+[  304.113291]  ffff88801fa4c680: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+[  304.114396] ==================================================================
+[  304.115475] Disabling lock debugging due to kernel taint
+[  304.116327] general protection fault, probably for non-canonical address 0xffff11007815b300: 0000 [#1] PREEMPT SMP KASAN NOPTI
+[  304.118007] KASAN: maybe wild-memory-access in range [0xfff8a803c0ad9800-0xfff8a803c0ad9807]
+[  304.119302] CPU: 0 PID: 13755 Comm: syz.0.937 Tainted: G    B   W         5.10.0 #1
+[  304.120502] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[  304.122044] RIP: 0010:percpu_ref_put_many.constprop.0+0xc8/0x2a0
+[  304.122982] Code: 00 0f 85 c2 01 00 00 48 8b 5d 00 31 ff 49 89 dc 41 83 e4 03 4c 89 e6 e8 36 1f 47 ff 4d 85 e4 0f 85 0a 01 00 00 e8 48 27 47 ff <65> 48 ff 0b e8 3f 27 47 ff e8 0a 39 ec 01 31 ff 89 c5 89 c6 e8 ef
+[  304.125773] RSP: 0018:ffff88800c4a7b98 EFLAGS: 00010093
+[  304.126550] RAX: 0000000000000000 RBX: ffff88800b35b300 RCX: ffffffff81fee76a
+[  304.127596] RDX: ffff88800af01a00 RSI: ffffffff81fee778 RDI: 0000000000000007
+[  304.128625] RBP: ffff88801ea31000 R08: 0000000000000000 R09: ffffffff85d66c0f
+[  304.129661] R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+[  304.130686] R13: 0000000000000000 R14: 0000000000000002 R15: ffff88800817eda0
+[  304.131732] FS:  00007fae8604c6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+[  304.132927] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  304.133785] CR2: 00007fbf30032028 CR3: 000000001fffc000 CR4: 0000000000350ef0
+[  304.134820] Call Trace:
+[  304.135197]  percpu_ref_kill_and_confirm+0x92/0x1d0
+[  304.135919]  io_ring_ctx_wait_and_kill+0x2b/0x440
+[  304.136617]  io_uring_release+0x3e/0x50
+[  304.137179]  __fput+0x280/0x980
+[  304.137668]  ? io_ring_ctx_wait_and_kill+0x440/0x440
+[  304.138398]  task_work_run+0xe2/0x1a0
+[  304.138958]  get_signal+0x1056/0x2480
+[  304.139511]  arch_do_signal+0x88/0x1a90
+[  304.140112]  ? io_uring_setup+0x4b1/0x3110
+[  304.140741]  ? ktime_get+0x90/0x210
+[  304.141257]  ? restore_sigcontext+0x620/0x620
+[  304.141922]  ? io_link_timeout_fn+0x570/0x570
+[  304.142560]  ? io_issue_sqe+0x3c10/0x3c10
+[  304.143158]  ? io_uring_poll+0x2a0/0x2a0
+[  304.143744]  ? tick_program_event+0xb4/0x140
+[  304.144367]  exit_to_user_mode_prepare+0xf7/0x160
+[  304.145064]  syscall_exit_to_user_mode+0x3d/0x270
+[  304.145760]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  304.146502] RIP: 0033:0x7fae865caef9
+[  304.147055] Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+[  304.149743] RSP: 002b:00007fae8604bfc8 EFLAGS: 00000246 ORIG_RAX: 00000000000001a9
+[  304.150864] RAX: fffffffffffffff4 RBX: 00007fae86782f80 RCX: 00007fae865caef9
+[  304.151894] RDX: 0000000000000000 RSI: 0000000020000000 RDI: 000000000000627d
+[  304.152905] RBP: 0000000020000000 R08: 0000000000000000 R09: 0000000000000000
+[  304.153918] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+[  304.154942] R13: 0000000020000b40 R14: 000000000000627d R15: 0000000000000000
+[  304.155978] Modules linked in:
+[  304.156435] ---[ end trace 6d251bb8f907ded0 ]---
+[  304.157121] RIP: 0010:percpu_ref_put_many.constprop.0+0xc8/0x2a0
+[  304.157988] Code: 00 0f 85 c2 01 00 00 48 8b 5d 00 31 ff 49 89 dc 41 83 e4 03 4c 89 e6 e8 36 1f 47 ff 4d 85 e4 0f 85 0a 01 00 00 e8 48 27 47 ff <65> 48 ff 0b e8 3f 27 47 ff e8 0a 39 ec 01 31 ff 89 c5 89 c6 e8 ef
+[  304.160661] RSP: 0018:ffff88800c4a7b98 EFLAGS: 00010093
+[  304.161420] RAX: 0000000000000000 RBX: ffff88800b35b300 RCX: ffffffff81fee76a
+[  304.162457] RDX: ffff88800af01a00 RSI: ffffffff81fee778 RDI: 0000000000000007
+[  304.163512] RBP: ffff88801ea31000 R08: 0000000000000000 R09: ffffffff85d66c0f
+[  304.164550] R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+[  304.165602] R13: 0000000000000000 R14: 0000000000000002 R15: ffff88800817eda0
+[  304.166660] FS:  00007fae8604c6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+[  304.167827] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  304.168688] CR2: 00007fbf30032028 CR3: 000000001fffc000 CR4: 0000000000350ef0
+[  304.169739] note: syz.0.937[13755] exited with preempt_count 1
+[  304.170619] BUG: sleeping function called from invalid context at include/linux/percpu-rwsem.h:49
+[  304.171904] in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 13755, name: syz.0.937
+[  304.173089] INFO: lockdep is turned off.
+[  304.173678] irq event stamp: 21316
+[  304.174181] hardirqs last  enabled at (21315): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20
+[  304.175613] hardirqs last disabled at (21316): [<ffffffff83ecaec1>] _raw_spin_lock_irq+0x41/0x50
+[  304.176896] softirqs last  enabled at (21174): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+[  304.178232] softirqs last disabled at (21149): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+[  304.179541] Preemption disabled at:
+[  304.179547] [<0000000000000000>] 0x0
+[  304.180605] CPU: 0 PID: 13755 Comm: syz.0.937 Tainted: G    B D W         5.10.0 #1
+[  304.181734] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[  304.183206] Call Trace:
+[  304.183611]  dump_stack+0x107/0x163
+[  304.184131]  ___might_sleep.cold+0x65/0x79
+[  304.184746]  exit_signals+0x74/0x9e0
+[  304.185270]  ? do_signal_stop+0x840/0x840
+[  304.185870]  ? ktime_get+0x90/0x210
+[  304.186386]  ? blocking_notifier_call_chain+0x13a/0x180
+[  304.187141]  do_exit+0x237/0x28e0
+[  304.187647]  ? mm_update_next_owner+0x7e0/0x7e0
+[  304.188303]  rewind_stack_do_exit+0x17/0x17
+[  304.188919] RIP: 0033:0x7fae865caef9
+[  304.189452] Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+[  304.192238] RSP: 002b:00007fae8604bfc8 EFLAGS: 00000246 ORIG_RAX: 00000000000001a9
+[  304.193340] RAX: fffffffffffffff4 RBX: 00007fae86782f80 RCX: 00007fae865caef9
+[  304.194369] RDX: 0000000000000000 RSI: 0000000020000000 RDI: 000000000000627d
+[  304.195410] RBP: 0000000020000000 R08: 0000000000000000 R09: 0000000000000000
+[  304.196449] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+[  304.197484] R13: 0000000020000b40 R14: 000000000000627d R15: 0000000000000000
+
+VM DIAGNOSIS:
+16:54:39  Registers:
+info registers vcpu 0
+
+CPU#0
+RAX=000000000000000a RBX=0000000000000000 RCX=0000000000000000 RDX=00000000000003f8
+RSI=ffffffff823c0a41 RDI=ffffffff87a492e0 RBP=ffffffff87a492a0 RSP=ffff88800c4a75e0
+R8 =0000000000000001 R9 =0000000000000003 R10=000000000000001f R11=0000000000000001
+R12=000000000000000a R13=0000000000000000 R14=ffffffff87a492a0 R15=dffffc0000000000
+RIP=ffffffff823c0a6c RFL=00000002 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 00007fae8604c6c0 00000000 00000000
+GS =0000 ffff88806ce00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe0000003000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe0000001000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=00007f244a3b2f98 CR3=000000001fffc000 CR4=00350ef0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM01=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM02=0000000000000000 0000000000000000 ffffff00ffffff00 ffffffffffffffff
+YMM03=0000000000000000 0000000000000000 00007f361e365488 00007f361e365480
+YMM04=0000000000000000 0000000000000000 00007ffd45f7211c 00007ffd45f72020
+YMM05=0000000000000000 0000000000000000 000000000004a1fa 0000000000000032
+YMM06=0000000000000000 0000000000000000 00007ffd45f72170 0000000000049eb6
+YMM07=0000000000000000 0000000000000000 0000003000000028 00007f361e17fc22
+YMM08=0000000000000000 0000000000000000 0000000000000000 000000524f525245
+YMM09=0000000000000000 0000000000000000 0000000000000000 00007f361e24bb19
+YMM10=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+info registers vcpu 1
+
+CPU#1
+RAX=ffff88800aef8000 RBX=ffff88800c65b160 RCX=ffffffff81363267 RDX=ffff88800aef8000
+RSI=ffffffff8136337b RDI=0000000000000001 RBP=ffff88806cf26bc0 RSP=ffff88806cf09e10
+R8 =0000000000000000 R9 =ffffffff85d66c0f R10=0000000000000000 R11=0000000000000001
+R12=0000000000000001 R13=0000000000000001 R14=ffff88806cf26c08 R15=ffff88806cf26b40
+RIP=ffffffff83eb20ad RFL=00000002 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 00007f6b7c92e6c0 00000000 00000000
+GS =0000 ffff88806cf00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe000003e000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe000003c000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=0000000020000004 CR3=000000001e578000 CR4=00350ee0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM01=0000000000000000 0000000000000000 ffffffffffffffff ffffffffffffffff
+YMM02=0000000000000000 0000000000000000 ffffffffffffffff ffffffffffffffff
+YMM03=0000000000000000 0000000000000000 ffffffffffffffff ffffffffffffffff
+YMM04=0000000000000000 0000000000000000 ffffffffffffffff ffffffffffffffff
+YMM05=0000000000000000 0000000000000000 ffffffffffffffff ffffffffffffffff
+YMM06=0000000000000000 0000000000000000 ffffffffffffffff ffffffffffffffff
+YMM07=0000000000000000 0000000000000000 ffffffffffffffff ffffffffffffffff
+YMM08=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM09=0000000000000000 0000000000000000 0000000000000000 00007f6b7cf20b19
+YMM10=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000

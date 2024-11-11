@@ -1,0 +1,47 @@
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Corrupt filesystem
+EXT4-fs error (device loop1): ext4_dirty_inode:5942: inode #18: comm syz.1.54: mark_inode_dirty error
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 2306 at fs/ext4/file.c:301 ext4_handle_inode_extension fs/ext4/file.c:301 [inline]
+WARNING: CPU: 1 PID: 2306 at fs/ext4/file.c:301 ext4_dio_write_iter fs/ext4/file.c:558 [inline]
+WARNING: CPU: 1 PID: 2306 at fs/ext4/file.c:301 ext4_file_write_iter+0x1742/0x1b20 fs/ext4/file.c:662
+Modules linked in:
+CPU: 1 PID: 2306 Comm: syz.1.54 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_handle_inode_extension fs/ext4/file.c:301 [inline]
+RIP: 0010:ext4_dio_write_iter fs/ext4/file.c:558 [inline]
+RIP: 0010:ext4_file_write_iter+0x1742/0x1b20 fs/ext4/file.c:662
+Code: 89 81 c8 fe ff ff e8 7d ce a3 ff 48 89 df e8 45 fd 86 ff e9 db fc ff ff e8 6b ce a3 ff 49 89 ec e9 61 f5 ff ff e8 5e ce a3 ff <0f> 0b e9 74 f9 ff ff e8 52 ce a3 ff 48 8b 5c 24 38 48 8b 74 24 20
+RSP: 0018:ffff88801060fbd0 EFLAGS: 00010212
+RAX: 000000000000878d RBX: 0000000002007ffb RCX: ffffc900017b4000
+RDX: 0000000000040000 RSI: ffffffff81a24062 RDI: 0000000000000006
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffffffff86e5f717
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffffffffffffe4
+R13: 0000000008800000 R14: 0000000000000000 R15: ffff88801060fdb8
+FS:  00007faab09226c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fafbff00700 CR3: 000000001058e000 CR4: 0000000000350ee0
+Call Trace:
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /12/file0 supports timestamps until 2038 (0x7fffffff)
+ call_write_iter include/linux/fs.h:1903 [inline]
+ new_sync_write+0x42c/0x670 fs/read_write.c:518
+ vfs_write+0x81b/0xac0 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7faab1ceaef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007faab0922038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007faab1ea3130 RCX: 00007faab1ceaef9
+RDX: 00000000175d9003 RSI: 0000000020000200 RDI: 0000000000000004
+RBP: 00007faab1d5db76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000001 R14: 00007faab1ea3130 R15: 00007fff78e4c898
+irq event stamp: 2393
+hardirqs last  enabled at (2405): [<ffffffff83ecb0ef>] __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:168 [inline]
+hardirqs last  enabled at (2405): [<ffffffff83ecb0ef>] _raw_spin_unlock_irq+0x1f/0x40 kernel/locking/spinlock.c:199
+hardirqs last disabled at (2434): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (2452): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (2463): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 79423649ebb8a31e ]---
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Corrupt filesystem

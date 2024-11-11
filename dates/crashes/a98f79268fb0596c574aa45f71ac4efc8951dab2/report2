@@ -1,0 +1,83 @@
+EXT4-fs (loop0): Delayed block allocation failed for inode 18 at logical offset 4 with max blocks 28 with error 28
+EXT4-fs (loop0): This should not happen!! Data will be lost
+==================================================================
+BUG: KASAN: use-after-free in crc16+0xcb/0xe0 lib/crc16.c:58
+Read of size 1 at addr ffff888016c14000 by task syz-executor/2117
+
+CPU: 1 PID: 2117 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ crc16+0xcb/0xe0 lib/crc16.c:58
+ ext4_group_desc_csum+0x62d/0x8a0 fs/ext4/super.c:2837
+ ext4_group_desc_csum_set+0xc3/0x1a0 fs/ext4/super.c:2860
+ ext4_free_blocks+0xe32/0x22a0 fs/ext4/mballoc.c:5476
+ ext4_remove_blocks fs/ext4/extents.c:2498 [inline]
+ ext4_ext_rm_leaf fs/ext4/extents.c:2664 [inline]
+ ext4_ext_remove_space+0x20ff/0x4470 fs/ext4/extents.c:2912
+ ext4_ext_truncate+0x1fb/0x260 fs/ext4/extents.c:4370
+ ext4_truncate+0xed8/0x1390 fs/ext4/inode.c:4254
+ ext4_evict_inode+0xb59/0x1890 fs/ext4/inode.c:280
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ dentry_unlink_inode+0x2b4/0x3e0 fs/dcache.c:374
+ d_delete+0x167/0x1c0 fs/dcache.c:2470
+ vfs_rmdir.part.0+0x3d5/0x4b0 fs/namei.c:3727
+ vfs_rmdir fs/namei.c:3696 [inline]
+ do_rmdir+0x2f6/0x3c0 fs/namei.c:3774
+ __do_sys_unlinkat fs/namei.c:3937 [inline]
+ __se_sys_unlinkat fs/namei.c:3931 [inline]
+ __x64_sys_unlinkat+0xeb/0x130 fs/namei.c:3931
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fa6b9dc94d7
+Code: 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 07 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff1c37b778 EFLAGS: 00000207 ORIG_RAX: 0000000000000107
+RAX: ffffffffffffffda RBX: 0000000000000065 RCX: 00007fa6b9dc94d7
+RDX: 0000000000000200 RSI: 00007fff1c37c920 RDI: 00000000ffffff9c
+RBP: 00007fa6b9e3ca14 R08: 0000555555ef954b R09: 0000000000000000
+R10: 0000000000001000 R11: 0000000000000207 R12: 00007fff1c37c920
+R13: 00007fa6b9e3ca14 R14: 000000000000ae73 R15: 00007fff1c37ead0
+
+The buggy address belongs to the page:
+page:00000000896d6a0b refcount:0 mapcount:-128 mapping:0000000000000000 index:0x0 pfn:0x16c14
+flags: 0x100000000000000()
+raw: 0100000000000000 ffffea0000243288 ffffea00003f0588 0000000000000000
+raw: 0000000000000000 0000000000000001 00000000ffffff7f 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888016c13f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888016c13f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff888016c14000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                   ^
+ ffff888016c14080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff888016c14100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
+EXT4-fs warning: 463 callbacks suppressed
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning: 464 callbacks suppressed
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768

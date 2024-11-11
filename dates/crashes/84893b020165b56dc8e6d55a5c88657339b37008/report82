@@ -1,0 +1,66 @@
+ext4 filesystem being mounted at /12/file1 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs error (device loop2) in ext4_do_update_inode:5151: error 27
+------------[ cut here ]------------
+Trying to write to read-only block-device sda (partno 0)
+WARNING: CPU: 1 PID: 2195 at block/blk-core.c:704 bio_check_ro block/blk-core.c:704 [inline]
+WARNING: CPU: 1 PID: 2195 at block/blk-core.c:704 submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+EXT4-fs (loop2): Remounting filesystem read-only
+EXT4-fs error (device loop2): ext4_dirty_inode:5942: inode #18: comm syz.2.29: mark_inode_dirty error
+Modules linked in:
+CPU: 1 PID: 2195 Comm: journal-offline Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+EXT4-fs error (device loop2) in ext4_do_update_inode:5151: error 27
+EXT4-fs error (device loop2): ext4_xattr_delete_inode:2927: inode #18: comm syz.2.29: mark_inode_dirty error
+RIP: 0010:bio_check_ro block/blk-core.c:704 [inline]
+RIP: 0010:submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Code: 03 00 00 45 8b a4 24 64 05 00 00 48 89 ef 48 8d 74 24 50 e8 43 37 fe ff 48 c7 c7 00 ee 5b 84 48 89 c6 44 89 e2 e8 bd 1c e7 01 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 80 3c 02
+EXT4-fs error (device loop2): ext4_xattr_delete_inode:2929: inode #18: comm syz.2.29: mark inode dirty (error -27)
+EXT4-fs warning (device loop2): ext4_evict_inode:293: xattr delete (err -27)
+RSP: 0018:ffff88800ca3f390 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 1ffff11001947e78 RCX: 0000000000000000
+RDX: ffff88800dec1a00 RSI: ffffffff812d93c5 RDI: ffffed1001947e64
+RBP: ffff88800fa24c00 R08: 0000000000000001 R09: ffff88806cf2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff88800beb8000 R14: ffff88800fa24c10 R15: ffff88800fa24c08
+FS:  00007fec90db6700(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f7e59c2ff98 CR3: 000000000bd24000 CR4: 0000000000350ef0
+Call Trace:
+ submit_bio_noacct+0x82/0x1000 block/blk-core.c:1044
+ submit_bio+0xfd/0x540 block/blk-core.c:1129
+ ext4_io_submit fs/ext4/page-io.c:382 [inline]
+ io_submit_add_bh fs/ext4/page-io.c:425 [inline]
+ ext4_bio_write_page+0x96e/0x1330 fs/ext4/page-io.c:552
+ mpage_submit_page+0x14b/0x260 fs/ext4/inode.c:2092
+ mpage_process_page_bufs+0x63b/0x7d0 fs/ext4/inode.c:2206
+ mpage_prepare_extent_to_map+0x696/0xc40 fs/ext4/inode.c:2618
+ ext4_writepages+0xa0f/0x3a00 fs/ext4/inode.c:2746
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __filemap_fdatawrite_range+0x24b/0x2f0 mm/filemap.c:422
+ file_write_and_wait_range+0xb2/0x120 mm/filemap.c:761
+ ext4_sync_file+0x225/0xf40 fs/ext4/fsync.c:151
+ vfs_fsync_range+0x13d/0x230 fs/sync.c:200
+ vfs_fsync fs/sync.c:214 [inline]
+ do_fsync fs/sync.c:224 [inline]
+ __do_sys_fsync fs/sync.c:232 [inline]
+ __se_sys_fsync fs/sync.c:230 [inline]
+ __x64_sys_fsync+0x6b/0xc0 fs/sync.c:230
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fec9228b0cb
+Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8 b3 e9 f8 ff 8b 7c 24 0c 41 89 c0 b8 4a 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 f1 e9 f8 ff 8b 44
+RSP: 002b:00007fec90db5cf0 EFLAGS: 00000293 ORIG_RAX: 000000000000004a
+RAX: ffffffffffffffda RBX: 000055ec37a672d0 RCX: 00007fec9228b0cb
+RDX: 00007fec925cd8d4 RSI: 00007fec925cd8d4 RDI: 0000000000000017
+RBP: 00007fec925d01f0 R08: 0000000000000000 R09: 00007fec90db6700
+R10: 00007fec90db6700 R11: 0000000000000293 R12: 0000000000000002
+R13: 00007ffccc794abf R14: 00007fec90db5e00 R15: 000055ec37a67960
+irq event stamp: 1213
+hardirqs last  enabled at (1223): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (1246): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (1262): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (1255): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace df4cdd6c167fd0c6 ]---
+SELinux:  duplicate or incompatible mount options
+EXT4-fs (loop1): mounted filesystem without journal. Opts: quota,nodelalloc,errors=remount-ro,grpid,
+ext4 filesystem being mounted at /2/file0 supports timestamps until 2038 (0x7fffffff)

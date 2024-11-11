@@ -1,0 +1,136 @@
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /14/file0 supports timestamps until 2038 (0x7fffffff)
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+kworker/u4:5/1067 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff88801077eaa8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88801077eaa8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 1540540
+hardirqs last  enabled at (1540540): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (1540540): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (1540539): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (1540539): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (1540106): [<ffffffff81099056>] memcpy include/linux/string.h:399 [inline]
+softirqs last  enabled at (1540106): [<ffffffff81099056>] fpu__copy+0x176/0x640 arch/x86/kernel/fpu/core.c:240
+softirqs last disabled at (1540465): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+6 locks held by kworker/u4:5/1067:
+ #0: ffff88800cdd9938 ((wq_completion)ext4-rsv-conversion){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88800cdd9938 ((wq_completion)ext4-rsv-conversion){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff88800cdd9938 ((wq_completion)ext4-rsv-conversion){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88800cdd9938 ((wq_completion)ext4-rsv-conversion){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff88800cdd9938 ((wq_completion)ext4-rsv-conversion){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff88800cdd9938 ((wq_completion)ext4-rsv-conversion){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff888010d2fda8 ((work_completion)(&ei->i_rsv_conversion_work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+ #2: ffff88800cf428e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0x100a/0x1440 fs/jbd2/transaction.c:444
+ #3: ffff8880139c3d88 (&ei->i_data_sem){++++}-{3:3}, at: ext4_map_blocks+0x69d/0x1740 fs/ext4/inode.c:621
+ #4: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #5: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 0 PID: 1067 Comm: kworker/u4:5 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: ext4-rsv-conversion ext4_end_io_rsv_work
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:__sanitizer_cov_trace_const_cmp8+0x0/0x20 kernel/kcov.c:291
+Code: 2e 0f 1f 84 00 00 00 00 00 90 48 8b 0c 24 89 f2 89 fe bf 05 00 00 00 e9 ae fe ff ff 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 <48> 8b 0c 24 48 89 f2 48 89 fe bf 07 00 00 00 e9 8c fe ff ff 66 66
+RSP: 0018:ffff888010d2f558 EFLAGS: 00000202
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff81aa69db
+RDX: ffff888018e39a00 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: 0000000000009697 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000002
+R13: 0000000000000001 R14: 0000000000000001 R15: ffff88800cf36000
+ ext4_free_blocks+0x1bb1/0x22a0 fs/ext4/mballoc.c:5348
+ ext4_ext_try_to_merge_up fs/ext4/extents.c:1830 [inline]
+ ext4_ext_try_to_merge+0x580/0x720 fs/ext4/extents.c:1857
+ ext4_convert_unwritten_extents_endio fs/ext4/extents.c:3721 [inline]
+ ext4_ext_handle_unwritten_extents fs/ext4/extents.c:3849 [inline]
+ ext4_ext_map_blocks+0x343b/0x5d50 fs/ext4/extents.c:4119
+ ext4_map_blocks+0x700/0x1740 fs/ext4/inode.c:628
+ ext4_convert_unwritten_extents+0x2df/0x5b0 fs/ext4/extents.c:4760
+ ext4_convert_unwritten_io_end_vec+0x122/0x270 fs/ext4/extents.c:4799
+ ext4_end_io_end fs/ext4/page-io.c:187 [inline]
+ ext4_do_flush_completed_IO fs/ext4/page-io.c:260 [inline]
+ ext4_end_io_rsv_work+0x288/0x610 fs/ext4/page-io.c:274
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+EXT4-fs (loop3): Ignoring removed bh option
+EXT4-fs (loop3): mounting ext3 file system using the ext4 subsystem
+EXT4-fs: failed to create workqueue
+EXT4-fs (loop3): mount failed
+----------------
+Code disassembly (best guess):
+   0:	2e 0f 1f 84 00 00 00 	cs nopl 0x0(%rax,%rax,1)
+   7:	00 00
+   9:	90                   	nop
+   a:	48 8b 0c 24          	mov    (%rsp),%rcx
+   e:	89 f2                	mov    %esi,%edx
+  10:	89 fe                	mov    %edi,%esi
+  12:	bf 05 00 00 00       	mov    $0x5,%edi
+  17:	e9 ae fe ff ff       	jmp    0xfffffeca
+  1c:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
+  23:	00 00 00 00
+  27:	0f 1f 00             	nopl   (%rax)
+* 2a:	48 8b 0c 24          	mov    (%rsp),%rcx <-- trapping instruction
+  2e:	48 89 f2             	mov    %rsi,%rdx
+  31:	48 89 fe             	mov    %rdi,%rsi
+  34:	bf 07 00 00 00       	mov    $0x7,%edi
+  39:	e9 8c fe ff ff       	jmp    0xfffffeca
+  3e:	66                   	data16
+  3f:	66                   	data16

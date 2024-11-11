@@ -1,0 +1,88 @@
+EXT4-fs (loop3): mounted filesystem without journal. Opts: oldalloc,noblock_validity,stripe=0x0000000000000006,barrier=0x000000007fff0038,discard,sysvgroups,resuid=0x000000000000ee00,resgid=0x000000000000ee01,barrier=0x00000000000041db2,errors=continue
+ext4 filesystem being mounted at /5/file0 supports timestamps until 2038 (0x7fffffff)
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:2696!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 7 Comm: kworker/u4:0 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: writeback wb_workfn (flush-7:0)
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff88800821f3e0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+RDX: ffff888008203400 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff888013736c98 R08: 0000000000000000 R09: ffff888013736c9f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff888013736f80 R15: ffff88800b174000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8b3375c040 CR3: 00000000196b4000 CR4: 0000000000350ef0
+Call Trace:
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __writeback_single_inode+0x108/0x1090 fs/fs-writeback.c:1461
+ writeback_sb_inodes+0x56e/0x1010 fs/fs-writeback.c:1721
+ __writeback_inodes_wb+0xbe/0x270 fs/fs-writeback.c:1790
+ wb_writeback+0x773/0xbe0 fs/fs-writeback.c:1896
+ wb_check_start_all fs/fs-writeback.c:2020 [inline]
+ wb_do_writeback fs/fs-writeback.c:2046 [inline]
+ wb_workfn+0xaa6/0x1140 fs/fs-writeback.c:2080
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+syz.3.18 (2151): attempted to duplicate a private mapping with mremap.  This is not supported.
+EXT4-fs error (device loop3): ext4_mb_mark_diskspace_used:3233: comm syz.3.18: Allocating blocks 41-42 which overlap fs metadata
+Quota error (device loop3): write_blk: dquota write failed
+Quota error (device loop3): qtree_write_dquot: Error -117 occurred while creating quota
+EXT4-fs error (device loop3): ext4_mb_mark_diskspace_used:3233: comm syz.3.18: Allocating blocks 41-42 which overlap fs metadata
+Quota error (device loop3): write_blk: dquota write failed
+Quota error (device loop3): qtree_write_dquot: Error -117 occurred while creating quota
+audit: type=1400 audit(1731328409.941:10): avc:  denied  { open } for  pid=2150 comm="syz.3.18" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=perf_event permissive=1
+---[ end trace 119803e81362a118 ]---
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff88800821f3e0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+RDX: ffff888008203400 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff888013736c98 R08: 0000000000000000 R09: ffff888013736c9f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff888013736f80 R15: ffff88800b174000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000200bd000 CR3: 000000001289e000 CR4: 0000000000350ef0
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 7 at kernel/exit.c:724 do_exit+0xd8/0x28e0 kernel/exit.c:724
+Modules linked in:
+CPU: 0 PID: 7 Comm: kworker/u4:0 Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: writeback wb_workfn (flush-7:0)
+RIP: 0010:do_exit+0xd8/0x28e0 kernel/exit.c:724
+Code: 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 bd 23 00 00 49 8b 04 24 49 39 c4 0f 84 10 08 00 00 e8 58 5a 2e 00 <0f> 0b e8 51 5a 2e 00 31 ff 65 8b 05 88 3a ea 7e 25 00 ff ff 00 41
+RSP: 0018:ffff88800821fe30 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 000000000000000b RCX: 0000000000000000
+RDX: ffff888008203400 RSI: ffffffff8117b468 RDI: ffff8880082044e8
+RBP: ffff888008203400 R08: 0000000000000000 R09: ffffed1001043000
+R10: fffffbfff0baca80 R11: 0000000000000001 R12: ffff88800821faf8
+R13: ffff888008203400 R14: 0000000000000000 R15: ffff888008204930
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8b321e6f98 CR3: 000000001289e000 CR4: 0000000000350ef0
+Call Trace:
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0000:0x0
+Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+RSP: 0000:0000000000000000 EFLAGS: 00000000 ORIG_RAX: 0000000000000000
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+irq event stamp: 39311
+hardirqs last  enabled at (39311): [<ffffffff810749ed>] cond_local_irq_enable arch/x86/kernel/traps.c:78 [inline]
+hardirqs last  enabled at (39311): [<ffffffff810749ed>] do_error_trap+0x14d/0x180 arch/x86/kernel/traps.c:176
+hardirqs last disabled at (39310): [<ffffffff83eae7f0>] exc_invalid_op+0x20/0x40 arch/x86/kernel/traps.c:258
+softirqs last  enabled at (39304): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (39295): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 119803e81362a119 ]---
+syz.3.18 (2151) used greatest stack depth: 23648 bytes left

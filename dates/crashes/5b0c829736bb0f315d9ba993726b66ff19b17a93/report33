@@ -1,0 +1,103 @@
+ext4 filesystem being mounted at /6/file0 supports timestamps until 2038 (0x7fffffff)
+SELinux: unrecognized netlink message: protocol=0 nlmsg_type=31807 sclass=netlink_route_socket pid=2216 comm=syz.1.39
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 2219 at mm/page_alloc.c:4930 __alloc_pages_nodemask+0x58a/0x6a0 mm/page_alloc.c:4965
+Modules linked in:
+CPU: 1 PID: 2219 Comm: syz.1.39 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:__alloc_pages_nodemask+0x58a/0x6a0 mm/page_alloc.c:4930
+Code: 00 00 0c 00 0f 85 86 00 00 00 4c 89 c2 44 89 e6 44 89 ff c6 44 24 70 00 4c 89 6c 24 58 e8 de d6 ff ff 49 89 c6 e9 17 fd ff ff <0f> 0b e9 d6 fd ff ff 4c 89 44 24 18 4c 89 44 24 10 89 74 24 0c 4c
+RSP: 0018:ffff8880088b73d8 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 1ffff11001116e7f RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000040dc0
+RBP: 0000000000000000 R08: 0000000000000003 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000012
+R13: 0000000000000012 R14: 0000000000000000 R15: 0000000000000000
+FS:  00007fef99c346c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fef99c13d58 CR3: 0000000008a56000 CR4: 0000000000350ee0
+Call Trace:
+ alloc_pages_current+0x191/0x2a0 mm/mempolicy.c:2271
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x32/0xa0 mm/slab_common.c:836
+ kmalloc_order_trace+0x14/0x110 mm/slab_common.c:852
+ kmalloc_array include/linux/slab.h:592 [inline]
+ kcalloc include/linux/slab.h:603 [inline]
+ netlbl_cipsov4_add_std net/netlabel/netlabel_cipso_v4.c:263 [inline]
+ netlbl_cipsov4_add+0xeaa/0x22f0 net/netlabel/netlabel_cipso_v4.c:416
+ genl_family_rcv_msg_doit+0x22d/0x330 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x33e/0x5a0 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x14b/0x430 net/netlink/af_netlink.c:2494
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x53a/0x7e0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x912/0xe20 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0x15c/0x190 net/socket.c:671
+ ____sys_sendmsg+0x709/0x880 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fef9afdbef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fef99c34038 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007fef9b194058 RCX: 00007fef9afdbef9
+RDX: 0000000000000000 RSI: 0000000020000280 RDI: 0000000000000008
+RBP: 00007fef9b04eb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fef9b194058 R15: 00007fffd178cfe8
+irq event stamp: 1901
+hardirqs last  enabled at (1909): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (1930): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (1944): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (1957): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace a86b61619271cf0f ]---
+EXT4-fs (loop2): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /12/file0 supports timestamps until 2038 (0x7fffffff)
+syz.2.37: vmalloc: allocation failure: 2147479552 bytes, mode:0xcc0(GFP_KERNEL), nodemask=(null),cpuset=syz2,mems_allowed=0
+CPU: 1 PID: 2209 Comm: syz.2.37 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ warn_alloc.cold+0x87/0x18d mm/page_alloc.c:3975
+ __vmalloc_node_range+0x55b/0x9b0 mm/vmalloc.c:2574
+ __vmalloc_node+0xb5/0x100 mm/vmalloc.c:2601
+ sel_write_load+0x2ea/0x1e50 security/selinux/selinuxfs.c:637
+ vfs_write+0x29a/0xac0 fs/read_write.c:603
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f0768abfef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f0767739038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f0768c77f80 RCX: 00007f0768abfef9
+RDX: 00000000fffffdda RSI: 0000000000000000 RDI: 0000000000000008
+RBP: 00007f0768b32b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f0768c77f80 R15: 00007fff5e707c08
+Mem-Info:
+active_anon:43 inactive_anon:8776 isolated_anon:0
+ active_file:7431 inactive_file:5893 isolated_file:0
+ unevictable:0 dirty:1305 writeback:0
+ slab_reclaimable:7135 slab_unreclaimable:23023
+ mapped:21220 shmem:120 pagetables:435 bounce:0
+ free:346578 free_pcp:638 free_cma:0
+Node 0 active_anon:172kB inactive_anon:35104kB active_file:29724kB inactive_file:23572kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:84880kB dirty:5304kB writeback:0kB shmem:480kB writeback_tmp:0kB kernel_stack:3008kB all_unreclaimable? no
+Node 0 DMA free:15892kB min:48kB low:60kB high:72kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15908kB mlocked:0kB pagetables:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+lowmem_reserve[]: 0 1616 1616 1616
+Node 0 DMA32 free:1370836kB min:5116kB low:6768kB high:8420kB reserved_highatomic:0KB active_anon:172kB inactive_anon:35440kB active_file:29724kB inactive_file:23572kB unevictable:0kB writepending:5344kB present:2082688kB managed:1660364kB mlocked:0kB pagetables:1740kB bounce:0kB free_pcp:2072kB local_pcp:1344kB free_cma:0kB
+lowmem_reserve[]: 0 0 0 0
+Node 0 DMA: 1*4kB (U) 0*8kB 1*16kB (U) 0*32kB 2*64kB (U) 1*128kB (U) 1*256kB (U) 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15892kB
+Node 0 DMA32: 837*4kB (UM) 439*8kB (UM) 192*16kB (UM) 110*32kB (UM) 51*64kB (UME) 23*128kB (M) 17*256kB (UME) 7*512kB (UME) 6*1024kB (UME) 3*2048kB (UME) 325*4096kB (M) = 1371084kB
+Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=2048kB
+13465 total pagecache pages
+0 pages in swap cache
+Swap cache stats: add 1, delete 1, find 1/1
+Free swap  = 124988kB
+Total swap = 124996kB
+524670 pages RAM
+0 pages HighMem/MovableOnly
+105602 pages reserved

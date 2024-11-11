@@ -1,0 +1,352 @@
+Warning: Permanently added '[localhost]:34728' (ED25519) to the list of known hosts.
+executing program
+syzkaller login: [   43.065887] audit: type=1400 audit(1730967993.987:6): avc:  denied  { execmem } for  pid=237 comm="syz-executor424" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+[   43.091730] 
+[   43.092157] ========================================================
+[   43.093752] WARNING: possible irq lock inversion dependency detected
+[   43.095297] 5.10.0 #1 Not tainted
+[   43.096128] --------------------------------------------------------
+[   43.097743] syz-executor424/237 just changed the state of lock:
+[   43.098589] ffff88800b0b6b38 (&f->f_owner.lock){.+..}-{2:2}, at: do_fcntl+0x74f/0xff0
+[   43.101868] but this lock was taken by another, HARDIRQ-safe lock in the past:
+[   43.104094]  (&dev->event_lock){-...}-{2:2}
+[   43.104113] 
+[   43.104113] 
+[   43.104113] and interrupts could create inverse lock ordering between them.
+[   43.104113] 
+[   43.107915] 
+[   43.107915] other info that might help us debug this:
+[   43.109520] Chain exists of:
+[   43.109520]   &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
+[   43.109520] 
+[   43.112267]  Possible interrupt unsafe locking scenario:
+[   43.112267] 
+[   43.113469]        CPU0                    CPU1
+[   43.114140]        ----                    ----
+[   43.114816]   lock(&f->f_owner.lock);
+[   43.115359]                                local_irq_disable();
+[   43.116251]                                lock(&dev->event_lock);
+[   43.117151]                                lock(&new->fa_lock);
+[   43.118025]   <Interrupt>
+[   43.118406]     lock(&dev->event_lock);
+[   43.118966] 
+[   43.118966]  *** DEADLOCK ***
+[   43.118966] 
+[   43.119825] no locks held by syz-executor424/237.
+[   43.120494] 
+[   43.120494] the shortest dependencies between 2nd lock and 1st lock:
+[   43.121593]    -> (&dev->event_lock){-...}-{2:2} {
+[   43.122280]       IN-HARDIRQ-W at:
+[   43.122784]                           lock_acquire+0x293/0x9b0
+[   43.123595]                           _raw_spin_lock_irqsave+0x39/0x50
+[   43.124513]                           input_event+0x7b/0xb0
+[   43.125299]                           psmouse_report_standard_buttons+0x2c/0x80
+[   43.126369]                           psmouse_process_byte+0x398/0x8c0
+[   43.127287]                           psmouse_handle_byte+0x47/0x530
+[   43.128191]                           psmouse_interrupt+0x301/0x12b0
+[   43.129096]                           serio_interrupt+0x8d/0x150
+[   43.129987]                           i8042_interrupt+0x3fd/0x720
+[   43.130919]                           __handle_irq_event_percpu+0x2ef/0x940
+[   43.131926]                           handle_irq_event_percpu+0x76/0x170
+[   43.132911]                           handle_irq_event+0xa1/0x130
+[   43.133843]                           handle_edge_irq+0x267/0xd20
+[   43.134715]                           asm_call_irq_on_stack+0x12/0x20
+[   43.135679]                           common_interrupt+0x12c/0x220
+[   43.136603]                           asm_common_interrupt+0x1e/0x40
+[   43.137526]                           lock_acquire+0x2bd/0x9b0
+[   43.138460]                           _raw_spin_lock+0x2a/0x40
+[   43.139321]                           get_device_parent+0x123/0x590
+[   43.140224]                           device_add+0x295/0x1bc0
+[   43.141059]                           wakeup_source_device_create+0x21c/0x2a0
+[   43.142078]                           wakeup_source_sysfs_add+0x1a/0x90
+[   43.143025]                           wakeup_source_register+0x99/0x130
+[   43.143970]                           device_wakeup_enable+0xac/0x250
+[   43.144906]                           device_init_wakeup+0x116/0x150
+[   43.145817]                           alarmtimer_rtc_add_device+0x1e5/0x350
+[   43.146813]                           device_add+0xd1a/0x1bc0
+[   43.147630]                           cdev_device_add+0x12a/0x210
+[   43.148516]                           __rtc_register_device+0x389/0x740
+[   43.149460]                           cmos_do_probe+0x80a/0xc70
+[   43.150317]                           cmos_pnp_probe+0x12c/0x1f0
+[   43.151184]                           pnp_device_probe+0x2a6/0x4c0
+[   43.152079]                           really_probe+0x2a8/0xe70
+[   43.152928]                           driver_probe_device+0x118/0x1e0
+[   43.153851]                           device_driver_attach+0x27d/0x2f0
+[   43.154787]                           __driver_attach+0x154/0x340
+[   43.155652]                           bus_for_each_dev+0x136/0x1d0
+[   43.156538]                           bus_add_driver+0x346/0x670
+[   43.157399]                           driver_register+0x23c/0x4d0
+[   43.158271]                           cmos_init+0x14/0xed
+[   43.159055]                           do_one_initcall+0xeb/0x600
+[   43.159924]                           kernel_init_freeable+0x6a1/0x720
+[   43.160857]                           kernel_init+0xe/0x1f0
+[   43.161652]                           ret_from_fork+0x22/0x30
+[   43.162511]       INITIAL USE at:
+[   43.163015]                          lock_acquire+0x293/0x9b0
+[   43.163869]                          _raw_spin_lock_irqsave+0x39/0x50
+[   43.164819]                          input_inject_event+0xa6/0x390
+[   43.165694]                          led_set_brightness_nosleep+0xe9/0x1a0
+[   43.166688]                          led_set_brightness+0x134/0x170
+[   43.167603]                          led_trigger_event+0x70/0xd0
+[   43.168468]                          kbd_led_trigger_activate+0xfa/0x130
+[   43.169455]                          led_trigger_set+0x494/0xaa0
+[   43.170342]                          led_trigger_set_default+0x1a6/0x230
+[   43.171311]                          led_classdev_register_ext+0x539/0x750
+[   43.172295]                          input_leds_connect+0x496/0x990
+[   43.173202]                          input_attach_handler+0x18b/0x260
+[   43.174130]                          input_register_device.cold+0x106/0x230
+[   43.175121]                          atkbd_connect+0x83a/0xb70
+[   43.175960]                          serio_driver_probe+0x77/0xa0
+[   43.176832]                          really_probe+0x2a8/0xe70
+[   43.177639]                          driver_probe_device+0x118/0x1e0
+[   43.178545]                          device_driver_attach+0x27d/0x2f0
+[   43.179465]                          __driver_attach+0x154/0x340
+[   43.180335]                          bus_for_each_dev+0x136/0x1d0
+[   43.181214]                          serio_handle_event+0x279/0x8a0
+[   43.182114]                          process_one_work+0x7ce/0x16c0
+[   43.182999]                          worker_thread+0x61d/0x1310
+[   43.183855]                          kthread+0x3b2/0x4a0
+[   43.184610]                          ret_from_fork+0x22/0x30
+[   43.185429]     }
+[   43.185741]     ... key      at: [<ffffffff87a64ea0>] __key.5+0x0/0x40
+[   43.186660]     ... acquired at:
+[   43.187144]    _raw_spin_lock+0x2a/0x40
+[   43.187699]    evdev_pass_values.part.0+0xf6/0x9e0
+[   43.188400]    evdev_events+0x328/0x490
+[   43.188967]    input_to_handler+0x297/0x4c0
+[   43.189565]    input_pass_values.part.0+0x2e4/0x760
+[   43.190271]    input_handle_event+0x3e9/0x1560
+[   43.190924]    input_inject_event+0x36a/0x390
+[   43.191549]    evdev_write+0x326/0x470
+[   43.192100]    vfs_write+0x29a/0xac0
+[   43.192614]    ksys_write+0x1ee/0x250
+[   43.193157]    do_syscall_64+0x33/0x40
+[   43.193699]    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   43.194450] 
+[   43.194675]   -> (&client->buffer_lock){....}-{2:2} {
+[   43.195414]      INITIAL USE at:
+[   43.195895]                        lock_acquire+0x293/0x9b0
+[   43.196686]                        _raw_spin_lock+0x2a/0x40
+[   43.197486]                        evdev_pass_values.part.0+0xf6/0x9e0
+[   43.198416]                        evdev_events+0x328/0x490
+[   43.199220]                        input_to_handler+0x297/0x4c0
+[   43.200076]                        input_pass_values.part.0+0x2e4/0x760
+[   43.201026]                        input_handle_event+0x3e9/0x1560
+[   43.201919]                        input_inject_event+0x36a/0x390
+[   43.202799]                        evdev_write+0x326/0x470
+[   43.203579]                        vfs_write+0x29a/0xac0
+[   43.204344]                        ksys_write+0x1ee/0x250
+[   43.205124]                        do_syscall_64+0x33/0x40
+[   43.205915]                        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   43.206912]    }
+[   43.207190]    ... key      at: [<ffffffff87a65120>] __key.4+0x0/0x40
+[   43.208104]    ... acquired at:
+[   43.208561]    _raw_read_lock+0x5b/0x70
+[   43.209147]    kill_fasync+0x1a1/0x4c0
+[   43.209707]    evdev_pass_values.part.0+0x697/0x9e0
+[   43.210464]    evdev_events+0x328/0x490
+[   43.211060]    input_to_handler+0x297/0x4c0
+[   43.211684]    input_pass_values.part.0+0x2e4/0x760
+[   43.212425]    input_handle_event+0x3e9/0x1560
+[   43.213110]    input_inject_event+0x36a/0x390
+[   43.213754]    evdev_write+0x326/0x470
+[   43.214323]    vfs_write+0x29a/0xac0
+[   43.214867]    ksys_write+0x1ee/0x250
+[   43.215397]    do_syscall_64+0x33/0x40
+[   43.215958]    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   43.216694] 
+[   43.216928]  -> (&new->fa_lock){....}-{2:2} {
+[   43.217566]     INITIAL READ USE at:
+[   43.218097]                           lock_acquire+0x293/0x9b0
+[   43.218965]                           _raw_read_lock+0x5b/0x70
+[   43.219859]                           kill_fasync+0x1a1/0x4c0
+[   43.220694]                           evdev_pass_values.part.0+0x697/0x9e0
+[   43.221721]                           evdev_events+0x328/0x490
+[   43.222589]                           input_to_handler+0x297/0x4c0
+[   43.223523]                           input_pass_values.part.0+0x2e4/0x760
+[   43.224537]                           input_handle_event+0x3e9/0x1560
+[   43.225474]                           input_inject_event+0x36a/0x390
+[   43.226393]                           evdev_write+0x326/0x470
+[   43.227225]                           vfs_write+0x29a/0xac0
+[   43.228035]                           ksys_write+0x1ee/0x250
+[   43.228886]                           do_syscall_64+0x33/0x40
+[   43.229706]                           entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   43.230790]   }
+[   43.231064]   ... key      at: [<ffffffff8720a140>] __key.0+0x0/0x40
+[   43.231980]   ... acquired at:
+[   43.232427]    _raw_read_lock+0x5b/0x70
+[   43.232994]    send_sigio+0x24/0x3b0
+[   43.233534]    kill_fasync+0x25b/0x4c0
+[   43.234110]    evdev_pass_values.part.0+0x697/0x9e0
+[   43.234820]    evdev_events+0x328/0x490
+[   43.235388]    input_to_handler+0x297/0x4c0
+[   43.235997]    input_pass_values.part.0+0x2e4/0x760
+[   43.236692]    input_handle_event+0x3e9/0x1560
+[   43.237345]    input_inject_event+0x36a/0x390
+[   43.238047]    evdev_write+0x326/0x470
+[   43.238584]    vfs_write+0x29a/0xac0
+[   43.239109]    ksys_write+0x1ee/0x250
+[   43.239633]    do_syscall_64+0x33/0x40
+[   43.240197]    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   43.240950] 
+[   43.241175] -> (&f->f_owner.lock){.+..}-{2:2} {
+[   43.241841]    HARDIRQ-ON-R at:
+[   43.242298]                     lock_acquire+0x293/0x9b0
+[   43.243070]                     _raw_read_lock+0x5b/0x70
+[   43.243865]                     do_fcntl+0x74f/0xff0
+[   43.244619]                     __x64_sys_fcntl+0x165/0x1e0
+[   43.245425]                     do_syscall_64+0x33/0x40
+[   43.246206]                     entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   43.247197]    INITIAL READ USE at:
+[   43.247715]                         lock_acquire+0x293/0x9b0
+[   43.248571]                         _raw_read_lock+0x5b/0x70
+[   43.249417]                         send_sigio+0x24/0x3b0
+[   43.250202]                         kill_fasync+0x25b/0x4c0
+[   43.251038]                         evdev_pass_values.part.0+0x697/0x9e0
+[   43.252000]                         evdev_events+0x328/0x490
+[   43.252829]                         input_to_handler+0x297/0x4c0
+[   43.253691]                         input_pass_values.part.0+0x2e4/0x760
+[   43.254655]                         input_handle_event+0x3e9/0x1560
+[   43.255552]                         input_inject_event+0x36a/0x390
+[   43.256451]                         evdev_write+0x326/0x470
+[   43.257265]                         vfs_write+0x29a/0xac0
+[   43.258063]                         ksys_write+0x1ee/0x250
+[   43.258864]                         do_syscall_64+0x33/0x40
+[   43.259659]                         entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   43.260673]  }
+[   43.260945]  ... key      at: [<ffffffff87209360>] __key.5+0x0/0x40
+[   43.261841]  ... acquired at:
+[   43.262276]    __lock_acquire+0x11f4/0x5ca0
+[   43.262887]    lock_acquire+0x293/0x9b0
+[   43.263441]    _raw_read_lock+0x5b/0x70
+[   43.264022]    do_fcntl+0x74f/0xff0
+[   43.264537]    __x64_sys_fcntl+0x165/0x1e0
+[   43.265158]    do_syscall_64+0x33/0x40
+[   43.265722]    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   43.266474] 
+[   43.266705] 
+[   43.266705] stack backtrace:
+[   43.267389] CPU: 0 PID: 237 Comm: syz-executor424 Not tainted 5.10.0 #1
+[   43.268357] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[   43.269792] Call Trace:
+[   43.270173]  dump_stack+0x107/0x163
+[   43.270691]  mark_lock.cold+0x1f/0x90
+[   43.271228]  ? mark_lock+0xf5/0x32b0
+[   43.271758]  ? print_irqtrace_events+0x270/0x270
+[   43.272428]  ? lockdep_hardirqs_on_prepare+0x420/0x420
+[   43.273202]  __lock_acquire+0x11f4/0x5ca0
+[   43.273800]  ? lockdep_hardirqs_on_prepare+0x420/0x420
+[   43.274565]  ? lockdep_init_map_waits+0x26a/0x720
+[   43.275291]  ? lockdep_hardirqs_on_prepare+0x420/0x420
+[   43.276054]  lock_acquire+0x293/0x9b0
+[   43.276580]  ? do_fcntl+0x74f/0xff0
+[   43.277106]  ? lock_release+0x6f0/0x6f0
+[   43.277659]  ? __fd_install+0x22a/0x6d0
+[   43.278227]  ? lock_downgrade+0x6d0/0x6d0
+[   43.278810]  ? alloc_file+0x5d0/0x5d0
+[   43.279360]  _raw_read_lock+0x5b/0x70
+[   43.279911]  ? do_fcntl+0x74f/0xff0
+[   43.280433]  do_fcntl+0x74f/0xff0
+[   43.280949]  ? f_setown+0x260/0x260
+[   43.281466]  ? __sanitizer_cov_trace_switch+0x45/0x70
+[   43.282199]  ? selinux_file_fcntl+0xc5/0x1b0
+[   43.282839]  __x64_sys_fcntl+0x165/0x1e0
+[   43.283445]  do_syscall_64+0x33/0x40
+[   43.283994]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   43.284743] RIP: 0033:0x7fe58876f1cd
+[   43.285275] Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+[   43.287930] RSP: 002b:00007ffd2184d0e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000048
+[   43.289013] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007fe58876f1cd
+[   43.290040] RDX: 0000000000000000 RSI: 0000000000000010 RDI: 0000000000000007
+[   43.291072] RBP: 00007ffd2184d190 R08: 00007ffd2184d190 R09: 00007ffd2184d190
+[   43.292116] R10: 00007ffd2184d190 R11: 0000000000000246 R12: 00007ffd2184d208
+[   43.293143] R13: 00007ffd2184d218 R14: 00007fe588802d10 R15: 0000000000000001
+
+VM DIAGNOSIS:
+16:26:34  Registers:
+info registers vcpu 0
+
+CPU#0
+RAX=dffffc0000000060 RBX=0000000000000005 RCX=0000000000000000 RDX=00000000000003fd
+RSI=ffffffff823c0aec RDI=ffffffff87a492e0 RBP=ffffffff87a492a0 RSP=ffff8880088ef500
+R8 =0000000000000001 R9 =0000000000000003 R10=000000000000001f R11=0000000000000001
+R12=0000000000000000 R13=fffffbfff0f492a7 R14=fffffbfff0f4925e R15=dffffc0000000000
+RIP=ffffffff823c0b14 RFL=00000002 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 00005555558ab380 00000000 00000000
+GS =0000 ffff88806ce00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe0000003000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe0000001000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=000000002000f000 CR3=000000000faca000 CR4=00350ef0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 2323232323232323 2323232323232323
+YMM01=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM02=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM03=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM04=0000000000000000 0000000000000000 00007fe5887f6720 00007fe588807b80
+YMM05=0000000000000000 0000000000000000 0000000000000001 0000000000000001
+YMM06=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM07=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM08=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM09=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM10=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+info registers vcpu 1
+
+CPU#1
+RAX=ffffffff83eca430 RBX=ffff888008250000 RCX=ffffffff83eb246c RDX=ffff888008250000
+RSI=0000000000000001 RDI=ffffffff83eca83f RBP=0000000000000001 RSP=ffff88800825fe78
+R8 =0000000000000000 R9 =ffff88806cf3416b R10=ffffed100d9e682d R11=0000000000000001
+R12=ffffed100104a000 R13=ffffffff85d66c08 R14=0000000000000000 R15=dffffc0000000000
+RIP=ffffffff83eca43e RFL=00000246 [---Z-P-] CPL=0 II=0 A20=1 SMM=0 HLT=1
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 0000000000000000 00000000 00000000
+GS =0000 ffff88806cf00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe000003e000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe000003c000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=000055b11ac92160 CR3=000000000cf6a000 CR4=00350ee0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM01=0000000000000000 0000000000000000 7465677261742e79 636e656772656d65
+YMM02=0000000000000000 0000000000000000 ffffffffffffffff 0f0e0d0c0b0a0908
+YMM03=0000000000000000 0000000000000000 0000007465670073 66626c7465677568
+YMM04=0000000000000000 0000000000000000 2e2e2e2e2e2e2e2e 2e2e2e2e2e2e2e2e
+YMM05=0000000000000000 0000000000000000 5a5a5a5a5a5a5a5a 5a5a5a5a5a5a5a5a
+YMM06=0000000000000000 0000000000000000 2020202020202020 2020202020202020
+YMM07=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM08=0000000000000000 0000000000000000 6564636261393837 3635343332313040
+YMM09=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM10=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000

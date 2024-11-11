@@ -1,0 +1,60 @@
+ext4 filesystem being mounted at /22/file1 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop3): Ignoring removed bh option
+EXT4-fs (loop3): mounting ext3 file system using the ext4 subsystem
+------------[ cut here ]------------
+kernel BUG at fs/buffer.c:3015!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 2334 Comm: kmmpd-loop0 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:submit_bh_wbc+0x5f2/0x7c0 fs/buffer.c:3015
+Code: ff e8 12 e4 bf ff 41 81 cc 00 10 00 00 e9 15 ff ff ff e8 01 e4 bf ff 0f 0b 48 c7 c7 40 3a 29 85 e8 02 61 5a 02 e8 ee e3 bf ff <0f> 0b 48 c7 c7 00 3a 29 85 e8 ef 60 5a 02 e8 db e3 bf ff 0f 0b 48
+RSP: 0018:ffff88800d25fd70 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88801a800e80 RCX: ffffffff81862583
+RDX: ffff88800ff34e00 RSI: ffffffff81862ad2 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff88801a800e87
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000003800
+R13: 0000000000000001 R14: 0000000000000000 R15: ffff88800fcb2000
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f4d75683b28 CR3: 000000000ab6a000 CR4: 0000000000350ee0
+Call Trace:
+ write_mmp_block+0x333/0x6e0 fs/ext4/mmp.c:55
+ kmmpd+0x428/0xab0 fs/ext4/mmp.c:167
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+EXT4-fs (loop3): 1 truncate cleaned up
+EXT4-fs (loop3): mounted filesystem without journal. Opts: jqfmt=vfsold,resgid=0x000000000000ee00,bh,noload,data_err=ignore,usrjquota=,,errors=continue
+---[ end trace 8bae140b09389b6a ]---
+RIP: 0010:submit_bh_wbc+0x5f2/0x7c0 fs/buffer.c:3015
+Code: ff e8 12 e4 bf ff 41 81 cc 00 10 00 00 e9 15 ff ff ff e8 01 e4 bf ff 0f 0b 48 c7 c7 40 3a 29 85 e8 02 61 5a 02 e8 ee e3 bf ff <0f> 0b 48 c7 c7 00 3a 29 85 e8 ef 60 5a 02 e8 db e3 bf ff 0f 0b 48
+RSP: 0018:ffff88800d25fd70 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88801a800e80 RCX: ffffffff81862583
+RDX: ffff88800ff34e00 RSI: ffffffff81862ad2 RDI: 0000000000000001
+SELinux: unrecognized netlink message: protocol=0 nlmsg_type=0 sclass=netlink_route_socket pid=2486 comm=syz.3.85
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff88801a800e87
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000003800
+R13: 0000000000000001 R14: 0000000000000000 R15: ffff88800fcb2000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000201151ff CR3: 000000000fc16000 CR4: 0000000000350ef0
+EXT4-fs error (device loop3): ext4_validate_block_bitmap:390: comm syz.3.85: bg 0: bad block bitmap checksum
+EXT4-fs warning (device loop3): ext4_dirblock_csum_verify:377: inode #11: comm syz-executor: No space for directory leaf checksum. Please run e2fsck -D.
+EXT4-fs error (device loop3): ext4_readdir:204: inode #11: comm syz-executor: path /25/file0/lost+found: directory fails checksum at offset 0
+EXT4-fs warning (device loop3): ext4_dirblock_csum_verify:377: inode #11: comm syz-executor: No space for directory leaf checksum. Please run e2fsck -D.
+EXT4-fs error (device loop3): ext4_readdir:204: inode #11: comm syz-executor: path /25/file0/lost+found: directory fails checksum at offset 1024
+EXT4-fs warning (device loop3): ext4_dirblock_csum_verify:377: inode #11: comm syz-executor: No space for directory leaf checksum. Please run e2fsck -D.
+EXT4-fs error (device loop3): ext4_readdir:204: inode #11: comm syz-executor: path /25/file0/lost+found: directory fails checksum at offset 2048
+EXT4-fs warning (device loop3): ext4_dirblock_csum_verify:377: inode #11: comm syz-executor: No space for directory leaf checksum. Please run e2fsck -D.
+EXT4-fs error (device loop3): ext4_readdir:204: inode #11: comm syz-executor: path /25/file0/lost+found: directory fails checksum at offset 3072
+EXT4-fs warning (device loop3): ext4_dirblock_csum_verify:377: inode #11: comm syz-executor: No space for directory leaf checksum. Please run e2fsck -D.
+EXT4-fs error (device loop3): ext4_readdir:204: inode #11: comm syz-executor: path /25/file0/lost+found: directory fails checksum at offset 4096
+EXT4-fs warning (device loop3): ext4_dirblock_csum_verify:377: inode #11: comm syz-executor: No space for directory leaf checksum. Please run e2fsck -D.
+EXT4-fs error (device loop3): ext4_readdir:204: inode #11: comm syz-executor: path /25/file0/lost+found: directory fails checksum at offset 5120
+EXT4-fs warning (device loop3): ext4_dirblock_csum_verify:377: inode #11: comm syz-executor: No space for directory leaf checksum. Please run e2fsck -D.
+EXT4-fs error (device loop3): ext4_readdir:204: inode #11: comm syz-executor: path /25/file0/lost+found: directory fails checksum at offset 6144
+EXT4-fs warning (device loop3): ext4_dirblock_csum_verify:377: inode #11: comm syz-executor: No space for directory leaf checksum. Please run e2fsck -D.
+EXT4-fs error (device loop3): ext4_readdir:204: inode #11: comm syz-executor: path /25/file0/lost+found: directory fails checksum at offset 7168
+EXT4-fs warning (device loop3): ext4_dirblock_csum_verify:377: inode #11: comm syz-executor: No space for directory leaf checksum. Please run e2fsck -D.
+EXT4-fs error (device loop3): ext4_readdir:204: inode #11: comm syz-executor: path /25/file0/lost+found: directory fails checksum at offset 8192
+EXT4-fs warning (device loop3): ext4_dirblock_csum_verify:377: inode #11: comm syz-executor: No space for directory leaf checksum. Please run e2fsck -D.

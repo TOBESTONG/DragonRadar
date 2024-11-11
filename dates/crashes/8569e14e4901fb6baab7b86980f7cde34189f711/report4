@@ -1,0 +1,59 @@
+EXT4-fs warning (device loop1): __ext4_unlink:3233: inode #16: comm syz-executor: Deleting file 'file3' with no links
+EXT4-fs warning (device loop1): __ext4_unlink:3233: inode #16: comm syz-executor: Deleting file 'bus' with no links
+general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] PREEMPT SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
+CPU: 0 PID: 7534 Comm: ext4lazyinit Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:__ext4_journal_get_write_access+0x6b/0x2b0 fs/ext4/ext4_jbd2.c:227
+Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 25 02 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 6d 30 49 8d 7d 10 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 f8 01 00 00 4d 8b 6d 10 4d 85 ed 0f 84 f4 00 00
+RSP: 0018:ffff88801f9ffcd0 EFLAGS: 00010212
+RAX: dffffc0000000000 RBX: 0000000000000008 RCX: 1ffffffff0bacf77
+RDX: 0000000000000002 RSI: 0000000000000000 RDI: 0000000000000010
+RBP: ffff88801f40b1d0 R08: 0000000000000001 R09: ffff88801f479b37
+R10: 000000000000003f R11: 0000000000000001 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000000 R15: 000000000000061f
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fcc1e9216f4 CR3: 0000000024b6a000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ ext4_init_inode_table+0x3f0/0xb00 fs/ext4/ialloc.c:1567
+ ext4_run_li_request fs/ext4/super.c:3470 [inline]
+ ext4_lazyinit_thread fs/ext4/super.c:3561 [inline]
+ ext4_lazyinit_thread+0xdf7/0x16f0 fs/ext4/super.c:3523
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+---[ end trace 5e7900a74d7c6159 ]---
+RIP: 0010:__ext4_journal_get_write_access+0x6b/0x2b0 fs/ext4/ext4_jbd2.c:227
+Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 25 02 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 6d 30 49 8d 7d 10 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 f8 01 00 00 4d 8b 6d 10 4d 85 ed 0f 84 f4 00 00
+RSP: 0018:ffff88801f9ffcd0 EFLAGS: 00010212
+RAX: dffffc0000000000 RBX: 0000000000000008 RCX: 1ffffffff0bacf77
+RDX: 0000000000000002 RSI: 0000000000000000 RDI: 0000000000000010
+RBP: ffff88801f40b1d0 R08: 0000000000000001 R09: ffff88801f479b37
+R10: 000000000000003f R11: 0000000000000001 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000000 R15: 000000000000061f
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc085d2f328 CR3: 000000000cfc2000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+----------------
+Code disassembly (best guess):
+   0:	48 89 fa             	mov    %rdi,%rdx
+   3:	48 c1 ea 03          	shr    $0x3,%rdx
+   7:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+   b:	0f 85 25 02 00 00    	jne    0x236
+  11:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  18:	fc ff df
+  1b:	4c 8b 6d 30          	mov    0x30(%rbp),%r13
+  1f:	49 8d 7d 10          	lea    0x10(%r13),%rdi
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 f8 01 00 00    	jne    0x22c
+  34:	4d 8b 6d 10          	mov    0x10(%r13),%r13
+  38:	4d 85 ed             	test   %r13,%r13
+  3b:	0f                   	.byte 0xf
+  3c:	84 f4                	test   %dh,%ah

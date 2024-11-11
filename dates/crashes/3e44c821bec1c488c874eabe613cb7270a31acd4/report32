@@ -1,0 +1,45 @@
+EXT4-fs error (device loop2): ext4_xattr_inode_iget:407: comm syz.2.17: EA inode 12 does not have EXT4_EA_INODE_FL flag
+EXT4-fs (loop2): 1 orphan inode deleted
+================================================================================
+UBSAN: shift-out-of-bounds in fs/ext4/super.c:4191:25
+shift exponent 458753 is too large for 32-bit type 'int'
+EXT4-fs (loop2): mounted filesystem without journal. Opts: dioread_nolock,user_xattr,norecovery,resuid=0x000000000000ee01,mblk_io_submit,errors=continue,usrjquota=,mblk_io_submit,nodiscard,,errors=continue
+CPU: 0 PID: 2167 Comm: syz.1.19 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ ext4_fill_super.cold+0x163/0x499 fs/ext4/super.c:4191
+ mount_bdev+0x350/0x410 fs/super.c:1419
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fb67fa9169a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb67e708e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fb67e708ef0 RCX: 00007fb67fa9169a
+RDX: 0000000020000780 RSI: 0000000020000240 RDI: 00007fb67e708eb0
+RBP: 0000000020000780 R08: 00007fb67e708ef0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000020000240
+R13: 00007fb67e708eb0 R14: 00000000000007be R15: 0000000020000040
+================================================================================
+EXT4-fs (loop1): Invalid log block size: 458753
+EXT4-fs error (device loop0): ext4_orphan_get:1385: inode #13: comm syz.0.16: iget: bad extra_isize 288 (inode size 256)
+sr 1:0:0:0: [sr0] tag#0 FAILED Result: hostbyte=DID_ERROR driverbyte=DRIVER_OK cmd_age=0s
+sr 1:0:0:0: [sr0] tag#0 CDB: opcode=0x9a 9a 00 00 ff ff ff ff ff ff 16 61 72
+EXT4-fs error (device loop0): ext4_orphan_get:1388: comm syz.0.16: couldn't read orphan inode 13 (err -117)
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs warning (device loop0): dx_probe:775: inode #2: comm syz.0.16: Unrecognised inode hash code 20
+EXT4-fs warning (device loop0): dx_probe:886: inode #2: comm syz.0.16: Corrupt directory, running e2fsck is recommended
+EXT4-fs warning (device loop0): dx_probe:775: inode #2: comm syz.0.16: Unrecognised inode hash code 20
+EXT4-fs warning (device loop0): dx_probe:886: inode #2: comm syz.0.16: Corrupt directory, running e2fsck is recommended
+EXT4-fs error (device loop0): ext4_find_dest_de:1947: inode #2: block 13: comm syz.0.16: bad entry in directory: rec_len % 4 != 0 - offset=108, inode=4294901777, rec_len=65535, name_len=9, size=1024

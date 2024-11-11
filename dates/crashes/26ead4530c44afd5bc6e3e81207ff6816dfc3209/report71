@@ -1,0 +1,140 @@
+netlink: 12 bytes leftover after parsing attributes in process `syz.3.595'.
+netlink: 79 bytes leftover after parsing attributes in process `syz.3.595'.
+netlink: 'syz.3.595': attribute type 2 has an invalid length.
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+syz.0.601/15806 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff8880183492a8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff8880183492a8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 10124
+hardirqs last  enabled at (10124): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (10123): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+softirqs last  enabled at (9862): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (10041): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+5 locks held by syz.0.601/15806:
+ #0: ffff88800afe53a0 (sk_lock-AF_UNIX){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1581 [inline]
+ #0: ffff88800afe53a0 (sk_lock-AF_UNIX){+.+.}-{0:0}, at: sock_setsockopt+0x1d7/0x2970 net/core/sock.c:848
+ #1: ffffffff85229d68 (vmap_purge_lock){+.+.}-{3:3}, at: _vm_unmap_aliases.part.0+0x3c2/0x560 mm/vmalloc.c:1766
+ #2: ffffffff85229f18 (free_vmap_area_lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ #2: ffffffff85229f18 (free_vmap_area_lock){+.+.}-{2:2}, at: __cond_resched_lock+0xa0/0xf0 kernel/sched/core.c:6155
+ #3: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #4: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 1 PID: 15806 Comm: syz.0.601 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:find_va_links mm/vmalloc.c:551 [inline]
+RIP: 0010:merge_or_add_vmap_area mm/vmalloc.c:756 [inline]
+RIP: 0010:__purge_vmap_area_lazy+0x26f/0x1a10 mm/vmalloc.c:1364
+Code: 04 24 48 8b 1d 82 dc b4 05 4c 8b 28 48 85 db 0f 84 c9 05 00 00 e8 11 26 db ff 48 8d 7b f8 48 89 f8 48 c1 e8 03 42 80 3c 38 00 <0f> 85 51 11 00 00 48 8d 7b f0 48 8b 6b f8 48 89 f8 48 c1 e8 03 42
+RSP: 0018:ffff888016677830 EFLAGS: 00000246
+RAX: 1ffff11003306939 RBX: ffff8880198349d0 RCX: ffffc90000e00000
+RDX: 0000000000040000 RSI: ffffffff816ae8af RDI: ffff8880198349c8
+RBP: ffff88800804f6d8 R08: 0000000000000000 R09: ffffffff85229f03
+R10: ffffc900006de000 R11: 0000000000000001 R12: ffff8880198349d0
+R13: ffffc900006dc000 R14: ffffc900006de000 R15: dffffc0000000000
+ _vm_unmap_aliases.part.0+0x445/0x560 mm/vmalloc.c:1768
+ _vm_unmap_aliases mm/vmalloc.c:1742 [inline]
+ vm_unmap_aliases+0x5f/0x70 mm/vmalloc.c:1791
+ change_page_attr_set_clr+0x241/0x500 arch/x86/mm/pat/set_memory.c:1732
+ change_page_attr_clear arch/x86/mm/pat/set_memory.c:1789 [inline]
+ set_memory_ro+0x78/0xa0 arch/x86/mm/pat/set_memory.c:1935
+ bpf_prog_lock_ro include/linux/filter.h:816 [inline]
+ bpf_prog_select_runtime+0x5ef/0x8b0 kernel/bpf/core.c:1834
+ bpf_migrate_filter net/core/filter.c:1294 [inline]
+ bpf_prepare_filter+0xeda/0x11b0 net/core/filter.c:1342
+ __get_filter+0x20a/0x2c0 net/core/filter.c:1511
+ sk_attach_filter+0x20/0x3a0 net/core/filter.c:1526
+ sock_setsockopt+0x21e8/0x2970 net/core/sock.c:1060
+ __sys_setsockopt+0x258/0x2a0 net/socket.c:2128
+ __do_sys_setsockopt net/socket.c:2143 [inline]
+ __se_sys_setsockopt net/socket.c:2140 [inline]
+ __x64_sys_setsockopt+0xba/0x150 net/socket.c:2140
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fa9e14e0ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fa9e015a038 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 00007fa9e1698f80 RCX: 00007fa9e14e0ef9
+RDX: 000000000000001a RSI: 0000000000000001 RDI: 0000000000000005
+RBP: 00007fa9e1553b76 R08: 0000000000000010 R09: 0000000000000000
+R10: 0000000020000ac0 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fa9e1698f80 R15: 00007ffdbb7b85b8
+ loop2: p2 < > p4
+loop2: p4 size 8192 extends beyond EOD, truncated
+ loop2: p2 < > p4
+loop2: p4 size 8192 extends beyond EOD, truncated
+----------------
+Code disassembly (best guess):
+   0:	04 24                	add    $0x24,%al
+   2:	48 8b 1d 82 dc b4 05 	mov    0x5b4dc82(%rip),%rbx        # 0x5b4dc8b
+   9:	4c 8b 28             	mov    (%rax),%r13
+   c:	48 85 db             	test   %rbx,%rbx
+   f:	0f 84 c9 05 00 00    	je     0x5de
+  15:	e8 11 26 db ff       	call   0xffdb262b
+  1a:	48 8d 7b f8          	lea    -0x8(%rbx),%rdi
+  1e:	48 89 f8             	mov    %rdi,%rax
+  21:	48 c1 e8 03          	shr    $0x3,%rax
+  25:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1)
+* 2a:	0f 85 51 11 00 00    	jne    0x1181 <-- trapping instruction
+  30:	48 8d 7b f0          	lea    -0x10(%rbx),%rdi
+  34:	48 8b 6b f8          	mov    -0x8(%rbx),%rbp
+  38:	48 89 f8             	mov    %rdi,%rax
+  3b:	48 c1 e8 03          	shr    $0x3,%rax
+  3f:	42                   	rex.X

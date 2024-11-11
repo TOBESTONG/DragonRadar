@@ -1,0 +1,113 @@
+netlink: 'syz.1.323': attribute type 4 has an invalid length.
+netlink: 44 bytes leftover after parsing attributes in process `syz.0.325'.
+kernel profiling enabled (shift: 348)
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:110:31
+shift exponent 348 is too large for 64-bit type 'long int'
+CPU: 1 PID: 7243 Comm: syz.1.328 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ profile_init+0xfc/0x110 kernel/profile.c:110
+ profiling_store+0x5e/0xd0 kernel/ksysfs.c:80
+ kobj_attr_store+0x53/0x80 lib/kobject.c:856
+ sysfs_kf_write+0x113/0x170 fs/sysfs/file.c:139
+ kernfs_fop_write+0x26a/0x490 fs/kernfs/file.c:315
+ vfs_write+0x29a/0xac0 fs/read_write.c:603
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fe7e4379ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe7e2ff3038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fe7e4531f80 RCX: 00007fe7e4379ef9
+RDX: 0000000000000012 RSI: 0000000020000040 RDI: 0000000000000003
+RBP: 00007fe7e43ecb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fe7e4531f80 R15: 00007fff74455598
+================================================================================
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:291:7
+shift exponent 348 is too large for 64-bit type 'long unsigned int'
+CPU: 0 PID: 7170 Comm: syz.3.316 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ do_profile_hits.constprop.0.cold+0x17/0x1c kernel/profile.c:291
+ profile_hits kernel/profile.c:398 [inline]
+ profile_hit include/linux/profile.h:64 [inline]
+ profile_tick+0xe7/0x100 kernel/profile.c:408
+ tick_sched_timer+0x10f/0x150 kernel/time/tick-sched.c:1328
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x1c1/0xba0 kernel/time/hrtimer.c:1583
+ hrtimer_interrupt+0x357/0x9b0 kernel/time/hrtimer.c:1645
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+ __sysvec_apic_timer_interrupt+0x170/0x560 arch/x86/kernel/apic/apic.c:1097
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
+ run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
+ sysvec_apic_timer_interrupt+0xb8/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:lock_release+0x3cc/0x6f0 kernel/locking/lockdep.c:5445
+Code: 0a 02 00 00 48 c7 c7 c0 df 46 84 e8 4e 5e c0 02 b8 ff ff ff ff 65 0f c1 05 31 2b d7 7e 83 f8 01 0f 85 6a 01 00 00 ff 34 24 9d <48> b8 00 00 00 00 00 fc ff df 48 01 c5 48 c7 45 00 00 00 00 00 c7
+RSP: 0018:ffff8880188e7588 EFLAGS: 00000246
+RAX: 0000000000000001 RBX: ffffffffffffffff RCX: ffff8880188e75d8
+RDX: 1ffff110025067a8 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 1ffff1100311ceb3 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000001 R14: ffff888012833d48 R15: ffff888012833400
+ __might_fault mm/memory.c:5033 [inline]
+ __might_fault+0x144/0x180 mm/memory.c:5018
+ _copy_to_iter+0x43e/0x10e0 lib/iov_iter.c:634
+ copy_to_iter include/linux/uio.h:137 [inline]
+ simple_copy_to_iter+0x4c/0x70 net/core/datagram.c:519
+ __skb_datagram_iter+0x122/0x870 net/core/datagram.c:425
+ skb_copy_datagram_iter+0x88/0x280 net/core/datagram.c:533
+ skb_copy_datagram_msg include/linux/skbuff.h:3532 [inline]
+ netlink_recvmsg+0x254/0xe60 net/netlink/af_netlink.c:1977
+ sock_recvmsg_nosec net/socket.c:885 [inline]
+ ____sys_recvmsg+0x51d/0x590 net/socket.c:2574
+ ___sys_recvmsg+0x127/0x200 net/socket.c:2618
+ do_recvmmsg+0x24c/0x6c0 net/socket.c:2718
+ __sys_recvmmsg net/socket.c:2797 [inline]
+ __do_sys_recvmmsg net/socket.c:2820 [inline]
+ __se_sys_recvmmsg net/socket.c:2813 [inline]
+ __x64_sys_recvmmsg+0x20b/0x260 net/socket.c:2813
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fa8064a7ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fa805100038 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
+RAX: ffffffffffffffda RBX: 00007fa806660058 RCX: 00007fa8064a7ef9
+RDX: 03ffffffffffff81 RSI: 0000000020000780 RDI: 0000000000000003
+RBP: 00007fa80651ab76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000002 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000001 R14: 00007fa806660058 R15: 00007fffe172a588
+================================================================================
+----------------
+Code disassembly (best guess):
+   0:	0a 02                	or     (%rdx),%al
+   2:	00 00                	add    %al,(%rax)
+   4:	48 c7 c7 c0 df 46 84 	mov    $0xffffffff8446dfc0,%rdi
+   b:	e8 4e 5e c0 02       	call   0x2c05e5e
+  10:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+  15:	65 0f c1 05 31 2b d7 	xadd   %eax,%gs:0x7ed72b31(%rip)        # 0x7ed72b4e
+  1c:	7e
+  1d:	83 f8 01             	cmp    $0x1,%eax
+  20:	0f 85 6a 01 00 00    	jne    0x190
+  26:	ff 34 24             	push   (%rsp)
+  29:	9d                   	popf
+* 2a:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax <-- trapping instruction
+  31:	fc ff df
+  34:	48 01 c5             	add    %rax,%rbp
+  37:	48 c7 45 00 00 00 00 	movq   $0x0,0x0(%rbp)
+  3e:	00
+  3f:	c7                   	.byte 0xc7

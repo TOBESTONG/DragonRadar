@@ -1,0 +1,161 @@
+audit: type=1400 audit(1731337871.629:123): avc:  denied  { execmem } for  pid=5853 comm="syz-executor" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+audit: type=1400 audit(1731337890.318:124): avc:  denied  { execmem } for  pid=6297 comm="syz-executor" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+INFO: task syz.3.74:2971 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.3.74        state:D stack:25056 pid: 2971 ppid:   240 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ bit_wait_io+0x12/0xa0 kernel/sched/wait_bit.c:209
+ __wait_on_bit_lock+0x131/0x1c0 kernel/sched/wait_bit.c:90
+ out_of_line_wait_on_bit_lock+0xd5/0x110 kernel/sched/wait_bit.c:117
+ wait_on_bit_lock_io include/linux/wait_bit.h:208 [inline]
+ __lock_buffer fs/buffer.c:69 [inline]
+ lock_buffer include/linux/buffer_head.h:366 [inline]
+ __sync_dirty_buffer+0x34f/0x3e0 fs/buffer.c:3142
+ __ext4_handle_dirty_metadata+0x28b/0x9b0 fs/ext4/ext4_jbd2.c:364
+ ext4_finish_convert_inline_dir fs/ext4/inline.c:1164 [inline]
+ ext4_convert_inline_data_nolock+0x9b5/0xd60 fs/ext4/inline.c:1240
+ ext4_try_add_inline_entry+0x38f/0x650 fs/ext4/inline.c:1313
+ ext4_add_entry+0x34e/0xc60 fs/ext4/namei.c:2209
+ ext4_mkdir+0x41c/0xb10 fs/ext4/namei.c:2814
+ vfs_mkdir+0x45c/0x710 fs/namei.c:3650
+ do_mkdirat+0x145/0x2a0 fs/namei.c:3673
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f7a646f5797
+RSP: 002b:00007f7a6336fe68 EFLAGS: 00000246 ORIG_RAX: 0000000000000102
+RAX: ffffffffffffffda RBX: 00007f7a6336fef0 RCX: 00007f7a646f5797
+RDX: 00000000000001ff RSI: 0000000020000e80 RDI: 00000000ffffff9c
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000020000e80
+R13: 00007f7a6336feb0 R14: 0000000000000000 R15: 0000000000000000
+INFO: task syz.3.74:2984 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.3.74        state:D stack:28240 pid: 2984 ppid:   240 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ rwsem_down_write_slowpath+0x5c5/0xc00 kernel/locking/rwsem.c:1235
+ __down_write kernel/locking/rwsem.c:1389 [inline]
+ down_write_nested+0x13b/0x150 kernel/locking/rwsem.c:1628
+ inode_lock_nested include/linux/fs.h:809 [inline]
+ lock_rename+0x225/0x280 fs/namei.c:2756
+ do_renameat2+0x42f/0xb80 fs/namei.c:4407
+ __do_sys_renameat fs/namei.c:4498 [inline]
+ __se_sys_renameat fs/namei.c:4495 [inline]
+ __x64_sys_renameat+0x96/0x100 fs/namei.c:4495
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f7a646f6ef9
+RSP: 002b:00007f7a6334f038 EFLAGS: 00000246 ORIG_RAX: 0000000000000108
+RAX: ffffffffffffffda RBX: 00007f7a648af058 RCX: 00007f7a646f6ef9
+RDX: 000000000000000d RSI: 0000000020000240 RDI: 000000000000000d
+RBP: 00007f7a64769b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000200001c0 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f7a648af058 R15: 00007fffd267b158
+INFO: task syz.3.74:2987 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.3.74        state:D stack:28160 pid: 2987 ppid:   240 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ rwsem_down_read_slowpath+0x2ad/0xb90 kernel/locking/rwsem.c:1099
+ __down_read kernel/locking/rwsem.c:1341 [inline]
+ down_read+0x1ec/0x450 kernel/locking/rwsem.c:1494
+ inode_lock_shared include/linux/fs.h:784 [inline]
+ lookup_slow fs/namei.c:1560 [inline]
+ walk_component+0x40b/0x6a0 fs/namei.c:1861
+ lookup_last fs/namei.c:2310 [inline]
+ path_lookupat+0x146/0x6c0 fs/namei.c:2334
+ filename_lookup+0x19f/0x560 fs/namei.c:2367
+ user_path_at include/linux/namei.h:59 [inline]
+ ksys_umount fs/namespace.c:1751 [inline]
+ __do_sys_umount fs/namespace.c:1759 [inline]
+ __se_sys_umount fs/namespace.c:1757 [inline]
+ __x64_sys_umount+0xdc/0x150 fs/namespace.c:1757
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f7a646f6ef9
+RSP: 002b:00007f7a6332e038 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: ffffffffffffffda RBX: 00007f7a648af130 RCX: 00007f7a646f6ef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000280
+RBP: 00007f7a64769b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f7a648af130 R15: 00007fffd267b158
+
+Showing all locks held in the system:
+1 lock held by systemd/1:
+1 lock held by ksoftirqd/1/16:
+ #0: ffff88806cf33318 (&rq->lock){-.-.}-{2:2}, at: rq_lock kernel/sched/sched.h:1292 [inline]
+ #0: ffff88806cf33318 (&rq->lock){-.-.}-{2:2}, at: __schedule+0x21a/0x2030 kernel/sched/core.c:4446
+1 lock held by khungtaskd/23:
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x28c kernel/locking/lockdep.c:6254
+2 locks held by kworker/u4:3/65:
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88800be6fda8 ((work_completion)(&sub_info->work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+1 lock held by systemd-journal/101:
+2 locks held by in:imklog/154:
+2 locks held by rs:main Q:Reg/156:
+4 locks held by sshd/217:
+2 locks held by kworker/u4:4/241:
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88800dec7da8 ((work_completion)(&sub_info->work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+2 locks held by kworker/u4:5/2956:
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88801aa7fda8 ((work_completion)(&sub_info->work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+3 locks held by syz.3.74/2971:
+ #0: ffff888019e0c438 (sb_writers#3){.+.+}-{0:0}, at: filename_create+0x104/0x490 fs/namei.c:3462
+ #1: ffff888013ffdd20 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+ #1: ffff888013ffdd20 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: filename_create+0x15a/0x490 fs/namei.c:3467
+ #2: ffff888013ffd960 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ #2: ffff888013ffd960 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_add_inline_entry+0x108/0x650 fs/ext4/inline.c:1271
+2 locks held by syz.3.74/2984:
+ #0: ffff888019e0c438 (sb_writers#3){.+.+}-{0:0}, at: do_renameat2+0x353/0xb80 fs/namei.c:4402
+ #1: ffff888013ffdd20 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+ #1: ffff888013ffdd20 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: lock_rename+0x225/0x280 fs/namei.c:2756
+1 lock held by syz.3.74/2987:
+ #0: ffff888013ffdd20 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: inode_lock_shared include/linux/fs.h:784 [inline]
+ #0: ffff888013ffdd20 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: lookup_slow fs/namei.c:1560 [inline]
+ #0: ffff888013ffdd20 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: walk_component+0x40b/0x6a0 fs/namei.c:1861
+2 locks held by kworker/u4:6/3570:
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008059138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88801af3fda8 ((work_completion)(&sub_info->work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+1 lock held by syz-executor/5860:
+ #0: ffffffff850fde68 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:290 [inline]
+ #0: ffffffff850fde68 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0xa53/0xbb0 kernel/rcu/tree_exp.h:836
+1 lock held by syz-executor/6302:
+ #0: ffffffff850fde68 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:322 [inline]
+ #0: ffffffff850fde68 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x5ae/0xbb0 kernel/rcu/tree_exp.h:836
+2 locks held by modprobe/6610:
+2 locks held by modprobe/6611:
+
+=============================================
+

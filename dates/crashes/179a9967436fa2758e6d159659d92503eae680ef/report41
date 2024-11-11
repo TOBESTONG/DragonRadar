@@ -1,0 +1,133 @@
+EXT4-fs error (device loop3): ext4_validate_block_bitmap:390: comm syz-executor: bg 0: bad block bitmap checksum
+EXT4-fs error (device loop3) in ext4_free_blocks:5518: Filesystem failed CRC
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4.h:3196!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 2267 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff888018757760 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000408 RCX: ffffffff81a81b22
+RDX: ffff88800b25ce00 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff88801962e000 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880186e6000
+R13: ffff8880186e6650 R14: 0000000000000001 R15: ffff8880186e6000
+FS:  000055555649e500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0122a0e6d0 CR3: 0000000018758000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_free_blocks+0x468/0x22a0 fs/ext4/mballoc.c:5360
+ ext4_clear_blocks+0x346/0x470 fs/ext4/indirect.c:877
+ ext4_free_data+0x2b6/0x390 fs/ext4/indirect.c:937
+ ext4_ind_truncate+0x6a4/0x940 fs/ext4/indirect.c:1141
+ ext4_truncate+0x65e/0x1390 fs/ext4/inode.c:4256
+ ext4_evict_inode+0xb59/0x1890 fs/ext4/inode.c:280
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ dentry_unlink_inode+0x2b4/0x3e0 fs/dcache.c:374
+ d_delete+0x167/0x1c0 fs/dcache.c:2470
+ vfs_rmdir.part.0+0x3d5/0x4b0 fs/namei.c:3727
+ vfs_rmdir fs/namei.c:3696 [inline]
+ do_rmdir+0x2f6/0x3c0 fs/namei.c:3774
+ __do_sys_unlinkat fs/namei.c:3937 [inline]
+ __se_sys_unlinkat fs/namei.c:3931 [inline]
+ __x64_sys_unlinkat+0xeb/0x130 fs/namei.c:3931
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f95c20134d7
+Code: 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 07 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc89fec6e8 EFLAGS: 00000207 ORIG_RAX: 0000000000000107
+RAX: ffffffffffffffda RBX: 0000000000000065 RCX: 00007f95c20134d7
+RDX: 0000000000000200 RSI: 00007ffc89fed890 RDI: 00000000ffffff9c
+RBP: 00007f95c2086a14 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000001000 R11: 0000000000000207 R12: 00007ffc89fed890
+R13: 00007f95c2086a14 R14: 000000000000cd26 R15: 00007ffc89fefa40
+Modules linked in:
+---[ end trace b123e796147f71a6 ]---
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff888018757760 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000408 RCX: ffffffff81a81b22
+RDX: ffff88800b25ce00 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff88801962e000 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880186e6000
+R13: ffff8880186e6650 R14: 0000000000000001 R15: ffff8880186e6000
+FS:  000055555649e500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa92e21f328 CR3: 0000000018758000 CR4: 0000000000350ee0
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#2] PREEMPT SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 1 PID: 2267 Comm: syz-executor Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:jbd2__journal_start+0x84/0x960 fs/jbd2/transaction.c:479
+Code: c6 07 00 00 4d 8b bf d8 10 00 00 4d 85 ff 0f 84 97 00 00 00 e8 7d 1f 8e ff 4c 89 fa 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 ad 07 00 00 48 b8 00 00 00 00 00 fc ff df 49 8b
+RSP: 0018:ffff888018757ab8 EFLAGS: 00010256
+RAX: dffffc0000000000 RBX: ffff88800cf4c000 RCX: 0000000000000008
+RDX: 0000000000000000 RSI: ffffffff81b7ef43 RDI: ffff88800b25ded8
+RBP: 0000000000000000 R08: 0000000000000c40 R09: 0000000000000005
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000008
+R13: 000000000000001f R14: 0000000000000c40 R15: 0000000000000002
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f54034a8ea0 CR3: 0000000004e26000 CR4: 0000000000350ee0
+Call Trace:
+ __ext4_journal_start_sb+0x210/0x490 fs/ext4/ext4_jbd2.c:105
+ __ext4_journal_start fs/ext4/ext4_jbd2.h:328 [inline]
+ ext4_evict_inode+0x96c/0x1890 fs/ext4/inode.c:246
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ dentry_unlink_inode+0x2b4/0x3e0 fs/dcache.c:374
+ __dentry_kill+0x36f/0x5b0 fs/dcache.c:579
+ dentry_kill fs/dcache.c:717 [inline]
+ dput+0x6ad/0xc70 fs/dcache.c:878
+ __fput+0x3a5/0x980 fs/file_table.c:294
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7f95c20134d7
+Code: Unable to access opcode bytes at RIP 0x7f95c20134ad.
+RSP: 002b:00007ffc89fec6e8 EFLAGS: 00000207 ORIG_RAX: 0000000000000107
+RAX: ffffffffffffffda RBX: 0000000000000065 RCX: 00007f95c20134d7
+RDX: 0000000000000200 RSI: 00007ffc89fed890 RDI: 00000000ffffff9c
+RBP: 00007f95c2086a14 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000001000 R11: 0000000000000207 R12: 00007ffc89fed890
+R13: 00007f95c2086a14 R14: 000000000000cd26 R15: 00007ffc89fefa40
+Modules linked in:
+---[ end trace b123e796147f71a7 ]---
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff888018757760 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000408 RCX: ffffffff81a81b22
+RDX: ffff88800b25ce00 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff88801962e000 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880186e6000
+R13: ffff8880186e6650 R14: 0000000000000001 R15: ffff8880186e6000
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f54034a8ea0 CR3: 0000000004e26000 CR4: 0000000000350ee0
+Fixing recursive fault but reboot is needed!
+----------------
+Code disassembly (best guess):
+   0:	c6 07 00             	movb   $0x0,(%rdi)
+   3:	00 4d 8b             	add    %cl,-0x75(%rbp)
+   6:	bf d8 10 00 00       	mov    $0x10d8,%edi
+   b:	4d 85 ff             	test   %r15,%r15
+   e:	0f 84 97 00 00 00    	je     0xab
+  14:	e8 7d 1f 8e ff       	call   0xff8e1f96
+  19:	4c 89 fa             	mov    %r15,%rdx
+  1c:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  23:	fc ff df
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 ad 07 00 00    	jne    0x7e1
+  34:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  3b:	fc ff df
+  3e:	49                   	rex.WB
+  3f:	8b                   	.byte 0x8b

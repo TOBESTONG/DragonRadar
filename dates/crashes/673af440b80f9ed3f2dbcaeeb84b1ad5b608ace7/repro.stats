@@ -1,0 +1,121 @@
+Extracting prog: 25.895781979s
+Minimizing prog: 165.756µs
+Simplifying prog options: 0s
+Extracting C: 21.001311358s
+Simplifying C: 2m13.071986391s
+
+
+24 programs, timeouts [30s 1m40s 6m0s]
+extracting reproducer from 24 programs
+first checking the prog from the crash report
+single: executing 1 programs separately with timeout 30s
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x47, &(0x7f0000000340)={[{@nojournal_checksum}, {@sysvgroups}, {@max_dir_size_kb={'max_dir_size_kb', 0x3d, 0x9}}, {@barrier_val={'barrier', 0x3d, 0x7ffffffe}}, {@data_err_abort}, {@block_validity}, {@resuid}, {@resgid}, {@minixdf}]}, 0x0, 0x4b2, &(0x7f0000000540)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgQ7bJHseEnMHrIMxvYU2Ja9Z54tG2PZMpacxCYUh/4BhVLaQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrlLHlWKH2BaVPx84uefeK+n7PZF1dc89B90A9q1TEXE1Ivoi4lxEDGbb06zEerPUH/fwwZ2pekmiVrv+RRJJtq31Wkm2PJI97WBE/OefEf9Pfhq3sro2P1kqFZez9UJ1YalQWV07P7cwOVucLS6Oj49dmrg8cXFidEfaORQRV/7+ycsvvPGPK+/86daHNz4bea6e1kC2f2M7dlKz6bnG/0XL2YhY3o1gXVD/u+lvtBAAgJ+DkYj4VUT8oXH+Pxh9jbM5AAAAoJfU/joQ3yYRNQAAAKBnpY05sEmaz+b7DkSa5vPNOby/icNpqVyp/nGmvLI43ZwrOxS5dGauVBzN5goPRS6pr49lc2xb6xc2rY9HxLGIeGnwUGM9P1UuTXf74gcAAADsE0c29f+/Hmz2/wEAAIAeM9TtBAAAAIBdp/8PAAAAvU//HwAAAHrav65dq5da6/7X0zdXV+bLN89PFyvz+YWVqfxUeXkpP1suzzZ+s29hq9crlctLf47FlduFarFSLVRW124slFcWqzfmHrsFNgAAALCHjv3+3gdJRKz/5VCj1B3odlLAnkif5sEf714ewN7r63YCQNf0dzsBoGty3U4A6Lpki/0dJ++8u/O5AAAAu2P4t53H/10bgN72VOP/QE8x/g/7l/F/2L9yzgBg39v98f9a7akSAgAAdtxAoyRpPhsLHIg0zecjjjZuC5BLZuZKxdGI+GVEvD+Y+0V9fazxzGTLPgMAAAAAAAAAAAAAAAAAAAAAAAAA0FSrJVEDAAAAelpE+mmS3f9rePDMwObrAweSbwYby4i49dr1V25PVqvLY/XtXz7aXn01236hG1cwAAAAgM1a/fRWPx4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdtLDB3emWmUv437+t4gYahe/Pw42lgcjFxGHv0qif8Pzkojo24H463cj4ni7+Ek9rRjKsmgXf+Nyr+OnEXHkGWPDfnevfvy52u7zl8apxrL9568/K8+q8/EvfXT86+tw/Dm6zRgn7r9V6Bj/bsSJ/vbHn1b8pEP809uM/7//rq112ld7PWK47fdP8lisQnVhqVBZXTs/tzA5W5wtLo6Pj12auDxxcWK0MDNXKmb/to3x4u/e/v5J7T/cIf7QFu0/s832f3f/9oNfN6u5dvFHTrd//493iJ9m331ns3p9/3Crvt6sb3TyzfdOPqn90x3av9X7P7LN9p/79/MfbfOhAMAeqKyuzU+WSsVlFRUVlUeVbh+ZAACAnfbjSX+3MwEAAAAAAAAAAAAAAAAAAID9ay9+TmxzzPXuNBUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4Il+CAAA///uaNVi")
+
+program crashed: UBSAN: shift-out-of-bounds in ext4_mb_init
+single: successfully extracted reproducer
+found reproducer with 1 syscalls
+minimizing guilty program
+extracting C reproducer
+testing compiled C program (duration=33.495103027s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4
+program crashed: UBSAN: shift-out-of-bounds in ext4_mb_init
+simplifying C reproducer
+testing compiled C program (duration=33.495103027s, {Threaded:false Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4
+program crashed: UBSAN: shift-out-of-bounds in ext4_mb_init
+testing compiled C program (duration=33.495103027s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:false Cgroups:false BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4
+program crashed: UBSAN: shift-out-of-bounds in ext4_mb_init
+testing compiled C program (duration=33.495103027s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox: SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:false UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4
+program crashed: UBSAN: shift-out-of-bounds in ext4_mb_init
+testing compiled C program (duration=33.495103027s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox: SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:false UseTmpDir:false HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4
+program crashed: UBSAN: shift-out-of-bounds in ext4_mb_init
+testing compiled C program (duration=33.495103027s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox: SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:false UseTmpDir:false HandleSegv:false Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4
+program crashed: UBSAN: shift-out-of-bounds in ext4_mb_init
+testing compiled C program (duration=33.495103027s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox: SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:false Swap:false UseTmpDir:false HandleSegv:false Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4
+program crashed: UBSAN: shift-out-of-bounds in ext4_mb_init
+reproducing took 2m59.969299547s
+repro crashed as (corrupted=false):
+audit: type=1400 audit(1730889271.507:6): avc:  denied  { execmem } for  pid=237 comm="syz-executor255" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+================================================================================
+UBSAN: shift-out-of-bounds in fs/ext4/mballoc.c:2736:26
+shift exponent 37 is too large for 32-bit type 'int'
+CPU: 0 PID: 237 Comm: syz-executor255 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ ext4_mb_init_backend fs/ext4/mballoc.c:2736 [inline]
+ ext4_mb_init.cold+0x9c/0x113 fs/ext4/mballoc.c:2920
+ ext4_fill_super+0x8156/0xd960 fs/ext4/super.c:4999
+ mount_bdev+0x350/0x410 fs/super.c:1419
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f3d8690df6e
+Code: c7 05 6e 2a 09 00 00 00 00 00 eb 98 e8 ab 05 00 00 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff3069c278 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fff3069c2d0 RCX: 00007f3d8690df6e
+RDX: 0000000020000040 RSI: 0000000020000500 RDI: 00007fff3069c290
+RBP: 00007fff3069c290 R08: 00007fff3069c2d0 R09: 00000000000004ad
+R10: 0000000000000047 R11: 0000000000000202 R12: 00005555567c2340
+R13: 0000000000000004 R14: 0000000000000000 R15: 0000000000000001
+================================================================================
+EXT4-fs (loop0): orphan cleanup on readonly fs
+EXT4-fs error (device loop0): ext4_ext_check_inode:459: inode #3: comm syz-executor255: pblk 0 bad header/extent: invalid extent entries - magic f30a, entries 1, max 4(4), depth 0(0)
+EXT4-fs error (device loop0): ext4_quota_enable:6366: comm syz-executor255: Bad quota inode # 3
+EXT4-fs warning (device loop0): ext4_enable_quotas:6403: Failed to enable quota tracking (type=0, err=-117). Please run e2fsck to fix.
+EXT4-fs (loop0): Cannot turn on quotas: error -117
+EXT4-fs (loop0): mounted filesystem without journal. Opts: nojournal_checksum,sysvgroups,max_dir_size_kb=0x0000000000000009,barrier=0x000000007ffffffe,data_err=abort,block_validity,resuid=0x0000000000000000,resgid=0x0000000000000000,minixdf,,errors=continue
+
+final repro crashed as (corrupted=false):
+audit: type=1400 audit(1730889271.507:6): avc:  denied  { execmem } for  pid=237 comm="syz-executor255" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+================================================================================
+UBSAN: shift-out-of-bounds in fs/ext4/mballoc.c:2736:26
+shift exponent 37 is too large for 32-bit type 'int'
+CPU: 0 PID: 237 Comm: syz-executor255 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ ext4_mb_init_backend fs/ext4/mballoc.c:2736 [inline]
+ ext4_mb_init.cold+0x9c/0x113 fs/ext4/mballoc.c:2920
+ ext4_fill_super+0x8156/0xd960 fs/ext4/super.c:4999
+ mount_bdev+0x350/0x410 fs/super.c:1419
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f3d8690df6e
+Code: c7 05 6e 2a 09 00 00 00 00 00 eb 98 e8 ab 05 00 00 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff3069c278 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fff3069c2d0 RCX: 00007f3d8690df6e
+RDX: 0000000020000040 RSI: 0000000020000500 RDI: 00007fff3069c290
+RBP: 00007fff3069c290 R08: 00007fff3069c2d0 R09: 00000000000004ad
+R10: 0000000000000047 R11: 0000000000000202 R12: 00005555567c2340
+R13: 0000000000000004 R14: 0000000000000000 R15: 0000000000000001
+================================================================================
+EXT4-fs (loop0): orphan cleanup on readonly fs
+EXT4-fs error (device loop0): ext4_ext_check_inode:459: inode #3: comm syz-executor255: pblk 0 bad header/extent: invalid extent entries - magic f30a, entries 1, max 4(4), depth 0(0)
+EXT4-fs error (device loop0): ext4_quota_enable:6366: comm syz-executor255: Bad quota inode # 3
+EXT4-fs warning (device loop0): ext4_enable_quotas:6403: Failed to enable quota tracking (type=0, err=-117). Please run e2fsck to fix.
+EXT4-fs (loop0): Cannot turn on quotas: error -117
+EXT4-fs (loop0): mounted filesystem without journal. Opts: nojournal_checksum,sysvgroups,max_dir_size_kb=0x0000000000000009,barrier=0x000000007ffffffe,data_err=abort,block_validity,resuid=0x0000000000000000,resgid=0x0000000000000000,minixdf,,errors=continue
+

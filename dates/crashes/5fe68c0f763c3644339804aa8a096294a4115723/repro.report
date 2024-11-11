@@ -1,0 +1,145 @@
+watchdog: BUG: soft lockup - CPU#0 stuck for 21s! [syz-executor285:10296]
+Modules linked in:
+irq event stamp: 1914179
+hardirqs last  enabled at (1914178): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (1914179): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+softirqs last  enabled at (150154): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (271077): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+CPU: 0 PID: 10296 Comm: syz-executor285 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:orc_find arch/x86/kernel/unwind_orc.c:163 [inline]
+RIP: 0010:unwind_next_frame+0x240/0x2640 arch/x86/kernel/unwind_orc.c:443
+Code: ff 39 f0 0f 83 c3 15 00 00 48 be 00 00 00 00 00 fc ff df 41 89 c0 4a 8d 3c 85 94 e0 44 86 49 89 f9 49 c1 e9 03 45 0f b6 0c 31 <48> 89 fe 83 e6 07 83 c6 03 44 38 ce 7c 30 45 84 c9 74 2b 4c 89 44
+RSP: 0018:ffff88806ce09650 EFLAGS: 00000213
+RAX: 00000000000017de RBX: 1ffff1100d9c12d4 RCX: ffffffff8117de74
+RDX: 0000000000032042 RSI: dffffc0000000000 RDI: ffffffff8645400c
+RBP: 0000000000000001 R08: 00000000000017de R09: 0000000000000000
+R10: ffffed100d9c12f2 R11: 0000000000000001 R12: ffff88806ce09780
+R13: ffff88806ce0976d R14: ffff88806ce09788 R15: ffff88806ce09738
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ff451345b30 CR3: 0000000004e26000 CR4: 0000000000350ef0
+Call Trace:
+ <IRQ>
+ arch_stack_walk+0x83/0xf0 arch/x86/kernel/stacktrace.c:25
+ stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:121
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ kfree_skbmem+0xef/0x1b0 net/core/skbuff.c:622
+ __kfree_skb net/core/skbuff.c:679 [inline]
+ consume_skb net/core/skbuff.c:834 [inline]
+ consume_skb+0xcf/0x160 net/core/skbuff.c:828
+ netlink_broadcast_filtered+0x356/0xdc0 net/netlink/af_netlink.c:1514
+ netlink_broadcast net/netlink/af_netlink.c:1536 [inline]
+ nlmsg_multicast include/net/netlink.h:1033 [inline]
+ nlmsg_notify+0x96/0x250 net/netlink/af_netlink.c:2537
+ __neigh_notify+0xdc/0x160 net/core/neighbour.c:3370
+ neigh_update_notify net/core/neighbour.c:2522 [inline]
+ neigh_timer_handler+0x628/0x10b0 net/core/neighbour.c:1100
+ call_timer_fn+0x182/0x650 kernel/time/timer.c:1410
+ expire_timers kernel/time/timer.c:1455 [inline]
+ __run_timers+0x6dd/0xae0 kernel/time/timer.c:1747
+ run_timer_softirq+0x7f/0x140 kernel/time/timer.c:1760
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:__raw_spin_unlock_irq include/linux/spinlock_api_smp.h:169 [inline]
+RIP: 0010:_raw_spin_unlock_irq+0x25/0x40 kernel/locking/spinlock.c:199
+Code: 0f 1f 44 00 00 55 48 8b 74 24 08 48 89 fd 48 83 c7 18 e8 ae 1f 3e fd 48 89 ef e8 86 e2 3e fd e8 11 e6 5f fd fb bf 01 00 00 00 <e8> 86 08 34 fd 65 8b 05 ff 3d 15 7c 85 c0 74 02 5d c3 e8 bb 9c 13
+RSP: 0018:ffff888024f77588 EFLAGS: 00000202
+RAX: 0000000000042285 RBX: ffff88801b881a00 RCX: 1ffffffff0bac709
+RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000001
+RBP: ffff88806ce33300 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88806ce33300
+R13: ffff888020ee1a00 R14: 0000000000000000 R15: 0000000000000001
+ finish_lock_switch kernel/sched/core.c:3518 [inline]
+ finish_task_switch+0x182/0x830 kernel/sched/core.c:3618
+ context_switch kernel/sched/core.c:3782 [inline]
+ __schedule+0x888/0x2030 kernel/sched/core.c:4528
+ preempt_schedule_common+0x45/0xc0 kernel/sched/core.c:4687
+ preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:40
+ __raw_spin_unlock include/linux/spinlock_api_smp.h:152 [inline]
+ _raw_spin_unlock+0x36/0x40 kernel/locking/spinlock.c:183
+ spin_unlock include/linux/spinlock.h:394 [inline]
+ zap_pte_range mm/memory.c:1309 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0xfbe/0x2070 mm/memory.c:1428
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ff45136733d
+Code: Unable to access opcode bytes at RIP 0x7ff451367313.
+RSP: 002b:00007ff451346228 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: 0000000000000001 RBX: 00007ff45141ba68 RCX: 00007ff45136733d
+RDX: 00000000000f4240 RSI: 0000000000000081 RDI: 00007ff45141ba6c
+RBP: 00007ff45141ba60 R08: 00007ff451346cdc R09: 00007ff451346cdc
+R10: 0000000000000002 R11: 0000000000000246 R12: 00007ff45141ba6c
+R13: ffffffffffffffb8 R14: 0000000000000016 R15: 00007ffd7c0885f0
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 15341 Comm: syz-executor285 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:csd_lock_wait kernel/smp.c:227 [inline]
+RIP: 0010:smp_call_function_single+0x195/0x4c0 kernel/smp.c:512
+Code: 10 8b 7c 24 1c 48 8d 74 24 40 48 89 44 24 50 48 8b 44 24 08 48 89 44 24 58 e8 f7 fa ff ff 41 89 c5 eb 07 e8 9d ea 0a 00 f3 90 <44> 8b 64 24 48 31 ff 41 83 e4 01 44 89 e6 e8 48 e2 0a 00 45 85 e4
+RSP: 0018:ffff8880291d77a0 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 1ffff1100523aef8 RCX: ffffffff813b2438
+RDX: ffff88801c5d1a00 RSI: ffffffff813b2423 RDI: 0000000000000005
+RBP: ffff8880291d7870 R08: 0000000000000001 R09: ffffffff86e5f6a7
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000200
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffd7c0886c8 CR3: 000000000ddfc000 CR4: 0000000000350ee0
+Call Trace:
+ cpu_function_call kernel/events/core.c:148 [inline]
+ event_function_call+0x3c2/0x420 kernel/events/core.c:276
+ perf_remove_from_context+0x9b/0x1c0 kernel/events/core.c:2369
+ perf_event_release_kernel+0x452/0xc40 kernel/events/core.c:4956
+ perf_release+0x33/0x40 kernel/events/core.c:5052
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ff45136733d
+Code: Unable to access opcode bytes at RIP 0x7ff451367313.
+RSP: 002b:00007ff451346228 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: 0000000000000001 RBX: 00007ff45141ba68 RCX: 00007ff45136733d
+RDX: 00000000000f4240 RSI: 0000000000000081 RDI: 00007ff45141ba6c
+RBP: 00007ff45141ba60 R08: 00007ff451346cdc R09: 00007ff451346cdc
+R10: 0000000000000002 R11: 0000000000000246 R12: 00007ff45141ba6c
+R13: ffffffffffffffb8 R14: 0000000000000016 R15: 00007ffd7c0885f0

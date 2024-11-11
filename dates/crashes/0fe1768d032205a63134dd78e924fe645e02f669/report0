@@ -1,0 +1,57 @@
+EXT4-fs error (device loop3): ext4_dirty_inode:5942: inode #2: comm syz.3.120: mark_inode_dirty error
+EXT4-fs error (device loop3) in ext4_do_update_inode:5151: error 27
+------------[ cut here ]------------
+EXT4-fs error (device loop3): __ext4_ext_dirty:169: inode #2: comm syz.3.120: mark_inode_dirty error
+kernel BUG at fs/ext4/inline.c:751!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 3947 Comm: syz.0.110 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_write_inline_data_end+0x47d/0x650 fs/ext4/inline.c:751
+Code: 85 ce 01 00 00 48 8b 7d 28 44 89 f1 ba e9 02 00 00 45 31 e4 48 c7 c6 20 99 52 84 e8 3d 78 0f 00 e9 6f ff ff ff e8 a3 af a1 ff <0f> 0b 48 c7 c7 a0 bb 2f 85 e8 a4 2c 3c 02 e8 90 af a1 ff be 08 00
+RSP: 0018:ffff88800ce876b0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000002 RCX: ffffffff81a45c11
+RDX: ffff8880107ab400 RSI: ffffffff81a45f1d RDI: 0000000000000001
+RBP: ffff888013f96f80 R08: 0000000000000000 R09: ffff888013f96c9f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea00004ccf40
+R13: 0000000000000002 R14: ffff888013f96c98 R15: ffff88800ce876f8
+FS:  00007fe5a74bd6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f849d2746f4 CR3: 0000000012bac000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_write_end+0x1f8/0xce0 fs/ext4/inode.c:1282
+ ext4_da_write_end+0x46f/0xb20 fs/ext4/inode.c:3071
+ generic_perform_write+0x2b3/0x4d0 mm/filemap.c:3340
+ ext4_buffered_write_iter+0x244/0x4d0 fs/ext4/file.c:270
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ call_write_iter include/linux/fs.h:1903 [inline]
+ do_iter_readv_writev+0x476/0x760 fs/read_write.c:740
+ do_iter_write+0x18d/0x670 fs/read_write.c:866
+ vfs_writev+0x1aa/0x660 fs/read_write.c:939
+ do_pwritev+0x1bc/0x270 fs/read_write.c:1036
+ __do_sys_pwritev2 fs/read_write.c:1095 [inline]
+ __se_sys_pwritev2 fs/read_write.c:1086 [inline]
+ __x64_sys_pwritev2+0xeb/0x150 fs/read_write.c:1086
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fe5a8843ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe5a74bd038 EFLAGS: 00000246 ORIG_RAX: 0000000000000148
+RAX: ffffffffffffffda RBX: 00007fe5a89fbf80 RCX: 00007fe5a8843ef9
+RDX: 0000000000000001 RSI: 00000000200003c0 RDI: 0000000000000009
+RBP: 00007fe5a88b6b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fe5a89fbf80 R15: 00007ffcf7e6e4c8
+Modules linked in:
+---[ end trace ddfa4b8b4148ffd2 ]---
+RIP: 0010:ext4_write_inline_data_end+0x47d/0x650 fs/ext4/inline.c:751
+Code: 85 ce 01 00 00 48 8b 7d 28 44 89 f1 ba e9 02 00 00 45 31 e4 48 c7 c6 20 99 52 84 e8 3d 78 0f 00 e9 6f ff ff ff e8 a3 af a1 ff <0f> 0b 48 c7 c7 a0 bb 2f 85 e8 a4 2c 3c 02 e8 90 af a1 ff be 08 00
+EXT4-fs error (device loop1): ext4_find_dest_de:1947: inode #2: block 13: comm syz.1.119: bad entry in directory: rec_len is smaller than minimal - offset=76, inode=0, rec_len=0, name_len=5, size=1024
+RSP: 0018:ffff88800ce876b0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000002 RCX: ffffffff81a45c11
+RDX: ffff8880107ab400 RSI: ffffffff81a45f1d RDI: 0000000000000001
+RBP: ffff888013f96f80 R08: 0000000000000000 R09: ffff888013f96c9f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea00004ccf40
+R13: 0000000000000002 R14: ffff888013f96c98 R15: ffff88800ce876f8
+FS:  00007fe5a74bd6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f849d2746f4 CR3: 0000000012bac000 CR4: 0000000000350ee0

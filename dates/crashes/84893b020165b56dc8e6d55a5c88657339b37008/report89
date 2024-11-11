@@ -1,0 +1,76 @@
+------------[ cut here ]------------
+EXT4-fs warning (device loop0): ext4_expand_extra_isize_ea:2782: Unable to expand inode 15. Delete some EAs or run e2fsck.
+Trying to write to read-only block-device sda (partno 0)
+WARNING: CPU: 1 PID: 2168 at block/blk-core.c:704 bio_check_ro block/blk-core.c:704 [inline]
+WARNING: CPU: 1 PID: 2168 at block/blk-core.c:704 submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Modules linked in:
+CPU: 1 PID: 2168 Comm: journal-offline Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:bio_check_ro block/blk-core.c:704 [inline]
+RIP: 0010:submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Code: 03 00 00 45 8b a4 24 64 05 00 00 48 89 ef 48 8d 74 24 50 e8 43 37 fe ff 48 c7 c7 00 ee 5b 84 48 89 c6 44 89 e2 e8 bd 1c e7 01 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 80 3c 02
+EXT4-fs (loop0): 1 truncate cleaned up
+RSP: 0018:ffff888019ba7390 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 1ffff11003374e78 RCX: 0000000000000000
+RDX: ffff88800cf11a00 RSI: ffffffff812d93c5 RDI: ffffed1003374e64
+RBP: ffff88800fdeb400 R08: 0000000000000001 R09: ffff88806cf2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff88800be58000 R14: ffff88800fdeb410 R15: ffff88800fdeb408
+FS:  00007f7829f1f700(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f34b4f54000 CR3: 000000000b33c000 CR4: 0000000000350ee0
+Call Trace:
+ submit_bio_noacct+0x82/0x1000 block/blk-core.c:1044
+EXT4-fs warning (device loop2): ext4_dirblock_csum_verify:377: inode #11: comm syz-executor: No space for directory leaf checksum. Please run e2fsck -D.
+ submit_bio+0xfd/0x540 block/blk-core.c:1129
+EXT4-fs (loop0): mounted filesystem without journal. Opts: noload,resuid=0x000000000000ee01,debug_want_extra_isize=0x000000000000002e,lazytime,i_version,quota,,errors=continue
+ ext4_io_submit fs/ext4/page-io.c:382 [inline]
+ io_submit_add_bh fs/ext4/page-io.c:425 [inline]
+ ext4_bio_write_page+0x96e/0x1330 fs/ext4/page-io.c:552
+ mpage_submit_page+0x14b/0x260 fs/ext4/inode.c:2092
+EXT4-fs error (device loop2): ext4_readdir:204: inode #11: comm syz-executor: path /0/file1/lost+found: directory fails checksum at offset 0
+ mpage_process_page_bufs+0x63b/0x7d0 fs/ext4/inode.c:2206
+ mpage_prepare_extent_to_map+0x696/0xc40 fs/ext4/inode.c:2618
+ ext4_writepages+0xa0f/0x3a00 fs/ext4/inode.c:2746
+EXT4-fs warning (device loop2): ext4_dirblock_csum_verify:377: inode #11: comm syz-executor: No space for directory leaf checksum. Please run e2fsck -D.
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __filemap_fdatawrite_range+0x24b/0x2f0 mm/filemap.c:422
+EXT4-fs error (device loop2): ext4_readdir:204: inode #11: comm syz-executor: path /0/file1/lost+found: directory fails checksum at offset 4096
+EXT4-fs warning (device loop2): ext4_dirblock_csum_verify:377: inode #11: comm syz-executor: No space for directory leaf checksum. Please run e2fsck -D.
+EXT4-fs error (device loop2): ext4_readdir:204: inode #11: comm syz-executor: path /0/file1/lost+found: directory fails checksum at offset 8192
+ file_write_and_wait_range+0xb2/0x120 mm/filemap.c:761
+EXT4-fs warning (device loop2): ext4_dirblock_csum_verify:377: inode #11: comm syz-executor: No space for directory leaf checksum. Please run e2fsck -D.
+EXT4-fs error (device loop2): ext4_readdir:204: inode #11: comm syz-executor: path /0/file1/lost+found: directory fails checksum at offset 12288
+ ext4_sync_file+0x225/0xf40 fs/ext4/fsync.c:151
+EXT4-fs warning (device loop2): ext4_dirblock_csum_verify:377: inode #12: comm syz-executor: No space for directory leaf checksum. Please run e2fsck -D.
+EXT4-fs error (device loop2): ext4_readdir:204: inode #12: comm syz-executor: path /0/file1/file0: directory fails checksum at offset 0
+ vfs_fsync_range+0x13d/0x230 fs/sync.c:200
+EXT4-fs error (device loop2): ext4_xattr_block_get:536: inode #15: comm syz-executor: corrupted xattr block 19
+ vfs_fsync fs/sync.c:214 [inline]
+ do_fsync fs/sync.c:224 [inline]
+ __do_sys_fsync fs/sync.c:232 [inline]
+ __se_sys_fsync fs/sync.c:230 [inline]
+ __x64_sys_fsync+0x6b/0xc0 fs/sync.c:230
+SELinux: inode_doinit_use_xattr:  getxattr returned 74 for dev=loop2 ino=15
+EXT4-fs error (device loop2): ext4_xattr_block_get:536: inode #15: comm syz-executor: corrupted xattr block 19
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+SELinux: inode_doinit_use_xattr:  getxattr returned 74 for dev=loop2 ino=15
+EXT4-fs error (device loop2): ext4_lookup:1708: inode #2: comm syz-executor: deleted inode referenced: 16
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+EXT4-fs error (device loop2): ext4_lookup:1708: inode #2: comm syz-executor: deleted inode referenced: 16
+RIP: 0033:0x7f782b3f40cb
+Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8 b3 e9 f8 ff 8b 7c 24 0c 41 89 c0 b8 4a 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 f1 e9 f8 ff 8b 44
+syz-executor (236) used greatest stack depth: 24256 bytes left
+RSP: 002b:00007f7829f1ecf0 EFLAGS: 00000293 ORIG_RAX: 000000000000004a
+RAX: ffffffffffffffda RBX: 0000562fecb09290 RCX: 00007f782b3f40cb
+RDX: 00007f782b7368d4 RSI: 00007f782b7368d4 RDI: 0000000000000015
+RBP: 00007f782b7391f0 R08: 0000000000000000 R09: 00007f7829f1f700
+R10: 00007f7829f1f700 R11: 0000000000000293 R12: 0000000000000002
+R13: 00007ffc088011cf R14: 00007f7829f1ee00 R15: 0000562fecb067c0
+irq event stamp: 1309
+hardirqs last  enabled at (1331): [<ffffffff83ecb0ef>] __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:168 [inline]
+hardirqs last  enabled at (1331): [<ffffffff83ecb0ef>] _raw_spin_unlock_irq+0x1f/0x40 kernel/locking/spinlock.c:199
+hardirqs last disabled at (1354): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (1350): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (1377): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 45326dcf265dc140 ]---

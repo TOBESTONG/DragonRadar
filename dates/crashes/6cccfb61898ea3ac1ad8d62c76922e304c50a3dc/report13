@@ -1,0 +1,121 @@
+EXT4-fs error (device loop1): ext4_get_inode_usage:838: inode #15: comm syz.1.168: corrupted xattr block 33
+kernel profiling enabled (shift: 348)
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:110:31
+shift exponent 348 is too large for 64-bit type 'long int'
+CPU: 1 PID: 4452 Comm: syz.1.173 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ profile_init+0xfc/0x110 kernel/profile.c:110
+ profiling_store+0x5e/0xd0 kernel/ksysfs.c:80
+ kobj_attr_store+0x53/0x80 lib/kobject.c:856
+ sysfs_kf_write+0x113/0x170 fs/sysfs/file.c:139
+ kernfs_fop_write+0x26a/0x490 fs/kernfs/file.c:315
+ vfs_write+0x29a/0xac0 fs/read_write.c:603
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f6a80bfcef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f6a7f876038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f6a80db4f80 RCX: 00007f6a80bfcef9
+RDX: 0000000000000012 RSI: 0000000020000040 RDI: 0000000000000003
+RBP: 00007f6a80c6fb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f6a80db4f80 R15: 00007ffe931f5c58
+audit: type=1326 audit(1731248781.134:33): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=4382 comm="syz.3.170" exe="/syz-executor" sig=0 arch=c000003e syscall=39 compat=0 ip=0x7f661693bea7 code=0x7fc00000
+================================================================================
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:291:7
+shift exponent 348 is too large for 64-bit type 'long unsigned int'
+CPU: 0 PID: 3993 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ do_profile_hits.constprop.0.cold+0x17/0x1c kernel/profile.c:291
+ profile_hits kernel/profile.c:398 [inline]
+ profile_hit include/linux/profile.h:64 [inline]
+ profile_tick+0xe7/0x100 kernel/profile.c:408
+ tick_sched_timer+0x10f/0x150 kernel/time/tick-sched.c:1328
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x1c1/0xba0 kernel/time/hrtimer.c:1583
+ hrtimer_interrupt+0x357/0x9b0 kernel/time/hrtimer.c:1645
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+ __sysvec_apic_timer_interrupt+0x170/0x560 arch/x86/kernel/apic/apic.c:1097
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
+ run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
+ sysvec_apic_timer_interrupt+0xb8/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:free_unref_page+0x159/0x1e0 mm/page_alloc.c:3213
+Code: df 48 d3 e8 48 89 f9 48 c1 e9 03 83 e0 07 80 3c 11 00 75 6b 48 89 45 20 9c 5b fa f6 c7 02 75 15 48 89 ef e8 c9 ac ff ff 53 9d <48> 83 c4 08 5b 5d 41 5c 41 5d c3 e8 c7 ef df ff 48 89 ef e8 af ac
+RSP: 0018:ffff888010d0f9c8 EFLAGS: 00000246
+RAX: 0000000000008cc3 RBX: 0000000000000246 RCX: 1ffffffff0bac709
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffea00004ae040 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff8880801d7020
+R13: ffff8880801d8000 R14: ffffed100257d795 R15: ffffea00004ae040
+ __vunmap+0x608/0x990 mm/vmalloc.c:2270
+ __vfree mm/vmalloc.c:2318 [inline]
+ vfree+0x88/0x150 mm/vmalloc.c:2349
+ kcov_put kernel/kcov.c:408 [inline]
+ kcov_put+0x26/0x40 kernel/kcov.c:404
+ kcov_close+0xc/0x10 kernel/kcov.c:510
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f80027b8afb
+Code: Unable to access opcode bytes at RIP 0x7f80027b8ad1.
+RSP: 002b:00007ffe5742e900 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffed RBX: 0000000000000005 RCX: 00007f80027b8afb
+RDX: 00007ffe5742e960 RSI: 0000000000008933 RDI: 0000000000000005
+RBP: 00007ffe5742e960 R08: 0000000000000009 R09: 00007ffe5742ec80
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
+R13: 00007f800349f620 R14: 0000000000000000 R15: 0000000000000000
+================================================================================
+----------------
+Code disassembly (best guess):
+   0:	df 48 d3             	fisttps -0x2d(%rax)
+   3:	e8 48 89 f9 48       	call   0x48f98950
+   8:	c1 e9 03             	shr    $0x3,%ecx
+   b:	83 e0 07             	and    $0x7,%eax
+   e:	80 3c 11 00          	cmpb   $0x0,(%rcx,%rdx,1)
+  12:	75 6b                	jne    0x7f
+  14:	48 89 45 20          	mov    %rax,0x20(%rbp)
+  18:	9c                   	pushf
+  19:	5b                   	pop    %rbx
+  1a:	fa                   	cli
+  1b:	f6 c7 02             	test   $0x2,%bh
+  1e:	75 15                	jne    0x35
+  20:	48 89 ef             	mov    %rbp,%rdi
+  23:	e8 c9 ac ff ff       	call   0xffffacf1
+  28:	53                   	push   %rbx
+  29:	9d                   	popf
+* 2a:	48 83 c4 08          	add    $0x8,%rsp <-- trapping instruction
+  2e:	5b                   	pop    %rbx
+  2f:	5d                   	pop    %rbp
+  30:	41 5c                	pop    %r12
+  32:	41 5d                	pop    %r13
+  34:	c3                   	ret
+  35:	e8 c7 ef df ff       	call   0xffdff001
+  3a:	48 89 ef             	mov    %rbp,%rdi
+  3d:	e8                   	.byte 0xe8
+  3e:	af                   	scas   %es:(%rdi),%eax
+  3f:	ac                   	lods   %ds:(%rsi),%al

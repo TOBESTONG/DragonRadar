@@ -1,0 +1,59 @@
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /4/file0 supports timestamps until 2038 (0x7fffffff)
+==================================================================
+BUG: KASAN: out-of-bounds in memmove include/linux/string.h:414 [inline]
+BUG: KASAN: out-of-bounds in ext4_ext_rm_leaf fs/ext4/extents.c:2690 [inline]
+BUG: KASAN: out-of-bounds in ext4_ext_remove_space+0x1a22/0x4470 fs/ext4/extents.c:2912
+Read of size 18446744073709551580 at addr ffff888015f3d830 by task syz.1.195/5043
+
+CPU: 1 PID: 5043 Comm: syz.1.195 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0xf9/0x1e0 mm/kasan/generic.c:192
+ memmove+0x20/0x60 mm/kasan/common.c:94
+ memmove include/linux/string.h:414 [inline]
+ ext4_ext_rm_leaf fs/ext4/extents.c:2690 [inline]
+ ext4_ext_remove_space+0x1a22/0x4470 fs/ext4/extents.c:2912
+ ext4_punch_hole+0x678/0x1130 fs/ext4/inode.c:4105
+ ext4_fallocate+0x10e7/0x3e70 fs/ext4/extents.c:4655
+ vfs_fallocate+0x494/0xdd0 fs/open.c:309
+ ioctl_preallocate+0x18e/0x200 fs/ioctl.c:494
+ file_ioctl fs/ioctl.c:537 [inline]
+ do_vfs_ioctl+0xe3c/0x1140 fs/ioctl.c:732
+ __do_sys_ioctl fs/ioctl.c:751 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x108/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f4e9aa16ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f4e99690038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f4e9abcef80 RCX: 00007f4e9aa16ef9
+RDX: 00000000200000c0 RSI: 0000000040305829 RDI: 0000000000000004
+RBP: 00007f4e9aa89b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f4e9abcef80 R15: 00007ffd0bebed78
+
+The buggy address belongs to the page:
+page:0000000019c016ce refcount:2 mapcount:0 mapping:00000000023ed483 index:0x2f pfn:0x15f3d
+aops:def_blk_aops ino:0
+flags: 0x100000000002036(referenced|uptodate|lru|active|private)
+raw: 0100000000002036 ffffea00003e8b88 ffff88800c359830 ffff888009e416b0
+raw: 000000000000002f ffff888013bfb2b8 00000002ffffffff ffff88800bd50000
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff88800bd50000
+
+Memory state around the buggy address:
+ ffff888015f3d700: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888015f3d780: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff888015f3d800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                     ^
+ ffff888015f3d880: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888015f3d900: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================

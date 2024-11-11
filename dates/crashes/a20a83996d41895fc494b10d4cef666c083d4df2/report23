@@ -1,0 +1,132 @@
+EXT4-fs warning (device loop0): ext4_dirblock_csum_verify:377: inode #2: comm syz-executor: No space for directory leaf checksum. Please run e2fsck -D.
+EXT4-fs error (device loop0): ext4_readdir:204: inode #2: comm syz-executor: path /59/file0: directory fails checksum at offset 0
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:5121!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 2563 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_do_update_inode fs/ext4/inode.c:5121 [inline]
+RIP: 0010:ext4_mark_iloc_dirty+0x276e/0x3710 fs/ext4/inode.c:5712
+Code: fd ff ff e9 49 e8 ff ff e8 4f da 9f ff 44 8b 74 24 48 31 ff 44 89 f6 e8 00 d2 9f ff 45 85 f6 0f 84 04 f1 ff ff e8 32 da 9f ff <0f> 0b 48 c7 c7 60 de 2f 85 e8 33 57 3a 02 e8 1f da 9f ff 48 8d 85
+RSP: 0018:ffff888016527ae0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888013ff51f8 RCX: ffffffff81a63480
+RDX: ffff888008d79a00 RSI: ffffffff81a6348e RDI: 0000000000000005
+RBP: ffff888016412500 R08: 0000000000000000 R09: ffff888013ff53e7
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888008b16000
+R13: 0000000000000000 R14: 00000000ffffffff R15: ffff888016527c10
+FS:  00005555566ca500(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6908ab4018 CR3: 0000000016506000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ __ext4_mark_inode_dirty+0x201/0x860 fs/ext4/inode.c:5906
+ ext4_dirty_inode+0xf3/0x130 fs/ext4/inode.c:5942
+ __mark_inode_dirty+0x893/0x11a0 fs/fs-writeback.c:2260
+ generic_update_time fs/inode.c:1764 [inline]
+ update_time fs/inode.c:1777 [inline]
+ touch_atime+0x63f/0x740 fs/inode.c:1848
+ file_accessed include/linux/fs.h:2220 [inline]
+ iterate_dir+0x3e3/0x670 fs/readdir.c:70
+ __do_sys_getdents64 fs/readdir.c:366 [inline]
+ __se_sys_getdents64 fs/readdir.c:351 [inline]
+ __x64_sys_getdents64+0x13a/0x2c0 fs/readdir.c:351
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f6e4ca6e093
+Code: c1 66 0f 1f 44 00 00 48 83 c4 08 48 89 ef 5b 5d e9 52 43 f8 ff 66 90 b8 ff ff ff 7f 48 39 c2 48 0f 47 d0 b8 d9 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 05 c3 0f 1f 40 00 48 c7 c2 a8 ff ff ff f7 d8
+RSP: 002b:00007ffeb41a9318 EFLAGS: 00000293 ORIG_RAX: 00000000000000d9
+RAX: ffffffffffffffda RBX: 00005555566e54e0 RCX: 00007f6e4ca6e093
+RDX: 0000000000008000 RSI: 00005555566e54e0 RDI: 0000000000000005
+RBP: 00005555566e54b4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000001000 R11: 0000000000000293 R12: ffffffffffffffa8
+R13: 0000000000000010 R14: 00005555566e54b0 R15: 00007ffeb41ab5c0
+Modules linked in:
+---[ end trace 938e830c81a40b67 ]---
+RIP: 0010:ext4_do_update_inode fs/ext4/inode.c:5121 [inline]
+RIP: 0010:ext4_mark_iloc_dirty+0x276e/0x3710 fs/ext4/inode.c:5712
+Code: fd ff ff e9 49 e8 ff ff e8 4f da 9f ff 44 8b 74 24 48 31 ff 44 89 f6 e8 00 d2 9f ff 45 85 f6 0f 84 04 f1 ff ff e8 32 da 9f ff <0f> 0b 48 c7 c7 60 de 2f 85 e8 33 57 3a 02 e8 1f da 9f ff 48 8d 85
+RSP: 0018:ffff888016527ae0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888013ff51f8 RCX: ffffffff81a63480
+RDX: ffff888008d79a00 RSI: ffffffff81a6348e RDI: 0000000000000005
+RBP: ffff888016412500 R08: 0000000000000000 R09: ffff888013ff53e7
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888008b16000
+R13: 0000000000000000 R14: 00000000ffffffff R15: ffff888016527c10
+FS:  00005555566ca500(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6908ab4018 CR3: 0000000016506000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+note: syz-executor[2563] exited with preempt_count 1
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#2] PREEMPT SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 1 PID: 2563 Comm: syz-executor Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:jbd2__journal_start+0x84/0x960 fs/jbd2/transaction.c:479
+Code: c6 07 00 00 4d 8b bf d8 10 00 00 4d 85 ff 0f 84 97 00 00 00 e8 7d 1f 8e ff 4c 89 fa 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 ad 07 00 00 48 b8 00 00 00 00 00 fc ff df 49 8b
+RSP: 0018:ffff888016527ab8 EFLAGS: 00010256
+RAX: dffffc0000000000 RBX: ffff88800cf7a000 RCX: 0000000000000008
+RDX: 0000000000000000 RSI: ffffffff81b7ef43 RDI: ffff888008d7aad8
+RBP: 0000000000000000 R08: 0000000000000c40 R09: 0000000000000005
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000008
+R13: 000000000000001f R14: 0000000000000c40 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f9a90b886f4 CR3: 000000000b7c4000 CR4: 0000000000350ee0
+Call Trace:
+ __ext4_journal_start_sb+0x210/0x490 fs/ext4/ext4_jbd2.c:105
+ __ext4_journal_start fs/ext4/ext4_jbd2.h:328 [inline]
+ ext4_evict_inode+0x96c/0x1890 fs/ext4/inode.c:246
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ dentry_unlink_inode+0x2b4/0x3e0 fs/dcache.c:374
+ __dentry_kill+0x36f/0x5b0 fs/dcache.c:579
+ dentry_kill fs/dcache.c:717 [inline]
+ dput+0x6ad/0xc70 fs/dcache.c:878
+ __fput+0x3a5/0x980 fs/file_table.c:294
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7f6e4ca6e093
+Code: Unable to access opcode bytes at RIP 0x7f6e4ca6e069.
+RSP: 002b:00007ffeb41a9318 EFLAGS: 00000293 ORIG_RAX: 00000000000000d9
+RAX: ffffffffffffffda RBX: 00005555566e54e0 RCX: 00007f6e4ca6e093
+RDX: 0000000000008000 RSI: 00005555566e54e0 RDI: 0000000000000005
+RBP: 00005555566e54b4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000001000 R11: 0000000000000293 R12: ffffffffffffffa8
+R13: 0000000000000010 R14: 00005555566e54b0 R15: 00007ffeb41ab5c0
+Modules linked in:
+---[ end trace 938e830c81a40b68 ]---
+RIP: 0010:ext4_do_update_inode fs/ext4/inode.c:5121 [inline]
+RIP: 0010:ext4_mark_iloc_dirty+0x276e/0x3710 fs/ext4/inode.c:5712
+Code: fd ff ff e9 49 e8 ff ff e8 4f da 9f ff 44 8b 74 24 48 31 ff 44 89 f6 e8 00 d2 9f ff 45 85 f6 0f 84 04 f1 ff ff e8 32 da 9f ff <0f> 0b 48 c7 c7 60 de 2f 85 e8 33 57 3a 02 e8 1f da 9f ff 48 8d 85
+RSP: 0018:ffff888016527ae0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888013ff51f8 RCX: ffffffff81a63480
+RDX: ffff888008d79a00 RSI: ffffffff81a6348e RDI: 0000000000000005
+RBP: ffff888016412500 R08: 0000000000000000 R09: ffff888013ff53e7
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888008b16000
+R13: 0000000000000000 R14: 00000000ffffffff R15: ffff888016527c10
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f9a90b886f4 CR3: 000000000b7c4000 CR4: 0000000000350ee0
+Fixing recursive fault but reboot is needed!
+----------------
+Code disassembly (best guess):
+   0:	c6 07 00             	movb   $0x0,(%rdi)
+   3:	00 4d 8b             	add    %cl,-0x75(%rbp)
+   6:	bf d8 10 00 00       	mov    $0x10d8,%edi
+   b:	4d 85 ff             	test   %r15,%r15
+   e:	0f 84 97 00 00 00    	je     0xab
+  14:	e8 7d 1f 8e ff       	call   0xff8e1f96
+  19:	4c 89 fa             	mov    %r15,%rdx
+  1c:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  23:	fc ff df
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 ad 07 00 00    	jne    0x7e1
+  34:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  3b:	fc ff df
+  3e:	49                   	rex.WB
+  3f:	8b                   	.byte 0x8b

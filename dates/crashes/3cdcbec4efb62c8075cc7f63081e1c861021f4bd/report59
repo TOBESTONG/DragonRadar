@@ -1,0 +1,127 @@
+audit: type=1326 audit(1731333255.112:347): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=6305 comm="syz.0.346" exe="/syz-executor" sig=0 arch=c000003e syscall=117 compat=0 ip=0x7fb08f881ef9 code=0x7ffc0000
+fuse: Bad value for 'group_id'
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+systemd-udevd/115 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff8880187d56a8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff8880187d56a8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 2085032
+hardirqs last  enabled at (2085032): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (2085032): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (2085031): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (2085031): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (2084352): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (2084975): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+2 locks held by systemd-udevd/115:
+ #0: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #1: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 1 PID: 115 Comm: systemd-udevd Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:lock_release+0x3cc/0x6f0 kernel/locking/lockdep.c:5445
+Code: 0a 02 00 00 48 c7 c7 c0 df 46 84 e8 4e 5e c0 02 b8 ff ff ff ff 65 0f c1 05 31 2b d7 7e 83 f8 01 0f 85 6a 01 00 00 ff 34 24 9d <48> b8 00 00 00 00 00 fc ff df 48 01 c5 48 c7 45 00 00 00 00 00 c7
+RSP: 0018:ffff888010d8f6e8 EFLAGS: 00000246
+RAX: 0000000000000001 RBX: ffffffffffffffff RCX: ffff888010d8f738
+RDX: 1ffff11001f427a8 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 1ffff110021b1edf R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000001 R14: ffff88800fa13d48 R15: ffff88800fa13400
+ __mutex_unlock_slowpath+0x80/0x650 kernel/locking/mutex.c:1228
+ kernfs_dop_revalidate+0x300/0x3a0 fs/kernfs/dir.c:582
+ d_revalidate fs/namei.c:768 [inline]
+ lookup_fast+0x390/0x6e0 fs/namei.c:1505
+ walk_component+0xc6/0x6a0 fs/namei.c:1857
+ link_path_walk+0x6c4/0xc90 fs/namei.c:2184
+ path_openat+0x1fa/0x26f0 fs/namei.c:3365
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fcc6b076528
+Code: 24 18 31 c0 41 83 e2 40 75 40 89 f0 25 00 00 41 00 3d 00 00 41 00 74 32 44 89 c2 4c 89 ce bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 40 48 8b 4c 24 18 64 48 2b 0c 25 28 00 00 00
+RSP: 002b:00007ffc483efdd0 EFLAGS: 00000287 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00007fcc6abc56c0 RCX: 00007fcc6b076528
+RDX: 0000000000090800 RSI: 000055dcc5cca140 RDI: 00000000ffffff9c
+RBP: 000055dcc5cca270 R08: 0000000000090800 R09: 000055dcc5cca140
+R10: 0000000000000000 R11: 0000000000000287 R12: 0000000000000000
+R13: 000055dcc5cca140 R14: 000055dcc5cca140 R15: 000055dcc5bf4710
+----------------
+Code disassembly (best guess):
+   0:	0a 02                	or     (%rdx),%al
+   2:	00 00                	add    %al,(%rax)
+   4:	48 c7 c7 c0 df 46 84 	mov    $0xffffffff8446dfc0,%rdi
+   b:	e8 4e 5e c0 02       	call   0x2c05e5e
+  10:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+  15:	65 0f c1 05 31 2b d7 	xadd   %eax,%gs:0x7ed72b31(%rip)        # 0x7ed72b4e
+  1c:	7e
+  1d:	83 f8 01             	cmp    $0x1,%eax
+  20:	0f 85 6a 01 00 00    	jne    0x190
+  26:	ff 34 24             	push   (%rsp)
+  29:	9d                   	popf
+* 2a:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax <-- trapping instruction
+  31:	fc ff df
+  34:	48 01 c5             	add    %rax,%rbp
+  37:	48 c7 45 00 00 00 00 	movq   $0x0,0x0(%rbp)
+  3e:	00
+  3f:	c7                   	.byte 0xc7

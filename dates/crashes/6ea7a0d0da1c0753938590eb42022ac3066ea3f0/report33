@@ -1,0 +1,55 @@
+audit: type=1400 audit(1731129151.878:296): avc:  denied  { module_load } for  pid=22893 comm="syz.0.1141" path=2F6D656D66643AFF202864656C6574656429 dev="hugetlbfs" ino=33204 scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:object_r:hugetlbfs_t:s0 tclass=system permissive=1
+Module has invalid ELF header
+INFO: task syz.2.1110:22441 blocked for more than 143 seconds.
+      Tainted: G S                5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.2.1110      state:D stack:28040 pid:22441 ppid: 20638 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ schedule_timeout+0x387/0x460 kernel/time/timer.c:1847
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x163/0x260 kernel/sched/completion.c:138
+ __flush_work+0x547/0x9d0 kernel/workqueue.c:3049
+ __cancel_work_timer+0x381/0x4d0 kernel/workqueue.c:3136
+ p9_conn_destroy net/9p/trans_fd.c:889 [inline]
+ p9_fd_close+0x29f/0x4a0 net/9p/trans_fd.c:919
+ p9_client_create+0x8ef/0x1090 net/9p/client.c:1069
+ v9fs_session_init+0x1dd/0x1730 fs/9p/v9fs.c:406
+ v9fs_mount+0x79/0x900 fs/9p/vfs_super.c:126
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fc790ae2ef9
+RSP: 002b:00007fc78f73b038 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fc790c9b058 RCX: 00007fc790ae2ef9
+RDX: 0000000020000340 RSI: 0000000020000300 RDI: 0000000000000000
+RBP: 00007fc790b55b76 R08: 0000000020000380 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000001 R14: 00007fc790c9b058 R15: 00007fff60c85b68
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/24:
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x28c kernel/locking/lockdep.c:6254
+2 locks held by in:imklog/154:
+2 locks held by kworker/1:3/11430:
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008054d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88801296fda8 ((work_completion)(&m->wq)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+
+=============================================
+

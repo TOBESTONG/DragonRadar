@@ -1,0 +1,223 @@
+audit: type=1400 audit(1730999300.026:11): avc:  denied  { write } for  pid=2697 comm="syz.1.69" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=perf_event permissive=1
+==================================================================
+BUG: KASAN: use-after-free in ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+BUG: KASAN: use-after-free in ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+Read of size 4 at addr ffff888013dc0c80 by task syz.0.70/2712
+
+CPU: 0 PID: 2712 Comm: syz.0.70 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+ ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+ ext4_ext_remove_space+0x1445/0x4470 fs/ext4/extents.c:2806
+ ext4_punch_hole+0x678/0x1130 fs/ext4/inode.c:4105
+ ext4_fallocate+0x10e7/0x3e70 fs/ext4/extents.c:4655
+ vfs_fallocate+0x494/0xdd0 fs/open.c:309
+ ioctl_preallocate+0x18e/0x200 fs/ioctl.c:494
+ file_ioctl fs/ioctl.c:537 [inline]
+ do_vfs_ioctl+0xe3c/0x1140 fs/ioctl.c:732
+ __do_sys_ioctl fs/ioctl.c:751 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x108/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fab9bfa5ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fab9ac1f038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fab9c15df80 RCX: 00007fab9bfa5ef9
+RDX: 0000000020000080 RSI: 0000000040305829 RDI: 0000000000000007
+RBP: 00007fab9c018b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fab9c15df80 R15: 00007ffd5917f848
+
+Allocated by task 2661:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
+ getname_flags fs/namei.c:2647 [inline]
+ user_path_at_empty+0xa1/0x100 fs/namei.c:2647
+ user_path_at include/linux/namei.h:59 [inline]
+ vfs_statx+0x142/0x390 fs/stat.c:185
+ vfs_fstatat fs/stat.c:207 [inline]
+ vfs_stat include/linux/fs.h:3121 [inline]
+ __do_sys_newstat+0x91/0x110 fs/stat.c:349
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 2661:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ putname+0xe1/0x130 fs/namei.c:259
+ filename_lookup+0x3b1/0x560 fs/namei.c:2377
+ user_path_at include/linux/namei.h:59 [inline]
+ vfs_statx+0x142/0x390 fs/stat.c:185
+ vfs_fstatat fs/stat.c:207 [inline]
+ vfs_stat include/linux/fs.h:3121 [inline]
+ __do_sys_newstat+0x91/0x110 fs/stat.c:349
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff888013dc0000
+ which belongs to the cache names_cache of size 4096
+The buggy address is located 3200 bytes inside of
+ 4096-byte region [ffff888013dc0000, ffff888013dc1000)
+The buggy address belongs to the page:
+page:0000000053d67828 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x13dc0
+head:0000000053d67828 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x100000000010200(slab|head)
+raw: 0100000000010200 dead000000000100 dead000000000122 ffff888008143b40
+raw: 0000000000000000 0000000000070007 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888013dc0b80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888013dc0c00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888013dc0c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff888013dc0d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888013dc0d80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz.0.70: Freeing blocks not in datazone - block = 281471117507920, count = 2176
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz.0.70: Freeing blocks not in datazone - block = 2727841100048, count = 3703
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz.0.70: Freeing blocks not in datazone - block = 0, count = 0
+general protection fault, probably for non-canonical address 0xdffffc0000000111: 0000 [#1] PREEMPT SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000888-0x000000000000088f]
+CPU: 0 PID: 216 Comm: sshd Tainted: G    B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:native_pgd_val arch/x86/include/asm/pgtable_types.h:324 [inline]
+RIP: 0010:pgd_none arch/x86/include/asm/pgtable.h:986 [inline]
+RIP: 0010:pgd_none_or_clear_bad include/linux/pgtable.h:735 [inline]
+RIP: 0010:unmap_page_range+0x227/0x2070 mm/memory.c:1426
+Code: e8 ae d8 df ff 48 39 eb 4c 0f 43 bc 24 c0 00 00 00 4c 89 bc 24 b0 00 00 00 e8 35 e1 df ff 48 8b 84 24 a8 00 00 00 48 c1 e8 03 <42> 80 3c 30 00 0f 85 37 1d 00 00 48 8b 84 24 a8 00 00 00 48 8b 28
+RSP: 0018:ffff88800c41f9e0 EFLAGS: 00010216
+RAX: 0000000000000111 RBX: ffff88ffffffffff RCX: ffffffff81662d72
+RDX: ffff88800b8a1a00 RSI: ffffffff81662d8b RDI: 0000000000000006
+RBP: ffff888013dcee20 R08: 0000000000000000 R09: ffff8880110ef8a3
+R10: ffff88ffffffffff R11: 0000000000000001 R12: 0000000000000027
+R13: 0000000000000027 R14: dffffc0000000000 R15: ffff888013dcee21
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f15f3fc9328 CR3: 000000000acc6000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz.0.70: Freeing blocks not in datazone - block = 435762176, count = 0
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz.0.70: Freeing blocks not in datazone - block = 281471117505536, count = 2176
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz.0.70: Freeing blocks not in datazone - block = 15714877538798, count = 27648
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f15f40b8c79
+Code: Unable to access opcode bytes at RIP 0x7f15f40b8c4f.
+RSP: 002b:00007ffcbf2805e8 EFLAGS: 00000206 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00007f15f3bfd6f8 RCX: 00007f15f40b8c79
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 00000000000000ff
+RBP: 00000000000000ff R08: fffffffffffffdf8 R09: 0000000000000001
+R10: 0000557ea7dbee59 R11: 0000000000000206 R12: 00000000ffffffe3
+R13: 0000557ea7dc0210 R14: 00007ffcbf280950 R15: 00007ffcbf280700
+Modules linked in:
+---[ end trace a98f0dc820e20189 ]---
+RIP: 0010:native_pgd_val arch/x86/include/asm/pgtable_types.h:324 [inline]
+RIP: 0010:pgd_none arch/x86/include/asm/pgtable.h:986 [inline]
+RIP: 0010:pgd_none_or_clear_bad include/linux/pgtable.h:735 [inline]
+RIP: 0010:unmap_page_range+0x227/0x2070 mm/memory.c:1426
+Code: e8 ae d8 df ff 48 39 eb 4c 0f 43 bc 24 c0 00 00 00 4c 89 bc 24 b0 00 00 00 e8 35 e1 df ff 48 8b 84 24 a8 00 00 00 48 c1 e8 03 <42> 80 3c 30 00 0f 85 37 1d 00 00 48 8b 84 24 a8 00 00 00 48 8b 28
+RSP: 0018:ffff88800c41f9e0 EFLAGS: 00010216
+RAX: 0000000000000111 RBX: ffff88ffffffffff RCX: ffffffff81662d72
+RDX: ffff88800b8a1a00 RSI: ffffffff81662d8b RDI: 0000000000000006
+RBP: ffff888013dcee20 R08: 0000000000000000 R09: ffff8880110ef8a3
+R10: ffff88ffffffffff R11: 0000000000000001 R12: 0000000000000027
+R13: 0000000000000027 R14: dffffc0000000000 R15: ffff888013dcee21
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f65b0741ba0 CR3: 000000000ae8e000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Fixing recursive fault but reboot is needed!
+general protection fault, probably for non-canonical address 0xe03ffc400803a90d: 0000 [#2] PREEMPT SMP KASAN NOPTI
+KASAN: maybe wild-memory-access in range [0x02000200401d4868-0x02000200401d486f]
+CPU: 0 PID: 65 Comm: kworker/u4:3 Tainted: G    B D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: netns cleanup_net
+RIP: 0010:sit_destroy_tunnels net/ipv6/sit.c:1863 [inline]
+RIP: 0010:sit_exit_batch_net+0x124/0x530 net/ipv6/sit.c:1940
+Code: 03 80 3c 2a 00 0f 85 d6 03 00 00 48 8b 08 4c 8d 61 b8 48 39 c3 75 31 eb 6d e8 48 c6 b5 fd 49 8d 54 24 48 48 89 d0 48 c1 e8 03 <80> 3c 28 00 0f 85 de 03 00 00 49 8b 44 24 48 4d 89 e7 48 83 e8 48
+RSP: 0018:ffff88800be57b78 EFLAGS: 00010212
+RAX: 004000400803a90d RBX: ffff88800f9a8150 RCX: ffff888013df4048
+RDX: 02000200401d4869 RSI: ffffffff83904878 RDI: ffff888013df4ac0
+RBP: dffffc0000000000 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 02000200401d4821
+R13: ffff88800f9a8000 R14: ffff88800c9f2c00 R15: ffff888013df4040
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f65b1ce6010 CR3: 000000000ae8e000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ ops_exit_list+0x113/0x160 net/core/net_namespace.c:190
+ cleanup_net+0x484/0x8e0 net/core/net_namespace.c:604
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+---[ end trace a98f0dc820e2018a ]---
+RIP: 0010:native_pgd_val arch/x86/include/asm/pgtable_types.h:324 [inline]
+RIP: 0010:pgd_none arch/x86/include/asm/pgtable.h:986 [inline]
+RIP: 0010:pgd_none_or_clear_bad include/linux/pgtable.h:735 [inline]
+RIP: 0010:unmap_page_range+0x227/0x2070 mm/memory.c:1426
+Code: e8 ae d8 df ff 48 39 eb 4c 0f 43 bc 24 c0 00 00 00 4c 89 bc 24 b0 00 00 00 e8 35 e1 df ff 48 8b 84 24 a8 00 00 00 48 c1 e8 03 <42> 80 3c 30 00 0f 85 37 1d 00 00 48 8b 84 24 a8 00 00 00 48 8b 28
+RSP: 0018:ffff88800c41f9e0 EFLAGS: 00010216
+RAX: 0000000000000111 RBX: ffff88ffffffffff RCX: ffffffff81662d72
+RDX: ffff88800b8a1a00 RSI: ffffffff81662d8b RDI: 0000000000000006
+RBP: ffff888013dcee20 R08: 0000000000000000 R09: ffff8880110ef8a3
+R10: ffff88ffffffffff R11: 0000000000000001 R12: 0000000000000027
+R13: 0000000000000027 R14: dffffc0000000000 R15: ffff888013dcee21
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f65b084e000 CR3: 000000000fd3c000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+----------------
+Code disassembly (best guess):
+   0:	e8 ae d8 df ff       	call   0xffdfd8b3
+   5:	48 39 eb             	cmp    %rbp,%rbx
+   8:	4c 0f 43 bc 24 c0 00 	cmovae 0xc0(%rsp),%r15
+   f:	00 00
+  11:	4c 89 bc 24 b0 00 00 	mov    %r15,0xb0(%rsp)
+  18:	00
+  19:	e8 35 e1 df ff       	call   0xffdfe153
+  1e:	48 8b 84 24 a8 00 00 	mov    0xa8(%rsp),%rax
+  25:	00
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	42 80 3c 30 00       	cmpb   $0x0,(%rax,%r14,1) <-- trapping instruction
+  2f:	0f 85 37 1d 00 00    	jne    0x1d6c
+  35:	48 8b 84 24 a8 00 00 	mov    0xa8(%rsp),%rax
+  3c:	00
+  3d:	48 8b 28             	mov    (%rax),%rbp

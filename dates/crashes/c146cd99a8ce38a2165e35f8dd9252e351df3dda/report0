@@ -1,0 +1,96 @@
+EXT4-fs error (device loop0) in ext4_reserve_inode_write:5740: Corrupt filesystem
+EXT4-fs error (device loop0): ext4_truncate:4277: inode #18: comm syz.0.95: mark_inode_dirty error
+==================================================================
+BUG: KASAN: slab-out-of-bounds in ext4_search_dir+0x25d/0x2a0 fs/ext4/namei.c:1394
+Read of size 1 at addr ffff88800fc73ba9 by task syz.0.95/3115
+
+CPU: 0 PID: 3115 Comm: syz.0.95 Not tainted 5.10.0 #1
+EXT4-fs error (device loop0): ext4_ind_map_blocks:594: inode #18: comm syz.0.95: Can't allocate blocks for non-extent mapped inodes with bigalloc
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+EXT4-fs error (device loop0) in ext4_reserve_inode_write:5740: Corrupt filesystem
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ ext4_search_dir+0x25d/0x2a0 fs/ext4/namei.c:1394
+ ext4_find_inline_entry+0x2ba/0x4a0 fs/ext4/inline.c:1659
+ __ext4_find_entry+0xb7c/0x10d0 fs/ext4/namei.c:1467
+ ext4_lookup_entry fs/ext4/namei.c:1622 [inline]
+ ext4_lookup fs/ext4/namei.c:1690 [inline]
+ ext4_lookup+0x16b/0x650 fs/ext4/namei.c:1681
+ __lookup_hash+0x11d/0x190 fs/namei.c:1445
+ filename_create+0x186/0x490 fs/namei.c:3468
+ user_path_create fs/namei.c:3525 [inline]
+ do_mkdirat+0xa0/0x2a0 fs/namei.c:3665
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f91283e1ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f912703a038 EFLAGS: 00000246 ORIG_RAX: 0000000000000053
+RAX: ffffffffffffffda RBX: 00007f912859a058 RCX: 00007f91283e1ef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000200001c0
+RBP: 00007f9128454b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f912859a058 R15: 00007fff5aea2ff8
+
+Allocated by task 65:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ copy_fs_struct+0x43/0x330 fs/fs_struct.c:114
+ copy_fs kernel/fork.c:1440 [inline]
+ copy_process+0x47b9/0x69f0 kernel/fork.c:2086
+ kernel_clone+0xe7/0xa80 kernel/fork.c:2456
+ kernel_thread+0xb5/0xf0 kernel/fork.c:2508
+ call_usermodehelper_exec_sync kernel/umh.c:133 [inline]
+ call_usermodehelper_exec_work+0x69/0x180 kernel/umh.c:164
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+
+Freed by task 3113:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ free_fs_struct fs/fs_struct.c:92 [inline]
+ exit_fs+0x123/0x170 fs/fs_struct.c:108
+ do_exit+0xafa/0x28e0 kernel/exit.c:805
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff88800fc73b00
+ which belongs to the cache fs_cache of size 168
+The buggy address is located 1 bytes to the right of
+ 168-byte region [ffff88800fc73b00, ffff88800fc73ba8)
+The buggy address belongs to the page:
+page:00000000e656837b refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xfc73
+flags: 0x100000000000200(slab)
+raw: 0100000000000200 ffffea0000348ec0 0000000e0000000e ffff8880081413c0
+raw: 0000000000000000 0000000000100010 00000001ffffffff ffff888008f5ec01
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff888008f5ec01
+
+Memory state around the buggy address:
+ ffff88800fc73a80: fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc
+ ffff88800fc73b00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88800fc73b80: fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc
+                                  ^
+ ffff88800fc73c00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88800fc73c80: fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc
+==================================================================

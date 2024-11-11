@@ -1,0 +1,44 @@
+EXT4-fs (loop3): 1 truncate cleaned up
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+process 'memfd:[ÛX®[©ýú­ÑmdÈ…HX©%eà' started with executable stack
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5183 at kernel/signal.c:378 task_participate_group_stop+0x296/0x300 kernel/signal.c:378
+Modules linked in:
+CPU: 1 PID: 5183 Comm: 4 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:task_participate_group_stop+0x296/0x300 kernel/signal.c:378
+Code: 7c 04 84 d2 75 72 41 89 9c 24 ac 00 00 00 41 bc 01 00 00 00 e9 07 ff ff ff e8 76 47 2c 00 0f 0b e9 fa fd ff ff e8 6a 47 2c 00 <0f> 0b e9 ab fe ff ff 48 89 ef e8 9b 77 59 00 e9 75 fe ff ff e8 51
+RSP: 0018:ffff8880177b7c38 EFLAGS: 00010012
+RAX: 000000000003ee5f RBX: 0000000000000000 RCX: ffffc90000fac000
+RDX: 0000000000040000 RSI: ffffffff8119c756 RDI: 0000000000000005
+RBP: ffff88800dd42128 R08: 0000000000000001 R09: ffff888008db528f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800dd42080
+R13: ffff888008db5288 R14: 0000000000040000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f4cc9e6d6f4 CR3: 000000001bfd2000 CR4: 0000000000350ee0
+Call Trace:
+ do_signal_stop+0x1f1/0x840 kernel/signal.c:2373
+ get_signal+0xe7e/0x2480 kernel/signal.c:2616
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fd86042cef9
+Code: Unable to access opcode bytes at RIP 0x7fd86042cecf.
+RSP: 002b:00007fd85f085038 EFLAGS: 00000246 ORIG_RAX: 000000000000000b
+RAX: ffffffffffffffea RBX: 00007fd8605e5058 RCX: 00007fd86042cef9
+RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000004
+RBP: 00007fd86049fb76 R08: 0000000000001000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fd8605e5058 R15: 00007ffd0a967348
+irq event stamp: 1084
+hardirqs last  enabled at (1083): [<ffffffff8134b812>] local_irq_enable_exit_to_user include/linux/entry-common.h:184 [inline]
+hardirqs last  enabled at (1083): [<ffffffff8134b812>] exit_to_user_mode_loop kernel/entry/common.c:149 [inline]
+hardirqs last  enabled at (1083): [<ffffffff8134b812>] exit_to_user_mode_prepare+0xd2/0x160 kernel/entry/common.c:191
+hardirqs last disabled at (1084): [<ffffffff83ecaec1>] __raw_spin_lock_irq include/linux/spinlock_api_smp.h:126 [inline]
+hardirqs last disabled at (1084): [<ffffffff83ecaec1>] _raw_spin_lock_irq+0x41/0x50 kernel/locking/spinlock.c:167
+softirqs last  enabled at (988): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (979): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace ea91402900e5109e ]---

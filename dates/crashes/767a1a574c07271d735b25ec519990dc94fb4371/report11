@@ -1,0 +1,179 @@
+device lo left promiscuous mode
+pci 0000:00:02.0: vgaarb: changed VGA decodes: olddecodes=io+mem,decodes=io+mem:owns=io+mem
+=============================
+================================
+WARNING: suspicious RCU usage
+5.10.0 #1 Not tainted
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+syz.2.425/10930 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff88800b2c7aa8 (
+-----------------------------
+&file_data->lock
+kernel/sched/core.c:7270 Illegal context switch in RCU-bh read-side critical section!
+){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 0
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+no locks held by syz.2.425/10936.
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 76330
+hardirqs last  enabled at (76330): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (76330): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (76329): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (76329): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (74940): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (76307): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+2 locks held by syz.2.425/10930:
+ #0: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #1: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 1 PID: 10930 Comm: syz.2.425 Not tainted 5.10.0 #1
+
+stack backtrace:
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:__raw_spin_unlock_irq include/linux/spinlock_api_smp.h:169 [inline]
+RIP: 0010:_raw_spin_unlock_irq+0x25/0x40 kernel/locking/spinlock.c:199
+Code: 0f 1f 44 00 00 55 48 8b 74 24 08 48 89 fd 48 83 c7 18 e8 ae 1f 3e fd 48 89 ef e8 86 e2 3e fd e8 11 e6 5f fd fb bf 01 00 00 00 <e8> 86 08 34 fd 65 8b 05 ff 3d 15 7c 85 c0 74 02 5d c3 e8 bb 9c 13
+RSP: 0018:ffff88801b5bf540 EFLAGS: 00000206
+RAX: 0000000000012a11 RBX: ffff888017981a00 RCX: 1ffffffff0bac709
+RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000001
+RBP: ffff88806cf33300 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88806cf33300
+R13: ffff88800bc91a00 R14: ffff8880114d4380 R15: 0000000000000000
+ finish_lock_switch kernel/sched/core.c:3518 [inline]
+ finish_task_switch+0x182/0x830 kernel/sched/core.c:3618
+ context_switch kernel/sched/core.c:3782 [inline]
+ __schedule+0x888/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ schedule_timeout+0x387/0x460 kernel/time/timer.c:1847
+ unix_wait_for_peer+0x244/0x280 net/unix/af_unix.c:1221
+ unix_dgram_sendmsg+0x16d6/0x1880 net/unix/af_unix.c:1763
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0x15c/0x190 net/socket.c:671
+ ____sys_sendmsg+0x334/0x880 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmmsg+0x195/0x470 net/socket.c:2497
+ __do_sys_sendmmsg net/socket.c:2526 [inline]
+ __se_sys_sendmmsg net/socket.c:2523 [inline]
+ __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2523
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f0a7efa2ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f0a7dc1c038 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 00007f0a7f15af80 RCX: 00007f0a7efa2ef9
+RDX: 0000000000000651 RSI: 0000000020000000 RDI: 0000000000000004
+RBP: 00007f0a7f015b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f0a7f15af80 R15: 00007ffc789da6c8
+CPU: 0 PID: 10936 Comm: syz.2.425 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep+0x3ed/0x4d0 kernel/sched/core.c:7270
+ __might_fault+0x6e/0x180 mm/memory.c:5030
+ _copy_from_user+0x2c/0x1b0 lib/usercopy.c:13
+ copy_from_user include/linux/uaccess.h:192 [inline]
+ __copy_msghdr_from_user+0x91/0x4b0 net/socket.c:2235
+ copy_msghdr_from_user net/socket.c:2286 [inline]
+ recvmsg_copy_msghdr net/socket.c:2542 [inline]
+ ___sys_recvmsg+0xd5/0x200 net/socket.c:2614
+ do_recvmmsg+0x24c/0x6c0 net/socket.c:2718
+ __sys_recvmmsg net/socket.c:2797 [inline]
+ __do_sys_recvmmsg net/socket.c:2820 [inline]
+ __se_sys_recvmmsg net/socket.c:2813 [inline]
+ __x64_sys_recvmmsg+0x20b/0x260 net/socket.c:2813
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f0a7efa2ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f0a7dbfb038 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
+RAX: ffffffffffffffda RBX: 00007f0a7f15b058 RCX: 00007f0a7efa2ef9
+RDX: 0000000000010106 RSI: 00000000200000c0 RDI: 0000000000000003
+RBP: 00007f0a7f015b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000002 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f0a7f15b058 R15: 00007ffc789da6c8
+hpet: Lost 1 RTC interrupts
+----------------
+Code disassembly (best guess):
+   0:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+   5:	55                   	push   %rbp
+   6:	48 8b 74 24 08       	mov    0x8(%rsp),%rsi
+   b:	48 89 fd             	mov    %rdi,%rbp
+   e:	48 83 c7 18          	add    $0x18,%rdi
+  12:	e8 ae 1f 3e fd       	call   0xfd3e1fc5
+  17:	48 89 ef             	mov    %rbp,%rdi
+  1a:	e8 86 e2 3e fd       	call   0xfd3ee2a5
+  1f:	e8 11 e6 5f fd       	call   0xfd5fe635
+  24:	fb                   	sti
+  25:	bf 01 00 00 00       	mov    $0x1,%edi
+* 2a:	e8 86 08 34 fd       	call   0xfd3408b5 <-- trapping instruction
+  2f:	65 8b 05 ff 3d 15 7c 	mov    %gs:0x7c153dff(%rip),%eax        # 0x7c153e35
+  36:	85 c0                	test   %eax,%eax
+  38:	74 02                	je     0x3c
+  3a:	5d                   	pop    %rbp
+  3b:	c3                   	ret
+  3c:	e8                   	.byte 0xe8
+  3d:	bb                   	.byte 0xbb
+  3e:	9c                   	pushf
+  3f:	13                   	.byte 0x13

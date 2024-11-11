@@ -1,0 +1,77 @@
+EXT4-fs error (device loop2): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 43 vs 44 free clusters
+EXT4-fs (loop2): 1 orphan inode deleted
+EXT4-fs (loop2): mounted filesystem without journal. Opts: ,errors=continue
+syz.3.11 (2085) used greatest stack depth: 24296 bytes left
+general protection fault, probably for non-canonical address 0xdffffc000000001b: 0000 [#1] PREEMPT SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x00000000000000d8-0x00000000000000df]
+CPU: 1 PID: 2113 Comm: syz.0.16 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:bdevname+0x29/0xd0 block/genhd.c:91
+Code: 90 41 55 41 54 49 89 f4 55 53 48 89 fb e8 af 71 4c ff 48 8d bb d8 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 06 0f 8e 86 00 00 00 48 8d bb 30 01 00 00 0f
+RSP: 0018:ffff88800abf7a30 EFLAGS: 00010216
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90000db3000
+RDX: 000000000000001b RSI: ffffffff81f99d11 RDI: 00000000000000d8
+RBP: ffff88800a18c000 R08: 000000001d30792e R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880154c3050
+R13: ffff88800a18c650 R14: ffff8880154c3000 R15: ffff888013f8e480
+FS:  00007faba39fd6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055555587a4e8 CR3: 000000000c422000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_multi_mount_protect+0x8e4/0xb20 fs/ext4/mmp.c:378
+ ext4_fill_super+0xc27a/0xd960 fs/ext4/super.c:4780
+ mount_bdev+0x350/0x410 fs/super.c:1419
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7faba4d8569a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007faba39fce68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007faba39fcef0 RCX: 00007faba4d8569a
+RDX: 00000000200004c0 RSI: 0000000020000500 RDI: 00007faba39fceb0
+RBP: 00000000200004c0 R08: 00007faba39fcef0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000020000500
+R13: 00007faba39fceb0 R14: 00000000000004a6 R15: 0000000020000a40
+Modules linked in:
+PM: Image not found (code -22)
+EXT4-fs error (device loop2): ext4_search_dir:1398: inode #12: block 13: comm syz.2.15: bad entry in directory: inode out of bounds - offset=24, inode=131085, rec_len=16, name_len=5, size=4096
+---[ end trace 3c4a4ab8079346e7 ]---
+RIP: 0010:bdevname+0x29/0xd0 block/genhd.c:91
+Code: 90 41 55 41 54 49 89 f4 55 53 48 89 fb e8 af 71 4c ff 48 8d bb d8 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 06 0f 8e 86 00 00 00 48 8d bb 30 01 00 00 0f
+RSP: 0018:ffff88800abf7a30 EFLAGS: 00010216
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90000db3000
+RDX: 000000000000001b RSI: ffffffff81f99d11 RDI: 00000000000000d8
+RBP: ffff88800a18c000 R08: 000000001d30792e R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880154c3050
+R13: ffff88800a18c650 R14: ffff8880154c3000 R15: ffff888013f8e480
+FS:  00007faba39fd6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fffbb01ee58 CR3: 000000000c422000 CR4: 0000000000350ef0
+----------------
+Code disassembly (best guess):
+   0:	90                   	nop
+   1:	41 55                	push   %r13
+   3:	41 54                	push   %r12
+   5:	49 89 f4             	mov    %rsi,%r12
+   8:	55                   	push   %rbp
+   9:	53                   	push   %rbx
+   a:	48 89 fb             	mov    %rdi,%rbx
+   d:	e8 af 71 4c ff       	call   0xff4c71c1
+  12:	48 8d bb d8 00 00 00 	lea    0xd8(%rbx),%rdi
+  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  20:	fc ff df
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax <-- trapping instruction
+  2e:	84 c0                	test   %al,%al
+  30:	74 06                	je     0x38
+  32:	0f 8e 86 00 00 00    	jle    0xbe
+  38:	48 8d bb 30 01 00 00 	lea    0x130(%rbx),%rdi
+  3f:	0f                   	.byte 0xf

@@ -1,0 +1,108 @@
+EXT4-fs (loop0): mounted filesystem without journal. Opts: nobarrier,noblock_validity,lazytime,barrier=0x0000000000000003,errors=remount-ro,resuid=0x000000000000ee00,errors=remount-ro,resgid=0x000000000000ee01,resgid=0x000000000000ee002
+Quota error (device loop0): qtree_write_dquot: Error -641722073 occurred while creating quota
+BUG: unable to handle page fault for address: fffffbfffb380346
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 80190067 P4D 80190067 PUD 6ddb4067 PMD 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 237 Comm: syz-executor336 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
+RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
+RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
+RIP: 0010:check_memory_region+0x189/0x1e0 mm/kasan/generic.c:192
+Code: 41 83 e1 07 49 39 c1 7d 89 41 bb 01 00 00 00 5b 5d 44 89 d8 41 5c c3 48 85 d2 74 ed 48 01 ea eb 09 48 83 c0 01 48 39 d0 74 df <80> 38 00 74 f2 e9 34 ff ff ff 48 29 c3 48 89 da 49 89 d3 49 c1 fb
+RSP: 0018:ffff888010ca7968 EFLAGS: 00010286
+RAX: fffffbfffb380346 RBX: fffffbfffb380348 RCX: ffffffff8195e26d
+RDX: fffffbfffb380348 RSI: 0000000000000004 RDI: ffffffffd9c01a37
+RBP: fffffbfffb380346 R08: 0000000000000000 R09: ffffffffd9c01a3a
+R10: fffffbfffb380347 R11: 0000000000000001 R12: ffffffffd9c01a57
+R13: ffffffffd9c01a37 R14: 0000000000000007 R15: fffffbfffb380346
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfffb380346 CR3: 000000000c596000 CR4: 0000000000350ee0
+Call Trace:
+ instrument_atomic_read include/linux/instrumented.h:71 [inline]
+ atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
+ dqput.part.0+0xad/0x7e0 fs/quota/dquot.c:770
+ dqput fs/quota/dquot.c:757 [inline]
+ dqput_all fs/quota/dquot.c:397 [inline]
+ __dquot_drop+0x1cc/0x2a0 fs/quota/dquot.c:1577
+ dquot_drop+0x151/0x1a0 fs/quota/dquot.c:1602
+ ext4_clear_inode+0x52/0x1e0 fs/ext4/super.c:1405
+ ext4_evict_inode+0x1cb/0x1890 fs/ext4/inode.c:332
+ evict+0x284/0x6d0 fs/inode.c:578
+ dispose_list fs/inode.c:613 [inline]
+ evict_inodes+0x3c1/0x5e0 fs/inode.c:663
+ generic_shutdown_super+0xa6/0x370 fs/super.c:454
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f81d68185ad
+Code: Unable to access opcode bytes at RIP 0x7f81d6818583.
+RSP: 002b:00007ffd2d5581d8 EFLAGS: 00000202 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f81d68185ad
+RDX: 00000000000000e7 RSI: ffffffffffffffc0 RDI: 0000000000000001
+RBP: 00007ffd2d558230 R08: 0000000000000000 R09: 0000000120080522
+R10: 00007ffd2d558100 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000000000000001 R14: 0000000000000001 R15: 00007f81d68af600
+Modules linked in:
+CR2: fffffbfffb380346
+---[ end trace 07843acb2d7016f5 ]---
+RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
+RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
+RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
+RIP: 0010:check_memory_region+0x189/0x1e0 mm/kasan/generic.c:192
+Code: 41 83 e1 07 49 39 c1 7d 89 41 bb 01 00 00 00 5b 5d 44 89 d8 41 5c c3 48 85 d2 74 ed 48 01 ea eb 09 48 83 c0 01 48 39 d0 74 df <80> 38 00 74 f2 e9 34 ff ff ff 48 29 c3 48 89 da 49 89 d3 49 c1 fb
+RSP: 0018:ffff888010ca7968 EFLAGS: 00010286
+RAX: fffffbfffb380346 RBX: fffffbfffb380348 RCX: ffffffff8195e26d
+RDX: fffffbfffb380348 RSI: 0000000000000004 RDI: ffffffffd9c01a37
+RBP: fffffbfffb380346 R08: 0000000000000000 R09: ffffffffd9c01a3a
+R10: fffffbfffb380347 R11: 0000000000000001 R12: ffffffffd9c01a57
+R13: ffffffffd9c01a37 R14: 0000000000000007 R15: fffffbfffb380346
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfffb380346 CR3: 000000000c596000 CR4: 0000000000350ee0
+note: syz-executor336[237] exited with preempt_count 1
+Fixing recursive fault but reboot is needed!
+----------------
+Code disassembly (best guess):
+   0:	41 83 e1 07          	and    $0x7,%r9d
+   4:	49 39 c1             	cmp    %rax,%r9
+   7:	7d 89                	jge    0xffffff92
+   9:	41 bb 01 00 00 00    	mov    $0x1,%r11d
+   f:	5b                   	pop    %rbx
+  10:	5d                   	pop    %rbp
+  11:	44 89 d8             	mov    %r11d,%eax
+  14:	41 5c                	pop    %r12
+  16:	c3                   	ret
+  17:	48 85 d2             	test   %rdx,%rdx
+  1a:	74 ed                	je     0x9
+  1c:	48 01 ea             	add    %rbp,%rdx
+  1f:	eb 09                	jmp    0x2a
+  21:	48 83 c0 01          	add    $0x1,%rax
+  25:	48 39 d0             	cmp    %rdx,%rax
+  28:	74 df                	je     0x9
+* 2a:	80 38 00             	cmpb   $0x0,(%rax) <-- trapping instruction
+  2d:	74 f2                	je     0x21
+  2f:	e9 34 ff ff ff       	jmp    0xffffff68
+  34:	48 29 c3             	sub    %rax,%rbx
+  37:	48 89 da             	mov    %rbx,%rdx
+  3a:	49 89 d3             	mov    %rdx,%r11
+  3d:	49                   	rex.WB
+  3e:	c1                   	.byte 0xc1
+  3f:	fb                   	sti

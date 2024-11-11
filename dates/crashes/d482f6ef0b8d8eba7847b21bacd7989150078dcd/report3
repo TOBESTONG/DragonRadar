@@ -1,0 +1,118 @@
+EXT4-fs error (device loop2): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 25 vs 150994969 free clusters
+netlink: 'syz.3.123': attribute type 4 has an invalid length.
+netlink: 17 bytes leftover after parsing attributes in process `syz.3.123'.
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inline.c:222!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 2580 Comm: syz.2.143 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_write_inline_data+0x34d/0x3f0 fs/ext4/inline.c:222
+Code: 3c 00 00 00 48 29 e8 4c 63 e8 41 29 c4 e9 eb fe ff ff e8 d6 08 a2 ff 0f 0b 48 c7 c7 e0 bf 2f 85 e8 d7 85 3c 02 e8 c3 08 a2 ff <0f> 0b 48 c7 c7 a0 bf 2f 85 e8 c4 85 3c 02 e8 e0 38 cf ff e9 e9 fd
+RSP: 0018:ffff888015e57368 EFLAGS: 00010216
+RAX: 000000000001e73a RBX: ffff88801a853470 RCX: ffffc90001dc0000
+RDX: 0000000000040000 RSI: ffffffff81a405fd RDI: 0000000000000006
+RBP: 0000000000002000 R08: 0000000000000000 R09: ffff8880083ac3bf
+R10: 0000000000003000 R11: 0000000000000001 R12: 0000000000001000
+R13: 0000000000003000 R14: ffff888015e573f8 R15: ffff88801a85397a
+FS:  00007f434b5206c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b325e3ff8 CR3: 000000000c6ee000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_write_inline_data_end+0x287/0x650 fs/ext4/inline.c:754
+ ext4_da_write_inline_data_end+0x30/0x310 fs/ext4/inline.c:951
+ ext4_da_write_end+0x535/0xb20 fs/ext4/inode.c:3099
+ generic_perform_write+0x2b3/0x4d0 mm/filemap.c:3340
+ ext4_buffered_write_iter+0x244/0x4d0 fs/ext4/file.c:270
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ call_write_iter include/linux/fs.h:1903 [inline]
+ do_iter_readv_writev+0x476/0x760 fs/read_write.c:740
+ do_iter_write+0x18d/0x670 fs/read_write.c:866
+ vfs_iter_write+0x70/0xa0 fs/read_write.c:907
+ iter_file_splice_write+0x73a/0xc00 fs/splice.c:686
+ do_splice_from fs/splice.c:764 [inline]
+ direct_splice_actor+0x10f/0x170 fs/splice.c:933
+ splice_direct_to_actor+0x387/0x980 fs/splice.c:888
+ do_splice_direct+0x1c4/0x290 fs/splice.c:976
+ do_sendfile+0x54f/0x10e0 fs/read_write.c:1257
+ __do_sys_sendfile64 fs/read_write.c:1318 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1304 [inline]
+ __x64_sys_sendfile64+0x1cd/0x210 fs/read_write.c:1304
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f434c8a6ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f434b520038 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007f434ca5ef80 RCX: 00007f434c8a6ef9
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 0000000000000008
+RBP: 00007f434c919b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000080000041 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f434ca5ef80 R15: 00007ffe83123828
+Modules linked in:
+---[ end trace 0a6b01edbe88c089 ]---
+RIP: 0010:ext4_write_inline_data+0x34d/0x3f0 fs/ext4/inline.c:222
+Code: 3c 00 00 00 48 29 e8 4c 63 e8 41 29 c4 e9 eb fe ff ff e8 d6 08 a2 ff 0f 0b 48 c7 c7 e0 bf 2f 85 e8 d7 85 3c 02 e8 c3 08 a2 ff <0f> 0b 48 c7 c7 a0 bf 2f 85 e8 c4 85 3c 02 e8 e0 38 cf ff e9 e9 fd
+RSP: 0018:ffff888015e57368 EFLAGS: 00010216
+RAX: 000000000001e73a RBX: ffff88801a853470 RCX: ffffc90001dc0000
+RDX: 0000000000040000 RSI: ffffffff81a405fd RDI: 0000000000000006
+RBP: 0000000000002000 R08: 0000000000000000 R09: ffff8880083ac3bf
+R10: 0000000000003000 R11: 0000000000000001 R12: 0000000000001000
+R13: 0000000000003000 R14: ffff888015e573f8 R15: ffff88801a85397a
+FS:  00007f434b5206c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b325e3ff8 CR3: 000000000c6ee000 CR4: 0000000000350ee0
+note: syz.2.143[2580] exited with preempt_count 1
+audit: type=1400 audit(1730910435.485:62): avc:  denied  { create } for  pid=2628 comm="syz.1.150" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:object_r:mqueue_spool_t:s0 tclass=rawip_socket permissive=1
+audit: type=1400 audit(1730910435.489:63): avc:  denied  { create } for  pid=2628 comm="syz.1.150" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:object_r:mqueue_spool_t:s0 tclass=udp_socket permissive=1
+audit: type=1400 audit(1730910435.490:64): avc:  denied  { write } for  pid=2628 comm="syz.1.150" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:object_r:mqueue_spool_t:s0 tclass=udp_socket permissive=1
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:2696!
+invalid opcode: 0000 [#2] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 2579 Comm: syz.2.143 Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff888019a27900 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+RDX: ffff888010fb4e00 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff88801a853188 R08: 0000000000000000 R09: ffff88801a85318f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff88801a853470 R15: ffff8880083ac000
+FS:  0000555557232500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b325ceff8 CR3: 000000000c6ee000 CR4: 0000000000350ee0
+Call Trace:
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __filemap_fdatawrite_range mm/filemap.c:422 [inline]
+ __filemap_fdatawrite mm/filemap.c:430 [inline]
+ filemap_flush+0x239/0x2e0 mm/filemap.c:457
+ ext4_alloc_da_blocks+0x1b9/0x300 fs/ext4/inode.c:3156
+ ext4_release_file+0x183/0x370 fs/ext4/file.c:142
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f434c8a6ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe83123988 EFLAGS: 00000246 ORIG_RAX: 00000000000001b4
+RAX: 0000000000000000 RBX: 00007f434ca60a80 RCX: 00007f434c8a6ef9
+RDX: 0000000000000000 RSI: 000000000000001e RDI: 0000000000000003
+RBP: 00007f434ca60a80 R08: 0000000000000006 R09: 00007ffe83123c7f
+R10: 00000000005aeae8 R11: 0000000000000246 R12: 00000000000095ee
+R13: 00007ffe83123a90 R14: 0000000000000032 R15: ffffffffffffffff
+Modules linked in:
+---[ end trace 0a6b01edbe88c08a ]---
+RIP: 0010:ext4_write_inline_data+0x34d/0x3f0 fs/ext4/inline.c:222
+Code: 3c 00 00 00 48 29 e8 4c 63 e8 41 29 c4 e9 eb fe ff ff e8 d6 08 a2 ff 0f 0b 48 c7 c7 e0 bf 2f 85 e8 d7 85 3c 02 e8 c3 08 a2 ff <0f> 0b 48 c7 c7 a0 bf 2f 85 e8 c4 85 3c 02 e8 e0 38 cf ff e9 e9 fd
+RSP: 0018:ffff888015e57368 EFLAGS: 00010216
+RAX: 000000000001e73a RBX: ffff88801a853470 RCX: ffffc90001dc0000
+RDX: 0000000000040000 RSI: ffffffff81a405fd RDI: 0000000000000006
+RBP: 0000000000002000 R08: 0000000000000000 R09: ffff8880083ac3bf
+R10: 0000000000003000 R11: 0000000000000001 R12: 0000000000001000
+R13: 0000000000003000 R14: ffff888015e573f8 R15: ffff88801a85397a
+FS:  0000555557232500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b325ceff8 CR3: 000000000c6ee000 CR4: 0000000000350ee0
+PM: hibernation: Basic memory bitmaps freed

@@ -1,0 +1,51 @@
+EXT4-fs (loop0): mounted filesystem without journal. Opts: noload,resuid=0x000000000000ee01,debug_want_extra_isize=0x000000000000002a,sb=0x000000000000016f,i_version,quota,,errors=continue
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 2043 at mm/page_alloc.c:4930 __alloc_pages_nodemask+0x58a/0x6a0 mm/page_alloc.c:4965
+Modules linked in:
+CPU: 1 PID: 2043 Comm: syz.0.1 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:__alloc_pages_nodemask+0x58a/0x6a0 mm/page_alloc.c:4930
+Code: 00 00 0c 00 0f 85 86 00 00 00 4c 89 c2 44 89 e6 44 89 ff c6 44 24 70 00 4c 89 6c 24 58 e8 de d6 ff ff 49 89 c6 e9 17 fd ff ff <0f> 0b e9 d6 fd ff ff 4c 89 44 24 18 4c 89 44 24 10 89 74 24 0c 4c
+RSP: 0018:ffff88800c54f810 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 1ffff110018a9f06 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000040d40
+RBP: 0000000000000000 R08: ffffffff84529240 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: 000000000000000f
+R13: 000000000000000f R14: 0000000000000000 R15: ffff88800c54fa38
+FS:  00007fcc9df636c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f957e705e08 CR3: 000000000fefc000 CR4: 0000000000350ee0
+Call Trace:
+ alloc_pages_current+0x191/0x2a0 mm/mempolicy.c:2271
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x32/0xa0 mm/slab_common.c:836
+ kmalloc_order_trace+0x14/0x110 mm/slab_common.c:852
+ kmalloc include/linux/slab.h:557 [inline]
+ kzalloc include/linux/slab.h:664 [inline]
+ ext4_update_inline_data+0x1f3/0x480 fs/ext4/inline.c:341
+ ext4_update_inline_dir fs/ext4/inline.c:1106 [inline]
+ ext4_try_add_inline_entry+0x41b/0x650 fs/ext4/inline.c:1289
+ ext4_add_entry+0x34e/0xc60 fs/ext4/namei.c:2209
+ __ext4_link+0x45e/0x5c0 fs/ext4/namei.c:3443
+ ext4_link+0x207/0x280 fs/ext4/namei.c:3484
+ vfs_link+0x83e/0xc20 fs/namei.c:4074
+ do_linkat+0x3c5/0x560 fs/namei.c:4142
+ __do_sys_link fs/namei.c:4171 [inline]
+ __se_sys_link fs/namei.c:4169 [inline]
+ __x64_sys_link+0x5d/0x80 fs/namei.c:4169
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fcc9f2e9ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fcc9df63038 EFLAGS: 00000246 ORIG_RAX: 0000000000000056
+RAX: ffffffffffffffda RBX: 00007fcc9f4a1f80 RCX: 00007fcc9f2e9ef9
+RDX: 0000000000000000 RSI: 0000000020000100 RDI: 00000000200000c0
+RBP: 00007fcc9f35cb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fcc9f4a1f80 R15: 00007ffd9a451488
+irq event stamp: 5401
+hardirqs last  enabled at (5409): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (5432): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (5448): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (5463): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 2111f2498bf4bcfa ]---

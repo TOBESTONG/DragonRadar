@@ -1,0 +1,104 @@
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop1): ext4_dirty_inode:5942: inode #2: comm syz-executor: mark_inode_dirty error
+==================================================================
+BUG: KASAN: use-after-free in ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+BUG: KASAN: use-after-free in ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+Read of size 4 at addr ffff8880261bded4 by task kworker/u4:0/7
+
+CPU: 1 PID: 7 Comm: kworker/u4:0 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: writeback wb_workfn (flush-7:1)
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+ ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+ ext4_ext_map_blocks+0x1c8/0x5d50 fs/ext4/extents.c:4054
+ ext4_map_blocks+0x700/0x1740 fs/ext4/inode.c:628
+ mpage_map_one_extent fs/ext4/inode.c:2387 [inline]
+ mpage_map_and_submit_extent fs/ext4/inode.c:2440 [inline]
+ ext4_writepages+0x1c38/0x3a00 fs/ext4/inode.c:2792
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __writeback_single_inode+0x108/0x1090 fs/fs-writeback.c:1461
+ writeback_sb_inodes+0x56e/0x1010 fs/fs-writeback.c:1721
+ wb_writeback+0x28e/0xbe0 fs/fs-writeback.c:1894
+ wb_do_writeback fs/fs-writeback.c:2039 [inline]
+ wb_workfn+0x1a4/0x1140 fs/fs-writeback.c:2080
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+
+The buggy address belongs to the page:
+page:000000002a6fb918 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x261bd
+flags: 0x100000000000000()
+raw: 0100000000000000 dead000000000100 dead000000000122 0000000000000000
+raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880261bdd80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff8880261bde00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>ffff8880261bde80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                                                 ^
+ ffff8880261bdf00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff8880261bdf80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
+EXT4-fs error (device loop1): ext4_map_blocks:584: inode #3: block 9: comm kworker/u4:0: lblock 0 mapped to illegal pblock 9 (length 1)
+Quota error (device loop1): qtree_write_dquot: dquota write failed
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop1): ext4_dirty_inode:5942: inode #16: comm kworker/u4:0: mark_inode_dirty error
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4.h:3196!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 7 Comm: kworker/u4:0 Tainted: G    B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: writeback wb_workfn (flush-7:1)
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff88800821ec20 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 00000000f33a28e8 RCX: ffffffff81a81b22
+RDX: ffff888008203400 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff888008b16000 R08: 0000000000000000 R09: ffff88801359c53f
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff888010c8e000
+R13: ffff888010c8e650 R14: 0000000000000001 R15: 00000000f33a28e8
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000559f54b05bc0 CR3: 0000000004e26000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_mb_find_by_goal+0xf4/0x1030 fs/ext4/mballoc.c:1884
+ ext4_mb_regular_allocator+0x235/0x1ee0 fs/ext4/mballoc.c:2320
+ ext4_mb_new_blocks+0x2322/0x4b60 fs/ext4/mballoc.c:4997
+ ext4_ext_map_blocks+0x1f8e/0x5d50 fs/ext4/extents.c:4238
+ ext4_map_blocks+0x700/0x1740 fs/ext4/inode.c:628
+ mpage_map_one_extent fs/ext4/inode.c:2387 [inline]
+ mpage_map_and_submit_extent fs/ext4/inode.c:2440 [inline]
+ ext4_writepages+0x1c38/0x3a00 fs/ext4/inode.c:2792
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __writeback_single_inode+0x108/0x1090 fs/fs-writeback.c:1461
+ writeback_sb_inodes+0x56e/0x1010 fs/fs-writeback.c:1721
+ wb_writeback+0x28e/0xbe0 fs/fs-writeback.c:1894
+ wb_do_writeback fs/fs-writeback.c:2039 [inline]
+ wb_workfn+0x1a4/0x1140 fs/fs-writeback.c:2080
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+---[ end trace 45e0403089f7599b ]---
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff88800821ec20 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 00000000f33a28e8 RCX: ffffffff81a81b22
+RDX: ffff888008203400 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff888008b16000 R08: 0000000000000000 R09: ffff88801359c53f
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff888010c8e000
+R13: ffff888010c8e650 R14: 0000000000000001 R15: 00000000f33a28e8
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fdcb4a48000 CR3: 000000000bcf4000 CR4: 0000000000350ee0

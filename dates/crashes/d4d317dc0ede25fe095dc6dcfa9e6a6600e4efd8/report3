@@ -1,0 +1,136 @@
+EXT4-fs error (device loop3): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 41 vs 42 free clusters
+Quota error (device loop3): dqput: Can't write quota structure (error -30). Quota may get out of sync!
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:833!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 232 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff88801967f3b8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff110032cfe79 RCX: ffffffff81a5939b
+RDX: ffff88800c9bb400 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff888013bb6fa8 R08: 0000000000001400 R09: ffffffff86e5f747
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888013bb6f80
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000555556520500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2a2039d6f4 CR3: 0000000019680000 CR4: 0000000000350ee0
+Call Trace:
+
+ ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+ ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+=============================
+ write_blk+0x12f/0x220 fs/quota/quota_tree.c:73
+ remove_free_dqentry+0x1eb/0x4b0 fs/quota/quota_tree.c:169
+WARNING: suspicious RCU usage
+ free_dqentry fs/quota/quota_tree.c:437 [inline]
+ remove_tree+0xa0f/0x1100 fs/quota/quota_tree.c:492
+5.10.0 #1 Not tainted
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+-----------------------------
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+ qtree_delete_dquot fs/quota/quota_tree.c:528 [inline]
+ qtree_release_dquot fs/quota/quota_tree.c:674 [inline]
+ qtree_release_dquot+0x1a2/0x1e0 fs/quota/quota_tree.c:670
+kernel/sched/core.c:7270 Illegal context switch in RCU-bh read-side critical section!
+ v2_release_dquot+0xce/0x120 fs/quota/quota_v2.c:350
+ dquot_release+0x1d5/0x450 fs/quota/dquot.c:504
+
+other info that might help us debug this:
+
+ ext4_release_dquot+0x2a9/0x340 fs/ext4/super.c:6202
+ dqput.part.0+0x1d2/0x7e0 fs/quota/dquot.c:799
+ dqput fs/quota/dquot.c:757 [inline]
+ dqput_all fs/quota/dquot.c:397 [inline]
+ __dquot_drop+0x1cc/0x2a0 fs/quota/dquot.c:1577
+
+rcu_scheduler_active = 2, debug_locks = 0
+ dquot_drop+0x151/0x1a0 fs/quota/dquot.c:1602
+ ext4_clear_inode+0x52/0x1e0 fs/ext4/super.c:1405
+4 locks held by syz.1.41/2390:
+ ext4_evict_inode+0x1cb/0x1890 fs/ext4/inode.c:332
+ #0: 
+ffffffff850e7f00
+ evict+0x284/0x6d0 fs/inode.c:578
+ dispose_list fs/inode.c:613 [inline]
+ evict_inodes+0x3c1/0x5e0 fs/inode.c:663
+ (
+ generic_shutdown_super+0xa6/0x370 fs/super.c:454
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+rcu_read_lock
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f27e5f3b227
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+){....}-{1:2}
+RSP: 002b:00007fffd4f30c58 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007f27e5faca14 RCX: 00007f27e5f3b227
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007fffd4f30d10
+RBP: 00007fffd4f30d10 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fffd4f31d90
+R13: 00007f27e5faca14 R14: 0000000000009f38 R15: 00007fffd4f31dd0
+Modules linked in:
+, at: INIT_LIST_HEAD include/linux/list.h:36 [inline]
+, at: list_splice_init include/linux/list.h:483 [inline]
+, at: netif_receive_skb_list_internal+0x289/0xcb0 net/core/dev.c:5547
+
+ #1: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: __skb_pull include/linux/skbuff.h:2298 [inline]
+ #1: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: ip_local_deliver_finish+0x124/0x3b0 net/ipv4/ip_input.c:228
+ #2: ffff88800b8d80a0 (slock-AF_INET/1){+.-.}-{2:2}, at: tcp_v4_rcv+0x2934/0x3500 net/ipv4/tcp_ipv4.c:2047
+ #3: ffff88806ce26b58 (hrtimer_bases.lock){-.-.}-{2:2}, at: hrtimer_interrupt+0x4dd/0x9b0 kernel/time/hrtimer.c:1676
+
+stack backtrace:
+CPU: 0 PID: 2390 Comm: syz.1.41 Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep+0x3ed/0x4d0 kernel/sched/core.c:7270
+ zap_pte_range mm/memory.c:1323 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0xff8/0x2070 mm/memory.c:1428
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fd62deedef9
+Code: Unable to access opcode bytes at RIP 0x7fd62deedecf.
+RSP: 002b:00007fd62cb670e8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 00007fd62e0a5f88 RCX: 00007fd62deedef9
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007fd62e0a5f88
+RBP: 00007fd62e0a5f80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007fd62e0a5f8c
+R13: 0000000000000000 R14: 00007fffa310c110 R15: 00007fffa310c1f8
+---[ end trace 6a04df1414ff8f21 ]---
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff88801967f3b8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff110032cfe79 RCX: ffffffff81a5939b
+RDX: ffff88800c9bb400 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff888013bb6fa8 R08: 0000000000001400 R09: ffffffff86e5f747
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888013bb6f80
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000555556520500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f54dff26770 CR3: 0000000019680000 CR4: 0000000000350ee0

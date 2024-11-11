@@ -122,6 +122,7 @@ func setupBridge() error {
 	bridgeName := "br0"
 	_, err := osutil.RunCmd(time.Minute, "", "ip", "link", "show", bridgeName)
 	if err != nil {
+		log.Logf(0, "Failed to detect bridge %s, attempting to create...", bridgeName)
 		// Bridge does not exist, create it
 		cmds := [][]string{
 			{"ip", "link", "add", bridgeName, "type", "bridge"},
@@ -134,6 +135,7 @@ func setupBridge() error {
 				return fmt.Errorf("failed to run command %v: %w", cmd, err)
 			}
 		}
+		
 	}else {
         log.Logf(0, "Bridge %s already exists", bridgeName)
 	}
@@ -234,9 +236,7 @@ func (inst *instance) boot(tapInterface string) error {
 
 	args := inst.buildDbsCliArgs(tapInterface)
 
-	if inst.debug {
-		log.Logf(0, "starting dbs-cli with args: %v", args)
-	}
+	
 	// Create the command
 	cmd := osutil.Command(inst.cfg.DbsCli, args...)
 	if inst.debug {
@@ -249,10 +249,12 @@ func (inst *instance) boot(tapInterface string) error {
 	inst.dbsCmd = cmd
 
 	// Start the command
+	log.Logf(0, "Starting dbs-cli with args: %v", args)
 	if err := cmd.Start(); err != nil {
 		if inst.wpipe != nil {
 			inst.wpipe.Close()
 		}
+		log.Logf(0, "Failed to start dbs-cli: %v", err) 
 		return fmt.Errorf("failed to start dbs-cli: %w", err)
 	}
 	if inst.wpipe != nil {
@@ -276,8 +278,10 @@ func (inst *instance) boot(tapInterface string) error {
 
 	inst.sshHost = "localhost"
 	// Wait for SSH to become available
+	log.Logf(0, "Waiting for SSH to become available on %s:%d", inst.sshHost, inst.sshPort)
 	if err := vmimpl.WaitForSSH(inst.debug, 10*time.Minute*inst.timeouts.Scale, inst.sshHost,
 		inst.sshKey, inst.sshUser, inst.os, inst.sshPort, inst.merger.Err, false); err != nil {
+		log.Logf(0, "Failed to connect via SSH: %v", err)
 		return vmimpl.MakeBootError(err, nil)
 	}
 
@@ -378,6 +382,7 @@ func (inst *instance) buildDbsCliArgs(tapInterface string) []string {
 		"--virnets", virnetsConfig,
 		"--fs", fsConfig,
 		"--serial-path", "stdio",
+		"--vsock", filepath.Join(inst.workdir, "dbs-api.sock"), 
 	}
 
 	if inst.cfg.LogFile != "" {
@@ -541,5 +546,6 @@ cat > /etc/ssh/sshd_config <<EOF
           PubkeyAuthentication yes
 EOF
 /usr/sbin/sshd -e -D
+tail -f /dev/null
 /sbin/halt -f
 `

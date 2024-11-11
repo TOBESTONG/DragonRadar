@@ -1,0 +1,127 @@
+Trying to write to read-only block-device loop3 (partno 0)
+EXT4-fs error (device loop1) in ext4_do_update_inode:5151: error 27
+EXT4-fs error (device loop1): ext4_dirty_inode:5942: inode #3: comm syz.1.34: mark_inode_dirty error
+WARNING: CPU: 1 PID: 234 at block/blk-core.c:704 bio_check_ro block/blk-core.c:704 [inline]
+WARNING: CPU: 1 PID: 234 at block/blk-core.c:704 submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Modules linked in:
+CPU: 1 PID: 234 Comm: syz-executor Not tainted 5.10.0 #1
+CPU: 1 PID: 2273 Comm: syz.2.35 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ warn_alloc.cold+0x87/0x18d mm/page_alloc.c:3975
+ __vmalloc_node_range+0x55b/0x9b0 mm/vmalloc.c:2574
+ __vmalloc_node+0xb5/0x100 mm/vmalloc.c:2601
+ sel_write_load+0x2ea/0x1e50 security/selinux/selinuxfs.c:637
+ do_loop_readv_writev fs/read_write.c:764 [inline]
+ do_loop_readv_writev fs/read_write.c:748 [inline]
+ do_iter_write+0x47e/0x670 fs/read_write.c:868
+ vfs_writev+0x1aa/0x660 fs/read_write.c:939
+ do_writev+0x139/0x300 fs/read_write.c:982
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f58d9fd7ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f58d8c30038 EFLAGS: 00000246 ORIG_RAX: 0000000000000014
+RAX: ffffffffffffffda RBX: 00007f58da190058 RCX: 00007f58d9fd7ef9
+RDX: 0000000000000002 RSI: 0000000020000040 RDI: 0000000000000008
+RBP: 00007f58da04ab76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000001 R14: 00007f58da190058 R15: 00007ffe5e6368c8
+EXT4-fs error (device loop1) in ext4_do_update_inode:5151: error 27
+EXT4-fs error (device loop1): __ext4_ext_dirty:169: inode #3: comm syz.1.34: mark_inode_dirty error
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:bio_check_ro block/blk-core.c:704 [inline]
+RIP: 0010:submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Code: 03 00 00 45 8b a4 24 64 05 00 00 48 89 ef 48 8d 74 24 50 e8 43 37 fe ff 48 c7 c7 00 ee 5b 84 48 89 c6 44 89 e2 e8 bd 1c e7 01 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 80 3c 02
+Quota error (device loop1): write_blk: dquota write failed
+Quota error (device loop1): qtree_write_dquot: Error -27 occurred while creating quota
+EXT4-fs error (device loop1): mb_free_blocks:1506: group 0, inode 16: block 39:freeing already freed block (bit 39); block bitmap corrupt.
+EXT4-fs error (device loop1): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 43 vs 44 free clusters
+RSP: 0018:ffff88800c8ef448 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 1ffff1100191de8f RCX: 0000000000000000
+RDX: ffff88800fac9a00 RSI: ffffffff812d93c5 RDI: ffffed100191de7b
+RBP: ffff88800abdd700 R08: 0000000000000001 R09: ffff88806cf1ff9b
+EXT4-fs (loop1): 1 orphan inode deleted
+EXT4-fs (loop1): mounting with "discard" option, but the device does not support discard
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff88800b982430 R14: ffff88800abdd710 R15: ffff88800abdd708
+Mem-Info:
+active_anon:93 inactive_anon:11657 isolated_anon:0
+ active_file:7273 inactive_file:16053 isolated_file:0
+ unevictable:0 dirty:1139 writeback:0
+ slab_reclaimable:7264 slab_unreclaimable:23176
+ mapped:21655 shmem:266 pagetables:627 bounce:0
+ free:331391 free_pcp:536 free_cma:0
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+Node 0 active_anon:372kB inactive_anon:46628kB active_file:29092kB inactive_file:64212kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:86620kB dirty:4556kB writeback:0kB shmem:1064kB writeback_tmp:0kB kernel_stack:3584kB all_unreclaimable? no
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+Node 0 DMA free:15892kB min:48kB low:60kB high:72kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15908kB mlocked:0kB pagetables:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+lowmem_reserve[]: 0 1616 1616 1616
+Node 0 DMA32 free:1309672kB min:5116kB low:6768kB high:8420kB reserved_highatomic:0KB active_anon:372kB inactive_anon:46628kB active_file:29092kB inactive_file:64212kB unevictable:0kB writepending:4680kB present:2082688kB managed:1660364kB mlocked:0kB pagetables:2508kB bounce:0kB free_pcp:2144kB local_pcp:1016kB free_cma:0kB
+lowmem_reserve[]: 0 0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ 0 0
+Node 0 DMA: 1*4kB (U) 0*8kB 1*16kB (U) 0*32kB 2*64kB (U) 1*128kB (U) 1*256kB (U) 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15892kB
+Node 0 DMA32: 424*4kB (UM) 534*8kB (UME) 302*16kB (UME) 358*32kB (UME) 334*64kB (UM) 63*128kB (UME) 30*256kB (UM) 18*512kB (UM) 6*1024kB (UME) 1*2048kB (E) 301*4096kB (M) = 1309680kB
+ext4 filesystem being mounted at /8/file1 supports timestamps until 2038 (0x7fffffff)
+Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=2048kB
+23607 total pagecache pages
+1 pages in swap cache
+Swap cache stats: add 186, delete 185, find 2/2
+Free swap  = 124476kB
+Total swap = 124996kB
+524670 pages RAM
+0 pages HighMem/MovableOnly
+105602 pages reserved
+CR2: 00007ff21a415000 CR3: 000000000acda000 CR4: 0000000000350ee0
+Call Trace:
+ submit_bio_noacct+0x82/0x1000 block/blk-core.c:1044
+ submit_bio+0xfd/0x540 block/blk-core.c:1129
+ submit_bh_wbc+0x580/0x7c0 fs/buffer.c:3054
+ __block_write_full_page+0x810/0x1080 fs/buffer.c:1810
+ block_write_full_page+0x23b/0x2b0 fs/buffer.c:2980
+ __writepage+0x67/0x180 mm/page-writeback.c:2311
+ write_cache_pages+0x594/0xfb0 mm/page-writeback.c:2246
+Quota error (device loop1): write_blk: dquota write failed
+Quota error (device loop1): qtree_write_dquot: Error -28 occurred while creating quota
+ generic_writepages mm/page-writeback.c:2337 [inline]
+ generic_writepages+0xe2/0x150 mm/page-writeback.c:2326
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __filemap_fdatawrite_range mm/filemap.c:422 [inline]
+ __filemap_fdatawrite mm/filemap.c:430 [inline]
+ filemap_flush+0x239/0x2e0 mm/filemap.c:457
+ __sync_blockdev fs/block_dev.c:508 [inline]
+ __sync_blockdev+0xa1/0xe0 fs/block_dev.c:503
+ __sync_filesystem fs/sync.c:40 [inline]
+ sync_filesystem fs/sync.c:64 [inline]
+ sync_filesystem+0x13d/0x270 fs/sync.c:48
+ generic_shutdown_super+0x70/0x370 fs/super.c:448
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f2c947bfef9
+Code: Unable to access opcode bytes at RIP 0x7f2c947bfecf.
+RSP: 002b:00007ffe0e4b8dc8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00007f2c94832a86 RCX: 00007f2c947bfef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000001
+RBP: 0000000000000010 R08: 00007ffe0e4b6b66 R09: 00007ffe0e4ba080
+R10: 000000000000000a R11: 0000000000000246 R12: 00007ffe0e4ba080
+R13: 00007f2c94832a14 R14: 00005555556dd4a8 R15: 00007ffe0e4bb140
+irq event stamp: 99525
+hardirqs last  enabled at (99533): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (99726): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (99740): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (99753): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace dec8afffffb6b4c9 ]---

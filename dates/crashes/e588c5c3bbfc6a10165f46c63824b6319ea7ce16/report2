@@ -1,0 +1,168 @@
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 0000000000000000 R14: 00007f277325af80 R15: 00007ffd618217a8
+------------[ cut here ]------------
+percpu_ref_kill_and_confirm called more than once on io_ring_ctx_ref_free!
+WARNING: CPU: 1 PID: 2939 at lib/percpu-refcount.c:382 percpu_ref_kill_and_confirm+0x169/0x1d0 lib/percpu-refcount.c:382
+Modules linked in:
+CPU: 1 PID: 2939 Comm: syz.2.127 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:percpu_ref_kill_and_confirm+0x169/0x1d0 lib/percpu-refcount.c:382
+Code: 5d 08 48 8d 7b 08 48 89 fa 48 c1 ea 03 80 3c 02 00 75 68 48 8b 53 08 48 c7 c6 00 e0 5c 84 48 c7 c7 20 df 5c 84 e8 53 ab dc 01 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 48 89 ea 48 c1 ea 03 80 3c 02
+RSP: 0018:ffff88801997fe10 EFLAGS: 00010086
+RAX: 0000000000000000 RBX: ffff888010ed2000 RCX: 0000000000000000
+RDX: ffff888019cbb400 RSI: ffffffff812d93c5 RDI: ffffed100332ffb4
+RBP: ffff88800c24a000 R08: 0000000000000001 R09: ffff88806cf1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000293
+R13: 0000000000000000 R14: 0000000000000002 R15: ffff88800833c920
+FS:  00007f2771d1c6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007efc61930a8c CR3: 00000000111d8000 CR4: 0000000000350ee0
+Call Trace:
+ percpu_ref_kill include/linux/percpu-refcount.h:149 [inline]
+ io_ring_ctx_wait_and_kill+0x2b/0x440 fs/io_uring.c:8382
+ io_uring_release+0x3e/0x50 fs/io_uring.c:8420
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f27730a2ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f2771d1c038 EFLAGS: 00000246 ORIG_RAX: 00000000000001a9
+RAX: fffffffffffffff4 RBX: 00007f277325af80 RCX: 00007f27730a2ef9
+RDX: 0000000000000000 RSI: 0000000020000140 RDI: 0000000000006e4a
+RBP: 00007f2771d1c090 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 0000000000000000 R14: 00007f277325af80 R15: 00007ffd618217a8
+irq event stamp: 470
+hardirqs last  enabled at (469): [<ffffffff83ecb0ef>] __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:168 [inline]
+hardirqs last  enabled at (469): [<ffffffff83ecb0ef>] _raw_spin_unlock_irq+0x1f/0x40 kernel/locking/spinlock.c:199
+hardirqs last disabled at (470): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (470): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (442): [<ffffffff8379a865>] read_pnet include/net/net_namespace.h:330 [inline]
+softirqs last  enabled at (442): [<ffffffff8379a865>] sock_net include/net/sock.h:2523 [inline]
+softirqs last  enabled at (442): [<ffffffff8379a865>] unix_sock_destructor+0x225/0x300 net/unix/af_unix.c:511
+softirqs last disabled at (440): [<ffffffff8379a7ef>] __refcount_sub_and_test include/linux/refcount.h:282 [inline]
+softirqs last disabled at (440): [<ffffffff8379a7ef>] __refcount_dec_and_test include/linux/refcount.h:315 [inline]
+softirqs last disabled at (440): [<ffffffff8379a7ef>] refcount_dec_and_test include/linux/refcount.h:333 [inline]
+softirqs last disabled at (440): [<ffffffff8379a7ef>] unix_release_addr net/unix/af_unix.c:218 [inline]
+softirqs last disabled at (440): [<ffffffff8379a7ef>] unix_sock_destructor+0x1af/0x300 net/unix/af_unix.c:507
+---[ end trace 4ca82065107d1c86 ]---
+==================================================================
+BUG: KASAN: use-after-free in instrument_atomic_read include/linux/instrumented.h:71 [inline]
+BUG: KASAN: use-after-free in atomic64_read include/asm-generic/atomic-instrumented.h:837 [inline]
+BUG: KASAN: use-after-free in atomic_long_read include/asm-generic/atomic-long.h:29 [inline]
+BUG: KASAN: use-after-free in get_work_pwq kernel/workqueue.c:683 [inline]
+BUG: KASAN: use-after-free in process_one_work+0x8d/0x16c0 kernel/workqueue.c:2169
+Read of size 8 at addr ffff88800c24a670 by task kworker/u4:0/7
+
+CPU: 1 PID: 7 Comm: kworker/u4:0 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue:  0x0 (events_unbound)
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0xf9/0x1e0 mm/kasan/generic.c:192
+ instrument_atomic_read include/linux/instrumented.h:71 [inline]
+ atomic64_read include/asm-generic/atomic-instrumented.h:837 [inline]
+ atomic_long_read include/asm-generic/atomic-long.h:29 [inline]
+ get_work_pwq kernel/workqueue.c:683 [inline]
+ process_one_work+0x8d/0x16c0 kernel/workqueue.c:2169
+ process_scheduled_works kernel/workqueue.c:2334 [inline]
+ worker_thread+0x959/0x1310 kernel/workqueue.c:2420
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+
+Allocated by task 2939:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ kmalloc include/linux/slab.h:552 [inline]
+ kzalloc include/linux/slab.h:664 [inline]
+ io_ring_ctx_alloc fs/io_uring.c:1135 [inline]
+ io_uring_create fs/io_uring.c:9284 [inline]
+ io_uring_setup+0x585/0x3110 fs/io_uring.c:9416
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 7:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kfree+0xc7/0x370 mm/slub.c:4124
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+
+Last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ netlink_release+0xe81/0x1e10 net/netlink/af_netlink.c:802
+ __sock_release+0xd2/0x290 net/socket.c:596
+ sock_close+0x18/0x20 net/socket.c:1277
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ ret_from_fork+0x15/0x30 arch/x86/entry/entry_64.S:289
+
+Second to last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ netlink_release+0xe81/0x1e10 net/netlink/af_netlink.c:802
+ __sock_release+0xd2/0x290 net/socket.c:596
+ sock_close+0x18/0x20 net/socket.c:1277
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ ret_from_fork+0x15/0x30 arch/x86/entry/entry_64.S:289
+
+The buggy address belongs to the object at ffff88800c24a000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 1648 bytes inside of
+ 2048-byte region [ffff88800c24a000, ffff88800c24a800)
+The buggy address belongs to the page:
+page:00000000c1202e9f refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xc248
+head:00000000c1202e9f order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x100000000010200(slab|head)
+raw: 0100000000010200 dead000000000100 dead000000000122 ffff888008042000
+raw: 0000000000000000 0000000080080008 00000001ffffffff ffff8880193a7281
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff8880193a7281
+
+Memory state around the buggy address:
+ ffff88800c24a500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88800c24a580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88800c24a600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                             ^
+ ffff88800c24a680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88800c24a700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================

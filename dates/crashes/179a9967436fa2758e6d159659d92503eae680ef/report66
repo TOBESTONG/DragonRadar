@@ -1,0 +1,58 @@
+EXT4-fs (loop3): 1 orphan inode deleted
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /86/file1 supports timestamps until 2038 (0x7fffffff)
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4.h:3196!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 7166 Comm: syz.3.296 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff88801fdcf890 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 000000001d208e53 RCX: ffffffff81a81b22
+RDX: ffff8880089e3400 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff888011322000 R08: 0000000000000000 R09: ffff88801ec24c6b
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88801146c000
+R13: ffff88801146c650 R14: 0000000000000001 R15: 000000001d208e53
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000200400bf CR3: 0000000016e06000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_mb_load_buddy_gfp+0xe3/0x13d0 fs/ext4/mballoc.c:1174
+ ext4_discard_preallocations+0x86a/0xe70 fs/ext4/mballoc.c:4422
+ ext4_release_file+0x2f0/0x370 fs/ext4/file.c:150
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fbb3cd5bef9
+Code: Unable to access opcode bytes at RIP 0x7fbb3cd5becf.
+RSP: 002b:00007fbb3b9d50e8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: 0000000000000001 RBX: 00007fbb3cf13f88 RCX: 00007fbb3cd5bef9
+RDX: 00000000000f4240 RSI: 0000000000000081 RDI: 00007fbb3cf13f8c
+RBP: 00007fbb3cf13f80 R08: 00007ffc74785090 R09: 0000000000000000
+R10: 0000000000040000 R11: 0000000000000246 R12: 00007fbb3cf13f8c
+R13: 0000000000000000 R14: 00007ffc74738850 R15: 00007ffc74738938
+Modules linked in:
+---[ end trace 7a59d01b2ba5556e ]---
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff88801fdcf890 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 000000001d208e53 RCX: ffffffff81a81b22
+RDX: ffff8880089e3400 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff888011322000 R08: 0000000000000000 R09: ffff88801ec24c6b
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88801146c000
+R13: ffff88801146c650 R14: 0000000000000001 R15: 000000001d208e53
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f1d7bf62500 CR3: 000000000acb0000 CR4: 0000000000350ef0
+Fixing recursive fault but reboot is needed!

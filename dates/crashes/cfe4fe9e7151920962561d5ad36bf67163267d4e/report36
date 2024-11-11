@@ -1,0 +1,770 @@
+audit: type=1400 audit(1731206085.036:20): avc:  denied  { read } for  pid=3787 comm="syz.3.154" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=perf_event permissive=1
+EXT4-fs warning (device loop1): ext4_multi_mount_protect:324: MMP startup interrupted, failing mount
+==================================================================
+BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+BUG: KASAN: use-after-free in atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+BUG: KASAN: use-after-free in __refcount_add include/linux/refcount.h:193 [inline]
+BUG: KASAN: use-after-free in __refcount_inc include/linux/refcount.h:250 [inline]
+BUG: KASAN: use-after-free in refcount_inc include/linux/refcount.h:267 [inline]
+BUG: KASAN: use-after-free in get_task_struct include/linux/sched/task.h:104 [inline]
+BUG: KASAN: use-after-free in kthread_stop+0x76/0x6c0 kernel/kthread.c:591
+Write of size 4 at addr ffff888008c38020 by task syz-executor/2232
+
+CPU: 0 PID: 2232 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0xf9/0x1e0 mm/kasan/generic.c:192
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+ __refcount_add include/linux/refcount.h:193 [inline]
+ __refcount_inc include/linux/refcount.h:250 [inline]
+ refcount_inc include/linux/refcount.h:267 [inline]
+ get_task_struct include/linux/sched/task.h:104 [inline]
+ kthread_stop+0x76/0x6c0 kernel/kthread.c:591
+ ext4_put_super+0x9ad/0x11b0 fs/ext4/super.c:1265
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fde400fa227
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007ffccfab1c58 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007fde4016ba14 RCX: 00007fde400fa227
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffccfab1d10
+RBP: 00007ffccfab1d10 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffccfab2d90
+R13: 00007fde4016ba14 R14: 000000000000ac08 R15: 00007ffccfab2dd0
+
+Allocated by task 2:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ kmem_cache_alloc_node+0x155/0x340 mm/slub.c:2927
+ alloc_task_struct_node kernel/fork.c:170 [inline]
+ dup_task_struct kernel/fork.c:860 [inline]
+ copy_process+0x45fe/0x69f0 kernel/fork.c:1938
+ kernel_clone+0xe7/0xa80 kernel/fork.c:2456
+ kernel_thread+0xb5/0xf0 kernel/fork.c:2508
+ create_kthread kernel/kthread.c:315 [inline]
+ kthreadd+0x4bb/0x710 kernel/kthread.c:633
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+
+Freed by task 3810:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ __put_task_struct+0x25a/0x3e0 kernel/fork.c:741
+ put_task_struct include/linux/sched/task.h:113 [inline]
+ delayed_put_task_struct+0x1c2/0x310 kernel/exit.c:172
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+
+Last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:178
+ finish_task_switch+0x582/0x830 kernel/sched/core.c:3652
+ context_switch kernel/sched/core.c:3782 [inline]
+ __schedule+0x888/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ schedule_timeout+0x387/0x460 kernel/time/timer.c:1847
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x163/0x260 kernel/sched/completion.c:138
+ kthread_stop+0x160/0x6c0 kernel/kthread.c:596
+ ext4_remount+0x1aac/0x2710 fs/ext4/super.c:5915
+ legacy_reconfigure+0x117/0x180 fs/fs_context.c:615
+ reconfigure_super+0x40c/0x8f0 fs/super.c:957
+ vfs_fsconfig_locked fs/fsopen.c:254 [inline]
+ __do_sys_fsconfig+0xa3a/0xc20 fs/fsopen.c:439
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Second to last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:178
+ release_task+0xc9d/0x1510 kernel/exit.c:224
+ wait_task_zombie kernel/exit.c:1091 [inline]
+ wait_consider_task+0x30ca/0x3cc0 kernel/exit.c:1318
+ do_wait_thread kernel/exit.c:1381 [inline]
+ do_wait+0x35c/0x980 kernel/exit.c:1452
+ kernel_wait4+0x14c/0x260 kernel/exit.c:1614
+ __do_sys_wait4+0x13f/0x150 kernel/exit.c:1642
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff888008c38000
+ which belongs to the cache task_struct of size 6400
+The buggy address is located 32 bytes inside of
+ 6400-byte region [ffff888008c38000, ffff888008c39900)
+The buggy address belongs to the page:
+page:000000006a530e9c refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x8c38
+head:000000006a530e9c order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x100000000010200(slab|head)
+raw: 0100000000010200 dead000000000100 dead000000000122 ffff888008138dc0
+raw: 0000000000000000 0000000000040004 00000001ffffffff ffff88800b5e6581
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff88800b5e6581
+
+Memory state around the buggy address:
+ ffff888008c37f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888008c37f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff888008c38000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                               ^
+ ffff888008c38080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888008c38100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+------------[ cut here ]------------
+refcount_t: addition on 0; use-after-free.
+WARNING: CPU: 0 PID: 2232 at lib/refcount.c:25 refcount_warn_saturate+0x20d/0x2a0 lib/refcount.c:25
+Modules linked in:
+CPU: 0 PID: 2232 Comm: syz-executor Tainted: G    B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:refcount_warn_saturate+0x20d/0x2a0 lib/refcount.c:25
+Code: 01 31 ff 89 de e8 a3 62 46 ff 84 db 0f 85 14 ff ff ff e8 16 6b 46 ff 48 c7 c7 40 e8 5c 84 c6 05 23 94 d4 03 01 e8 2f 00 dc 01 <0f> 0b e9 f5 fe ff ff e8 f7 6a 46 ff 0f b6 1d 0a 94 d4 03 bf 01 00
+RSP: 0018:ffff88801684fd58 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88800c563400 RSI: ffffffff812d93c5 RDI: ffffed1002d09f9d
+RBP: ffff888008c38020 R08: 0000000000000001 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888008c38020
+R13: ffff888008c38000 R14: 0000000000000000 R15: ffff88800b8e23d0
+FAT-fs (loop3): Unrecognized mount option "ÿÿÿÿÿÿÿÿ184467440737095516150xffffffffffffffff" or missing value
+FS:  0000555555d8b500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f47a7a8d3a0 CR3: 00000000167b0000 CR4: 0000000000350ee0
+Call Trace:
+ __refcount_add include/linux/refcount.h:199 [inline]
+ __refcount_inc include/linux/refcount.h:250 [inline]
+ refcount_inc include/linux/refcount.h:267 [inline]
+ get_task_struct include/linux/sched/task.h:104 [inline]
+ kthread_stop+0x5b2/0x6c0 kernel/kthread.c:591
+ ext4_put_super+0x9ad/0x11b0 fs/ext4/super.c:1265
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fde400fa227
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007ffccfab1c58 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007fde4016ba14 RCX: 00007fde400fa227
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffccfab1d10
+RBP: 00007ffccfab1d10 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffccfab2d90
+R13: 00007fde4016ba14 R14: 000000000000ac08 R15: 00007ffccfab2dd0
+irq event stamp: 183192
+hardirqs last  enabled at (183191): [<ffffffff817344eb>] quarantine_put+0xab/0x1c0 mm/kasan/quarantine.c:217
+hardirqs last disabled at (183192): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (183192): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (182918): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (182909): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 6dfb018ff8e55032 ]---
+general protection fault, probably for non-canonical address 0x3b77ddfe220000: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 4079 Comm: modprobe Tainted: G    B   W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:compound_head include/linux/page-flags.h:185 [inline]
+RIP: 0010:virt_to_head_page include/linux/mm.h:860 [inline]
+RIP: 0010:qlink_to_cache mm/kasan/quarantine.c:130 [inline]
+RIP: 0010:qlist_free_all+0x8d/0xd0 mm/kasan/quarantine.c:167
+Code: df 48 85 db 75 cc 48 89 f0 4c 01 e8 72 56 4c 89 f2 48 2b 15 25 65 57 03 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 03 65 57 03 <48> 8b 50 08 48 8d 4a ff 83 e2 01 48 0f 45 c1 48 8b 78 18 eb 93 49
+RSP: 0018:ffff888016a3fbc0 EFLAGS: 00010207
+RAX: 003b77ddfe220000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000777f80000000 RSI: 0ee2ffff88800aa6 RDI: 0000000000000000
+RBP: dffffc0000000000 R08: 0000000000000003 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888016a3fbf8
+R13: 0000000080000000 R14: ffffffff80000000 R15: 0ee2ffff88800aa6
+FS:  00007f10cf312540(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005561210cc4b8 CR3: 0000000010c26000 CR4: 0000000000350ef0
+Call Trace:
+ quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:267
+ __kasan_kmalloc.constprop.0+0x9e/0xd0 mm/kasan/common.c:442
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
+ getname_flags fs/namei.c:2647 [inline]
+ user_path_at_empty+0xa1/0x100 fs/namei.c:2647
+ user_path_at include/linux/namei.h:59 [inline]
+ vfs_statx+0x142/0x390 fs/stat.c:185
+ vfs_fstatat fs/stat.c:207 [inline]
+ vfs_stat include/linux/fs.h:3121 [inline]
+ __do_sys_newstat+0x91/0x110 fs/stat.c:349
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f10cf425986
+Code: 00 00 75 05 48 83 c4 18 c3 e8 46 0c 02 00 66 0f 1f 44 00 00 41 89 f8 48 89 f7 48 89 d6 41 83 f8 01 77 29 b8 04 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 02 c3 90 48 8b 15 d9 34 0e 00 f7 d8 64 89 02
+RSP: 002b:00007fff90e16ca8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+RAX: ffffffffffffffda RBX: 00007fff90e16d50 RCX: 00007f10cf425986
+RDX: 00007fff90e16d50 RSI: 00007fff90e16d50 RDI: 0000556120a55c59
+RBP: 0000556120a55c59 R08: 0000000000000001 R09: 00007f10cf509be0
+R10: 0000000000000076 R11: 0000000000000246 R12: 0000000000000002
+R13: 00005561210c44db R14: 00007fff90e16d40 R15: 00005561210c4310
+Modules linked in:
+---[ end trace 6dfb018ff8e55033 ]---
+RIP: 0010:compound_head include/linux/page-flags.h:185 [inline]
+RIP: 0010:virt_to_head_page include/linux/mm.h:860 [inline]
+RIP: 0010:qlink_to_cache mm/kasan/quarantine.c:130 [inline]
+RIP: 0010:qlist_free_all+0x8d/0xd0 mm/kasan/quarantine.c:167
+Code: df 48 85 db 75 cc 48 89 f0 4c 01 e8 72 56 4c 89 f2 48 2b 15 25 65 57 03 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 03 65 57 03 <48> 8b 50 08 48 8d 4a ff 83 e2 01 48 0f 45 c1 48 8b 78 18 eb 93 49
+RSP: 0018:ffff888016a3fbc0 EFLAGS: 00010207
+RAX: 003b77ddfe220000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000777f80000000 RSI: 0ee2ffff88800aa6 RDI: 0000000000000000
+RBP: dffffc0000000000 R08: 0000000000000003 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888016a3fbf8
+R13: 0000000080000000 R14: ffffffff80000000 R15: 0ee2ffff88800aa6
+FS:  00007f10cf312540(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005561210cc4b8 CR3: 0000000010c26000 CR4: 0000000000350ef0
+------------[ cut here ]------------
+DEBUG_RWSEMS_WARN_ON(rwsem_owner(sem) != current): count = 0x1, magic = 0xffff8880174b0e38, owner = 0xffff888008c38002, curr 0xffff888008c38002, list empty
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 4082 at arch/x86/include/asm/fpu/internal.h:333 copy_xregs_to_kernel arch/x86/include/asm/fpu/internal.h:333 [inline]
+WARNING: CPU: 1 PID: 4082 at arch/x86/include/asm/fpu/internal.h:333 copy_fpregs_to_fpstate+0x17a/0x1d0 arch/x86/kernel/fpu/core.c:98
+Modules linked in:
+CPU: 1 PID: 4082 Comm: modprobe Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:copy_xregs_to_kernel arch/x86/include/asm/fpu/internal.h:333 [inline]
+RIP: 0010:copy_fpregs_to_fpstate+0x17a/0x1d0 arch/x86/kernel/fpu/core.c:98
+Code: 01 00 00 00 5b 5d 41 5c 41 5d 41 5e c3 e8 5e 9e 3c 00 48 0f ae 43 40 eb e1 e8 52 9e 3c 00 0f 0b e9 23 ff ff ff e8 46 9e 3c 00 <0f> 0b e9 3c ff ff ff 48 c7 c7 b8 54 d6 85 e8 73 ce 69 00 e9 ec fe
+RSP: 0018:ffff88800ac8faf0 EFLAGS: 00010012
+RAX: 0000000040000000 RBX: ffff888008c39582 RCX: ffffffff81096fb5
+RDX: ffff888008c38002 RSI: ffffffff8109707a RDI: 0000000000000005
+RBP: 00000000fffffffe R08: 0000000000000000 R09: ffff888008c38009
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000007
+R13: 0000000000000000 R14: 0000000000000001 R15: ffff888008c39582
+FS:  00007f0ca4850540(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0ca4a4a940 CR3: 000000000bda0000 CR4: 0000000000350ee0
+Call Trace:
+irq event stamp: 0
+hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+hardirqs last disabled at (0): [<ffffffff8115f55b>] copy_process+0x181b/0x69f0 kernel/fork.c:2040
+softirqs last  enabled at (0): [<ffffffff8115f59c>] copy_process+0x185c/0x69f0 kernel/fork.c:2044
+softirqs last disabled at (0): [<0000000000000000>] 0x0
+---[ end trace 6dfb018ff8e55034 ]---
+WARNING: CPU: 0 PID: 4082 at kernel/locking/rwsem.c:1478 __downgrade_write kernel/locking/rwsem.c:1478 [inline]
+WARNING: CPU: 0 PID: 4082 at kernel/locking/rwsem.c:1478 downgrade_write+0x32b/0x3a0 kernel/locking/rwsem.c:1594
+Modules linked in:
+CPU: 0 PID: 4082 Comm: modprobe Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:__downgrade_write kernel/locking/rwsem.c:1478 [inline]
+RIP: 0010:downgrade_write+0x32b/0x3a0 kernel/locking/rwsem.c:1594
+Code: ff df 48 c1 ea 03 80 3c 02 00 75 5f 53 48 8b 55 00 4d 89 e9 4d 89 f8 48 c7 c6 40 d2 46 84 48 c7 c7 e0 d0 46 84 e8 d1 66 b2 02 <0f> 0b 58 e9 fc fe ff ff 4c 89 f7 e8 65 02 4a 00 e9 e7 fd ff ff 4c
+RSP: 0018:ffff888010797d58 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffffffff8446d020 RCX: 0000000000000000
+RDX: ffff888008c38002 RSI: ffffffff812d93c5 RDI: ffffed10020f2f9d
+RBP: ffff8880174b0e38 R08: 0000000000000001 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 1ffff110020f2fad
+R13: ffff888008c38002 R14: ffff8880174b0e40 R15: ffff888008c38002
+FS:  00007f0ca4850540(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fcaac6816f4 CR3: 0000000010c26000 CR4: 0000000000350ef0
+Call Trace:
+ mmap_write_downgrade include/linux/mmap_lock.h:41 [inline]
+ __do_munmap+0xf08/0x11e0 mm/mmap.c:2906
+ __vm_munmap+0xe6/0x170 mm/mmap.c:2931
+ __do_sys_munmap mm/mmap.c:2957 [inline]
+ __se_sys_munmap mm/mmap.c:2953 [inline]
+ __x64_sys_munmap+0x62/0x80 mm/mmap.c:2953
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f0ca4d8af37
+Code: 0f 1f 00 f7 d8 89 05 30 02 01 00 48 c7 c0 ff ff ff ff eb 99 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 0b 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8d 0d 01 02 01 00 f7 d8 89 01 48 83
+RSP: 002b:00007ffc73b58be8 EFLAGS: 00000206 ORIG_RAX: 000000000000000b
+RAX: ffffffffffffffda RBX: 0000001875c5c66d RCX: 00007f0ca4d8af37
+RDX: 0000001800000000 RSI: 00000000000031ca RDI: 00007f0ca4d6b000
+RBP: 00007ffc73b58e90 R08: 0000000000000000 R09: 00007f0ca487e240
+R10: 00007f0ca4d99f78 R11: 0000000000000206 R12: 0000001875a2cead
+R13: 00007f0ca4d9b180 R14: 00007f0ca4d9b180 R15: 00007f0ca4850540
+irq event stamp: 0
+hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+hardirqs last disabled at (0): [<ffffffff8115f55b>] copy_process+0x181b/0x69f0 kernel/fork.c:2040
+softirqs last  enabled at (0): [<ffffffff8115f59c>] copy_process+0x185c/0x69f0 kernel/fork.c:2044
+softirqs last disabled at (0): [<0000000000000000>] 0x0
+---[ end trace 6dfb018ff8e55035 ]---
+------------[ cut here ]------------
+Bad FPU state detected at copy_kernel_to_xregs arch/x86/include/asm/fpu/internal.h:344 [inline], reinitializing FPU registers.
+Bad FPU state detected at __copy_kernel_to_fpregs arch/x86/include/asm/fpu/internal.h:419 [inline], reinitializing FPU registers.
+Bad FPU state detected at copy_kernel_to_fpregs+0x99/0xe0 arch/x86/include/asm/fpu/internal.h:443, reinitializing FPU registers.
+WARNING: CPU: 0 PID: 4082 at arch/x86/mm/extable.c:65 ex_handler_fprestore+0x127/0x160 arch/x86/mm/extable.c:65
+Modules linked in:
+CPU: 0 PID: 4082 Comm: modprobe Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ex_handler_fprestore+0x127/0x160 arch/x86/mm/extable.c:65
+Code: c0 04 01 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 80 3c 02 00 75 34 48 8b b5 80 00 00 00 48 c7 c7 80 17 45 84 e8 35 28 c8 02 <0f> 0b e9 72 ff ff ff 48 89 df e8 3a c3 5f 00 e9 03 ff ff ff 4c 89
+RSP: 0018:ffff888010797ce8 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff888008c38002 RSI: ffffffff812d93c5 RDI: ffffed10020f2f8f
+RBP: ffff888010797dd8 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888010797e58
+R13: 000000000000000d R14: 0000000000000000 R15: 0000000000000000
+FS:  00007f0ca4850540(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fcaac6816f4 CR3: 0000000010c26000 CR4: 0000000000350ef0
+Call Trace:
+ fixup_exception+0x9d/0xd0 arch/x86/mm/extable.c:183
+ __exc_general_protection arch/x86/kernel/traps.c:558 [inline]
+ exc_general_protection+0xe7/0x2d0 arch/x86/kernel/traps.c:525
+ asm_exc_general_protection+0x1e/0x30 arch/x86/include/asm/idtentry.h:577
+RIP: 0010:copy_kernel_to_fpregs+0x99/0xe0 arch/x86/include/asm/fpu/internal.h:444
+Code: 44 24 20 e8 29 93 3c 00 48 8b 6c 24 20 0f 1f 44 00 00 e8 1a 93 3c 00 e8 15 93 3c 00 b8 ff ff ff ff 48 89 ef 89 c2 48 0f ae 2f <e8> 02 93 3c 00 48 b8 00 00 00 00 00 fc ff df 48 c7 04 03 00 00 00
+RSP: 0018:ffff888010797e80 EFLAGS: 00010093
+RAX: 00000000ffffffff RBX: 1ffff110020f2fd0 RCX: ffffffff810986d3
+RDX: 00000000ffffffff RSI: ffffffff81097bab RDI: ffff888008c395c2
+RBP: ffff888008c395c2 R08: 0000000000000000 R09: ffff888008c38009
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff888008c39582 R14: 0000000000000000 R15: 0000000000000000
+ __fpregs_load_activate arch/x86/include/asm/fpu/internal.h:514 [inline]
+ switch_fpu_return+0x92/0x360 arch/x86/kernel/fpu/core.c:405
+ arch_exit_to_user_mode_prepare arch/x86/include/asm/entry-common.h:59 [inline]
+ exit_to_user_mode_prepare+0x141/0x160 kernel/entry/common.c:193
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f0ca4d8af37
+Code: 0f 1f 00 f7 d8 89 05 30 02 01 00 48 c7 c0 ff ff ff ff eb 99 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 0b 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8d 0d 01 02 01 00 f7 d8 89 01 48 83
+RSP: 002b:00007ffc73b58be8 EFLAGS: 00000206 ORIG_RAX: 000000000000000b
+RAX: 0000000000000000 RBX: 0000001875c5c66d RCX: 00007f0ca4d8af37
+RDX: 0000001800000000 RSI: 00000000000031ca RDI: 00007f0ca4d6b000
+RBP: 00007ffc73b58e90 R08: 0000000000000000 R09: 00007f0ca487e240
+R10: 00007f0ca4d99f78 R11: 0000000000000206 R12: 0000001875a2cead
+R13: 00007f0ca4d9b180 R14: 00007f0ca4d9b180 R15: 00007f0ca4850540
+irq event stamp: 0
+hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+hardirqs last disabled at (0): [<ffffffff8115f55b>] copy_process+0x181b/0x69f0 kernel/fork.c:2040
+softirqs last  enabled at (0): [<ffffffff8115f59c>] copy_process+0x185c/0x69f0 kernel/fork.c:2044
+softirqs last disabled at (0): [<0000000000000000>] 0x0
+---[ end trace 6dfb018ff8e55036 ]---
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 0 at kernel/rcu/tree.c:2937 __call_rcu_core kernel/rcu/tree.c:2845 [inline]
+WARNING: CPU: 0 PID: 0 at kernel/rcu/tree.c:2937 __call_rcu kernel/rcu/tree.c:2985 [inline]
+WARNING: CPU: 0 PID: 0 at kernel/rcu/tree.c:2937 call_rcu+0xd30/0x13b0 kernel/rcu/tree.c:3027
+Modules linked in:
+CPU: 0 PID: 0 Comm: swapper/0 Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:__call_rcu kernel/rcu/tree.c:2937 [inline]
+RIP: 0010:call_rcu+0xd30/0x13b0 kernel/rcu/tree.c:3027
+Code: 00 00 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 ea 05 00 00 49 89 af f0 00 00 00 e9 d1 f8 ff ff e8 85 d9 fe ff e9 ce fa ff ff <0f> 0b e9 3c f3 ff ff 8b 15 d3 ff a2 04 85 d2 0f 85 20 03 00 00 e8
+RSP: 0018:ffffffff84e07c10 EFLAGS: 00010202
+RAX: 0000000000000000 RBX: 1ffffffff09c0f89 RCX: ffffffff81174209
+RDX: ffffffff84e389c0 RSI: ffffffff81173a00 RDI: 0000000000000002
+RBP: ffff888008c39382 R08: 0000000000000001 R09: ffff888008c39385
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff888008c39382
+R13: ffff888008c38002 R14: 0000000000000000 R15: 0000000000000080
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0ca4d5b6f4 CR3: 0000000004e26000 CR4: 0000000000350ef0
+Call Trace:
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:178
+ finish_task_switch+0x582/0x830 kernel/sched/core.c:3652
+ context_switch kernel/sched/core.c:3782 [inline]
+ __schedule+0x888/0x2030 kernel/sched/core.c:4528
+ schedule_idle+0x53/0x90 kernel/sched/core.c:4634
+ do_idle+0x2bd/0x530 kernel/sched/idle.c:327
+ cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:395
+ start_kernel+0x4b3/0x4d4 init/main.c:1061
+ secondary_startup_64_no_verify+0xc2/0xcb
+irq event stamp: 107348
+hardirqs last  enabled at (107347): [<ffffffff8139f6c1>] tick_nohz_idle_exit+0x181/0x3c0 kernel/time/tick-sched.c:1212
+hardirqs last disabled at (107348): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (107342): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (107247): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 6dfb018ff8e55037 ]---
+==================================================================
+BUG: KASAN: double-free or invalid-free in slab_free mm/slub.c:3142 [inline]
+BUG: KASAN: double-free or invalid-free in kmem_cache_free+0x97/0x340 mm/slub.c:3158
+
+CPU: 0 PID: 0 Comm: swapper/0 Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ kasan_report_invalid_free+0x51/0x80 mm/kasan/report.c:504
+ __kasan_slab_free+0x13f/0x150 mm/kasan/common.c:401
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ __put_task_struct+0x25a/0x3e0 kernel/fork.c:741
+ put_task_struct include/linux/sched/task.h:113 [inline]
+ delayed_put_task_struct+0x1c2/0x310 kernel/exit.c:172
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:default_idle+0xe/0x10 arch/x86/kernel/process.c:689
+Code: ff ff ff 4c 89 e7 e8 f1 9a 86 fd eb 93 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 e9 07 00 00 00 0f 00 2d 24 ae 55 00 fb f4 <c3> cc 41 55 41 54 55 48 89 fd 53 e8 72 6a 59 fd e8 1d 8e fe ff 48
+RSP: 0018:ffffffff84e07e40 EFLAGS: 00000246
+RAX: ffffffff83eca430 RBX: ffffffff84e389c0 RCX: ffffffff83eb246c
+RDX: ffffffff84e389c0 RSI: 0000000000000001 RDI: ffffffff83eca83f
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff88806ce3416b
+R10: ffffed100d9c682d R11: 0000000000000001 R12: fffffbfff09c7138
+R13: ffffffff85d66c08 R14: 0000000000000000 R15: dffffc0000000000
+ default_idle_call+0x87/0xd0 kernel/sched/idle.c:112
+ cpuidle_idle_call kernel/sched/idle.c:194 [inline]
+ do_idle+0x3bc/0x530 kernel/sched/idle.c:299
+ cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:395
+ start_kernel+0x4b3/0x4d4 init/main.c:1061
+ secondary_startup_64_no_verify+0xc2/0xcb
+
+Allocated by task 458752:
+------------[ cut here ]------------
+slab index 2031616 out of bounds (263) for stack id 007f0000
+WARNING: CPU: 0 PID: 0 at lib/stackdepot.c:212 stack_depot_fetch+0x98/0xf0 lib/stackdepot.c:212
+Modules linked in:
+CPU: 0 PID: 0 Comm: swapper/0 Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:stack_depot_fetch+0x98/0xf0 lib/stackdepot.c:212
+Code: f0 3f 00 00 48 01 d0 48 8d 50 18 48 89 13 8b 40 0c 48 83 c4 08 5b 5d 41 5c c3 89 f9 89 ee 48 c7 c7 68 6a c7 84 e8 e4 ee d0 01 <0f> 0b 48 83 c4 08 31 c0 5b 5d 41 5c c3 48 83 c4 08 31 c0 5b 5d 41
+RSP: 0018:ffff88806ce09c28 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: ffff888008138dc0 RCX: 0000000000000000
+RDX: ffffffff84e389c0 RSI: ffffffff812d93c5 RDI: ffffed100d9c1377
+RBP: 00000000001f0000 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea0000230e00
+R13: ffff888008c38000 R14: ffff888008c39900 R15: 0000000000000246
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0ca4d5b6f4 CR3: 000000000bc44000 CR4: 0000000000350ef0
+Call Trace:
+ <IRQ>
+ print_stack+0x9/0x18 mm/kasan/report.c:116
+ describe_object mm/kasan/report.c:178 [inline]
+ print_address_description.constprop.0.cold+0xf/0x282 mm/kasan/report.c:392
+ kasan_report_invalid_free+0x51/0x80 mm/kasan/report.c:504
+ __kasan_slab_free+0x13f/0x150 mm/kasan/common.c:401
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ __put_task_struct+0x25a/0x3e0 kernel/fork.c:741
+ put_task_struct include/linux/sched/task.h:113 [inline]
+ delayed_put_task_struct+0x1c2/0x310 kernel/exit.c:172
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:default_idle+0xe/0x10 arch/x86/kernel/process.c:689
+Code: ff ff ff 4c 89 e7 e8 f1 9a 86 fd eb 93 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 e9 07 00 00 00 0f 00 2d 24 ae 55 00 fb f4 <c3> cc 41 55 41 54 55 48 89 fd 53 e8 72 6a 59 fd e8 1d 8e fe ff 48
+RSP: 0018:ffffffff84e07e40 EFLAGS: 00000246
+RAX: ffffffff83eca430 RBX: ffffffff84e389c0 RCX: ffffffff83eb246c
+RDX: ffffffff84e389c0 RSI: 0000000000000001 RDI: ffffffff83eca83f
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff88806ce3416b
+R10: ffffed100d9c682d R11: 0000000000000001 R12: fffffbfff09c7138
+R13: ffffffff85d66c08 R14: 0000000000000000 R15: dffffc0000000000
+ default_idle_call+0x87/0xd0 kernel/sched/idle.c:112
+ cpuidle_idle_call kernel/sched/idle.c:194 [inline]
+ do_idle+0x3bc/0x530 kernel/sched/idle.c:299
+ cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:395
+ start_kernel+0x4b3/0x4d4 init/main.c:1061
+ secondary_startup_64_no_verify+0xc2/0xcb
+irq event stamp: 107348
+hardirqs last  enabled at (107347): [<ffffffff8139f6c1>] tick_nohz_idle_exit+0x181/0x3c0 kernel/time/tick-sched.c:1212
+hardirqs last disabled at (107348): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (107342): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (107247): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 6dfb018ff8e55038 ]---
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 0 at kernel/stacktrace.c:28 stack_trace_print kernel/stacktrace.c:31 [inline]
+WARNING: CPU: 0 PID: 0 at kernel/stacktrace.c:28 stack_trace_print+0xa/0x70 kernel/stacktrace.c:23
+Modules linked in:
+CPU: 0 PID: 0 Comm: swapper/0 Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:stack_trace_print+0xa/0x70 kernel/stacktrace.c:28
+Code: ff 85 c0 74 09 b8 01 00 00 00 5d 41 5c c3 48 89 ee 4c 89 e7 5d 41 5c e9 74 fe ff ff 0f 1f 40 00 48 85 ff 74 05 85 f6 75 04 c3 <0f> 0b c3 41 55 8d 46 ff 41 54 4c 8d 2c c7 44 8d 62 01 55 bd ff ff
+RSP: 0018:ffff88806ce09c48 EFLAGS: 00010046
+RAX: 0000000000000000 RBX: ffff888008138dc0 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffff888008c38002 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea0000230e00
+R13: ffff888008c38000 R14: ffff888008c39900 R15: 0000000000000246
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0ca4d5b6f4 CR3: 000000000bc44000 CR4: 0000000000350ef0
+Call Trace:
+ <IRQ>
+ print_stack+0x16/0x18 mm/kasan/report.c:117
+ describe_object mm/kasan/report.c:178 [inline]
+ print_address_description.constprop.0.cold+0xf/0x282 mm/kasan/report.c:392
+ kasan_report_invalid_free+0x51/0x80 mm/kasan/report.c:504
+ __kasan_slab_free+0x13f/0x150 mm/kasan/common.c:401
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ __put_task_struct+0x25a/0x3e0 kernel/fork.c:741
+ put_task_struct include/linux/sched/task.h:113 [inline]
+ delayed_put_task_struct+0x1c2/0x310 kernel/exit.c:172
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:default_idle+0xe/0x10 arch/x86/kernel/process.c:689
+Code: ff ff ff 4c 89 e7 e8 f1 9a 86 fd eb 93 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 e9 07 00 00 00 0f 00 2d 24 ae 55 00 fb f4 <c3> cc 41 55 41 54 55 48 89 fd 53 e8 72 6a 59 fd e8 1d 8e fe ff 48
+RSP: 0018:ffffffff84e07e40 EFLAGS: 00000246
+RAX: ffffffff83eca430 RBX: ffffffff84e389c0 RCX: ffffffff83eb246c
+RDX: ffffffff84e389c0 RSI: 0000000000000001 RDI: ffffffff83eca83f
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff88806ce3416b
+R10: ffffed100d9c682d R11: 0000000000000001 R12: fffffbfff09c7138
+R13: ffffffff85d66c08 R14: 0000000000000000 R15: dffffc0000000000
+ default_idle_call+0x87/0xd0 kernel/sched/idle.c:112
+ cpuidle_idle_call kernel/sched/idle.c:194 [inline]
+ do_idle+0x3bc/0x530 kernel/sched/idle.c:299
+ cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:395
+ start_kernel+0x4b3/0x4d4 init/main.c:1061
+ secondary_startup_64_no_verify+0xc2/0xcb
+irq event stamp: 107348
+hardirqs last  enabled at (107347): [<ffffffff8139f6c1>] tick_nohz_idle_exit+0x181/0x3c0 kernel/time/tick-sched.c:1212
+hardirqs last disabled at (107348): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (107342): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (107247): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 6dfb018ff8e55039 ]---
+
+Last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:178
+ finish_task_switch+0x582/0x830 kernel/sched/core.c:3652
+ context_switch kernel/sched/core.c:3782 [inline]
+ __schedule+0x888/0x2030 kernel/sched/core.c:4528
+ schedule_idle+0x53/0x90 kernel/sched/core.c:4634
+ do_idle+0x2bd/0x530 kernel/sched/idle.c:327
+ cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:395
+ start_kernel+0x4b3/0x4d4 init/main.c:1061
+ secondary_startup_64_no_verify+0xc2/0xcb
+
+Second to last call_rcu():
+------------[ cut here ]------------
+slab index 54080 out of bounds (263) for stack id 8480d340
+WARNING: CPU: 0 PID: 0 at lib/stackdepot.c:212 stack_depot_fetch+0x98/0xf0 lib/stackdepot.c:212
+Modules linked in:
+CPU: 0 PID: 0 Comm: swapper/0 Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:stack_depot_fetch+0x98/0xf0 lib/stackdepot.c:212
+Code: f0 3f 00 00 48 01 d0 48 8d 50 18 48 89 13 8b 40 0c 48 83 c4 08 5b 5d 41 5c c3 89 f9 89 ee 48 c7 c7 68 6a c7 84 e8 e4 ee d0 01 <0f> 0b 48 83 c4 08 31 c0 5b 5d 41 5c c3 48 83 c4 08 31 c0 5b 5d 41
+RSP: 0018:ffff88806ce09c28 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: ffff888008138dc0 RCX: 0000000000000000
+RDX: ffffffff84e389c0 RSI: ffffffff812d93c5 RDI: ffffed100d9c1377
+RBP: 000000000000d340 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea0000230e00
+R13: ffff888008c38000 R14: ffff888008c39900 R15: 0000000000000246
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0ca4d5b6f4 CR3: 000000000bc44000 CR4: 0000000000350ef0
+Call Trace:
+ <IRQ>
+ print_stack+0x9/0x18 mm/kasan/report.c:116
+ describe_object mm/kasan/report.c:194 [inline]
+ print_address_description.constprop.0.cold+0x8c/0x282 mm/kasan/report.c:392
+ kasan_report_invalid_free+0x51/0x80 mm/kasan/report.c:504
+ __kasan_slab_free+0x13f/0x150 mm/kasan/common.c:401
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ __put_task_struct+0x25a/0x3e0 kernel/fork.c:741
+ put_task_struct include/linux/sched/task.h:113 [inline]
+ delayed_put_task_struct+0x1c2/0x310 kernel/exit.c:172
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:default_idle+0xe/0x10 arch/x86/kernel/process.c:689
+Code: ff ff ff 4c 89 e7 e8 f1 9a 86 fd eb 93 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 e9 07 00 00 00 0f 00 2d 24 ae 55 00 fb f4 <c3> cc 41 55 41 54 55 48 89 fd 53 e8 72 6a 59 fd e8 1d 8e fe ff 48
+RSP: 0018:ffffffff84e07e40 EFLAGS: 00000246
+RAX: ffffffff83eca430 RBX: ffffffff84e389c0 RCX: ffffffff83eb246c
+RDX: ffffffff84e389c0 RSI: 0000000000000001 RDI: ffffffff83eca83f
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff88806ce3416b
+R10: ffffed100d9c682d R11: 0000000000000001 R12: fffffbfff09c7138
+R13: ffffffff85d66c08 R14: 0000000000000000 R15: dffffc0000000000
+ default_idle_call+0x87/0xd0 kernel/sched/idle.c:112
+ cpuidle_idle_call kernel/sched/idle.c:194 [inline]
+ do_idle+0x3bc/0x530 kernel/sched/idle.c:299
+ cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:395
+ start_kernel+0x4b3/0x4d4 init/main.c:1061
+ secondary_startup_64_no_verify+0xc2/0xcb
+irq event stamp: 107348
+hardirqs last  enabled at (107347): [<ffffffff8139f6c1>] tick_nohz_idle_exit+0x181/0x3c0 kernel/time/tick-sched.c:1212
+hardirqs last disabled at (107348): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (107342): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (107247): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 6dfb018ff8e5503a ]---
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 0 at kernel/stacktrace.c:28 stack_trace_print kernel/stacktrace.c:31 [inline]
+WARNING: CPU: 0 PID: 0 at kernel/stacktrace.c:28 stack_trace_print+0xa/0x70 kernel/stacktrace.c:23
+Modules linked in:
+CPU: 0 PID: 0 Comm: swapper/0 Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:stack_trace_print+0xa/0x70 kernel/stacktrace.c:28
+Code: ff 85 c0 74 09 b8 01 00 00 00 5d 41 5c c3 48 89 ee 4c 89 e7 5d 41 5c e9 74 fe ff ff 0f 1f 40 00 48 85 ff 74 05 85 f6 75 04 c3 <0f> 0b c3 41 55 8d 46 ff 41 54 4c 8d 2c c7 44 8d 62 01 55 bd ff ff
+RSP: 0018:ffff88806ce09c48 EFLAGS: 00010046
+RAX: 0000000000000000 RBX: ffff888008138dc0 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffff888008c38002 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea0000230e00
+R13: ffff888008c38000 R14: ffff888008c39900 R15: 0000000000000246
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0ca4d5b6f4 CR3: 000000000bc44000 CR4: 0000000000350ef0
+Call Trace:
+ <IRQ>
+ print_stack+0x16/0x18 mm/kasan/report.c:117
+ describe_object mm/kasan/report.c:194 [inline]
+ print_address_description.constprop.0.cold+0x8c/0x282 mm/kasan/report.c:392
+ kasan_report_invalid_free+0x51/0x80 mm/kasan/report.c:504
+ __kasan_slab_free+0x13f/0x150 mm/kasan/common.c:401
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ __put_task_struct+0x25a/0x3e0 kernel/fork.c:741
+ put_task_struct include/linux/sched/task.h:113 [inline]
+ delayed_put_task_struct+0x1c2/0x310 kernel/exit.c:172
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:default_idle+0xe/0x10 arch/x86/kernel/process.c:689
+Code: ff ff ff 4c 89 e7 e8 f1 9a 86 fd eb 93 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 e9 07 00 00 00 0f 00 2d 24 ae 55 00 fb f4 <c3> cc 41 55 41 54 55 48 89 fd 53 e8 72 6a 59 fd e8 1d 8e fe ff 48
+RSP: 0018:ffffffff84e07e40 EFLAGS: 00000246
+RAX: ffffffff83eca430 RBX: ffffffff84e389c0 RCX: ffffffff83eb246c
+RDX: ffffffff84e389c0 RSI: 0000000000000001 RDI: ffffffff83eca83f
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff88806ce3416b
+R10: ffffed100d9c682d R11: 0000000000000001 R12: fffffbfff09c7138
+R13: ffffffff85d66c08 R14: 0000000000000000 R15: dffffc0000000000
+ default_idle_call+0x87/0xd0 kernel/sched/idle.c:112
+ cpuidle_idle_call kernel/sched/idle.c:194 [inline]
+ do_idle+0x3bc/0x530 kernel/sched/idle.c:299
+ cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:395
+ start_kernel+0x4b3/0x4d4 init/main.c:1061
+ secondary_startup_64_no_verify+0xc2/0xcb
+irq event stamp: 107348
+hardirqs last  enabled at (107347): [<ffffffff8139f6c1>] tick_nohz_idle_exit+0x181/0x3c0 kernel/time/tick-sched.c:1212
+hardirqs last disabled at (107348): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (107342): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (107247): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 6dfb018ff8e5503b ]---
+
+The buggy address belongs to the object at ffff888008c38000
+ which belongs to the cache task_struct of size 6400
+The buggy address is located 2 bytes inside of
+ 6400-byte region [ffff888008c38000, ffff888008c39900)
+The buggy address belongs to the page:
+page:000000006a530e9c refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x8c38
+head:000000006a530e9c order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x100000000010200(slab|head)
+raw: 0100000000010200 0000000000000000 0000000100000001 ffff888008138dc0
+raw: 0000000000000000 0000000000040004 00000001ffffffff ffff88800b5e6581
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff88800b5e6581
+
+Memory state around the buggy address:
+ ffff888008c37f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888008c37f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff888008c38000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                   ^
+ ffff888008c38080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888008c38100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+----------------
+Code disassembly (best guess):
+   0:	df 48 85             	fisttps -0x7b(%rax)
+   3:	db 75 cc             	(bad)  -0x34(%rbp)
+   6:	48 89 f0             	mov    %rsi,%rax
+   9:	4c 01 e8             	add    %r13,%rax
+   c:	72 56                	jb     0x64
+   e:	4c 89 f2             	mov    %r14,%rdx
+  11:	48 2b 15 25 65 57 03 	sub    0x3576525(%rip),%rdx        # 0x357653d
+  18:	48 01 d0             	add    %rdx,%rax
+  1b:	48 c1 e8 0c          	shr    $0xc,%rax
+  1f:	48 c1 e0 06          	shl    $0x6,%rax
+  23:	48 03 05 03 65 57 03 	add    0x3576503(%rip),%rax        # 0x357652d
+* 2a:	48 8b 50 08          	mov    0x8(%rax),%rdx <-- trapping instruction
+  2e:	48 8d 4a ff          	lea    -0x1(%rdx),%rcx
+  32:	83 e2 01             	and    $0x1,%edx
+  35:	48 0f 45 c1          	cmovne %rcx,%rax
+  39:	48 8b 78 18          	mov    0x18(%rax),%rdi
+  3d:	eb 93                	jmp    0xffffffd2
+  3f:	49                   	rex.WB

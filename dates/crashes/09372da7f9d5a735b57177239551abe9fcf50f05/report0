@@ -1,0 +1,123 @@
+audit: type=1326 audit(1730957977.396:95): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=4959 comm="syz.3.122" exe="/syz-executor" sig=0 arch=c000003e syscall=202 compat=0 ip=0x7ffa9033cef9 code=0x7ffc0000
+================================================================================
+UBSAN: array-index-out-of-bounds in fs/quota/dquot.c:2169:36
+index -1 is out of range for type 'inode *[3]'
+audit: type=1326 audit(1730957977.396:96): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=4959 comm="syz.3.122" exe="/syz-executor" sig=0 arch=c000003e syscall=202 compat=0 ip=0x7ffa9033cef9 code=0x7ffc0000
+CPU: 0 PID: 4960 Comm: syz.3.122 Not tainted 5.10.0 #1
+audit: type=1326 audit(1730957977.396:97): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=4959 comm="syz.3.122" exe="/syz-executor" sig=0 arch=c000003e syscall=433 compat=0 ip=0x7ffa9033cef9 code=0x7ffc0000
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:356
+ vfs_cleanup_quota_inode+0x161/0x190 fs/quota/dquot.c:2169
+ dquot_resume+0x1cb/0x230 fs/quota/dquot.c:2458
+ ext4_remount+0x1c57/0x2710 fs/ext4/super.c:6018
+audit: type=1326 audit(1730957977.396:98): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=4959 comm="syz.3.122" exe="/syz-executor" sig=0 arch=c000003e syscall=202 compat=0 ip=0x7ffa9033cef9 code=0x7ffc0000
+ legacy_reconfigure+0x117/0x180 fs/fs_context.c:615
+ reconfigure_super+0x40c/0x8f0 fs/super.c:957
+ vfs_fsconfig_locked fs/fsopen.c:254 [inline]
+ __do_sys_fsconfig+0xa3a/0xc20 fs/fsopen.c:439
+audit: type=1326 audit(1730957977.396:99): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=4959 comm="syz.3.122" exe="/syz-executor" sig=0 arch=c000003e syscall=431 compat=0 ip=0x7ffa9033cef9 code=0x7ffc0000
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ffa9033cef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffa8efb6038 EFLAGS: 00000246 ORIG_RAX: 00000000000001af
+RAX: ffffffffffffffda RBX: 00007ffa904f4f80 RCX: 00007ffa9033cef9
+RDX: 0000000000000000 RSI: 0000000000000007 RDI: 0000000000000006
+RBP: 00007ffa903afb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007ffa904f4f80 R15: 00007fff119c8128
+================================================================================
+================================================================================
+UBSAN: array-index-out-of-bounds in fs/quota/dquot.c:2178:14
+index -1 is out of range for type 'inode *[3]'
+CPU: 1 PID: 4960 Comm: syz.3.122 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:356
+ vfs_cleanup_quota_inode+0x175/0x190 fs/quota/dquot.c:2178
+ dquot_resume+0x1cb/0x230 fs/quota/dquot.c:2458
+ ext4_remount+0x1c57/0x2710 fs/ext4/super.c:6018
+ legacy_reconfigure+0x117/0x180 fs/fs_context.c:615
+ reconfigure_super+0x40c/0x8f0 fs/super.c:957
+ vfs_fsconfig_locked fs/fsopen.c:254 [inline]
+ __do_sys_fsconfig+0xa3a/0xc20 fs/fsopen.c:439
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ffa9033cef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffa8efb6038 EFLAGS: 00000246 ORIG_RAX: 00000000000001af
+RAX: ffffffffffffffda RBX: 00007ffa904f4f80 RCX: 00007ffa9033cef9
+RDX: 0000000000000000 RSI: 0000000000000007 RDI: 0000000000000006
+RBP: 00007ffa903afb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007ffa904f4f80 R15: 00007fff119c8128
+================================================================================
+general protection fault, probably for non-canonical address 0xdffffc000000601b: 0000 [#1] PREEMPT SMP KASAN NOPTI
+KASAN: probably user-memory-access in range [0x00000000000300d8-0x00000000000300df]
+CPU: 1 PID: 4960 Comm: syz.3.122 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:iput+0x41/0x840 fs/inode.c:1670
+Code: 85 ed 0f 84 c6 04 00 00 e8 cc 85 c7 ff 48 8d 85 d8 00 00 00 48 89 c2 48 89 44 24 08 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 07 07 00 00 48 8b 9d d8 00 00 00 31 ff 83 e3 40
+RSP: 0018:ffff88801b82fb08 EFLAGS: 00010216
+RAX: dffffc0000000000 RBX: ffffffffffffffff RCX: ffffffff83e08baa
+RDX: 000000000000601b RSI: ffffffff817e88f4 RDI: 0000000000030000
+RBP: 0000000000030000 R08: 0000000000000050 R09: ffff88806cf2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888019f7a000
+R13: 0000000000030000 R14: ffff888019f7a200 R15: ffffed10033ef42d
+FS:  00007ffa8efb66c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055e18b991bf0 CR3: 000000001bfb4000 CR4: 0000000000350ee0
+Call Trace:
+ vfs_cleanup_quota_inode+0xd4/0x190 fs/quota/dquot.c:2179
+ dquot_resume+0x1cb/0x230 fs/quota/dquot.c:2458
+ ext4_remount+0x1c57/0x2710 fs/ext4/super.c:6018
+ legacy_reconfigure+0x117/0x180 fs/fs_context.c:615
+ reconfigure_super+0x40c/0x8f0 fs/super.c:957
+ vfs_fsconfig_locked fs/fsopen.c:254 [inline]
+ __do_sys_fsconfig+0xa3a/0xc20 fs/fsopen.c:439
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ffa9033cef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffa8efb6038 EFLAGS: 00000246 ORIG_RAX: 00000000000001af
+RAX: ffffffffffffffda RBX: 00007ffa904f4f80 RCX: 00007ffa9033cef9
+RDX: 0000000000000000 RSI: 0000000000000007 RDI: 0000000000000006
+RBP: 00007ffa903afb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007ffa904f4f80 R15: 00007fff119c8128
+Modules linked in:
+---[ end trace d658724f87b8be7a ]---
+RIP: 0010:iput+0x41/0x840 fs/inode.c:1670
+Code: 85 ed 0f 84 c6 04 00 00 e8 cc 85 c7 ff 48 8d 85 d8 00 00 00 48 89 c2 48 89 44 24 08 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 07 07 00 00 48 8b 9d d8 00 00 00 31 ff 83 e3 40
+RSP: 0018:ffff88801b82fb08 EFLAGS: 00010216
+RAX: dffffc0000000000 RBX: ffffffffffffffff RCX: ffffffff83e08baa
+RDX: 000000000000601b RSI: ffffffff817e88f4 RDI: 0000000000030000
+RBP: 0000000000030000 R08: 0000000000000050 R09: ffff88806cf2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888019f7a000
+R13: 0000000000030000 R14: ffff888019f7a200 R15: ffffed10033ef42d
+FS:  00007ffa8efb66c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0cf8276000 CR3: 000000001bfb4000 CR4: 0000000000350ef0
+----------------
+Code disassembly (best guess):
+   0:	85 ed                	test   %ebp,%ebp
+   2:	0f 84 c6 04 00 00    	je     0x4ce
+   8:	e8 cc 85 c7 ff       	call   0xffc785d9
+   d:	48 8d 85 d8 00 00 00 	lea    0xd8(%rbp),%rax
+  14:	48 89 c2             	mov    %rax,%rdx
+  17:	48 89 44 24 08       	mov    %rax,0x8(%rsp)
+  1c:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  23:	fc ff df
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 07 07 00 00    	jne    0x73b
+  34:	48 8b 9d d8 00 00 00 	mov    0xd8(%rbp),%rbx
+  3b:	31 ff                	xor    %edi,%edi
+  3d:	83 e3 40             	and    $0x40,%ebx

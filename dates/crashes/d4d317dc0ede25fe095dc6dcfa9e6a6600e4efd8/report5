@@ -1,0 +1,71 @@
+EXT4-fs error (device loop3): ext4_readdir:243: inode #2: block 3: comm syz-executor: path /20/file1: bad entry in directory: rec_len is smaller than minimal - offset=0, inode=0, rec_len=0, name_len=0, size=4096
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:833!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 6304 Comm: syz.3.226 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff8880173af420 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff11002e75e86 RCX: ffffffff81a5939b
+RDX: ffff88800c191a00 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff88801a4d4848 R08: 0000000000000008 R09: ffffffff84e14783
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801a4d4820
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f1856fec710 CR3: 000000001076e000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+ ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+ v2_write_file_info+0x2b0/0x3e0 fs/quota/quota_v2.c:186
+ dquot_release+0x341/0x450 fs/quota/dquot.c:507
+ ext4_release_dquot+0x2a9/0x340 fs/ext4/super.c:6202
+ dqput.part.0+0x1d2/0x7e0 fs/quota/dquot.c:799
+ dqput fs/quota/dquot.c:757 [inline]
+ dqput_all fs/quota/dquot.c:397 [inline]
+ __dquot_drop+0x1cc/0x2a0 fs/quota/dquot.c:1577
+ dquot_drop+0x151/0x1a0 fs/quota/dquot.c:1602
+ ext4_clear_inode+0x52/0x1e0 fs/ext4/super.c:1405
+ ext4_evict_inode+0x1cb/0x1890 fs/ext4/inode.c:332
+ evict+0x284/0x6d0 fs/inode.c:578
+ dispose_list fs/inode.c:613 [inline]
+ evict_inodes+0x3c1/0x5e0 fs/inode.c:663
+ generic_shutdown_super+0xa6/0x370 fs/super.c:454
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x2
+Code: Unable to access opcode bytes at RIP 0xffffffffffffffd8.
+RSP: 002b:00007f1854f7af80 EFLAGS: 00000293 ORIG_RAX: 007d979060f3aeb0
+RAX: 38019b9055a75d19 RBX: d7923702d0a2cc2d RCX: a2bd25e80c7dd746
+RDX: 4b3769e15299baa5 RSI: 9434dfe5619b8201 RDI: ca650fdf14b527b1
+RBP: da301a2a2310842e R08: 1e7d5f73585b3503 R09: d0c53e42749cd61b
+R10: bfdf43cfa2506b47 R11: 2cfe526f7f1c3130 R12: 56a6a642a218c6c5
+R13: 89d442a19a78ce93 R14: 9c91fa16d94a48f4 R15: 62a8dc7fbe6fb445
+Modules linked in:
+---[ end trace 45e5834773822b90 ]---
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff8880173af420 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff11002e75e86 RCX: ffffffff81a5939b
+RDX: ffff88800c191a00 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff88801a4d4848 R08: 0000000000000008 R09: ffffffff84e14783
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801a4d4820
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc496ed7328 CR3: 000000000cf9e000 CR4: 0000000000350ee0
+Fixing recursive fault but reboot is needed!
+EXT4-fs warning (device loop3): kmmpd:182: kmmpd being stopped since MMP feature has been disabled.

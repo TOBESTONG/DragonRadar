@@ -1,0 +1,152 @@
+loop3: rw=524288, want=1772, limit=256
+attempt to access beyond end of device
+loop3: rw=0, want=1772, limit=256
+ loop3: p1 p3 < p5 p6 >
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+syz.3.128/4173 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff88800aa63aa8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88800aa63aa8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 20930
+hardirqs last  enabled at (20930): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (20930): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (20929): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (20929): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (20864): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (20883): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+3 locks held by syz.3.128/4173:
+ #0: ffff8880105a3b58 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ #0: ffff8880105a3b58 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: zap_pte_range mm/memory.c:1211 [inline]
+ #0: ffff8880105a3b58 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: zap_pmd_range mm/memory.c:1357 [inline]
+ #0: ffff8880105a3b58 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: zap_pud_range mm/memory.c:1386 [inline]
+ #0: ffff8880105a3b58 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: zap_p4d_range mm/memory.c:1407 [inline]
+ #0: ffff8880105a3b58 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: unmap_page_range+0x978/0x2070 mm/memory.c:1428
+ #1: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #2: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 0 PID: 4173 Comm: syz.3.128 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:lockdep_enabled kernel/locking/lockdep.c:90 [inline]
+RIP: 0010:lockdep_enabled+0x67/0xa0 kernel/locking/lockdep.c:82
+Code: 7e 85 d2 75 41 65 48 8b 1c 25 40 ef 01 00 48 8d bb 4c 09 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 0f b6 14 02 <48> 89 f8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 1b 8b 83 4c 09 00
+RSP: 0018:ffff88800c7975a8 EFLAGS: 00000213
+RAX: dffffc0000000000 RBX: ffff88800ff30000 RCX: 1ffffffff0bacf77
+RDX: 0000000000000000 RSI: 00000000ffffffff RDI: ffff88800ff3094c
+RBP: ffffffff850e7e40 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: fffffbfff0bacd81 R11: 0000000000000001 R12: 0000000000000001
+R13: ffffffff850e7f00 R14: 00000000ffffffff R15: 0000000000000000
+ lock_is_held_type+0x19/0x100 kernel/locking/lockdep.c:5469
+ lock_is_held include/linux/lockdep.h:271 [inline]
+ rcu_read_lock_sched_held+0x3a/0x70 kernel/rcu/update.c:123
+ trace_lock_acquire include/trace/events/lock.h:13 [inline]
+ lock_acquire+0x6ba/0x9b0 kernel/locking/lockdep.c:5408
+ rcu_lock_acquire include/linux/rcupdate.h:248 [inline]
+ rcu_read_lock include/linux/rcupdate.h:641 [inline]
+ lock_page_memcg+0x63/0x260 mm/memcontrol.c:2144
+ page_remove_rmap+0x21/0x7d0 mm/rmap.c:1328
+ zap_pte_range mm/memory.c:1253 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0xe32/0x2070 mm/memory.c:1428
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fb8fccbaef9
+Code: Unable to access opcode bytes at RIP 0x7fb8fccbaecf.
+RSP: 002b:00007fb8fb9130e8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 00007fb8fce73060 RCX: 00007fb8fccbaef9
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007fb8fce73060
+RBP: 00007fb8fce73058 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007fb8fce73064
+R13: 0000000000000000 R14: 00007ffdd513e630 R15: 00007ffdd513e718
+----------------
+Code disassembly (best guess):
+   0:	7e 85                	jle    0xffffff87
+   2:	d2 75 41             	shlb   %cl,0x41(%rbp)
+   5:	65 48 8b 1c 25 40 ef 	mov    %gs:0x1ef40,%rbx
+   c:	01 00
+   e:	48 8d bb 4c 09 00 00 	lea    0x94c(%rbx),%rdi
+  15:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  1c:	fc ff df
+  1f:	48 89 fa             	mov    %rdi,%rdx
+  22:	48 c1 ea 03          	shr    $0x3,%rdx
+  26:	0f b6 14 02          	movzbl (%rdx,%rax,1),%edx
+* 2a:	48 89 f8             	mov    %rdi,%rax <-- trapping instruction
+  2d:	83 e0 07             	and    $0x7,%eax
+  30:	83 c0 03             	add    $0x3,%eax
+  33:	38 d0                	cmp    %dl,%al
+  35:	7c 04                	jl     0x3b
+  37:	84 d2                	test   %dl,%dl
+  39:	75 1b                	jne    0x56
+  3b:	8b                   	.byte 0x8b
+  3c:	83                   	.byte 0x83
+  3d:	4c 09 00             	or     %r8,(%rax)

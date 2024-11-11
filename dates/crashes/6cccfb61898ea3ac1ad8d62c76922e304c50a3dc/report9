@@ -1,0 +1,115 @@
+EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+kernel profiling enabled (shift: 763)
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:110:31
+shift exponent 763 is too large for 64-bit type 'long int'
+CPU: 1 PID: 7391 Comm: syz.2.417 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ profile_init+0xfc/0x110 kernel/profile.c:110
+ profiling_store+0x5e/0xd0 kernel/ksysfs.c:80
+ kobj_attr_store+0x53/0x80 lib/kobject.c:856
+ sysfs_kf_write+0x113/0x170 fs/sysfs/file.c:139
+ kernfs_fop_write+0x26a/0x490 fs/kernfs/file.c:315
+ vfs_write+0x29a/0xac0 fs/read_write.c:603
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ff85ac8aef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ff859904038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007ff85ae42f80 RCX: 00007ff85ac8aef9
+RDX: 000000000000000b RSI: 0000000020000040 RDI: 0000000000000006
+RBP: 00007ff85acfdb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007ff85ae42f80 R15: 00007ffdd4771e68
+================================================================================
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:291:7
+shift exponent 763 is too large for 64-bit type 'long unsigned int'
+CPU: 0 PID: 101 Comm: systemd-journal Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ do_profile_hits.constprop.0.cold+0x17/0x1c kernel/profile.c:291
+ profile_hits kernel/profile.c:398 [inline]
+ profile_hit include/linux/profile.h:64 [inline]
+ profile_tick+0xe7/0x100 kernel/profile.c:408
+ tick_sched_timer+0x10f/0x150 kernel/time/tick-sched.c:1328
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x1c1/0xba0 kernel/time/hrtimer.c:1583
+ hrtimer_interrupt+0x357/0x9b0 kernel/time/hrtimer.c:1645
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+ __sysvec_apic_timer_interrupt+0x170/0x560 arch/x86/kernel/apic/apic.c:1097
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
+ run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
+ sysvec_apic_timer_interrupt+0xb8/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:filter_irq_stacks+0xf/0x50 lib/stackdepot.c:335
+Code: ff ff ff 48 c7 c7 e0 ff 4d 85 e8 4c 47 00 00 e9 0f ff ff ff 0f 1f 80 00 00 00 00 89 f1 85 f6 74 3f 41 89 f0 31 c0 48 8b 14 c7 <89> c6 48 81 fa 60 01 00 84 72 0d 48 81 fa 10 0e 00 84 73 04 8d 46
+RSP: 0018:ffff8880112577d0 EFLAGS: 00000297
+RAX: 000000000000000b RBX: ffff88800fc71150 RCX: 000000000000000c
+RDX: ffffffff8400007c RSI: 000000000000000a RDI: ffff8880112577d8
+RBP: 0000000000000dc0 R08: 000000000000000c R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000dc0
+R13: 0000000000000000 R14: ffff888008141c80 R15: 0000000000000010
+ kasan_save_stack+0x25/0x40 mm/kasan/common.c:49
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ kmem_cache_zalloc include/linux/slab.h:654 [inline]
+ lsm_file_alloc security/security.c:568 [inline]
+ security_file_alloc+0x34/0x170 security/security.c:1456
+ __alloc_file+0xb6/0x310 fs/file_table.c:106
+ alloc_empty_file+0x6d/0x170 fs/file_table.c:151
+ path_openat+0x125/0x26f0 fs/namei.c:3355
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fd9060df244
+Code: 84 00 00 00 00 00 44 89 54 24 0c e8 46 58 f9 ff 44 8b 54 24 0c 44 89 e2 48 89 ee 41 89 c0 bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 34 44 89 c7 89 44 24 0c e8 78 58 f9 ff 8b 44
+RSP: 002b:00007ffffafeb790 EFLAGS: 00000293 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0000560c2687dd60 RCX: 00007fd9060df244
+RDX: 0000000000080802 RSI: 0000560c2688d7b0 RDI: 00000000ffffff9c
+RBP: 0000560c2688d7b0 R08: 0000000000000000 R09: ffffffffffffff01
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000080802
+R13: 00000000fffffffa R14: 0000560c268844e0 R15: 0000000000000002
+================================================================================
+----------------
+Code disassembly (best guess), 3 bytes skipped:
+   0:	48 c7 c7 e0 ff 4d 85 	mov    $0xffffffff854dffe0,%rdi
+   7:	e8 4c 47 00 00       	call   0x4758
+   c:	e9 0f ff ff ff       	jmp    0xffffff20
+  11:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+  18:	89 f1                	mov    %esi,%ecx
+  1a:	85 f6                	test   %esi,%esi
+  1c:	74 3f                	je     0x5d
+  1e:	41 89 f0             	mov    %esi,%r8d
+  21:	31 c0                	xor    %eax,%eax
+  23:	48 8b 14 c7          	mov    (%rdi,%rax,8),%rdx
+* 27:	89 c6                	mov    %eax,%esi <-- trapping instruction
+  29:	48 81 fa 60 01 00 84 	cmp    $0xffffffff84000160,%rdx
+  30:	72 0d                	jb     0x3f
+  32:	48 81 fa 10 0e 00 84 	cmp    $0xffffffff84000e10,%rdx
+  39:	73 04                	jae    0x3f
+  3b:	8d                   	.byte 0x8d
+  3c:	46                   	rex.RX

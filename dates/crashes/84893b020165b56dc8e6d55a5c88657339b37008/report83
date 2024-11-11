@@ -1,0 +1,59 @@
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Corrupt filesystem
+EXT4-fs error (device loop1): ext4_quota_off:6449: inode #3: comm syz-executor: mark_inode_dirty error
+------------[ cut here ]------------
+Trying to write to read-only block-device loop1 (partno 0)
+WARNING: CPU: 1 PID: 233 at block/blk-core.c:704 bio_check_ro block/blk-core.c:704 [inline]
+WARNING: CPU: 1 PID: 233 at block/blk-core.c:704 submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Modules linked in:
+CPU: 1 PID: 233 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:bio_check_ro block/blk-core.c:704 [inline]
+RIP: 0010:submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Code: 03 00 00 45 8b a4 24 64 05 00 00 48 89 ef 48 8d 74 24 50 e8 43 37 fe ff 48 c7 c7 00 ee 5b 84 48 89 c6 44 89 e2 e8 bd 1c e7 01 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 80 3c 02
+RSP: 0018:ffff88801858f8c8 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 1ffff110030b1f1f RCX: 0000000000000000
+RDX: ffff88800cf94e00 RSI: ffffffff812d93c5 RDI: ffffed10030b1f0b
+RBP: ffff88800cab3500 R08: 0000000000000001 R09: ffff88806cf2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff88800b958c10 R14: ffff88800cab3510 R15: ffff88800cab3508
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fcc7bd11f78 CR3: 000000000b03a000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ submit_bio_noacct+0x82/0x1000 block/blk-core.c:1044
+ submit_bio+0xfd/0x540 block/blk-core.c:1129
+ submit_bh_wbc+0x580/0x7c0 fs/buffer.c:3054
+ submit_bh fs/buffer.c:3060 [inline]
+ __sync_dirty_buffer+0x168/0x3e0 fs/buffer.c:3155
+ ext4_commit_super+0x7fd/0xce0 fs/ext4/super.c:5546
+ ext4_put_super+0x205/0x11b0 fs/ext4/super.c:1213
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7feef3404ef9
+Code: Unable to access opcode bytes at RIP 0x7feef3404ecf.
+RSP: 002b:00007ffffcce7208 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00007feef3477a86 RCX: 00007feef3404ef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000001
+RBP: 0000000000000010 R08: 00007ffffcce4fa6 R09: 00007ffffcce84c0
+R10: 000000000000000a R11: 0000000000000246 R12: 00007ffffcce84c0
+R13: 00007feef3477a14 R14: 0000555555c2b4a8 R15: 00007ffffcce9580
+irq event stamp: 90237
+hardirqs last  enabled at (90247): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (90256): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (90214): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (90209): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 0bd879879ed21fd8 ]---

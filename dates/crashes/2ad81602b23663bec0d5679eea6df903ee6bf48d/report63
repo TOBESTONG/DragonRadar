@@ -1,0 +1,56 @@
+EXT4-fs error (device loop0) in ext4_reserve_inode_write:5740: Corrupt filesystem
+EXT4-fs error (device loop0): ext4_dirty_inode:5942: inode #16: comm syz.0.124: mark_inode_dirty error
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4.h:3196!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 7124 Comm: syz.0.124 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff888019dffb00 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 000000001fd60f7f RCX: ffffffff81a81b22
+RDX: ffff888019ba0000 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff888008c08000 R08: 0000000000000000 R09: ffff8880137769f3
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800c310000
+R13: ffff88800c310650 R14: 0000000000000001 R15: 000000001fd60f7f
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f52749d0510 CR3: 0000000019648000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_mb_load_buddy_gfp+0xe3/0x13d0 fs/ext4/mballoc.c:1174
+ ext4_discard_preallocations+0x86a/0xe70 fs/ext4/mballoc.c:4422
+ ext4_release_file+0x2f0/0x370 fs/ext4/file.c:150
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f89c821bef9
+Code: Unable to access opcode bytes at RIP 0x7f89c821becf.
+RSP: 002b:00007ffd76943268 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f89c821bef9
+RDX: 0000000000000064 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007ffd769432bc R08: 00007ffd7694334f R09: 000000000000aafb
+R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000000032
+R13: 000000000000aafb R14: 000000000000aad3 R15: 00007ffd76943310
+Modules linked in:
+---[ end trace ca74d4a4ed77fe61 ]---
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff888019dffb00 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 000000001fd60f7f RCX: ffffffff81a81b22
+RDX: ffff888019ba0000 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff888008c08000 R08: 0000000000000000 R09: ffff8880137769f3
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800c310000
+R13: ffff88800c310650 R14: 0000000000000001 R15: 000000001fd60f7f
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fff2d100d08 CR3: 000000000c820000 CR4: 0000000000350ee0
+Fixing recursive fault but reboot is needed!

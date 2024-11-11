@@ -1,0 +1,50 @@
+EXT4-fs error (device loop2): htree_dirblock_to_tree:1027: inode #2: block 16: comm syz-executor: bad entry in directory: rec_len is smaller than minimal - offset=108, inode=646161, rec_len=0, name_len=0, size=4096
+==================================================================
+BUG: KASAN: use-after-free in crc16+0xcb/0xe0 lib/crc16.c:58
+Read of size 1 at addr ffff88800f8c2000 by task syz-executor/6636
+
+CPU: 1 PID: 6636 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ crc16+0xcb/0xe0 lib/crc16.c:58
+ ext4_group_desc_csum+0x62d/0x8a0 fs/ext4/super.c:2837
+ ext4_group_desc_csum_set+0xc3/0x1a0 fs/ext4/super.c:2860
+ ext4_free_blocks+0xe32/0x22a0 fs/ext4/mballoc.c:5476
+ ext4_xattr_release_block+0x5a7/0x840 fs/ext4/xattr.c:1256
+ ext4_xattr_delete_inode+0xaa7/0xda0 fs/ext4/xattr.c:2920
+ ext4_evict_inode+0xb87/0x1890 fs/ext4/inode.c:290
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ do_unlinkat+0x3ee/0x650 fs/namei.c:3903
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f99523b44a7
+Code: 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 57 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffdc74046c8 EFLAGS: 00000206 ORIG_RAX: 0000000000000057
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f99523b44a7
+RDX: 00007ffdc74046f0 RSI: 00007ffdc7404780 RDI: 00007ffdc7404780
+RBP: 00007ffdc7404780 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000100 R11: 0000000000000206 R12: 00007ffdc7405870
+R13: 00007f9952427a14 R14: 0000000000017507 R15: 00007ffdc7407a20
+
+The buggy address belongs to the page:
+page:0000000093fff4ba refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xf8c2
+flags: 0x100000000000000()
+raw: 0100000000000000 ffffea000044cbc8 ffffea0000db2ac8 0000000000000000
+raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88800f8c1f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88800f8c1f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff88800f8c2000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                   ^
+ ffff88800f8c2080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff88800f8c2100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================

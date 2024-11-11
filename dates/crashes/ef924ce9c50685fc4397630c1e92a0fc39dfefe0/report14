@@ -1,0 +1,159 @@
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+capability: warning: `syz.2.35' uses 32-bit capabilities (legacy support in use)
+tmpfs: Unknown parameter '“'
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+syz-executor/236 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff88800b7d94a8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88800b7d94a8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 70956
+hardirqs last  enabled at (70956): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (70956): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (70955): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (70955): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (70834): [<ffffffff8357f6e5>] tcp_close+0x8d5/0x1280 net/ipv4/tcp.c:2578
+softirqs last disabled at (70893): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor/236:
+ #0: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #1: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 1 PID: 236 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:native_irq_disable arch/x86/include/asm/irqflags.h:49 [inline]
+RIP: 0010:arch_local_irq_disable arch/x86/include/asm/irqflags.h:89 [inline]
+RIP: 0010:arch_local_irq_save arch/x86/include/asm/irqflags.h:121 [inline]
+RIP: 0010:lock_is_held_type+0x25/0x100 kernel/locking/lockdep.c:5472
+Code: 00 00 00 00 90 41 57 41 56 41 89 f6 41 55 41 54 55 48 89 fd 53 48 83 ec 08 e8 47 56 3e fd 84 c0 0f 84 b8 00 00 00 9c 8f 04 24 <fa> 48 c7 c7 80 df 46 84 31 db e8 0c 13 00 00 65 4c 8b 24 25 40 ef
+RSP: 0018:ffff88801969fb50 EFLAGS: 00000202
+RAX: 0000000000000001 RBX: 1ffff110032d3f76 RCX: 1ffffffff0bacf77
+RDX: 0000000000000000 RSI: 00000000ffffffff RDI: ffff888008c5a34c
+RBP: ffffffff850e7e40 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: fffffbfff0bacd81 R11: 0000000000000001 R12: 0000000000000001
+R13: ffffffff850e7f00 R14: 00000000ffffffff R15: 0000000000000000
+ lock_is_held include/linux/lockdep.h:271 [inline]
+ rcu_read_lock_sched_held+0x3a/0x70 kernel/rcu/update.c:123
+ trace_lock_acquire include/trace/events/lock.h:13 [inline]
+ lock_acquire+0x6ba/0x9b0 kernel/locking/lockdep.c:5408
+ rcu_lock_acquire include/linux/rcupdate.h:248 [inline]
+ rcu_read_lock include/linux/rcupdate.h:641 [inline]
+ percpu_ref_get_many include/linux/percpu-refcount.h:202 [inline]
+ percpu_ref_get include/linux/percpu-refcount.h:222 [inline]
+ obj_cgroup_get include/linux/memcontrol.h:512 [inline]
+ memcg_slab_post_alloc_hook+0x197/0x410 mm/slab.h:343
+ slab_post_alloc_hook mm/slab.h:541 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x15f/0x330 mm/slub.c:2904
+ __d_alloc+0x2a/0x990 fs/dcache.c:1709
+ d_alloc_pseudo+0x19/0x70 fs/dcache.c:1838
+ alloc_file_pseudo+0xce/0x250 fs/file_table.c:226
+ sock_alloc_file+0x4f/0x190 net/socket.c:411
+ sock_map_fd net/socket.c:435 [inline]
+ __sys_socket+0x13d/0x200 net/socket.c:1524
+ __do_sys_socket net/socket.c:1529 [inline]
+ __se_sys_socket net/socket.c:1527 [inline]
+ __x64_sys_socket+0x6f/0xb0 net/socket.c:1527
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ff830db2e17
+Code: f0 ff ff 77 06 c3 0f 1f 44 00 00 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 b8 29 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd5b450a78 EFLAGS: 00000202 ORIG_RAX: 0000000000000029
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007ff830db2e17
+RDX: 0000000000000006 RSI: 0000000000000001 RDI: 0000000000000002
+RBP: 00007ffd5b45115c R08: 000000000000000a R09: 00007ffd5b450e77
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000032
+R13: 0000000000007537 R14: 0000000000007513 R15: 00007ffd5b4511b0
+FAT-fs (loop2): Unrecognized mount option "ÿÿÿÿÿÿÿÿ184467440737095516150xffffffffffffffff" or missing value
+EXT4-fs error (device loop1): ext4_orphan_get:1385: inode #13: comm syz.1.37: iget: bad extra_isize 288 (inode size 256)
+EXT4-fs error (device loop1): ext4_orphan_get:1388: comm syz.1.37: couldn't read orphan inode 13 (err -117)
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs warning (device loop1): dx_probe:775: inode #2: comm syz.1.37: Unrecognised inode hash code 20
+EXT4-fs warning (device loop1): dx_probe:886: inode #2: comm syz.1.37: Corrupt directory, running e2fsck is recommended
+EXT4-fs warning (device loop1): dx_probe:775: inode #2: comm syz.1.37: Unrecognised inode hash code 20
+EXT4-fs warning (device loop1): dx_probe:886: inode #2: comm syz.1.37: Corrupt directory, running e2fsck is recommended
+EXT4-fs error (device loop1): ext4_find_dest_de:1947: inode #2: block 13: comm syz.1.37: bad entry in directory: rec_len % 4 != 0 - offset=108, inode=4294901777, rec_len=65535, name_len=9, size=1024
+----------------
+Code disassembly (best guess):
+   0:	00 00                	add    %al,(%rax)
+   2:	00 00                	add    %al,(%rax)
+   4:	90                   	nop
+   5:	41 57                	push   %r15
+   7:	41 56                	push   %r14
+   9:	41 89 f6             	mov    %esi,%r14d
+   c:	41 55                	push   %r13
+   e:	41 54                	push   %r12
+  10:	55                   	push   %rbp
+  11:	48 89 fd             	mov    %rdi,%rbp
+  14:	53                   	push   %rbx
+  15:	48 83 ec 08          	sub    $0x8,%rsp
+  19:	e8 47 56 3e fd       	call   0xfd3e5665
+  1e:	84 c0                	test   %al,%al
+  20:	0f 84 b8 00 00 00    	je     0xde
+  26:	9c                   	pushf
+  27:	8f 04 24             	pop    (%rsp)
+* 2a:	fa                   	cli <-- trapping instruction
+  2b:	48 c7 c7 80 df 46 84 	mov    $0xffffffff8446df80,%rdi
+  32:	31 db                	xor    %ebx,%ebx
+  34:	e8 0c 13 00 00       	call   0x1345
+  39:	65                   	gs
+  3a:	4c                   	rex.WR
+  3b:	8b                   	.byte 0x8b
+  3c:	24 25                	and    $0x25,%al
+  3e:	40 ef                	rex out %eax,(%dx)

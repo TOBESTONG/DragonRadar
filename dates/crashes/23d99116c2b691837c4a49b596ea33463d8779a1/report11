@@ -1,0 +1,300 @@
+EXT4-fs (loop1): re-mounted. Opts: (null)
+EXT4-fs warning (device loop1): ext4_multi_mount_protect:324: MMP startup interrupted, failing mount
+==================================================================
+BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+BUG: KASAN: use-after-free in atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+BUG: KASAN: use-after-free in __refcount_add include/linux/refcount.h:193 [inline]
+BUG: KASAN: use-after-free in __refcount_inc include/linux/refcount.h:250 [inline]
+BUG: KASAN: use-after-free in refcount_inc include/linux/refcount.h:267 [inline]
+BUG: KASAN: use-after-free in get_task_struct include/linux/sched/task.h:104 [inline]
+BUG: KASAN: use-after-free in kthread_stop+0x76/0x6c0 kernel/kthread.c:591
+Write of size 4 at addr ffff88800ab9b420 by task syz-executor/236
+
+CPU: 1 PID: 236 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0xf9/0x1e0 mm/kasan/generic.c:192
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+ __refcount_add include/linux/refcount.h:193 [inline]
+ __refcount_inc include/linux/refcount.h:250 [inline]
+ refcount_inc include/linux/refcount.h:267 [inline]
+ get_task_struct include/linux/sched/task.h:104 [inline]
+ kthread_stop+0x76/0x6c0 kernel/kthread.c:591
+ ext4_put_super+0x9ad/0x11b0 fs/ext4/super.c:1265
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fc7fd23c227
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007fffd2493cd8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007fc7fd2ada14 RCX: 00007fc7fd23c227
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007fffd2493d90
+RBP: 00007fffd2493d90 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fffd2494e10
+R13: 00007fc7fd2ada14 R14: 0000000000007cc7 R15: 00007fffd2494e50
+
+Allocated by task 2:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ kmem_cache_alloc_node+0x155/0x340 mm/slub.c:2927
+ alloc_task_struct_node kernel/fork.c:170 [inline]
+ dup_task_struct kernel/fork.c:860 [inline]
+ copy_process+0x45fe/0x69f0 kernel/fork.c:1938
+ kernel_clone+0xe7/0xa80 kernel/fork.c:2456
+ kernel_thread+0xb5/0xf0 kernel/fork.c:2508
+ create_kthread kernel/kthread.c:315 [inline]
+ kthreadd+0x4bb/0x710 kernel/kthread.c:633
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+
+Freed by task 122:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ __put_task_struct+0x25a/0x3e0 kernel/fork.c:741
+ put_task_struct include/linux/sched/task.h:113 [inline]
+ delayed_put_task_struct+0x1c2/0x310 kernel/exit.c:172
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+
+Last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:178
+ finish_task_switch+0x582/0x830 kernel/sched/core.c:3652
+ context_switch kernel/sched/core.c:3782 [inline]
+ __schedule+0x888/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ do_syslog.part.0+0x738/0x880 kernel/printk/printk.c:1611
+ do_syslog+0x49/0x60 kernel/printk/printk.c:1596
+ kmsg_read+0x90/0xb0 fs/proc/kmsg.c:40
+ pde_read fs/proc/inode.c:321 [inline]
+ proc_reg_read+0x11c/0x300 fs/proc/inode.c:331
+ vfs_read+0x228/0x580 fs/read_write.c:494
+ ksys_read+0x12d/0x250 fs/read_write.c:634
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Second to last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:178
+ finish_task_switch+0x582/0x830 kernel/sched/core.c:3652
+ context_switch kernel/sched/core.c:3782 [inline]
+ __schedule+0x888/0x2030 kernel/sched/core.c:4528
+ preempt_schedule_common+0x45/0xc0 kernel/sched/core.c:4687
+ preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:40
+ unwind_next_frame+0xc2e/0x2640 arch/x86/kernel/unwind_orc.c:608
+ arch_stack_walk+0x83/0xf0 arch/x86/kernel/stacktrace.c:25
+ stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:121
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ kmem_cache_zalloc include/linux/slab.h:654 [inline]
+ __kernfs_new_node+0xd4/0x930 fs/kernfs/dir.c:627
+ kernfs_new_node+0x93/0x120 fs/kernfs/dir.c:689
+ __kernfs_create_file+0x51/0x350 fs/kernfs/file.c:1002
+ sysfs_add_file_mode_ns+0x221/0x560 fs/sysfs/file.c:306
+ create_files fs/sysfs/group.c:64 [inline]
+ internal_create_group+0x313/0xb80 fs/sysfs/group.c:149
+ internal_create_groups.part.0+0x90/0x140 fs/sysfs/group.c:189
+ internal_create_groups fs/sysfs/group.c:185 [inline]
+ sysfs_create_groups+0x25/0x50 fs/sysfs/group.c:215
+ create_dir lib/kobject.c:100 [inline]
+ kobject_add_internal+0x5d1/0xb20 lib/kobject.c:255
+ kobject_add_varg lib/kobject.c:390 [inline]
+ kobject_init_and_add+0x101/0x160 lib/kobject.c:473
+ ext4_register_sysfs+0xb5/0x2c0 fs/ext4/sysfs.c:510
+ ext4_fill_super+0x8abd/0xd960 fs/ext4/super.c:5045
+ mount_bdev+0x350/0x410 fs/super.c:1419
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff88800ab9b400
+ which belongs to the cache task_struct of size 6400
+The buggy address is located 32 bytes inside of
+ 6400-byte region [ffff88800ab9b400, ffff88800ab9cd00)
+The buggy address belongs to the page:
+page:00000000118c629f refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xab98
+head:00000000118c629f order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x100000000010200(slab|head)
+raw: 0100000000010200 ffffea00004e5a00 0000000200000002 ffff888008138dc0
+raw: 0000000000000000 0000000000040004 00000001ffffffff ffff88800bdcbf01
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff88800bdcbf01
+
+Memory state around the buggy address:
+ ffff88800ab9b300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88800ab9b380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff88800ab9b400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                               ^
+ ffff88800ab9b480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88800ab9b500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+------------[ cut here ]------------
+refcount_t: addition on 0; use-after-free.
+WARNING: CPU: 1 PID: 236 at lib/refcount.c:25 refcount_warn_saturate+0x20d/0x2a0 lib/refcount.c:25
+Modules linked in:
+CPU: 1 PID: 236 Comm: syz-executor Tainted: G    B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:refcount_warn_saturate+0x20d/0x2a0 lib/refcount.c:25
+Code: 01 31 ff 89 de e8 a3 62 46 ff 84 db 0f 85 14 ff ff ff e8 16 6b 46 ff 48 c7 c7 40 e8 5c 84 c6 05 23 94 d4 03 01 e8 2f 00 dc 01 <0f> 0b e9 f5 fe ff ff e8 f7 6a 46 ff 0f b6 1d 0a 94 d4 03 bf 01 00
+RSP: 0018:ffff88801927fd58 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff888019270000 RSI: ffffffff812d93c5 RDI: ffffed100324ff9d
+RBP: ffff88800ab9b420 R08: 0000000000000001 R09: ffff88806cf2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800ab9b420
+R13: ffff88800ab9b400 R14: 0000000000000000 R15: ffff888008a183d0
+FS:  0000555555c02500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f40a8506000 CR3: 0000000019280000 CR4: 0000000000350ee0
+Call Trace:
+ __refcount_add include/linux/refcount.h:199 [inline]
+ __refcount_inc include/linux/refcount.h:250 [inline]
+ refcount_inc include/linux/refcount.h:267 [inline]
+ get_task_struct include/linux/sched/task.h:104 [inline]
+ kthread_stop+0x5b2/0x6c0 kernel/kthread.c:591
+ ext4_put_super+0x9ad/0x11b0 fs/ext4/super.c:1265
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fc7fd23c227
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007fffd2493cd8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007fc7fd2ada14 RCX: 00007fc7fd23c227
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007fffd2493d90
+RBP: 00007fffd2493d90 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fffd2494e10
+R13: 00007fc7fd2ada14 R14: 0000000000007cc7 R15: 00007fffd2494e50
+irq event stamp: 105648
+hardirqs last  enabled at (105647): [<ffffffff817344eb>] quarantine_put+0xab/0x1c0 mm/kasan/quarantine.c:217
+hardirqs last disabled at (105648): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (105648): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (104980): [<ffffffff8109c73e>] copy_kernel_to_xregs arch/x86/include/asm/fpu/internal.h:344 [inline]
+softirqs last  enabled at (104980): [<ffffffff8109c73e>] __fpu__restore_sig+0xf0e/0x1690 arch/x86/kernel/fpu/signal.c:366
+softirqs last disabled at (104978): [<ffffffff8109c1bc>] __fpu__restore_sig+0x98c/0x1690 arch/x86/kernel/fpu/signal.c:326
+---[ end trace 424f471f4cf9ecf7 ]---
+general protection fault, probably for non-canonical address 0x1d7ddfe220040: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 116 Comm: systemd-udevd Tainted: G    B   W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:compound_head include/linux/page-flags.h:185 [inline]
+RIP: 0010:virt_to_head_page include/linux/mm.h:860 [inline]
+RIP: 0010:qlink_to_cache mm/kasan/quarantine.c:130 [inline]
+RIP: 0010:qlist_free_all+0x8d/0xd0 mm/kasan/quarantine.c:167
+Code: df 48 85 db 75 cc 48 89 f0 4c 01 e8 72 56 4c 89 f2 48 2b 15 25 65 57 03 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 03 65 57 03 <48> 8b 50 08 48 8d 4a ff 83 e2 01 48 0f 45 c1 48 8b 78 18 eb 93 49
+RSP: 0018:ffff88801109fcd0 EFLAGS: 00010203
+RAX: 0001d7ddfe220040 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000777f80000000 RSI: 007affff888013fb RDI: 0000000000000000
+RBP: dffffc0000000000 R08: 0000000000000003 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801109fd08
+R13: 0000000080000000 R14: ffffffff80000000 R15: 007affff888013fb
+FS:  00007fa465c1e8c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005615f646a0a8 CR3: 000000000fb3a000 CR4: 0000000000350ee0
+Call Trace:
+ quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:267
+ __kasan_kmalloc.constprop.0+0x9e/0xd0 mm/kasan/common.c:442
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
+ getname_flags fs/namei.c:2647 [inline]
+ user_path_at_empty+0xa1/0x100 fs/namei.c:2647
+ do_readlinkat+0xcd/0x2f0 fs/stat.c:407
+ __do_sys_readlinkat fs/stat.c:434 [inline]
+ __se_sys_readlinkat fs/stat.c:431 [inline]
+ __x64_sys_readlinkat+0x93/0xf0 fs/stat.c:431
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fa4660cc13a
+Code: 48 8b 0d 59 0d 0e 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 0b 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 26 0d 0e 00 f7 d8 64 89 01 48
+RSP: 002b:00007ffd291b0928 EFLAGS: 00000202 ORIG_RAX: 000000000000010b
+RAX: ffffffffffffffda RBX: 0000000000001001 RCX: 00007fa4660cc13a
+RDX: 00005615f6487020 RSI: 00007ffd291b09b0 RDI: 00000000ffffff9c
+RBP: 00005615f6487020 R08: 00005615f6487020 R09: 00007fa4661adbe0
+R10: 0000000000001000 R11: 0000000000000202 R12: 00007ffd291b09b0
+R13: 00000000ffffff9c R14: 0000000000000001 R15: 0000000000001000
+Modules linked in:
+---[ end trace 424f471f4cf9ecf8 ]---
+RIP: 0010:compound_head include/linux/page-flags.h:185 [inline]
+RIP: 0010:virt_to_head_page include/linux/mm.h:860 [inline]
+RIP: 0010:qlink_to_cache mm/kasan/quarantine.c:130 [inline]
+RIP: 0010:qlist_free_all+0x8d/0xd0 mm/kasan/quarantine.c:167
+Code: df 48 85 db 75 cc 48 89 f0 4c 01 e8 72 56 4c 89 f2 48 2b 15 25 65 57 03 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 03 65 57 03 <48> 8b 50 08 48 8d 4a ff 83 e2 01 48 0f 45 c1 48 8b 78 18 eb 93 49
+RSP: 0018:ffff88801109fcd0 EFLAGS: 00010203
+RAX: 0001d7ddfe220040 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000777f80000000 RSI: 007affff888013fb RDI: 0000000000000000
+RBP: dffffc0000000000 R08: 0000000000000003 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801109fd08
+R13: 0000000080000000 R14: ffffffff80000000 R15: 007affff888013fb
+FS:  00007fa465c1e8c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f572620e000 CR3: 000000000fb3a000 CR4: 0000000000350ee0
+----------------
+Code disassembly (best guess):
+   0:	df 48 85             	fisttps -0x7b(%rax)
+   3:	db 75 cc             	(bad)  -0x34(%rbp)
+   6:	48 89 f0             	mov    %rsi,%rax
+   9:	4c 01 e8             	add    %r13,%rax
+   c:	72 56                	jb     0x64
+   e:	4c 89 f2             	mov    %r14,%rdx
+  11:	48 2b 15 25 65 57 03 	sub    0x3576525(%rip),%rdx        # 0x357653d
+  18:	48 01 d0             	add    %rdx,%rax
+  1b:	48 c1 e8 0c          	shr    $0xc,%rax
+  1f:	48 c1 e0 06          	shl    $0x6,%rax
+  23:	48 03 05 03 65 57 03 	add    0x3576503(%rip),%rax        # 0x357652d
+* 2a:	48 8b 50 08          	mov    0x8(%rax),%rdx <-- trapping instruction
+  2e:	48 8d 4a ff          	lea    -0x1(%rdx),%rcx
+  32:	83 e2 01             	and    $0x1,%edx
+  35:	48 0f 45 c1          	cmovne %rcx,%rax
+  39:	48 8b 78 18          	mov    0x18(%rax),%rdi
+  3d:	eb 93                	jmp    0xffffffd2
+  3f:	49                   	rex.WB

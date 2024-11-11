@@ -1,0 +1,67 @@
+netlink: 'syz.2.267': attribute type 4 has an invalid length.
+netlink: 188 bytes leftover after parsing attributes in process `syz.2.269'.
+9pnet: Insufficient options for proto=fd
+------------[ cut here ]------------
+kernel BUG at fs/buffer.c:3015!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 6284 Comm: kmmpd-loop0 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:submit_bh_wbc+0x5f2/0x7c0 fs/buffer.c:3015
+Code: ff e8 12 e4 bf ff 41 81 cc 00 10 00 00 e9 15 ff ff ff e8 01 e4 bf ff 0f 0b 48 c7 c7 40 3a 29 85 e8 02 61 5a 02 e8 ee e3 bf ff <0f> 0b 48 c7 c7 00 3a 29 85 e8 ef 60 5a 02 e8 db e3 bf ff 0f 0b 48
+RSP: 0018:ffff88801c207d70 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888013eec3a0 RCX: ffffffff81862583
+RDX: ffff88801c2bce00 RSI: ffffffff81862ad2 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888013eec3a7
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000003800
+R13: 0000000000000001 R14: 0000000000000000 R15: ffff888018146000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe25530a8d0 CR3: 000000000c6b2000 CR4: 0000000000350ef0
+Call Trace:
+ write_mmp_block+0x333/0x6e0 fs/ext4/mmp.c:55
+ kmmpd+0x428/0xab0 fs/ext4/mmp.c:167
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+EXT4-fs (loop2): Ignoring removed mblk_io_submit option
+EXT4-fs (loop2): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+---[ end trace 556c40cb300bc3f2 ]---
+RIP: 0010:submit_bh_wbc+0x5f2/0x7c0 fs/buffer.c:3015
+Code: ff e8 12 e4 bf ff 41 81 cc 00 10 00 00 e9 15 ff ff ff e8 01 e4 bf ff 0f 0b 48 c7 c7 40 3a 29 85 e8 02 61 5a 02 e8 ee e3 bf ff <0f> 0b 48 c7 c7 00 3a 29 85 e8 ef 60 5a 02 e8 db e3 bf ff 0f 0b 48
+EXT4-fs error (device loop2): ext4_xattr_inode_iget:389: comm syz.2.269: inode #1: comm syz.2.269: iget: illegal inode #
+EXT4-fs (loop2): Remounting filesystem read-only
+EXT4-fs error (device loop2): ext4_xattr_inode_iget:392: comm syz.2.269: error while reading EA inode 1 err=-117
+EXT4-fs error (device loop2): ext4_evict_inode:282: comm syz.2.269: couldn't truncate inode 15 (err -30)
+RSP: 0018:ffff88801c207d70 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888013eec3a0 RCX: ffffffff81862583
+RDX: ffff88801c2bce00 RSI: ffffffff81862ad2 RDI: 0000000000000001
+EXT4-fs (loop2): 1 orphan inode deleted
+EXT4-fs (loop2): mounted filesystem without journal. Opts: dioread_nolock,nogrpid,debug_want_extra_isize=0x000000000000005c,noauto_da_alloc,mblk_io_submit,errors=continue,errors=remount-ro,
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888013eec3a7
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000003800
+R13: 0000000000000001 R14: 0000000000000000 R15: ffff888018146000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe2552838d0 CR3: 000000000beb0000 CR4: 0000000000350ef0
+EXT4-fs warning: 387 callbacks suppressed
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning: 456 callbacks suppressed
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop0): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768

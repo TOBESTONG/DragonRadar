@@ -1,0 +1,420 @@
+Extracting prog: 42m23.07586562s
+Minimizing prog: 0s
+Simplifying prog options: 0s
+Extracting C: 0s
+Simplifying C: 0s
+
+
+24 programs, timeouts [30s 1m40s 6m0s]
+extracting reproducer from 24 programs
+testing a last program of every proc
+single: executing 4 programs separately with timeout 30s
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_open_procfs$pagemap-mprotect-futex
+detailed listing:
+executing program 0:
+syz_open_procfs$pagemap(0x0, &(0x7f0000000000))
+mprotect(&(0x7f0000000000/0x4000)=nil, 0x4000, 0x1)
+futex(&(0x7f0000000100), 0x0, 0x0, 0x0, 0x0, 0x0)
+
+program did not crash
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$inet6-connect$inet6-sendmmsg$inet6
+detailed listing:
+executing program 0:
+r0 = socket$inet6(0xa, 0x2, 0x0)
+connect$inet6(r0, &(0x7f0000000080)={0xa, 0x0, 0x0, @dev, 0x2}, 0x1c)
+sendmmsg$inet6(r0, &(0x7f00000084c0)=[{{&(0x7f00000028c0)={0xa, 0x4e23, 0x0, @ipv4={'\x00', '\xff\xff', @loopback}}, 0x1c, 0x0}}], 0x1, 0x0)
+
+program did not crash
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$inet6-connect$inet6-bind$inet6
+detailed listing:
+executing program 0:
+r0 = socket$inet6(0xa, 0x2, 0x3a)
+connect$inet6(r0, &(0x7f0000000000)={0xa, 0x0, 0x0, @mcast1, 0x2}, 0x1c)
+bind$inet6(r0, &(0x7f00000002c0)={0xa, 0x0, 0x0, @loopback}, 0x1c)
+
+program did not crash
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): mkdir-openat-getdents
+detailed listing:
+executing program 0:
+mkdir(&(0x7f0000000100)='./file0\x00', 0x0)
+r0 = openat(0xffffffffffffff9c, &(0x7f0000004280)='./file0\x00', 0x0, 0x0)
+getdents(r0, 0x0, 0x48)
+
+program did not crash
+single: failed to extract reproducer
+bisect: bisecting 24 programs with base timeout 30s
+testing program (duration=36s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+detailed listing:
+executing program 2:
+r0 = syz_init_net_socket$nl_generic(0x10, 0x3, 0x10)
+r1 = syz_genetlink_get_family_id$netlbl_unlabel(&(0x7f0000000580), r0)
+sendmsg$NLBL_UNLABEL_C_STATICLIST(r0, &(0x7f0000000640)={0x0, 0x0, &(0x7f0000000600)={&(0x7f00000005c0)={0x14, r1, 0x37b42367c07537c9}, 0x14}}, 0x0)
+executing program 2:
+r0 = syz_clone(0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+ptrace(0x10, r0)
+ptrace$cont(0x18, r0, 0x0, 0x0)
+executing program 2:
+r0 = socket$inet_udplite(0x2, 0x2, 0x88)
+setsockopt$inet_udp_int(r0, 0x11, 0x67, &(0x7f0000000000)=0x3, 0x4)
+sendto$inet(r0, 0x0, 0x0, 0x8000, &(0x7f00000001c0)={0x2, 0x4e22, @loopback}, 0x10)
+executing program 2:
+syz_mount_image$vfat(&(0x7f0000000180), &(0x7f0000000040)='./file0\x00', 0x300081a, &(0x7f00000001c0)=ANY=[@ANYBLOB="7379735f696d6d757461626c652c666d61736b3d30313737373737373737373737373737373737373737332c73686f72746e616d653d6c6f7765722c636865636b3d7374726963742c2c756e695f786c6174653d302c726f6469722c726f6469722c73686f72746e616d653d6c6f7765722c73686f72746e616d653d6c6f7765722c6e6f6e756d7461696c3d302c756e695f786c6174653d312c756e695f786c6174653d312c6572726f72733d636f6e74696e75652c74696d655f6f66667365743d3078303030303030303030303030303465302c757466383d302c0077b5b28056fc4549d277ed7fab6b0be29df17f888ccab55cccc917ad315c8ea56f5a89c104f92d058b92f5881e69e06002f5914c03fef3eb09121733eaf5ded73df976fbd4cfcb8b70b0bf44da1b46bc3935431d5e60a641f9e4ebbf71c77fc9a810ce726b8c6d6295a5f2e2b069b95ba8ecce52ded99b82923228c37d5e1ec11cdbcabb8a89cbf2cf2771d69e3cf0e6760094145e542e426bceaab9b2cf261046247bce0565db3ac5888b74efd48bc9f455e60f49496ca8137aba85fe39756814fda1f0624b33a2025792a477ccfff09befb1d0cf1599d272628028b9786e1fbfb3d637c2561421488c9de8d3739a94bf13ac582f6b67de0cad933631794271b2259fe5d73a74ad7da615c31505c7c0c168052d38e5b64c4bb7d0599e5dcf0000000000000000000000000000002790cf17418aa278cfc0c9d1c81c63e58b877706a4b7eed8a5aff253298db2939adc0efdab4745ab0e09ef8beaaf04e5374c2e7e4672e47fe5a25502919954242f8d779d84091f20646210edf871d3f20ad66fcf4b816323b8abb307381d4ada887dcc71e35f364baa1b93fd5ee36c02aa4628511442992ced893ab946472440b53fc08cc41403e167b1f2605e04d5f0c16ed49969b59d650d88642b10c7893fe9b664421a40f4822ffcc284dfe9aea76e4a04293c970f2dae776decf07b085e16511b0bd365b0f86c7fcd8df00a87f4dbbf8e623667e3b65e4c487055a2e5cd64402a4de537bf113fc7370099e4faebe6ea9d4f155f8f5f4c5f9b205ce1bbc8c0002a19457e05a210d9e9820bc7f318ebfdfcc22f83150503b2", @ANYRES16], 0xd, 0x2a0, &(0x7f0000000840)="$eJzs3c9qM1UUAPAzSZpGXSSIG0VwQBeuyle3bhrlE8SulAjqQoNtQZJQaCFgBWNXfQKXvoeP4MaNbyC4Fdy1i8rIZGaahKZ/qDGF+vutDnPnnHsyt6SrnPnq9dFg7zCJ0/Pfo9VKorYTO3GRRCdqUfkhGgEAPB0XWRZ/ZQ/JbNRW3w0AsA7F///CY/cCAKzHJ599/lF3d/f5x2nailfbZ+NeEhGjs3GvWO8exDcxjP14Fu24jMiuFPEHH+4+j0aa68Rbo8m4l2eOvvy1rN/9M2Kavx3t6CzP304Lc/mTcW8jXow0ugcbVavteGV5/jtL8qPXjLffnOt/K9rx29dxGMPYizx3lv/9dpq+n/14/t0X+TZ5flKL3ub0vpmsvs5zAQAAAAAAAAAAAAAAAAAAAADgadtK06QY3zOd35NfKufv1C+n61tppbM4n6fIT6pCxXygLMoRPZMsfqrm6zxL0zQrb5zlN+K1hhcLAAAAAAAAAAAAAAAAAAAAQO7425NBfzjcP1pJUE0DqH7W/9A6O3NX3oiTQb9+c8HN++81P20g7/XWm6PRiBU9lruCF/J+Vl55c3a4n0YRVAez0r1efq8oejLop+VS9ZAH/eSuvVrVwf08v9SMf9tYNv2TuMwWz7R11epiVnNFT6P50tKlv7Msu1+dd/8ozqi8kkxHbNxv940yWPoB86B1/Sx+ubngjV8Z9ZV88QAAAAAAAAAAAAAAAAAAANfMfvS7ZPH01tTaf9YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKzZ7P3/VdCKiMUr14JJmXzbPWXQjKPjR/6IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/A/8EwAA//9s0FAH")
+mkdir(&(0x7f0000000000)='./file0\x00', 0x1)
+mount(0x0, &(0x7f0000000080)='./file0\x00', &(0x7f00000002c0)='rpc_pipefs\x00', 0x0, 0x0)
+executing program 2:
+socketpair$unix(0x1, 0x1, 0x0, &(0x7f0000029000)={<r0=>0xffffffffffffffff, <r1=>0xffffffffffffffff})
+ioctl$int_in(r0, 0x5452, &(0x7f0000b28000)=0x3e)
+shutdown(r1, 0x1)
+executing program 2:
+mkdir(&(0x7f0000000100)='./file0\x00', 0x0)
+r0 = openat(0xffffffffffffff9c, &(0x7f0000004280)='./file0\x00', 0x0, 0x0)
+getdents(r0, 0x0, 0x48)
+executing program 3:
+r0 = socket$nl_generic(0x10, 0x3, 0x10)
+r1 = syz_genetlink_get_family_id$ethtool(&(0x7f0000000100), 0xffffffffffffffff)
+sendmsg$ETHTOOL_MSG_LINKMODES_GET(r0, &(0x7f0000000180)={0x0, 0x0, &(0x7f0000000040)={&(0x7f0000000440)={0x14, r1, 0xb03, 0x0, 0x0, {0x1c, 0x0, 0x30}}, 0x14}}, 0x0)
+executing program 1:
+r0 = socket(0x10, 0x3, 0x0)
+setsockopt$netlink_NETLINK_TX_RING(r0, 0x10e, 0xc, &(0x7f0000000040)={0x802}, 0x10)
+sendmsg$nl_generic(r0, &(0x7f0000000a80)={0x0, 0x0, &(0x7f0000000080)={&(0x7f00000000c0)={0x1c, 0x52, 0x1, 0x0, 0x0, {0xa}, [@typed={0x8, 0x1, 0x0, 0x0, @binary="feffffff"}]}, 0x1c}}, 0x0)
+executing program 3:
+syz_open_procfs(0x0, &(0x7f0000000100)='net/fib_triestat\x00')
+r0 = syz_open_dev$tty20(0xc, 0x4, 0x0)
+ioctl$KDGKBDIACR(r0, 0x4b4a, &(0x7f0000000180)=""/4096)
+executing program 0:
+r0 = add_key$keyring(&(0x7f0000000080), &(0x7f00000000c0)={'syz', 0x0}, 0x0, 0x0, 0xfffffffffffffffd)
+r1 = add_key$keyring(&(0x7f0000000140), &(0x7f0000000180)={'syz', 0x1}, 0x0, 0x0, r0)
+keyctl$KEYCTL_MOVE(0x1e, r1, r0, r1, 0x0)
+executing program 1:
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x2601, 0x9, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0, 0xc}, 0x3250, 0x7, 0x0, 0x3}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+r0 = socket$nl_route(0x10, 0x3, 0x0)
+sendmsg$nl_route_sched_retired(r0, &(0x7f0000006ac0)={0x0, 0x0, &(0x7f0000006a80)={&(0x7f0000000200)=@newtaction={0x44, 0x30, 0x1, 0x0, 0x0, {}, [{0x30, 0x1, [@m_ipt={0x2c, 0x1, 0x0, 0x0, {{0x8}, {0x4}, {0x4}, {0xfffffffffffffca7}, {0xc}}}]}]}, 0x44}}, 0x84)
+executing program 0:
+r0 = perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0xc, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0, 0xb}, 0x0, 0x0, 0x0, 0x0, 0x0, 0xa55}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+r1 = getpgrp(0x0)
+fcntl$lock(r0, 0x26, &(0x7f00000000c0)={0x2, 0x0, 0xd, 0xa84, r1})
+executing program 1:
+r0 = openat$ptmx(0xffffffffffffff9c, &(0x7f0000000240), 0x0, 0x0)
+ioctl$TIOCPKT(r0, 0x5420, &(0x7f00000002c0)=0xfc)
+ioctl$TCSETS(r0, 0x5402, &(0x7f0000000040)={0x0, 0x0, 0x0, 0xfffffffc, 0x0, "6b6bc7e134bd1727639d6aefa571a03d1d5a17"})
+executing program 3:
+io_setup(0x8, &(0x7f0000000040)=<r0=>0x0)
+socketpair$unix(0x1, 0x2, 0x0, &(0x7f00000000c0))
+io_submit(r0, 0x0, 0x0)
+executing program 0:
+r0 = socket$igmp(0x2, 0x3, 0x2)
+setsockopt$inet_int(r0, 0x0, 0x4, &(0x7f0000000000), 0x4)
+getsockopt$inet_mreqn(r0, 0x0, 0x4, 0x0, &(0x7f0000000080))
+executing program 1:
+r0 = socket$packet(0x11, 0x2, 0x300)
+setsockopt$packet_rx_ring(r0, 0x107, 0x5, &(0x7f0000000040)=@req3={0x8000, 0x200, 0x80, 0x20000}, 0x1c)
+setsockopt$packet_int(r0, 0x107, 0xa, &(0x7f0000000000), 0x4)
+executing program 3:
+r0 = socket$inet_udplite(0x2, 0x2, 0x88)
+getsockopt$sock_cred(r0, 0x1, 0x11, &(0x7f0000caaffb)={0x0, <r1=>0x0}, &(0x7f0000cab000)=0xc)
+setfsuid(r1)
+executing program 0:
+perf_event_open(&(0x7f000001d000)={0x1, 0x70, 0x0, 0x0, 0x0, 0x0, 0x0, 0x41c1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+r0 = io_uring_setup(0x450a, &(0x7f0000000200)={0x0, 0xf558, 0x8, 0x0, 0x57})
+io_uring_register$IORING_REGISTER_BUFFERS(r0, 0x0, &(0x7f0000000440)=[{&(0x7f0000000280)=""/226, 0xe2}, {&(0x7f0000000380)=""/91, 0x5b}, {&(0x7f0000000180)=""/22, 0x16}, {&(0x7f0000000500)=""/202, 0xca}, {&(0x7f0000000400)=""/19, 0x13}], 0x5)
+executing program 1:
+r0 = socket$inet6(0xa, 0x3, 0x103)
+connect$inet6(r0, &(0x7f0000000000)={0xa, 0x0, 0x0, @loopback}, 0x1c)
+sendmmsg$inet6(r0, &(0x7f0000001700)=[{{0x0, 0x10000000, 0x0, 0x0, 0x0, 0x0, 0xfc}, 0x1030000}], 0x40000000000035c, 0x0)
+executing program 3:
+openat$autofs(0xffffffffffffff9c, &(0x7f0000000000), 0x200802, 0x0)
+r0 = syz_open_procfs(0x0, &(0x7f0000000180)='fd/3\x00')
+ioctl$sock_inet_tcp_SIOCINQ(r0, 0x541b, 0x0)
+executing program 0:
+r0 = socket$inet(0x2, 0x2, 0x1)
+shutdown(r0, 0x0)
+recvmmsg(r0, &(0x7f00000066c0), 0xa0d, 0x0, 0x0)
+executing program 1:
+r0 = socket$inet6(0xa, 0x2, 0x3a)
+connect$inet6(r0, &(0x7f0000000000)={0xa, 0x0, 0x0, @mcast1, 0x2}, 0x1c)
+bind$inet6(r0, &(0x7f00000002c0)={0xa, 0x0, 0x0, @loopback}, 0x1c)
+executing program 3:
+r0 = socket$inet6(0xa, 0x2, 0x0)
+connect$inet6(r0, &(0x7f0000000080)={0xa, 0x0, 0x0, @dev, 0x2}, 0x1c)
+sendmmsg$inet6(r0, &(0x7f00000084c0)=[{{&(0x7f00000028c0)={0xa, 0x4e23, 0x0, @ipv4={'\x00', '\xff\xff', @loopback}}, 0x1c, 0x0}}], 0x1, 0x0)
+executing program 0:
+syz_open_procfs$pagemap(0x0, &(0x7f0000000000))
+mprotect(&(0x7f0000000000/0x4000)=nil, 0x4000, 0x1)
+futex(&(0x7f0000000100), 0x0, 0x0, 0x0, 0x0, 0x0)
+
+program did not crash
+replaying the whole log did not cause a kernel crash
+single: executing 4 programs separately with timeout 1m40s
+testing program (duration=1m40s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_open_procfs$pagemap-mprotect-futex
+detailed listing:
+executing program 0:
+syz_open_procfs$pagemap(0x0, &(0x7f0000000000))
+mprotect(&(0x7f0000000000/0x4000)=nil, 0x4000, 0x1)
+futex(&(0x7f0000000100), 0x0, 0x0, 0x0, 0x0, 0x0)
+
+program did not crash
+testing program (duration=1m40s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$inet6-connect$inet6-sendmmsg$inet6
+detailed listing:
+executing program 0:
+r0 = socket$inet6(0xa, 0x2, 0x0)
+connect$inet6(r0, &(0x7f0000000080)={0xa, 0x0, 0x0, @dev, 0x2}, 0x1c)
+sendmmsg$inet6(r0, &(0x7f00000084c0)=[{{&(0x7f00000028c0)={0xa, 0x4e23, 0x0, @ipv4={'\x00', '\xff\xff', @loopback}}, 0x1c, 0x0}}], 0x1, 0x0)
+
+program did not crash
+testing program (duration=1m40s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$inet6-connect$inet6-bind$inet6
+detailed listing:
+executing program 0:
+r0 = socket$inet6(0xa, 0x2, 0x3a)
+connect$inet6(r0, &(0x7f0000000000)={0xa, 0x0, 0x0, @mcast1, 0x2}, 0x1c)
+bind$inet6(r0, &(0x7f00000002c0)={0xa, 0x0, 0x0, @loopback}, 0x1c)
+
+program did not crash
+testing program (duration=1m40s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): mkdir-openat-getdents
+detailed listing:
+executing program 0:
+mkdir(&(0x7f0000000100)='./file0\x00', 0x0)
+r0 = openat(0xffffffffffffff9c, &(0x7f0000004280)='./file0\x00', 0x0, 0x0)
+getdents(r0, 0x0, 0x48)
+
+program did not crash
+single: failed to extract reproducer
+bisect: bisecting 24 programs with base timeout 1m40s
+testing program (duration=1m46s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+detailed listing:
+executing program 2:
+r0 = syz_init_net_socket$nl_generic(0x10, 0x3, 0x10)
+r1 = syz_genetlink_get_family_id$netlbl_unlabel(&(0x7f0000000580), r0)
+sendmsg$NLBL_UNLABEL_C_STATICLIST(r0, &(0x7f0000000640)={0x0, 0x0, &(0x7f0000000600)={&(0x7f00000005c0)={0x14, r1, 0x37b42367c07537c9}, 0x14}}, 0x0)
+executing program 2:
+r0 = syz_clone(0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+ptrace(0x10, r0)
+ptrace$cont(0x18, r0, 0x0, 0x0)
+executing program 2:
+r0 = socket$inet_udplite(0x2, 0x2, 0x88)
+setsockopt$inet_udp_int(r0, 0x11, 0x67, &(0x7f0000000000)=0x3, 0x4)
+sendto$inet(r0, 0x0, 0x0, 0x8000, &(0x7f00000001c0)={0x2, 0x4e22, @loopback}, 0x10)
+executing program 2:
+syz_mount_image$vfat(&(0x7f0000000180), &(0x7f0000000040)='./file0\x00', 0x300081a, &(0x7f00000001c0)=ANY=[@ANYBLOB="7379735f696d6d757461626c652c666d61736b3d30313737373737373737373737373737373737373737332c73686f72746e616d653d6c6f7765722c636865636b3d7374726963742c2c756e695f786c6174653d302c726f6469722c726f6469722c73686f72746e616d653d6c6f7765722c73686f72746e616d653d6c6f7765722c6e6f6e756d7461696c3d302c756e695f786c6174653d312c756e695f786c6174653d312c6572726f72733d636f6e74696e75652c74696d655f6f66667365743d3078303030303030303030303030303465302c757466383d302c0077b5b28056fc4549d277ed7fab6b0be29df17f888ccab55cccc917ad315c8ea56f5a89c104f92d058b92f5881e69e06002f5914c03fef3eb09121733eaf5ded73df976fbd4cfcb8b70b0bf44da1b46bc3935431d5e60a641f9e4ebbf71c77fc9a810ce726b8c6d6295a5f2e2b069b95ba8ecce52ded99b82923228c37d5e1ec11cdbcabb8a89cbf2cf2771d69e3cf0e6760094145e542e426bceaab9b2cf261046247bce0565db3ac5888b74efd48bc9f455e60f49496ca8137aba85fe39756814fda1f0624b33a2025792a477ccfff09befb1d0cf1599d272628028b9786e1fbfb3d637c2561421488c9de8d3739a94bf13ac582f6b67de0cad933631794271b2259fe5d73a74ad7da615c31505c7c0c168052d38e5b64c4bb7d0599e5dcf0000000000000000000000000000002790cf17418aa278cfc0c9d1c81c63e58b877706a4b7eed8a5aff253298db2939adc0efdab4745ab0e09ef8beaaf04e5374c2e7e4672e47fe5a25502919954242f8d779d84091f20646210edf871d3f20ad66fcf4b816323b8abb307381d4ada887dcc71e35f364baa1b93fd5ee36c02aa4628511442992ced893ab946472440b53fc08cc41403e167b1f2605e04d5f0c16ed49969b59d650d88642b10c7893fe9b664421a40f4822ffcc284dfe9aea76e4a04293c970f2dae776decf07b085e16511b0bd365b0f86c7fcd8df00a87f4dbbf8e623667e3b65e4c487055a2e5cd64402a4de537bf113fc7370099e4faebe6ea9d4f155f8f5f4c5f9b205ce1bbc8c0002a19457e05a210d9e9820bc7f318ebfdfcc22f83150503b2", @ANYRES16], 0xd, 0x2a0, &(0x7f0000000840)="$eJzs3c9qM1UUAPAzSZpGXSSIG0VwQBeuyle3bhrlE8SulAjqQoNtQZJQaCFgBWNXfQKXvoeP4MaNbyC4Fdy1i8rIZGaahKZ/qDGF+vutDnPnnHsyt6SrnPnq9dFg7zCJ0/Pfo9VKorYTO3GRRCdqUfkhGgEAPB0XWRZ/ZQ/JbNRW3w0AsA7F///CY/cCAKzHJ599/lF3d/f5x2nailfbZ+NeEhGjs3GvWO8exDcxjP14Fu24jMiuFPEHH+4+j0aa68Rbo8m4l2eOvvy1rN/9M2Kavx3t6CzP304Lc/mTcW8jXow0ugcbVavteGV5/jtL8qPXjLffnOt/K9rx29dxGMPYizx3lv/9dpq+n/14/t0X+TZ5flKL3ub0vpmsvs5zAQAAAAAAAAAAAAAAAAAAAADgadtK06QY3zOd35NfKufv1C+n61tppbM4n6fIT6pCxXygLMoRPZMsfqrm6zxL0zQrb5zlN+K1hhcLAAAAAAAAAAAAAAAAAAAAQO7425NBfzjcP1pJUE0DqH7W/9A6O3NX3oiTQb9+c8HN++81P20g7/XWm6PRiBU9lruCF/J+Vl55c3a4n0YRVAez0r1efq8oejLop+VS9ZAH/eSuvVrVwf08v9SMf9tYNv2TuMwWz7R11epiVnNFT6P50tKlv7Msu1+dd/8ozqi8kkxHbNxv940yWPoB86B1/Sx+ubngjV8Z9ZV88QAAAAAAAAAAAAAAAAAAANfMfvS7ZPH01tTaf9YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKzZ7P3/VdCKiMUr14JJmXzbPWXQjKPjR/6IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/A/8EwAA//9s0FAH")
+mkdir(&(0x7f0000000000)='./file0\x00', 0x1)
+mount(0x0, &(0x7f0000000080)='./file0\x00', &(0x7f00000002c0)='rpc_pipefs\x00', 0x0, 0x0)
+executing program 2:
+socketpair$unix(0x1, 0x1, 0x0, &(0x7f0000029000)={<r0=>0xffffffffffffffff, <r1=>0xffffffffffffffff})
+ioctl$int_in(r0, 0x5452, &(0x7f0000b28000)=0x3e)
+shutdown(r1, 0x1)
+executing program 2:
+mkdir(&(0x7f0000000100)='./file0\x00', 0x0)
+r0 = openat(0xffffffffffffff9c, &(0x7f0000004280)='./file0\x00', 0x0, 0x0)
+getdents(r0, 0x0, 0x48)
+executing program 3:
+r0 = socket$nl_generic(0x10, 0x3, 0x10)
+r1 = syz_genetlink_get_family_id$ethtool(&(0x7f0000000100), 0xffffffffffffffff)
+sendmsg$ETHTOOL_MSG_LINKMODES_GET(r0, &(0x7f0000000180)={0x0, 0x0, &(0x7f0000000040)={&(0x7f0000000440)={0x14, r1, 0xb03, 0x0, 0x0, {0x1c, 0x0, 0x30}}, 0x14}}, 0x0)
+executing program 1:
+r0 = socket(0x10, 0x3, 0x0)
+setsockopt$netlink_NETLINK_TX_RING(r0, 0x10e, 0xc, &(0x7f0000000040)={0x802}, 0x10)
+sendmsg$nl_generic(r0, &(0x7f0000000a80)={0x0, 0x0, &(0x7f0000000080)={&(0x7f00000000c0)={0x1c, 0x52, 0x1, 0x0, 0x0, {0xa}, [@typed={0x8, 0x1, 0x0, 0x0, @binary="feffffff"}]}, 0x1c}}, 0x0)
+executing program 3:
+syz_open_procfs(0x0, &(0x7f0000000100)='net/fib_triestat\x00')
+r0 = syz_open_dev$tty20(0xc, 0x4, 0x0)
+ioctl$KDGKBDIACR(r0, 0x4b4a, &(0x7f0000000180)=""/4096)
+executing program 0:
+r0 = add_key$keyring(&(0x7f0000000080), &(0x7f00000000c0)={'syz', 0x0}, 0x0, 0x0, 0xfffffffffffffffd)
+r1 = add_key$keyring(&(0x7f0000000140), &(0x7f0000000180)={'syz', 0x1}, 0x0, 0x0, r0)
+keyctl$KEYCTL_MOVE(0x1e, r1, r0, r1, 0x0)
+executing program 1:
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x2601, 0x9, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0, 0xc}, 0x3250, 0x7, 0x0, 0x3}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+r0 = socket$nl_route(0x10, 0x3, 0x0)
+sendmsg$nl_route_sched_retired(r0, &(0x7f0000006ac0)={0x0, 0x0, &(0x7f0000006a80)={&(0x7f0000000200)=@newtaction={0x44, 0x30, 0x1, 0x0, 0x0, {}, [{0x30, 0x1, [@m_ipt={0x2c, 0x1, 0x0, 0x0, {{0x8}, {0x4}, {0x4}, {0xfffffffffffffca7}, {0xc}}}]}]}, 0x44}}, 0x84)
+executing program 0:
+r0 = perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0xc, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0, 0xb}, 0x0, 0x0, 0x0, 0x0, 0x0, 0xa55}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+r1 = getpgrp(0x0)
+fcntl$lock(r0, 0x26, &(0x7f00000000c0)={0x2, 0x0, 0xd, 0xa84, r1})
+executing program 1:
+r0 = openat$ptmx(0xffffffffffffff9c, &(0x7f0000000240), 0x0, 0x0)
+ioctl$TIOCPKT(r0, 0x5420, &(0x7f00000002c0)=0xfc)
+ioctl$TCSETS(r0, 0x5402, &(0x7f0000000040)={0x0, 0x0, 0x0, 0xfffffffc, 0x0, "6b6bc7e134bd1727639d6aefa571a03d1d5a17"})
+executing program 3:
+io_setup(0x8, &(0x7f0000000040)=<r0=>0x0)
+socketpair$unix(0x1, 0x2, 0x0, &(0x7f00000000c0))
+io_submit(r0, 0x0, 0x0)
+executing program 0:
+r0 = socket$igmp(0x2, 0x3, 0x2)
+setsockopt$inet_int(r0, 0x0, 0x4, &(0x7f0000000000), 0x4)
+getsockopt$inet_mreqn(r0, 0x0, 0x4, 0x0, &(0x7f0000000080))
+executing program 1:
+r0 = socket$packet(0x11, 0x2, 0x300)
+setsockopt$packet_rx_ring(r0, 0x107, 0x5, &(0x7f0000000040)=@req3={0x8000, 0x200, 0x80, 0x20000}, 0x1c)
+setsockopt$packet_int(r0, 0x107, 0xa, &(0x7f0000000000), 0x4)
+executing program 3:
+r0 = socket$inet_udplite(0x2, 0x2, 0x88)
+getsockopt$sock_cred(r0, 0x1, 0x11, &(0x7f0000caaffb)={0x0, <r1=>0x0}, &(0x7f0000cab000)=0xc)
+setfsuid(r1)
+executing program 0:
+perf_event_open(&(0x7f000001d000)={0x1, 0x70, 0x0, 0x0, 0x0, 0x0, 0x0, 0x41c1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+r0 = io_uring_setup(0x450a, &(0x7f0000000200)={0x0, 0xf558, 0x8, 0x0, 0x57})
+io_uring_register$IORING_REGISTER_BUFFERS(r0, 0x0, &(0x7f0000000440)=[{&(0x7f0000000280)=""/226, 0xe2}, {&(0x7f0000000380)=""/91, 0x5b}, {&(0x7f0000000180)=""/22, 0x16}, {&(0x7f0000000500)=""/202, 0xca}, {&(0x7f0000000400)=""/19, 0x13}], 0x5)
+executing program 1:
+r0 = socket$inet6(0xa, 0x3, 0x103)
+connect$inet6(r0, &(0x7f0000000000)={0xa, 0x0, 0x0, @loopback}, 0x1c)
+sendmmsg$inet6(r0, &(0x7f0000001700)=[{{0x0, 0x10000000, 0x0, 0x0, 0x0, 0x0, 0xfc}, 0x1030000}], 0x40000000000035c, 0x0)
+executing program 3:
+openat$autofs(0xffffffffffffff9c, &(0x7f0000000000), 0x200802, 0x0)
+r0 = syz_open_procfs(0x0, &(0x7f0000000180)='fd/3\x00')
+ioctl$sock_inet_tcp_SIOCINQ(r0, 0x541b, 0x0)
+executing program 0:
+r0 = socket$inet(0x2, 0x2, 0x1)
+shutdown(r0, 0x0)
+recvmmsg(r0, &(0x7f00000066c0), 0xa0d, 0x0, 0x0)
+executing program 1:
+r0 = socket$inet6(0xa, 0x2, 0x3a)
+connect$inet6(r0, &(0x7f0000000000)={0xa, 0x0, 0x0, @mcast1, 0x2}, 0x1c)
+bind$inet6(r0, &(0x7f00000002c0)={0xa, 0x0, 0x0, @loopback}, 0x1c)
+executing program 3:
+r0 = socket$inet6(0xa, 0x2, 0x0)
+connect$inet6(r0, &(0x7f0000000080)={0xa, 0x0, 0x0, @dev, 0x2}, 0x1c)
+sendmmsg$inet6(r0, &(0x7f00000084c0)=[{{&(0x7f00000028c0)={0xa, 0x4e23, 0x0, @ipv4={'\x00', '\xff\xff', @loopback}}, 0x1c, 0x0}}], 0x1, 0x0)
+executing program 0:
+syz_open_procfs$pagemap(0x0, &(0x7f0000000000))
+mprotect(&(0x7f0000000000/0x4000)=nil, 0x4000, 0x1)
+futex(&(0x7f0000000100), 0x0, 0x0, 0x0, 0x0, 0x0)
+
+program did not crash
+replaying the whole log did not cause a kernel crash
+single: executing 4 programs separately with timeout 6m0s
+testing program (duration=6m0s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_open_procfs$pagemap-mprotect-futex
+detailed listing:
+executing program 0:
+syz_open_procfs$pagemap(0x0, &(0x7f0000000000))
+mprotect(&(0x7f0000000000/0x4000)=nil, 0x4000, 0x1)
+futex(&(0x7f0000000100), 0x0, 0x0, 0x0, 0x0, 0x0)
+
+program did not crash
+testing program (duration=6m0s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$inet6-connect$inet6-sendmmsg$inet6
+detailed listing:
+executing program 0:
+r0 = socket$inet6(0xa, 0x2, 0x0)
+connect$inet6(r0, &(0x7f0000000080)={0xa, 0x0, 0x0, @dev, 0x2}, 0x1c)
+sendmmsg$inet6(r0, &(0x7f00000084c0)=[{{&(0x7f00000028c0)={0xa, 0x4e23, 0x0, @ipv4={'\x00', '\xff\xff', @loopback}}, 0x1c, 0x0}}], 0x1, 0x0)
+
+program did not crash
+testing program (duration=6m0s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$inet6-connect$inet6-bind$inet6
+detailed listing:
+executing program 0:
+r0 = socket$inet6(0xa, 0x2, 0x3a)
+connect$inet6(r0, &(0x7f0000000000)={0xa, 0x0, 0x0, @mcast1, 0x2}, 0x1c)
+bind$inet6(r0, &(0x7f00000002c0)={0xa, 0x0, 0x0, @loopback}, 0x1c)
+
+program did not crash
+testing program (duration=6m0s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): mkdir-openat-getdents
+detailed listing:
+executing program 0:
+mkdir(&(0x7f0000000100)='./file0\x00', 0x0)
+r0 = openat(0xffffffffffffff9c, &(0x7f0000004280)='./file0\x00', 0x0, 0x0)
+getdents(r0, 0x0, 0x48)
+
+program did not crash
+single: failed to extract reproducer
+bisect: bisecting 24 programs with base timeout 6m0s
+testing program (duration=6m6s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+detailed listing:
+executing program 2:
+r0 = syz_init_net_socket$nl_generic(0x10, 0x3, 0x10)
+r1 = syz_genetlink_get_family_id$netlbl_unlabel(&(0x7f0000000580), r0)
+sendmsg$NLBL_UNLABEL_C_STATICLIST(r0, &(0x7f0000000640)={0x0, 0x0, &(0x7f0000000600)={&(0x7f00000005c0)={0x14, r1, 0x37b42367c07537c9}, 0x14}}, 0x0)
+executing program 2:
+r0 = syz_clone(0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+ptrace(0x10, r0)
+ptrace$cont(0x18, r0, 0x0, 0x0)
+executing program 2:
+r0 = socket$inet_udplite(0x2, 0x2, 0x88)
+setsockopt$inet_udp_int(r0, 0x11, 0x67, &(0x7f0000000000)=0x3, 0x4)
+sendto$inet(r0, 0x0, 0x0, 0x8000, &(0x7f00000001c0)={0x2, 0x4e22, @loopback}, 0x10)
+executing program 2:
+syz_mount_image$vfat(&(0x7f0000000180), &(0x7f0000000040)='./file0\x00', 0x300081a, &(0x7f00000001c0)=ANY=[@ANYBLOB="7379735f696d6d757461626c652c666d61736b3d30313737373737373737373737373737373737373737332c73686f72746e616d653d6c6f7765722c636865636b3d7374726963742c2c756e695f786c6174653d302c726f6469722c726f6469722c73686f72746e616d653d6c6f7765722c73686f72746e616d653d6c6f7765722c6e6f6e756d7461696c3d302c756e695f786c6174653d312c756e695f786c6174653d312c6572726f72733d636f6e74696e75652c74696d655f6f66667365743d3078303030303030303030303030303465302c757466383d302c0077b5b28056fc4549d277ed7fab6b0be29df17f888ccab55cccc917ad315c8ea56f5a89c104f92d058b92f5881e69e06002f5914c03fef3eb09121733eaf5ded73df976fbd4cfcb8b70b0bf44da1b46bc3935431d5e60a641f9e4ebbf71c77fc9a810ce726b8c6d6295a5f2e2b069b95ba8ecce52ded99b82923228c37d5e1ec11cdbcabb8a89cbf2cf2771d69e3cf0e6760094145e542e426bceaab9b2cf261046247bce0565db3ac5888b74efd48bc9f455e60f49496ca8137aba85fe39756814fda1f0624b33a2025792a477ccfff09befb1d0cf1599d272628028b9786e1fbfb3d637c2561421488c9de8d3739a94bf13ac582f6b67de0cad933631794271b2259fe5d73a74ad7da615c31505c7c0c168052d38e5b64c4bb7d0599e5dcf0000000000000000000000000000002790cf17418aa278cfc0c9d1c81c63e58b877706a4b7eed8a5aff253298db2939adc0efdab4745ab0e09ef8beaaf04e5374c2e7e4672e47fe5a25502919954242f8d779d84091f20646210edf871d3f20ad66fcf4b816323b8abb307381d4ada887dcc71e35f364baa1b93fd5ee36c02aa4628511442992ced893ab946472440b53fc08cc41403e167b1f2605e04d5f0c16ed49969b59d650d88642b10c7893fe9b664421a40f4822ffcc284dfe9aea76e4a04293c970f2dae776decf07b085e16511b0bd365b0f86c7fcd8df00a87f4dbbf8e623667e3b65e4c487055a2e5cd64402a4de537bf113fc7370099e4faebe6ea9d4f155f8f5f4c5f9b205ce1bbc8c0002a19457e05a210d9e9820bc7f318ebfdfcc22f83150503b2", @ANYRES16], 0xd, 0x2a0, &(0x7f0000000840)="$eJzs3c9qM1UUAPAzSZpGXSSIG0VwQBeuyle3bhrlE8SulAjqQoNtQZJQaCFgBWNXfQKXvoeP4MaNbyC4Fdy1i8rIZGaahKZ/qDGF+vutDnPnnHsyt6SrnPnq9dFg7zCJ0/Pfo9VKorYTO3GRRCdqUfkhGgEAPB0XWRZ/ZQ/JbNRW3w0AsA7F///CY/cCAKzHJ599/lF3d/f5x2nailfbZ+NeEhGjs3GvWO8exDcxjP14Fu24jMiuFPEHH+4+j0aa68Rbo8m4l2eOvvy1rN/9M2Kavx3t6CzP304Lc/mTcW8jXow0ugcbVavteGV5/jtL8qPXjLffnOt/K9rx29dxGMPYizx3lv/9dpq+n/14/t0X+TZ5flKL3ub0vpmsvs5zAQAAAAAAAAAAAAAAAAAAAADgadtK06QY3zOd35NfKufv1C+n61tppbM4n6fIT6pCxXygLMoRPZMsfqrm6zxL0zQrb5zlN+K1hhcLAAAAAAAAAAAAAAAAAAAAQO7425NBfzjcP1pJUE0DqH7W/9A6O3NX3oiTQb9+c8HN++81P20g7/XWm6PRiBU9lruCF/J+Vl55c3a4n0YRVAez0r1efq8oejLop+VS9ZAH/eSuvVrVwf08v9SMf9tYNv2TuMwWz7R11epiVnNFT6P50tKlv7Msu1+dd/8ozqi8kkxHbNxv940yWPoB86B1/Sx+ubngjV8Z9ZV88QAAAAAAAAAAAAAAAAAAANfMfvS7ZPH01tTaf9YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKzZ7P3/VdCKiMUr14JJmXzbPWXQjKPjR/6IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/A/8EwAA//9s0FAH")
+mkdir(&(0x7f0000000000)='./file0\x00', 0x1)
+mount(0x0, &(0x7f0000000080)='./file0\x00', &(0x7f00000002c0)='rpc_pipefs\x00', 0x0, 0x0)
+executing program 2:
+socketpair$unix(0x1, 0x1, 0x0, &(0x7f0000029000)={<r0=>0xffffffffffffffff, <r1=>0xffffffffffffffff})
+ioctl$int_in(r0, 0x5452, &(0x7f0000b28000)=0x3e)
+shutdown(r1, 0x1)
+executing program 2:
+mkdir(&(0x7f0000000100)='./file0\x00', 0x0)
+r0 = openat(0xffffffffffffff9c, &(0x7f0000004280)='./file0\x00', 0x0, 0x0)
+getdents(r0, 0x0, 0x48)
+executing program 3:
+r0 = socket$nl_generic(0x10, 0x3, 0x10)
+r1 = syz_genetlink_get_family_id$ethtool(&(0x7f0000000100), 0xffffffffffffffff)
+sendmsg$ETHTOOL_MSG_LINKMODES_GET(r0, &(0x7f0000000180)={0x0, 0x0, &(0x7f0000000040)={&(0x7f0000000440)={0x14, r1, 0xb03, 0x0, 0x0, {0x1c, 0x0, 0x30}}, 0x14}}, 0x0)
+executing program 1:
+r0 = socket(0x10, 0x3, 0x0)
+setsockopt$netlink_NETLINK_TX_RING(r0, 0x10e, 0xc, &(0x7f0000000040)={0x802}, 0x10)
+sendmsg$nl_generic(r0, &(0x7f0000000a80)={0x0, 0x0, &(0x7f0000000080)={&(0x7f00000000c0)={0x1c, 0x52, 0x1, 0x0, 0x0, {0xa}, [@typed={0x8, 0x1, 0x0, 0x0, @binary="feffffff"}]}, 0x1c}}, 0x0)
+executing program 3:
+syz_open_procfs(0x0, &(0x7f0000000100)='net/fib_triestat\x00')
+r0 = syz_open_dev$tty20(0xc, 0x4, 0x0)
+ioctl$KDGKBDIACR(r0, 0x4b4a, &(0x7f0000000180)=""/4096)
+executing program 0:
+r0 = add_key$keyring(&(0x7f0000000080), &(0x7f00000000c0)={'syz', 0x0}, 0x0, 0x0, 0xfffffffffffffffd)
+r1 = add_key$keyring(&(0x7f0000000140), &(0x7f0000000180)={'syz', 0x1}, 0x0, 0x0, r0)
+keyctl$KEYCTL_MOVE(0x1e, r1, r0, r1, 0x0)
+executing program 1:
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x2601, 0x9, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0, 0xc}, 0x3250, 0x7, 0x0, 0x3}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+r0 = socket$nl_route(0x10, 0x3, 0x0)
+sendmsg$nl_route_sched_retired(r0, &(0x7f0000006ac0)={0x0, 0x0, &(0x7f0000006a80)={&(0x7f0000000200)=@newtaction={0x44, 0x30, 0x1, 0x0, 0x0, {}, [{0x30, 0x1, [@m_ipt={0x2c, 0x1, 0x0, 0x0, {{0x8}, {0x4}, {0x4}, {0xfffffffffffffca7}, {0xc}}}]}]}, 0x44}}, 0x84)
+executing program 0:
+r0 = perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0xc, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0, 0xb}, 0x0, 0x0, 0x0, 0x0, 0x0, 0xa55}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+r1 = getpgrp(0x0)
+fcntl$lock(r0, 0x26, &(0x7f00000000c0)={0x2, 0x0, 0xd, 0xa84, r1})
+executing program 1:
+r0 = openat$ptmx(0xffffffffffffff9c, &(0x7f0000000240), 0x0, 0x0)
+ioctl$TIOCPKT(r0, 0x5420, &(0x7f00000002c0)=0xfc)
+ioctl$TCSETS(r0, 0x5402, &(0x7f0000000040)={0x0, 0x0, 0x0, 0xfffffffc, 0x0, "6b6bc7e134bd1727639d6aefa571a03d1d5a17"})
+executing program 3:
+io_setup(0x8, &(0x7f0000000040)=<r0=>0x0)
+socketpair$unix(0x1, 0x2, 0x0, &(0x7f00000000c0))
+io_submit(r0, 0x0, 0x0)
+executing program 0:
+r0 = socket$igmp(0x2, 0x3, 0x2)
+setsockopt$inet_int(r0, 0x0, 0x4, &(0x7f0000000000), 0x4)
+getsockopt$inet_mreqn(r0, 0x0, 0x4, 0x0, &(0x7f0000000080))
+executing program 1:
+r0 = socket$packet(0x11, 0x2, 0x300)
+setsockopt$packet_rx_ring(r0, 0x107, 0x5, &(0x7f0000000040)=@req3={0x8000, 0x200, 0x80, 0x20000}, 0x1c)
+setsockopt$packet_int(r0, 0x107, 0xa, &(0x7f0000000000), 0x4)
+executing program 3:
+r0 = socket$inet_udplite(0x2, 0x2, 0x88)
+getsockopt$sock_cred(r0, 0x1, 0x11, &(0x7f0000caaffb)={0x0, <r1=>0x0}, &(0x7f0000cab000)=0xc)
+setfsuid(r1)
+executing program 0:
+perf_event_open(&(0x7f000001d000)={0x1, 0x70, 0x0, 0x0, 0x0, 0x0, 0x0, 0x41c1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+r0 = io_uring_setup(0x450a, &(0x7f0000000200)={0x0, 0xf558, 0x8, 0x0, 0x57})
+io_uring_register$IORING_REGISTER_BUFFERS(r0, 0x0, &(0x7f0000000440)=[{&(0x7f0000000280)=""/226, 0xe2}, {&(0x7f0000000380)=""/91, 0x5b}, {&(0x7f0000000180)=""/22, 0x16}, {&(0x7f0000000500)=""/202, 0xca}, {&(0x7f0000000400)=""/19, 0x13}], 0x5)
+executing program 1:
+r0 = socket$inet6(0xa, 0x3, 0x103)
+connect$inet6(r0, &(0x7f0000000000)={0xa, 0x0, 0x0, @loopback}, 0x1c)
+sendmmsg$inet6(r0, &(0x7f0000001700)=[{{0x0, 0x10000000, 0x0, 0x0, 0x0, 0x0, 0xfc}, 0x1030000}], 0x40000000000035c, 0x0)
+executing program 3:
+openat$autofs(0xffffffffffffff9c, &(0x7f0000000000), 0x200802, 0x0)
+r0 = syz_open_procfs(0x0, &(0x7f0000000180)='fd/3\x00')
+ioctl$sock_inet_tcp_SIOCINQ(r0, 0x541b, 0x0)
+executing program 0:
+r0 = socket$inet(0x2, 0x2, 0x1)
+shutdown(r0, 0x0)
+recvmmsg(r0, &(0x7f00000066c0), 0xa0d, 0x0, 0x0)
+executing program 1:
+r0 = socket$inet6(0xa, 0x2, 0x3a)
+connect$inet6(r0, &(0x7f0000000000)={0xa, 0x0, 0x0, @mcast1, 0x2}, 0x1c)
+bind$inet6(r0, &(0x7f00000002c0)={0xa, 0x0, 0x0, @loopback}, 0x1c)
+executing program 3:
+r0 = socket$inet6(0xa, 0x2, 0x0)
+connect$inet6(r0, &(0x7f0000000080)={0xa, 0x0, 0x0, @dev, 0x2}, 0x1c)
+sendmmsg$inet6(r0, &(0x7f00000084c0)=[{{&(0x7f00000028c0)={0xa, 0x4e23, 0x0, @ipv4={'\x00', '\xff\xff', @loopback}}, 0x1c, 0x0}}], 0x1, 0x0)
+executing program 0:
+syz_open_procfs$pagemap(0x0, &(0x7f0000000000))
+mprotect(&(0x7f0000000000/0x4000)=nil, 0x4000, 0x1)
+futex(&(0x7f0000000100), 0x0, 0x0, 0x0, 0x0, 0x0)
+
+program did not crash
+replaying the whole log did not cause a kernel crash
+failed to extract reproducer
+reproducing took 42m23.07586805s

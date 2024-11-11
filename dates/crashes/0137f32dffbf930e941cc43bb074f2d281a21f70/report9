@@ -1,0 +1,97 @@
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs error (device loop3): ext4_xattr_ibody_get:593: inode #18: comm syz.3.41: corrupted in-inode xattr
+==================================================================
+BUG: KASAN: use-after-free in get_max_inline_xattr_value_size+0x49c/0x510 fs/ext4/inline.c:57
+Read of size 4 at addr ffff88801cfe4044 by task syz.3.41/2218
+
+CPU: 0 PID: 2218 Comm: syz.3.41 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ get_max_inline_xattr_value_size+0x49c/0x510 fs/ext4/inline.c:57
+ ext4_get_max_inline_size.part.0+0xa8/0x180 fs/ext4/inline.c:108
+ ext4_get_max_inline_size fs/ext4/inline.c:96 [inline]
+ ext4_da_write_inline_data_begin+0x1d6/0xdb0 fs/ext4/inline.c:882
+ ext4_da_write_begin+0x8fc/0xe60 fs/ext4/inode.c:2959
+ generic_perform_write+0x1fe/0x4d0 mm/filemap.c:3329
+ ext4_buffered_write_iter+0x244/0x4d0 fs/ext4/file.c:270
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ call_write_iter include/linux/fs.h:1903 [inline]
+ do_iter_readv_writev+0x476/0x760 fs/read_write.c:740
+ do_iter_write+0x18d/0x670 fs/read_write.c:866
+ vfs_writev+0x1aa/0x660 fs/read_write.c:939
+ do_pwritev+0x1bc/0x270 fs/read_write.c:1036
+ __do_sys_pwritev2 fs/read_write.c:1095 [inline]
+ __se_sys_pwritev2 fs/read_write.c:1086 [inline]
+ __x64_sys_pwritev2+0xeb/0x150 fs/read_write.c:1086
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f9757910ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f975658a038 EFLAGS: 00000246 ORIG_RAX: 0000000000000148
+RAX: ffffffffffffffda RBX: 00007f9757ac8f80 RCX: 00007f9757910ef9
+RDX: 0000000000000001 RSI: 0000000020001800 RDI: 0000000000000006
+RBP: 00007f9757983b76 R08: 0000000000000000 R09: 0000000000000014
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f9757ac8f80 R15: 00007fffd4f5e668
+
+The buggy address belongs to the page:
+page:000000005e086bab refcount:0 mapcount:-128 mapping:0000000000000000 index:0x1 pfn:0x1cfe4
+flags: 0x100000000000000()
+raw: 0100000000000000 ffffea0000736b08 ffffea000073e608 0000000000000000
+raw: 0000000000000001 0000000000000002 00000000ffffff7f 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88801cfe3f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88801cfe3f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff88801cfe4000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                                           ^
+ ffff88801cfe4080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff88801cfe4100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+attempt to access beyond end of device
+loop0: rw=524288, want=134217811, limit=128
+attempt to access beyond end of device
+loop0: rw=0, want=134217811, limit=128
+attempt to access beyond end of device
+loop0: rw=0, want=134217810, limit=128
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+attempt to access beyond end of device
+loop0: rw=0, want=134217810, limit=128
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+attempt to access beyond end of device
+loop0: rw=0, want=134217810, limit=128
+Buffer I/O error on dev loop0, logical block 134217809, async page read
+attempt to access beyond end of device
+loop0: rw=0, want=134217811, limit=128
+Buffer I/O error on dev loop0, logical block 134217810, async page read
+attempt to access beyond end of device
+loop0: rw=0, want=134217810, limit=128
+Buffer I/O error on dev loop0, logical block 134217809, async page read
+attempt to access beyond end of device
+loop0: rw=0, want=134217811, limit=128
+Buffer I/O error on dev loop0, logical block 134217810, async page read
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning: 463 callbacks suppressed
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): kmmpd:182: kmmpd being stopped since MMP feature has been disabled.
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768

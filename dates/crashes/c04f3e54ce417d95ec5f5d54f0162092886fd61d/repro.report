@@ -1,0 +1,68 @@
+EXT4-fs error (device loop0): ext4_dirty_inode:5942: inode #18: comm syz.0.15: mark_inode_dirty error
+EXT4-fs error (device loop0): ext4_map_blocks:584: inode #18: block 304: comm syz.0.15: lblock 192 mapped to illegal pblock 304 (length 32)
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 1271 at fs/ext4/inode.c:3493 ext4_iomap_overwrite_begin fs/ext4/inode.c:3493 [inline]
+WARNING: CPU: 1 PID: 1271 at fs/ext4/inode.c:3493 ext4_iomap_overwrite_begin+0x8b/0xa0 fs/ext4/inode.c:3481
+Modules linked in:
+CPU: 1 PID: 1271 Comm: syz.0.15 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_iomap_overwrite_begin fs/ext4/inode.c:3493 [inline]
+RIP: 0010:ext4_iomap_overwrite_begin+0x8b/0xa0 fs/ext4/inode.c:3481
+Code: bf 02 00 00 00 89 de e8 f3 77 a0 ff 66 83 fb 02 75 13 e8 48 80 a0 ff 44 89 e0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 35 80 a0 ff <0f> 0b eb e4 e8 5c b0 cd ff eb c7 66 2e 0f 1f 84 00 00 00 00 00 41
+RSP: 0018:ffff888017b57330 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff81a58e6d
+RDX: ffff88800a083400 RSI: ffffffff81a58e8b RDI: 0000000000000003
+RBP: 0000000000000011 R08: 0000000000000000 R09: ffff8880139c0747
+R10: 0000000000000002 R11: 0000000000000001 R12: 00000000ffffff8b
+R13: 0000000000060000 R14: 0000000000010000 R15: ffff888017b57420
+FS:  00007faefc5886c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000200690ff CR3: 000000000c1c2000 CR4: 0000000000350ef0
+Call Trace:
+ iomap_apply+0x164/0xb10 fs/iomap/apply.c:46
+ __iomap_dio_rw+0x6cd/0x1200 fs/iomap/direct-io.c:517
+ iomap_dio_rw+0x31/0x90 fs/iomap/direct-io.c:605
+ ext4_dio_write_iter fs/ext4/file.c:552 [inline]
+ ext4_file_write_iter+0xc55/0x1b20 fs/ext4/file.c:662
+ call_write_iter include/linux/fs.h:1903 [inline]
+ do_iter_readv_writev+0x476/0x760 fs/read_write.c:740
+ do_iter_write+0x18d/0x670 fs/read_write.c:866
+ vfs_iter_write+0x70/0xa0 fs/read_write.c:907
+ iter_file_splice_write+0x73a/0xc00 fs/splice.c:686
+ do_splice_from fs/splice.c:764 [inline]
+ direct_splice_actor+0x10f/0x170 fs/splice.c:933
+ splice_direct_to_actor+0x387/0x980 fs/splice.c:888
+ do_splice_direct+0x1c4/0x290 fs/splice.c:976
+ do_sendfile+0x54f/0x10e0 fs/read_write.c:1257
+ __do_sys_sendfile64 fs/read_write.c:1318 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1304 [inline]
+ __x64_sys_sendfile64+0x1cd/0x210 fs/read_write.c:1304
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7faefcb06ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007faefc588038 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007faefccbef80 RCX: 00007faefcb06ef9
+RDX: 0000000000000000 RSI: 0000000000000006 RDI: 0000000000000006
+RBP: 00007faefcb79b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000008801400 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007faefccbef80 R15: 00007ffd3eb7af78
+irq event stamp: 80579
+hardirqs last  enabled at (80609): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (80642): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+softirqs last  enabled at (80636): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (80623): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 67309f8adc0eb084 ]---
+EXT4-fs error (device loop0): ext4_map_blocks:584: inode #2: block 16: comm syz-executor: lblock 0 mapped to illegal pblock 16 (length 1)
+EXT4-fs error (device loop0) in ext4_reserve_inode_write:5740: Corrupt filesystem
+EXT4-fs error (device loop0): ext4_dirty_inode:5942: inode #2: comm syz-executor: mark_inode_dirty error
+syz.0.15 (1271) used greatest stack depth: 23320 bytes left
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs error (device loop0): ext4_map_blocks:584: inode #18: block 416: comm syz.0.19: lblock 288 mapped to illegal pblock 416 (length 32)
+EXT4-fs error (device loop0): ext4_map_blocks:584: inode #2: block 16: comm syz-executor: lblock 0 mapped to illegal pblock 16 (length 1)
+EXT4-fs error (device loop0) in ext4_reserve_inode_write:5740: Corrupt filesystem
+EXT4-fs error (device loop0): ext4_dirty_inode:5942: inode #2: comm syz-executor: mark_inode_dirty error
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs error (device loop0): ext4_map_blocks:584: inode #2: block 16: comm syz-executor: lblock 0 mapped to illegal pblock 16 (length 1)
+EXT4-fs error (device loop0) in ext4_reserve_inode_write:5740: Corrupt filesystem
+EXT4-fs error (device loop0): ext4_dirty_inode:5942: inode #2: comm syz-executor: mark_inode_dirty error

@@ -1,0 +1,80 @@
+IPv6: ADDRCONF(NETDEV_CHANGE): lo: link becomes ready
+netlink: 'syz.1.476': attribute type 27 has an invalid length.
+netlink: 4 bytes leftover after parsing attributes in process `syz.1.476'.
+------------[ cut here ]------------
+kernel BUG at fs/buffer.c:3015!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 9075 Comm: kmmpd-loop0 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:submit_bh_wbc+0x5f2/0x7c0 fs/buffer.c:3015
+Code: ff e8 12 e4 bf ff 41 81 cc 00 10 00 00 e9 15 ff ff ff e8 01 e4 bf ff 0f 0b 48 c7 c7 40 3a 29 85 e8 02 61 5a 02 e8 ee e3 bf ff <0f> 0b 48 c7 c7 00 3a 29 85 e8 ef 60 5a 02 e8 db e3 bf ff 0f 0b 48
+
+RSP: 0018:ffff888018f87d70 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88801382e0e8 RCX: ffffffff81862583
+RDX: ffff88800c2c8000 RSI: ffffffff81862ad2 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff88801382e0ef
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000003800
+R13: 0000000000000001 R14: 0000000000000000 R15: ffff8880082aa000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2e13f28c68 CR3: 0000000008a66000 CR4: 0000000000350ef0
+=============================
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ write_mmp_block+0x333/0x6e0 fs/ext4/mmp.c:55
+ kmmpd+0x428/0xab0 fs/ext4/mmp.c:167
+WARNING: suspicious RCU usage
+5.10.0 #1 Not tainted
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+-----------------------------
+
+kernel/sched/core.c:7270 Illegal context switch in RCU-bh read-side critical section!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 0
+no locks held by systemd-udevd/116.
+
+stack backtrace:
+CPU: 1 PID: 116 Comm: systemd-udevd Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep+0x3ed/0x4d0 kernel/sched/core.c:7270
+ dput+0x4d/0xc70 fs/dcache.c:862
+ step_into+0x2cf/0x1c90 fs/namei.c:1700
+ walk_component+0x171/0x6a0 fs/namei.c:1867
+ link_path_walk+0x6c4/0xc90 fs/namei.c:2184
+ path_lookupat+0x15e/0x6c0 fs/namei.c:2333
+ filename_lookup+0x19f/0x560 fs/namei.c:2367
+ user_path_at include/linux/namei.h:59 [inline]
+ do_faccessat+0x11b/0x830 fs/open.c:423
+---[ end trace f17459cd55798efb ]---
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+RIP: 0010:submit_bh_wbc+0x5f2/0x7c0 fs/buffer.c:3015
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Code: ff e8 12 e4 bf ff 41 81 cc 00 10 00 00 e9 15 ff ff ff e8 01 e4 bf ff 0f 0b 48 c7 c7 40 3a 29 85 e8 02 61 5a 02 e8 ee e3 bf ff <0f> 0b 48 c7 c7 00 3a 29 85 e8 ef 60 5a 02 e8 db e3 bf ff 0f 0b 48
+RIP: 0033:0x7fee4ada45d7
+Code: 77 01 c3 48 8b 15 b9 28 0e 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 15 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 89 28 0e 00 f7 d8 64 89 02 b8
+RSP: 002b:00007ffdd029d898 EFLAGS: 00000246 ORIG_RAX: 0000000000000015
+RAX: ffffffffffffffda RBX: 0000559e7e33d230 RCX: 00007fee4ada45d7
+RDX: 0000000000000006 RSI: 0000000000000000 RDI: 00007ffdd029d8a0
+RBP: 00007ffdd029d920 R08: 0000559e7c8956e0 R09: 006c617574726976
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000559e7e3431b0
+R13: 00007ffdd029d8a0 R14: 0000559e7e318520 R15: 0000559e7e342950
+RSP: 0018:ffff888018f87d70 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88801382e0e8 RCX: ffffffff81862583
+RDX: ffff88800c2c8000 RSI: ffffffff81862ad2 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff88801382e0ef
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000003800
+R13: 0000000000000001 R14: 0000000000000000 R15: ffff8880082aa000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd78d4113d0 CR3: 0000000008a66000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600

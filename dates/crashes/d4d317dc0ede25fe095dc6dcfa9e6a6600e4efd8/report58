@@ -1,0 +1,143 @@
+ loop1: p2 < > p4
+loop1: p4 size 8192 extends beyond EOD, truncated
+ loop1: p2 < > p4
+loop1: p4 size 8192 extends beyond EOD, truncated
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:833!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 3200 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff88800cd273b8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff110019a4e79 RCX: ffffffff81a5939b
+RDX: ffff88800a430000 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff888013fe8360 R08: 0000000000002000 R09: ffffffff86e5f757
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888013fe8338
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000555556966500(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffcdddd7fa8 CR3: 0000000015e78000 CR4: 0000000000350ef0
+Call Trace:
+ ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+ ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+ write_blk+0x12f/0x220 fs/quota/quota_tree.c:73
+ remove_free_dqentry+0x1eb/0x4b0 fs/quota/quota_tree.c:169
+ free_dqentry fs/quota/quota_tree.c:437 [inline]
+ remove_tree+0xa0f/0x1100 fs/quota/quota_tree.c:492
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+=============================
+ qtree_delete_dquot fs/quota/quota_tree.c:528 [inline]
+ qtree_release_dquot fs/quota/quota_tree.c:674 [inline]
+ qtree_release_dquot+0x1a2/0x1e0 fs/quota/quota_tree.c:670
+ v2_release_dquot+0xce/0x120 fs/quota/quota_v2.c:350
+WARNING: suspicious RCU usage
+ dquot_release+0x1d5/0x450 fs/quota/dquot.c:504
+ ext4_release_dquot+0x2a9/0x340 fs/ext4/super.c:6202
+5.10.0 #1 Not tainted
+ dqput.part.0+0x1d2/0x7e0 fs/quota/dquot.c:799
+-----------------------------
+ dqput fs/quota/dquot.c:757 [inline]
+ dqput_all fs/quota/dquot.c:397 [inline]
+ __dquot_drop+0x1cc/0x2a0 fs/quota/dquot.c:1577
+kernel/sched/core.c:7270 Illegal context switch in RCU-bh read-side critical section!
+ dquot_drop+0x151/0x1a0 fs/quota/dquot.c:1602
+
+other info that might help us debug this:
+
+ ext4_clear_inode+0x52/0x1e0 fs/ext4/super.c:1405
+ ext4_evict_inode+0x1cb/0x1890 fs/ext4/inode.c:332
+
+rcu_scheduler_active = 2, debug_locks = 0
+1 lock held by syz-executor/5295:
+ #0: 
+ffff88801a4be6f8
+ evict+0x284/0x6d0 fs/inode.c:578
+ (
+ dispose_list fs/inode.c:613 [inline]
+ evict_inodes+0x3c1/0x5e0 fs/inode.c:663
+&type->i_mutex_dir_key
+#3
+){++++}-{3:3}
+ generic_shutdown_super+0xa6/0x370 fs/super.c:454
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+, at: inode_lock_shared include/linux/fs.h:784 [inline]
+, at: dir_relax_shared include/linux/fs.h:3443 [inline]
+, at: ext4_readdir+0x1053/0x2bb0 fs/ext4/dir.c:285
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+
+stack backtrace:
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+CPU: 1 PID: 5295 Comm: syz-executor Not tainted 5.10.0 #1
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+Call Trace:
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+RIP: 0033:0x7f6356526227
+ ___might_sleep+0x3ed/0x4d0 kernel/sched/core.c:7270
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+ ext4_readdir+0x7fb/0x2bb0 fs/ext4/dir.c:163
+RSP: 002b:00007ffcdddd8208 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007f6356597a14 RCX: 00007f6356526227
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffcdddd82c0
+RBP: 00007ffcdddd82c0 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffcdddd9340
+ iterate_dir+0x4f9/0x670 fs/readdir.c:65
+R13: 00007f6356597a14 R14: 0000000000010080 R15: 00007ffcdddd9380
+ __do_sys_getdents64 fs/readdir.c:366 [inline]
+ __se_sys_getdents64 fs/readdir.c:351 [inline]
+ __x64_sys_getdents64+0x13a/0x2c0 fs/readdir.c:351
+Modules linked in:
+
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f1fffcbb093
+Code: c1 66 0f 1f 44 00 00 48 83 c4 08 48 89 ef 5b 5d e9 52 43 f8 ff 66 90 b8 ff ff ff 7f 48 39 c2 48 0f 47 d0 b8 d9 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 05 c3 0f 1f 40 00 48 c7 c2 a8 ff ff ff f7 d8
+---[ end trace 15ac84f07cfd4697 ]---
+RSP: 002b:00007fff73b7d468 EFLAGS: 00000293 ORIG_RAX: 00000000000000d9
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+RAX: ffffffffffffffda RBX: 000055555686e520 RCX: 00007f1fffcbb093
+RDX: 0000000000008000 RSI: 000055555686e520 RDI: 0000000000000006
+RBP: 000055555686e4f4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000001000 R11: 0000000000000293 R12: ffffffffffffffa8
+R13: 0000000000000016 R14: 000055555686e4f0 R15: 00007fff73b80800
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff88800cd273b8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff110019a4e79 RCX: ffffffff81a5939b
+RDX: ffff88800a430000 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff888013fe8360 R08: 0000000000002000 R09: ffffffff86e5f757
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888013fe8338
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000555556966500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000557af2c33f40 CR3: 0000000015e78000 CR4: 0000000000350ee0
+----------------
+Code disassembly (best guess), 3 bytes skipped:
+   0:	ff f7                	push   %rdi
+   2:	d8 64 89 01          	fsubs  0x1(%rcx,%rcx,4)
+   6:	48 83 c8 ff          	or     $0xffffffffffffffff,%rax
+   a:	c3                   	ret
+   b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+  10:	31 f6                	xor    %esi,%esi
+  12:	e9 09 00 00 00       	jmp    0x20
+  17:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
+  1e:	00 00
+  20:	b8 a6 00 00 00       	mov    $0xa6,%eax
+  25:	0f 05                	syscall
+* 27:	48 3d 00 f0 ff ff    	cmp    $0xfffffffffffff000,%rax <-- trapping instruction
+  2d:	77 01                	ja     0x30
+  2f:	c3                   	ret
+  30:	48 c7 c2 a8 ff ff ff 	mov    $0xffffffffffffffa8,%rdx
+  37:	f7 d8                	neg    %eax
+  39:	64 89 02             	mov    %eax,%fs:(%rdx)
+  3c:	b8                   	.byte 0xb8

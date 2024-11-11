@@ -1,0 +1,78 @@
+EXT4-fs error (device loop3): ext4_xattr_block_get:536: inode #15: comm syz.3.156: corrupted xattr block 19
+EXT4-fs (loop3): Remounting filesystem read-only
+SELinux: inode_doinit_use_xattr:  getxattr returned 117 for dev=loop3 ino=15
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:833!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 2336 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff888017f473b8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff11002fe8e79 RCX: ffffffff81a5939b
+RDX: ffff888011b79a00 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff8880137c0d38 R08: 0000000000002000 R09: ffffffff86e5f74f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff8880137c0d10
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000555556be0500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f7fb06a3508 CR3: 0000000017fde000 CR4: 0000000000350ee0
+tmpfs: Bad value for 'mpol'
+Call Trace:
+ ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+ ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+ write_blk+0x12f/0x220 fs/quota/quota_tree.c:73
+ remove_free_dqentry+0x1eb/0x4b0 fs/quota/quota_tree.c:169
+ free_dqentry fs/quota/quota_tree.c:437 [inline]
+ remove_tree+0xa0f/0x1100 fs/quota/quota_tree.c:492
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+ qtree_delete_dquot fs/quota/quota_tree.c:528 [inline]
+ qtree_release_dquot fs/quota/quota_tree.c:674 [inline]
+ qtree_release_dquot+0x1a2/0x1e0 fs/quota/quota_tree.c:670
+ v2_release_dquot+0xce/0x120 fs/quota/quota_v2.c:350
+ dquot_release+0x1d5/0x450 fs/quota/dquot.c:504
+ ext4_release_dquot+0x2a9/0x340 fs/ext4/super.c:6202
+ dqput.part.0+0x1d2/0x7e0 fs/quota/dquot.c:799
+ dqput fs/quota/dquot.c:757 [inline]
+ dqput_all fs/quota/dquot.c:397 [inline]
+ __dquot_drop+0x1cc/0x2a0 fs/quota/dquot.c:1577
+ dquot_drop+0x151/0x1a0 fs/quota/dquot.c:1602
+ ext4_clear_inode+0x52/0x1e0 fs/ext4/super.c:1405
+ ext4_evict_inode+0x1cb/0x1890 fs/ext4/inode.c:332
+ evict+0x284/0x6d0 fs/inode.c:578
+ dispose_list fs/inode.c:613 [inline]
+ evict_inodes+0x3c1/0x5e0 fs/inode.c:663
+ generic_shutdown_super+0xa6/0x370 fs/super.c:454
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fa33af8e227
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007ffc4bf9b1d8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007fa33afffa14 RCX: 00007fa33af8e227
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffc4bf9b290
+RBP: 00007ffc4bf9b290 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffc4bf9c310
+R13: 00007fa33afffa14 R14: 000000000000a81e R15: 00007ffc4bf9c350
+Modules linked in:
+---[ end trace 29a2a0b0dd044406 ]---
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff888017f473b8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff11002fe8e79 RCX: ffffffff81a5939b
+RDX: ffff888011b79a00 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff8880137c0d38 R08: 0000000000002000 R09: ffffffff86e5f74f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff8880137c0d10
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000555556be0500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f7fb06a3508 CR3: 0000000017fde000 CR4: 0000000000350ee0

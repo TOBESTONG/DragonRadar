@@ -1,0 +1,114 @@
+EXT4-fs error (device loop0): ext4_lookup:1702: inode #2: comm syz.0.351: 'file0' linked to parent dir
+EXT4-fs error (device loop1): ext4_map_blocks:584: inode #2: block 3: comm syz-executor: lblock 0 mapped to illegal pblock 3 (length 1)
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:833!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 7679 Comm: syz.1.278 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff88801833f420 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff11003067e86 RCX: ffffffff81a5939b
+RDX: ffff888019d14e00 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff888013fff980 R08: 0000000000000008 R09: ffffffff84e14783
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888013fff958
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffcc7b99ea8 CR3: 000000001128e000 CR4: 0000000000350ef0
+Call Trace:
+ ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+ ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+ v2_write_file_info+0x2b0/0x3e0 fs/quota/quota_v2.c:186
+ dquot_release+0x341/0x450 fs/quota/dquot.c:507
+ ext4_release_dquot+0x2a9/0x340 fs/ext4/super.c:6202
+ dqput.part.0+0x1d2/0x7e0 fs/quota/dquot.c:799
+ dqput fs/quota/dquot.c:757 [inline]
+ dqput_all fs/quota/dquot.c:397 [inline]
+ __dquot_drop+0x1cc/0x2a0 fs/quota/dquot.c:1577
+ dquot_drop+0x151/0x1a0 fs/quota/dquot.c:1602
+ ext4_clear_inode+0x52/0x1e0 fs/ext4/super.c:1405
+ ext4_evict_inode+0x1cb/0x1890 fs/ext4/inode.c:332
+ evict+0x284/0x6d0 fs/inode.c:578
+ dispose_list fs/inode.c:613 [inline]
+ evict_inodes+0x3c1/0x5e0 fs/inode.c:663
+ generic_shutdown_super+0xa6/0x370 fs/super.c:454
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f76dd371fe5
+Code: Unable to access opcode bytes at RIP 0x7f76dd371fbb.
+RSP: 002b:00007f76dbfb8f80 EFLAGS: 00000293 ORIG_RAX: 00000000000000e6
+RAX: fffffffffffffdfc RBX: 00007f76dd4f7f80 RCX: 00007f76dd371fe5
+RDX: 00007f76dbfb8fc0 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007f76dd3b2b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f76dd4f7f80 R15: 00007ffda5dd5118
+Modules linked in:
+---[ end trace 79574b5f2dfc9edc ]---
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff88801833f420 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff11003067e86 RCX: ffffffff81a5939b
+RDX: ffff888019d14e00 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff888013fff980 R08: 0000000000000008 R09: ffffffff84e14783
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888013fff958
+EXT4-fs (loop0): Ignoring removed orlov option
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+EXT4-fs (loop0): Journaled quota options ignored when QUOTA feature is enabled
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f32001a92a8 CR3: 000000000c2cc000 CR4: 0000000000350ee0
+Fixing recursive fault but reboot is needed!
+[EXT4 FS bs=4096, gc=1, bpg=71, ipg=32, mo=a857c01c, mo2=0000]
+System zones: 0-2, 18-18, 34-34
+EXT4-fs (loop0): ext4_orphan_cleanup: deleting unreferenced inode 16
+EXT4-fs (loop0): 1 orphan inode deleted
+EXT4-fs (loop0): mounted filesystem without journal. Opts: noauto_da_alloc,grpquota,user_xattr,debug,grpid,barrier,orlov,init_itable=0x00000000000000fe,i_version,grpjquota=./file1,,errors=continue
+ext4 filesystem being mounted at /16/file1 supports timestamps until 2038 (0x7fffffff)
+------------[ cut here ]------------
+Trying to write to read-only block-device loop1 (partno 0)
+WARNING: CPU: 0 PID: 8235 at block/blk-core.c:704 bio_check_ro block/blk-core.c:704 [inline]
+WARNING: CPU: 0 PID: 8235 at block/blk-core.c:704 submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Modules linked in:
+CPU: 0 PID: 8235 Comm: kmmpd-loop1 Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:bio_check_ro block/blk-core.c:704 [inline]
+RIP: 0010:submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Code: 03 00 00 45 8b a4 24 64 05 00 00 48 89 ef 48 8d 74 24 50 e8 43 37 fe ff 48 c7 c7 00 ee 5b 84 48 89 c6 44 89 e2 e8 bd 1c e7 01 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 80 3c 02
+RSP: 0018:ffff8880185ffad8 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 1ffff110030bff61 RCX: 0000000000000000
+RDX: ffff888008c2ce00 RSI: ffffffff812d93c5 RDI: ffffed10030bff4d
+RBP: ffff888013bb1000 R08: 0000000000000001 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff88800b938c10 R14: ffff888013bb1010 R15: ffff888013bb1008
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005637b25d19d0 CR3: 000000000fd68000 CR4: 0000000000350ef0
+Call Trace:
+ submit_bio_noacct+0x82/0x1000 block/blk-core.c:1044
+ submit_bio+0xfd/0x540 block/blk-core.c:1129
+ submit_bh_wbc+0x580/0x7c0 fs/buffer.c:3054
+ write_mmp_block+0x333/0x6e0 fs/ext4/mmp.c:55
+ kmmpd+0x428/0xab0 fs/ext4/mmp.c:167
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+irq event stamp: 28
+hardirqs last  enabled at (27): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (27): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (28): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (0): [<ffffffff8115f59c>] copy_process+0x185c/0x69f0 kernel/fork.c:2044
+softirqs last disabled at (0): [<0000000000000000>] 0x0
+---[ end trace 79574b5f2dfc9edd ]---
+EXT4-fs warning (device loop1): kmmpd:182: kmmpd being stopped since MMP feature has been disabled.

@@ -1,0 +1,57 @@
+R13: 00007ffbaa924a14 R14: 00005555562884a8 R15: 00007ffd1bac4840
+EXT4-fs (loop1): sb orphan head is 0
+sb_info orphan list:
+  inode loop1:16 at 00000000b05207d5: mode 100755, nlink 2, next 0
+------------[ cut here ]------------
+kernel BUG at fs/ext4/super.c:1243!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 235 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_put_super+0xe1f/0x11b0 fs/ext4/super.c:1243
+Code: 6c 24 50 e8 33 ca 81 ff 4c 89 e7 e8 4b d3 ea ff 4c 89 e7 e8 43 cb f5 ff 4c 89 e7 e8 6b 8b ec ff e9 1d fe ff ff e8 d1 11 92 ff <0f> 0b 48 c7 c7 40 d1 31 85 e8 d2 8e 2c 02 48 8b 7c 24 10 e8 09 42
+RSP: 0018:ffff888018fa7c50 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: dffffc0000000000 RCX: 0000000000000000
+RDX: ffff88800cefce00 RSI: ffffffff81b3fcef RDI: ffffed10031f4f7b
+RBP: ffff888019b68000 R08: 0000000000000042 R09: ffff88806cf2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888019b6a000
+R13: ffff88801a048d10 R14: ffff888019b68318 R15: ffff888019b68318
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fef3f5e45d0 CR3: 000000000b730000 CR4: 0000000000350ee0
+Call Trace:
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ffbaa8b1ef9
+Code: Unable to access opcode bytes at RIP 0x7ffbaa8b1ecf.
+RSP: 002b:00007ffd1bac13d8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00007ffbaa924a98 RCX: 00007ffbaa8b1ef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000001
+RBP: 0000000000000075 R08: 00007ffd1babf175 R09: 00007ffd1bac2690
+R10: 000000000000000b R11: 0000000000000246 R12: 00007ffd1bac2690
+R13: 00007ffbaa924a14 R14: 00005555562884a8 R15: 00007ffd1bac4840
+Modules linked in:
+---[ end trace f9841e51d13b2a69 ]---
+RIP: 0010:ext4_put_super+0xe1f/0x11b0 fs/ext4/super.c:1243
+Code: 6c 24 50 e8 33 ca 81 ff 4c 89 e7 e8 4b d3 ea ff 4c 89 e7 e8 43 cb f5 ff 4c 89 e7 e8 6b 8b ec ff e9 1d fe ff ff e8 d1 11 92 ff <0f> 0b 48 c7 c7 40 d1 31 85 e8 d2 8e 2c 02 48 8b 7c 24 10 e8 09 42
+RSP: 0018:ffff888018fa7c50 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: dffffc0000000000 RCX: 0000000000000000
+RDX: ffff88800cefce00 RSI: ffffffff81b3fcef RDI: ffffed10031f4f7b
+RBP: ffff888019b68000 R08: 0000000000000042 R09: ffff88806cf2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888019b6a000
+R13: ffff88801a048d10 R14: ffff888019b68318 R15: ffff888019b68318
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fef3f5c9c90 CR3: 000000000bd82000 CR4: 0000000000350ee0
+Fixing recursive fault but reboot is needed!

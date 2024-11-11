@@ -1,0 +1,77 @@
+EXT4-fs (loop3): mounted filesystem without journal. Opts: noacl,block_validity,errors=continue,block_validity,debug_want_extra_isize=0x0000000000000006,init_itable=0x0000000000000004,usrquota,usrquota,,errors=continue
+9pnet: Insufficient options for proto=fd
+EXT4-fs (loop1): Unrecognized mount option "fsname=$" or missing value
+fuse: Bad value for 'fd'
+INFO: task syz.2.28:2358 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.2.28        state:D stack:28120 pid: 2358 ppid:   234 flags:0x00000006
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ rwsem_down_write_slowpath+0x5c5/0xc00 kernel/locking/rwsem.c:1235
+ __down_write kernel/locking/rwsem.c:1389 [inline]
+ down_write+0x137/0x150 kernel/locking/rwsem.c:1532
+ inode_lock include/linux/fs.h:774 [inline]
+ fuse_flush+0x1d7/0x580 fs/fuse/file.c:473
+ filp_close+0xb7/0x170 fs/open.c:1276
+ __close_range+0x2f5/0x5b0 fs/file.c:737
+ __do_sys_close_range fs/open.c:1321 [inline]
+ __se_sys_close_range fs/open.c:1318 [inline]
+ __x64_sys_close_range+0x6f/0xb0 fs/open.c:1318
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f6d553fdef9
+RSP: 002b:00007ffd42e27d58 EFLAGS: 00000246 ORIG_RAX: 00000000000001b4
+RAX: ffffffffffffffda RBX: 00007f6d555b7a80 RCX: 00007f6d553fdef9
+RDX: 0000000000000000 RSI: 000000000000001e RDI: 0000000000000003
+RBP: 00007f6d555b7a80 R08: 0000000000000006 R09: 00007ffd42e2804f
+R10: 00000000003ffbd8 R11: 0000000000000246 R12: 0000000000007231
+R13: 00007ffd42e27e60 R14: 0000000000000032 R15: ffffffffffffffff
+INFO: task syz.2.28:2359 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.2.28        state:D stack:26088 pid: 2359 ppid:   234 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ schedule_timeout+0x387/0x460 kernel/time/timer.c:1847
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x163/0x260 kernel/sched/completion.c:138
+ fuse_direct_IO+0x818/0x10f0 fs/fuse/file.c:3193
+ fuse_direct_write_iter+0x265/0x2b0 fs/fuse/file.c:1538
+ fuse_file_write_iter+0x268/0xa60 fs/fuse/file.c:1585
+ call_write_iter include/linux/fs.h:1903 [inline]
+ aio_write+0x355/0x7d0 fs/aio.c:1579
+ __io_submit_one fs/aio.c:1834 [inline]
+ io_submit_one+0xe72/0x19a0 fs/aio.c:1881
+ __do_sys_io_submit fs/aio.c:1940 [inline]
+ __se_sys_io_submit fs/aio.c:1910 [inline]
+ __x64_sys_io_submit+0x18d/0x2f0 fs/aio.c:1910
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f6d553fdef9
+RSP: 002b:00007f6d54077038 EFLAGS: 00000246 ORIG_RAX: 00000000000000d1
+RAX: ffffffffffffffda RBX: 00007f6d555b5f80 RCX: 00007f6d553fdef9
+RDX: 0000000020000780 RSI: 0000000000000002 RDI: 00007f6d5402d000
+RBP: 00007f6d55470b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f6d555b5f80 R15: 00007ffd42e27bf8
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/23:
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x28c kernel/locking/lockdep.c:6254
+2 locks held by in:imklog/154:
+1 lock held by syz.2.28/2358:
+ #0: ffff888013b90150 (&sb->s_type->i_mutex_key#22){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ #0: ffff888013b90150 (&sb->s_type->i_mutex_key#22){+.+.}-{3:3}, at: fuse_flush+0x1d7/0x580 fs/fuse/file.c:473
+1 lock held by syz.2.28/2359:
+ #0: ffff888013b90150 (&sb->s_type->i_mutex_key#22){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ #0: ffff888013b90150 (&sb->s_type->i_mutex_key#22){+.+.}-{3:3}, at: fuse_direct_write_iter+0xf0/0x2b0 fs/fuse/file.c:1534
+
+=============================================
+

@@ -1,0 +1,54 @@
+audit: type=1400 audit(1730953659.177:280): avc:  denied  { ingress } for  pid=0 comm="swapper/0" saddr=10.0.2.2 src=56734 daddr=10.0.2.15 dest=22 netif=eth0 scontext=system_u:object_r:lib_t:s0 tcontext=system_u:object_r:netif_t:s0 tclass=netif permissive=0
+INFO: task syz.3.73:2679 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.3.73        state:D stack:26776 pid: 2679 ppid:   241 flags:0x00004324
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ rwsem_down_read_slowpath+0x2ad/0xb90 kernel/locking/rwsem.c:1099
+ __down_read kernel/locking/rwsem.c:1341 [inline]
+ down_read+0x1ec/0x450 kernel/locking/rwsem.c:1494
+ iterate_supers+0xe8/0x1f0 fs/super.c:692
+ ksys_sync+0x86/0x150 fs/sync.c:114
+ __do_sys_sync+0xa/0x10 fs/sync.c:125
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fc07e3d3ef9
+RSP: 002b:00007fc07d04d038 EFLAGS: 00000246 ORIG_RAX: 00000000000000a2
+RAX: ffffffffffffffda RBX: 00007fc07e58bf80 RCX: 00007fc07e3d3ef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007fc07e446b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fc07e58bf80 R15: 00007fff8041d028
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/24:
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x28c kernel/locking/lockdep.c:6254
+1 lock held by in:imklog/154:
+ #0: ffff88800ab334f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+2 locks held by agetty/195:
+ #0: ffff88800aa1c098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc9000077a2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x223/0x1960 drivers/tty/n_tty.c:2156
+1 lock held by syz-executor/230:
+1 lock held by syz.3.73/2679:
+ #0: ffff88800cc480e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.2.212/6080:
+ #0: ffff88800cc480e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.0.370/7799:
+ #0: ffff88800cc480e0 (&type->s_umount_key#42){++++}-{3:3}, at: __get_super.part.0+0x1b8/0x270 fs/super.c:759
+1 lock held by syz.1.380/8247:
+ #0: ffff88800cc480e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.1.380/8248:
+ #0: ffff88800cc480e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.2.408/9115:
+ #0: ffff88800cc480e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.3.452/9580:
+ #0: ffff88800cc480e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.3.452/9586:
+ #0: ffff88800cc480e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+
+=============================================
+
+audit: type=1400 audit(1730953672.000:281): avc:  denied  { ingress } for  pid=0 comm="swapper/0" saddr=10.0.2.2 src=56734 daddr=10.0.2.15 dest=22 netif=eth0 scontext=system_u:object_r:lib_t:s0 tcontext=system_u:object_r:netif_t:s0 tclass=netif permissive=0

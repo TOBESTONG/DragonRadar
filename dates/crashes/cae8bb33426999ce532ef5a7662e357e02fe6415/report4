@@ -1,0 +1,429 @@
+audit: type=1400 audit(1731030136.482:29): avc:  denied  { watch watch_reads } for  pid=4294 comm="syz.0.143" path="/proc/67/map_files" dev="proc" ino=13724 scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=dir permissive=1
+EXT4-fs (loop0): feature flags set on rev 0 fs, running e2fsck is recommended
+=====================================================
+WARNING: HARDIRQ-safe -> HARDIRQ-unsafe lock order detected
+5.10.0 #1 Not tainted
+-----------------------------------------------------
+syz.0.143/4296 [HC0[0]:SC0[0]:HE0:SE1] is trying to acquire:
+ffff88801cdb6018 (&new->fa_lock){.+.+}-{2:2}, at: kill_fasync_rcu fs/fcntl.c:1002 [inline]
+ffff88801cdb6018 (&new->fa_lock){.+.+}-{2:2}, at: kill_fasync+0x1a1/0x4c0 fs/fcntl.c:1023
+
+and this task is already holding:
+ffff888008f14028 (&client->buffer_lock){....}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff888008f14028 (&client->buffer_lock){....}-{2:2}, at: evdev_pass_values.part.0+0xf6/0x9e0 drivers/input/evdev.c:261
+which would create a new lock dependency:
+ (&client->buffer_lock){....}-{2:2} -> (&new->fa_lock){.+.+}-{2:2}
+
+but this new dependency connects a HARDIRQ-irq-safe lock:
+ (&dev->event_lock){-...}-{2:2}
+
+... which became HARDIRQ-irq-safe at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+  _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
+  input_event drivers/input/input.c:440 [inline]
+  input_event+0x7b/0xb0 drivers/input/input.c:433
+  input_report_key include/linux/input.h:417 [inline]
+  psmouse_report_standard_buttons+0x2c/0x80 drivers/input/mouse/psmouse-base.c:123
+  psmouse_report_standard_packet drivers/input/mouse/psmouse-base.c:141 [inline]
+  psmouse_process_byte+0x398/0x8c0 drivers/input/mouse/psmouse-base.c:232
+  psmouse_handle_byte+0x47/0x530 drivers/input/mouse/psmouse-base.c:274
+  psmouse_interrupt+0x301/0x12b0 drivers/input/mouse/psmouse-base.c:426
+  serio_interrupt+0x8d/0x150 drivers/input/serio/serio.c:1002
+  i8042_interrupt+0x3fd/0x720 drivers/input/serio/i8042.c:602
+  __handle_irq_event_percpu+0x2ef/0x940 kernel/irq/handle.c:156
+  handle_irq_event_percpu+0x76/0x170 kernel/irq/handle.c:196
+  handle_irq_event+0xa1/0x130 kernel/irq/handle.c:213
+  handle_edge_irq+0x267/0xd20 kernel/irq/chip.c:819
+  asm_call_irq_on_stack+0x12/0x20
+  __run_irq_on_irqstack arch/x86/include/asm/irq_stack.h:48 [inline]
+  run_irq_on_irqstack_cond arch/x86/include/asm/irq_stack.h:101 [inline]
+  handle_irq arch/x86/kernel/irq.c:230 [inline]
+  __common_interrupt arch/x86/kernel/irq.c:249 [inline]
+  common_interrupt+0x12c/0x220 arch/x86/kernel/irq.c:239
+  asm_common_interrupt+0x1e/0x40 arch/x86/include/asm/idtentry.h:622
+  native_restore_fl arch/x86/include/asm/irqflags.h:41 [inline]
+  arch_local_irq_restore arch/x86/include/asm/irqflags.h:84 [inline]
+  __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+  _raw_spin_unlock_irqrestore+0x25/0x50 kernel/locking/spinlock.c:191
+  spin_unlock_irqrestore include/linux/spinlock.h:409 [inline]
+  i8042_command+0x168/0x190 drivers/input/serio/i8042.c:352
+  i8042_aux_write+0xd7/0x120 drivers/input/serio/i8042.c:387
+  serio_write include/linux/serio.h:125 [inline]
+  ps2_do_sendbyte+0x2bb/0x620 drivers/input/serio/libps2.c:40
+  ps2_sendbyte+0x4b/0x90 drivers/input/serio/libps2.c:92
+  cypress_ps2_sendbyte drivers/input/mouse/cypress_ps2.c:42 [inline]
+  cypress_ps2_read_cmd_status drivers/input/mouse/cypress_ps2.c:116 [inline]
+  cypress_send_ext_cmd+0x1c8/0x9a0 drivers/input/mouse/cypress_ps2.c:189
+  cypress_detect+0x75/0x190 drivers/input/mouse/cypress_ps2.c:205
+  psmouse_do_detect drivers/input/mouse/psmouse-base.c:1009 [inline]
+  psmouse_try_protocol+0x218/0x3b0 drivers/input/mouse/psmouse-base.c:1023
+  psmouse_extensions+0x557/0x920 drivers/input/mouse/psmouse-base.c:1146
+  psmouse_switch_protocol+0x535/0x790 drivers/input/mouse/psmouse-base.c:1542
+  psmouse_connect+0x60c/0xfb0 drivers/input/mouse/psmouse-base.c:1632
+  serio_connect_driver drivers/input/serio/serio.c:47 [inline]
+  serio_driver_probe+0x77/0xa0 drivers/input/serio/serio.c:778
+  really_probe+0x2a8/0xe70 drivers/base/dd.c:554
+  driver_probe_device+0x118/0x1e0 drivers/base/dd.c:738
+  device_driver_attach+0x27d/0x2f0 drivers/base/dd.c:1013
+  __driver_attach drivers/base/dd.c:1090 [inline]
+  __driver_attach+0x154/0x340 drivers/base/dd.c:1044
+  bus_for_each_dev+0x136/0x1d0 drivers/base/bus.c:305
+  serio_attach_driver drivers/input/serio/serio.c:808 [inline]
+  serio_handle_event+0x279/0x8a0 drivers/input/serio/serio.c:227
+  process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+  worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+  kthread+0x3b2/0x4a0 kernel/kthread.c:292
+  ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+
+to a HARDIRQ-irq-unsafe lock:
+ (&new->fa_lock){.+.+}-{2:2}
+
+... which became HARDIRQ-irq-unsafe at:
+...
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+  _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+  kill_fasync_rcu fs/fcntl.c:1002 [inline]
+  kill_fasync+0x1a1/0x4c0 fs/fcntl.c:1023
+  pipe_release+0x1a4/0x330 fs/pipe.c:713
+  __fput+0x280/0x980 fs/file_table.c:281
+  task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+  exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+  exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+  syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+other info that might help us debug this:
+
+Chain exists of:
+  &dev->event_lock --> &client->buffer_lock --> &new->fa_lock
+
+ Possible interrupt unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&new->fa_lock);
+                               local_irq_disable();
+                               lock(&dev->event_lock);
+                               lock(&client->buffer_lock);
+  <Interrupt>
+    lock(&dev->event_lock);
+
+ *** DEADLOCK ***
+
+7 locks held by syz.0.143/4296:
+ #0: ffff88800cbf6110 (&evdev->mutex){+.+.}-{3:3}, at: evdev_write+0x154/0x470 drivers/input/evdev.c:513
+ #1: ffff88800a9bc230 (&dev->event_lock){-...}-{2:2}, at: input_inject_event+0xa6/0x390 drivers/input/input.c:466
+ #2: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: is_event_supported drivers/input/input.c:53 [inline]
+ #2: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: is_event_supported drivers/input/input.c:50 [inline]
+ #2: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: input_inject_event+0x92/0x390 drivers/input/input.c:465
+ #3: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: input_pass_values.part.0+0x0/0x760
+ #4: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: evdev_events+0x59/0x490 drivers/input/evdev.c:296
+ #5: ffff888008f14028 (&client->buffer_lock){....}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ #5: ffff888008f14028 (&client->buffer_lock){....}-{2:2}, at: evdev_pass_values.part.0+0xf6/0x9e0 drivers/input/evdev.c:261
+ #6: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: kill_fasync+0x3d/0x4c0 fs/fcntl.c:1021
+
+the dependencies between HARDIRQ-irq-safe lock and the holding lock:
+ -> (&dev->event_lock){-...}-{2:2} {
+    IN-HARDIRQ-W at:
+                      lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                      lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                      __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+                      _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
+                      input_event drivers/input/input.c:440 [inline]
+                      input_event+0x7b/0xb0 drivers/input/input.c:433
+                      input_report_key include/linux/input.h:417 [inline]
+                      psmouse_report_standard_buttons+0x2c/0x80 drivers/input/mouse/psmouse-base.c:123
+                      psmouse_report_standard_packet drivers/input/mouse/psmouse-base.c:141 [inline]
+                      psmouse_process_byte+0x398/0x8c0 drivers/input/mouse/psmouse-base.c:232
+                      psmouse_handle_byte+0x47/0x530 drivers/input/mouse/psmouse-base.c:274
+                      psmouse_interrupt+0x301/0x12b0 drivers/input/mouse/psmouse-base.c:426
+                      serio_interrupt+0x8d/0x150 drivers/input/serio/serio.c:1002
+                      i8042_interrupt+0x3fd/0x720 drivers/input/serio/i8042.c:602
+                      __handle_irq_event_percpu+0x2ef/0x940 kernel/irq/handle.c:156
+                      handle_irq_event_percpu+0x76/0x170 kernel/irq/handle.c:196
+                      handle_irq_event+0xa1/0x130 kernel/irq/handle.c:213
+                      handle_edge_irq+0x267/0xd20 kernel/irq/chip.c:819
+                      asm_call_irq_on_stack+0x12/0x20
+                      __run_irq_on_irqstack arch/x86/include/asm/irq_stack.h:48 [inline]
+                      run_irq_on_irqstack_cond arch/x86/include/asm/irq_stack.h:101 [inline]
+                      handle_irq arch/x86/kernel/irq.c:230 [inline]
+                      __common_interrupt arch/x86/kernel/irq.c:249 [inline]
+                      common_interrupt+0x12c/0x220 arch/x86/kernel/irq.c:239
+                      asm_common_interrupt+0x1e/0x40 arch/x86/include/asm/idtentry.h:622
+                      native_restore_fl arch/x86/include/asm/irqflags.h:41 [inline]
+                      arch_local_irq_restore arch/x86/include/asm/irqflags.h:84 [inline]
+                      __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+                      _raw_spin_unlock_irqrestore+0x25/0x50 kernel/locking/spinlock.c:191
+                      spin_unlock_irqrestore include/linux/spinlock.h:409 [inline]
+                      i8042_command+0x168/0x190 drivers/input/serio/i8042.c:352
+                      i8042_aux_write+0xd7/0x120 drivers/input/serio/i8042.c:387
+                      serio_write include/linux/serio.h:125 [inline]
+                      ps2_do_sendbyte+0x2bb/0x620 drivers/input/serio/libps2.c:40
+                      ps2_sendbyte+0x4b/0x90 drivers/input/serio/libps2.c:92
+                      cypress_ps2_sendbyte drivers/input/mouse/cypress_ps2.c:42 [inline]
+                      cypress_ps2_read_cmd_status drivers/input/mouse/cypress_ps2.c:116 [inline]
+                      cypress_send_ext_cmd+0x1c8/0x9a0 drivers/input/mouse/cypress_ps2.c:189
+                      cypress_detect+0x75/0x190 drivers/input/mouse/cypress_ps2.c:205
+                      psmouse_do_detect drivers/input/mouse/psmouse-base.c:1009 [inline]
+                      psmouse_try_protocol+0x218/0x3b0 drivers/input/mouse/psmouse-base.c:1023
+                      psmouse_extensions+0x557/0x920 drivers/input/mouse/psmouse-base.c:1146
+                      psmouse_switch_protocol+0x535/0x790 drivers/input/mouse/psmouse-base.c:1542
+                      psmouse_connect+0x60c/0xfb0 drivers/input/mouse/psmouse-base.c:1632
+                      serio_connect_driver drivers/input/serio/serio.c:47 [inline]
+                      serio_driver_probe+0x77/0xa0 drivers/input/serio/serio.c:778
+                      really_probe+0x2a8/0xe70 drivers/base/dd.c:554
+                      driver_probe_device+0x118/0x1e0 drivers/base/dd.c:738
+                      device_driver_attach+0x27d/0x2f0 drivers/base/dd.c:1013
+                      __driver_attach drivers/base/dd.c:1090 [inline]
+                      __driver_attach+0x154/0x340 drivers/base/dd.c:1044
+                      bus_for_each_dev+0x136/0x1d0 drivers/base/bus.c:305
+                      serio_attach_driver drivers/input/serio/serio.c:808 [inline]
+                      serio_handle_event+0x279/0x8a0 drivers/input/serio/serio.c:227
+                      process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+                      worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+                      kthread+0x3b2/0x4a0 kernel/kthread.c:292
+                      ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+    INITIAL USE at:
+                     lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                     lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                     __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+                     _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
+                     input_inject_event+0xa6/0x390 drivers/input/input.c:466
+                     __led_set_brightness drivers/leds/led-core.c:48 [inline]
+                     led_set_brightness_nopm drivers/leds/led-core.c:275 [inline]
+                     led_set_brightness_nosleep+0xe9/0x1a0 drivers/leds/led-core.c:292
+                     led_set_brightness+0x134/0x170 drivers/leds/led-core.c:267
+                     led_trigger_event drivers/leds/led-triggers.c:387 [inline]
+                     led_trigger_event+0x70/0xd0 drivers/leds/led-triggers.c:377
+                     kbd_led_trigger_activate+0xfa/0x130 drivers/tty/vt/keyboard.c:1010
+                     led_trigger_set+0x494/0xaa0 drivers/leds/led-triggers.c:195
+                     led_trigger_set_default+0x1a6/0x230 drivers/leds/led-triggers.c:259
+                     led_classdev_register_ext+0x539/0x750 drivers/leds/led-class.c:417
+                     led_classdev_register include/linux/leds.h:190 [inline]
+                     input_leds_connect+0x496/0x990 drivers/input/input-leds.c:139
+                     input_attach_handler+0x18b/0x260 drivers/input/input.c:1031
+                     input_register_device.cold+0x106/0x230 drivers/input/input.c:2229
+                     atkbd_connect+0x83a/0xb70 drivers/input/keyboard/atkbd.c:1293
+                     serio_connect_driver drivers/input/serio/serio.c:47 [inline]
+                     serio_driver_probe+0x77/0xa0 drivers/input/serio/serio.c:778
+                     really_probe+0x2a8/0xe70 drivers/base/dd.c:554
+                     driver_probe_device+0x118/0x1e0 drivers/base/dd.c:738
+                     device_driver_attach+0x27d/0x2f0 drivers/base/dd.c:1013
+                     __driver_attach drivers/base/dd.c:1090 [inline]
+                     __driver_attach+0x154/0x340 drivers/base/dd.c:1044
+                     bus_for_each_dev+0x136/0x1d0 drivers/base/bus.c:305
+                     serio_attach_driver drivers/input/serio/serio.c:808 [inline]
+                     serio_handle_event+0x279/0x8a0 drivers/input/serio/serio.c:227
+                     process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+                     worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+                     kthread+0x3b2/0x4a0 kernel/kthread.c:292
+                     ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+  }
+  ... key      at: [<ffffffff87a64ea0>] __key.5+0x0/0x40
+  ... acquired at:
+   __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+   _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+   spin_lock include/linux/spinlock.h:354 [inline]
+   evdev_pass_values.part.0+0xf6/0x9e0 drivers/input/evdev.c:261
+   evdev_pass_values drivers/input/evdev.c:253 [inline]
+   evdev_events+0x328/0x490 drivers/input/evdev.c:306
+   input_to_handler+0x297/0x4c0 drivers/input/input.c:115
+   input_pass_values.part.0+0x2e4/0x760 drivers/input/input.c:145
+   input_pass_values drivers/input/input.c:134 [inline]
+   input_handle_event+0x3e9/0x1560 drivers/input/input.c:399
+   input_inject_event+0x36a/0x390 drivers/input/input.c:471
+   evdev_write+0x326/0x470 drivers/input/evdev.c:530
+   vfs_write+0x29a/0xac0 fs/read_write.c:603
+   ksys_write+0x1ee/0x250 fs/read_write.c:658
+   do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> (&client->buffer_lock){....}-{2:2} {
+   INITIAL USE at:
+                   lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                   lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                   __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+                   _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+                   spin_lock include/linux/spinlock.h:354 [inline]
+                   evdev_pass_values.part.0+0xf6/0x9e0 drivers/input/evdev.c:261
+                   evdev_pass_values drivers/input/evdev.c:253 [inline]
+                   evdev_events+0x328/0x490 drivers/input/evdev.c:306
+                   input_to_handler+0x297/0x4c0 drivers/input/input.c:115
+                   input_pass_values.part.0+0x2e4/0x760 drivers/input/input.c:145
+                   input_pass_values drivers/input/input.c:134 [inline]
+                   input_handle_event+0x3e9/0x1560 drivers/input/input.c:399
+                   input_inject_event+0x36a/0x390 drivers/input/input.c:471
+                   evdev_write+0x326/0x470 drivers/input/evdev.c:530
+                   vfs_write+0x29a/0xac0 fs/read_write.c:603
+                   ksys_write+0x1ee/0x250 fs/read_write.c:658
+                   do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+                   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ }
+ ... key      at: [<ffffffff87a65120>] __key.4+0x0/0x40
+ ... acquired at:
+   lock_acquire kernel/locking/lockdep.c:5437 [inline]
+   lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+   __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+   _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+   kill_fasync_rcu fs/fcntl.c:1002 [inline]
+   kill_fasync+0x1a1/0x4c0 fs/fcntl.c:1023
+   __pass_event drivers/input/evdev.c:240 [inline]
+   evdev_pass_values.part.0+0x697/0x9e0 drivers/input/evdev.c:278
+   evdev_pass_values drivers/input/evdev.c:253 [inline]
+   evdev_events+0x328/0x490 drivers/input/evdev.c:306
+   input_to_handler+0x297/0x4c0 drivers/input/input.c:115
+   input_pass_values.part.0+0x2e4/0x760 drivers/input/input.c:145
+   input_pass_values drivers/input/input.c:134 [inline]
+   input_handle_event+0x3e9/0x1560 drivers/input/input.c:399
+   input_inject_event+0x36a/0x390 drivers/input/input.c:471
+   evdev_write+0x326/0x470 drivers/input/evdev.c:530
+   vfs_write+0x29a/0xac0 fs/read_write.c:603
+   ksys_write+0x1ee/0x250 fs/read_write.c:658
+   do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+the dependencies between the lock to be acquired
+ and HARDIRQ-irq-unsafe lock:
+-> (&new->fa_lock){.+.+}-{2:2} {
+   HARDIRQ-ON-R at:
+                    lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                    lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                    __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                    _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+                    kill_fasync_rcu fs/fcntl.c:1002 [inline]
+                    kill_fasync+0x1a1/0x4c0 fs/fcntl.c:1023
+                    pipe_release+0x1a4/0x330 fs/pipe.c:713
+                    __fput+0x280/0x980 fs/file_table.c:281
+                    task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+                    tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+                    exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+                    exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+                    syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+                    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+   SOFTIRQ-ON-R at:
+                    lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                    lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                    __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                    _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+                    kill_fasync_rcu fs/fcntl.c:1002 [inline]
+                    kill_fasync+0x1a1/0x4c0 fs/fcntl.c:1023
+                    pipe_release+0x1a4/0x330 fs/pipe.c:713
+                    __fput+0x280/0x980 fs/file_table.c:281
+                    task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+                    tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+                    exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+                    exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+                    syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+                    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+   INITIAL USE at:
+                   lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                   lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                   __raw_write_lock_irq include/linux/rwlock_api_smp.h:196 [inline]
+                   _raw_write_lock_irq+0x32/0x50 kernel/locking/spinlock.c:311
+                   fasync_remove_entry+0xb6/0x1f0 fs/fcntl.c:880
+                   fasync_helper+0x9e/0xb0 fs/fcntl.c:983
+                   lease_modify+0x294/0x600 fs/locks.c:1522
+                   locks_remove_lease fs/locks.c:2770 [inline]
+                   locks_remove_file+0x2c6/0x6b0 fs/locks.c:2795
+                   __fput+0x1b8/0x980 fs/file_table.c:273
+                   task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+                   tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+                   exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+                   exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+                   syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+                   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+   INITIAL READ USE at:
+                        lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                        lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                        __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                        _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+                        kill_fasync_rcu fs/fcntl.c:1002 [inline]
+                        kill_fasync+0x1a1/0x4c0 fs/fcntl.c:1023
+                        pipe_release+0x1a4/0x330 fs/pipe.c:713
+                        __fput+0x280/0x980 fs/file_table.c:281
+                        task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+                        tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+                        exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+                        exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+                        syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+                        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ }
+ ... key      at: [<ffffffff8720a140>] __key.0+0x0/0x40
+ ... acquired at:
+   lock_acquire kernel/locking/lockdep.c:5437 [inline]
+   lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+   __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+   _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+   kill_fasync_rcu fs/fcntl.c:1002 [inline]
+   kill_fasync+0x1a1/0x4c0 fs/fcntl.c:1023
+   __pass_event drivers/input/evdev.c:240 [inline]
+   evdev_pass_values.part.0+0x697/0x9e0 drivers/input/evdev.c:278
+   evdev_pass_values drivers/input/evdev.c:253 [inline]
+   evdev_events+0x328/0x490 drivers/input/evdev.c:306
+   input_to_handler+0x297/0x4c0 drivers/input/input.c:115
+   input_pass_values.part.0+0x2e4/0x760 drivers/input/input.c:145
+   input_pass_values drivers/input/input.c:134 [inline]
+   input_handle_event+0x3e9/0x1560 drivers/input/input.c:399
+   input_inject_event+0x36a/0x390 drivers/input/input.c:471
+   evdev_write+0x326/0x470 drivers/input/evdev.c:530
+   vfs_write+0x29a/0xac0 fs/read_write.c:603
+   ksys_write+0x1ee/0x250 fs/read_write.c:658
+   do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+stack backtrace:
+CPU: 0 PID: 4296 Comm: syz.0.143 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_bad_irq_dependency kernel/locking/lockdep.c:2452 [inline]
+ check_irq_usage.cold+0x47f/0x5e2 kernel/locking/lockdep.c:2681
+ check_prev_add kernel/locking/lockdep.c:2872 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+ validate_chain kernel/locking/lockdep.c:3608 [inline]
+ __lock_acquire+0x2adc/0x5ca0 kernel/locking/lockdep.c:4832
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+ _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+ kill_fasync_rcu fs/fcntl.c:1002 [inline]
+ kill_fasync+0x1a1/0x4c0 fs/fcntl.c:1023
+ __pass_event drivers/input/evdev.c:240 [inline]
+ evdev_pass_values.part.0+0x697/0x9e0 drivers/input/evdev.c:278
+ evdev_pass_values drivers/input/evdev.c:253 [inline]
+ evdev_events+0x328/0x490 drivers/input/evdev.c:306
+ input_to_handler+0x297/0x4c0 drivers/input/input.c:115
+ input_pass_values.part.0+0x2e4/0x760 drivers/input/input.c:145
+ input_pass_values drivers/input/input.c:134 [inline]
+ input_handle_event+0x3e9/0x1560 drivers/input/input.c:399
+ input_inject_event+0x36a/0x390 drivers/input/input.c:471
+ evdev_write+0x326/0x470 drivers/input/evdev.c:530
+ vfs_write+0x29a/0xac0 fs/read_write.c:603
+ ksys_write+0x1ee/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ff3ed60fef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ff3ec268038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007ff3ed7c8058 RCX: 00007ff3ed60fef9
+RDX: 000000000000ff7d RSI: 0000000020000180 RDI: 0000000000000004
+RBP: 00007ff3ed682b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007ff3ed7c8058 R15: 00007ffc8d1426f8
+EXT4-fs (loop0): ext4_check_descriptors: Inode bitmap for group 0 overlaps block group descriptors
+[EXT4 FS bs=4096, gc=1, bpg=256, ipg=32, mo=8002c01c, mo2=0000]
+EXT4-fs (loop0): orphan cleanup on readonly fs
+EXT4-fs error (device loop0): ext4_quota_enable:6366: comm syz.0.143: Bad quota inode # 6
+EXT4-fs warning (device loop0): ext4_enable_quotas:6403: Failed to enable quota tracking (type=1, err=-116). Please run e2fsck to fix.
+EXT4-fs error (device loop0): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 87 vs 41 free clusters
+EXT4-fs error (device loop0): ext4_free_inode:282: comm syz.0.143: reserved or nonexistent inode 3
+EXT4-fs (loop0): Cannot turn on quotas: error -116
+EXT4-fs (loop0): mounted filesystem without journal. Opts: nobarrier,noblock_validity,debug,barrier=0x0000000000000003,errors=remount-ro,resgid=0x000000000000ee01,errors=remount-ro,errors=continue,resgid=0x000000000000ee002

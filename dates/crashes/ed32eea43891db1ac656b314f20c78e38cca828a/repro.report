@@ -1,0 +1,57 @@
+EXT4-fs (loop0): mounted filesystem without journal. Opts: noload,resuid=0x000000000000ee01,debug_want_extra_isize=0x000000000000002e,lazytime,i_version,quota,,errors=continue
+==================================================================
+BUG: KASAN: use-after-free in ext4_search_dir+0x25d/0x2a0 fs/ext4/namei.c:1394
+Read of size 1 at addr ffff8880092d7ba9 by task syz-executor159/241
+
+CPU: 0 PID: 241 Comm: syz-executor159 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ ext4_search_dir+0x25d/0x2a0 fs/ext4/namei.c:1394
+ ext4_find_inline_entry+0x2ba/0x4a0 fs/ext4/inline.c:1659
+ __ext4_find_entry+0xb7c/0x10d0 fs/ext4/namei.c:1467
+ ext4_lookup_entry fs/ext4/namei.c:1622 [inline]
+ ext4_lookup fs/ext4/namei.c:1690 [inline]
+ ext4_lookup+0x16b/0x650 fs/ext4/namei.c:1681
+ __lookup_slow+0x252/0x490 fs/namei.c:1544
+ lookup_slow fs/namei.c:1561 [inline]
+ walk_component+0x41a/0x6a0 fs/namei.c:1861
+ lookup_last fs/namei.c:2310 [inline]
+ path_lookupat+0x146/0x6c0 fs/namei.c:2334
+ filename_lookup+0x19f/0x560 fs/namei.c:2367
+ user_path_at include/linux/namei.h:59 [inline]
+ do_mount fs/namespace.c:3215 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x1e9/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f754b32caad
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc77561f88 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffc77562250 RCX: 00007f754b32caad
+RDX: 0000000000000000 RSI: 0000000020000180 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 00007ffc77561fb0
+R10: 0000000000000041 R11: 0000000000000246 R12: 00007ffc77562250
+R13: 00007ffc77561fd0 R14: 0000000000000000 R15: 00007ffc77561ff0
+
+The buggy address belongs to the page:
+page:000000005d0f96d6 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x92d7
+flags: 0x100000000000000()
+raw: 0100000000000000 ffffea000024b508 ffffea000024b648 0000000000000000
+raw: 0000000000000000 0000000000100000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880092d7a80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff8880092d7b00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>ffff8880092d7b80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                                  ^
+ ffff8880092d7c00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff8880092d7c80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
+EXT4-fs error (device loop0): ext4_map_blocks:584: inode #2: block 13: comm syz-executor159: lblock 0 mapped to illegal pblock 13 (length 1)

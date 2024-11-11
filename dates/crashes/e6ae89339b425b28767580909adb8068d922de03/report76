@@ -1,0 +1,136 @@
+EXT4-fs (loop3): mounted filesystem without journal. Opts: max_dir_size_kb=0x0000000000010001,block_validity,nogrpid,block_validity,debug_want_extra_isize=0x0000000000000006,init_itable=0x0000000000000000,usrquota,usrquota,,errors=continue
+EXT4-fs (loop3): invalid first ino: 0
+======================================================
+WARNING: possible circular locking dependency detected
+5.10.0 #1 Not tainted
+------------------------------------------------------
+syz.1.320/9252 is trying to acquire lock:
+ffff8880090be628 (sb_internal){.+.+}-{0:0}, at: evict+0x284/0x6d0 fs/inode.c:578
+
+but task is already holding lock:
+ffff88801b4e3bd8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ffff88801b4e3bd8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x15e/0x12b0 fs/ext4/xattr.c:2306
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&ei->xattr_sem){++++}-{3:3}:
+       down_write+0x8d/0x150 kernel/locking/rwsem.c:1531
+       ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+       ext4_inline_data_truncate+0x19b/0xb20 fs/ext4/inline.c:1881
+       ext4_truncate+0xa4a/0x1390 fs/ext4/inode.c:4211
+       ext4_evict_inode+0xb59/0x1890 fs/ext4/inode.c:280
+       evict+0x284/0x6d0 fs/inode.c:578
+       iput_final fs/inode.c:1654 [inline]
+       iput+0x4e5/0x840 fs/inode.c:1680
+       ext4_orphan_cleanup fs/ext4/super.c:3119 [inline]
+       ext4_fill_super+0x92ef/0xd960 fs/ext4/super.c:5067
+       mount_bdev+0x350/0x410 fs/super.c:1419
+       legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+       vfs_get_tree+0x8e/0x360 fs/super.c:1549
+       do_new_mount fs/namespace.c:2875 [inline]
+       path_mount+0x1318/0x2060 fs/namespace.c:3205
+       do_mount fs/namespace.c:3218 [inline]
+       __do_sys_mount fs/namespace.c:3426 [inline]
+       __se_sys_mount fs/namespace.c:3403 [inline]
+       __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #0 (sb_internal){.+.+}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:2868 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+       validate_chain kernel/locking/lockdep.c:3608 [inline]
+       __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+       lock_acquire kernel/locking/lockdep.c:5437 [inline]
+       lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1594 [inline]
+       sb_start_intwrite include/linux/fs.h:1711 [inline]
+       ext4_evict_inode+0x5a1/0x1890 fs/ext4/inode.c:237
+       evict+0x284/0x6d0 fs/inode.c:578
+       iput_final fs/inode.c:1654 [inline]
+       iput+0x4e5/0x840 fs/inode.c:1680
+       ext4_xattr_set_entry+0x498/0x37c0 fs/ext4/xattr.c:1783
+       ext4_xattr_block_set+0x5b6/0x2f50 fs/ext4/xattr.c:1869
+       ext4_xattr_set_handle+0xd01/0x12b0 fs/ext4/xattr.c:2390
+       ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2491
+       __vfs_setxattr+0x10f/0x170 fs/xattr.c:177
+       __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+       __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+       vfs_setxattr+0xe8/0x270 fs/xattr.c:283
+       setxattr+0x23d/0x330 fs/xattr.c:548
+       path_setxattr+0x170/0x190 fs/xattr.c:567
+       __do_sys_setxattr fs/xattr.c:582 [inline]
+       __se_sys_setxattr fs/xattr.c:578 [inline]
+       __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:578
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ei->xattr_sem);
+                               lock(sb_internal);
+                               lock(&ei->xattr_sem);
+  lock(sb_internal);
+
+ *** DEADLOCK ***
+
+3 locks held by syz.1.320/9252:
+ #0: ffff8880090be438 (sb_writers#3){.+.+}-{0:0}, at: path_setxattr+0xb5/0x190 fs/xattr.c:565
+ #1: ffff88801b4e3f98 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ #1: ffff88801b4e3f98 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: vfs_setxattr+0xca/0x270 fs/xattr.c:282
+ #2: ffff88801b4e3bd8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ #2: ffff88801b4e3bd8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x15e/0x12b0 fs/ext4/xattr.c:2306
+
+stack backtrace:
+CPU: 0 PID: 9252 Comm: syz.1.320 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
+ check_prev_add kernel/locking/lockdep.c:2868 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+ validate_chain kernel/locking/lockdep.c:3608 [inline]
+ __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+ __sb_start_write include/linux/fs.h:1594 [inline]
+ sb_start_intwrite include/linux/fs.h:1711 [inline]
+ ext4_evict_inode+0x5a1/0x1890 fs/ext4/inode.c:237
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ ext4_xattr_set_entry+0x498/0x37c0 fs/ext4/xattr.c:1783
+ ext4_xattr_block_set+0x5b6/0x2f50 fs/ext4/xattr.c:1869
+ ext4_xattr_set_handle+0xd01/0x12b0 fs/ext4/xattr.c:2390
+ ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2491
+ __vfs_setxattr+0x10f/0x170 fs/xattr.c:177
+ __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+ __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+ vfs_setxattr+0xe8/0x270 fs/xattr.c:283
+ setxattr+0x23d/0x330 fs/xattr.c:548
+ path_setxattr+0x170/0x190 fs/xattr.c:567
+ __do_sys_setxattr fs/xattr.c:582 [inline]
+ __se_sys_setxattr fs/xattr.c:578 [inline]
+ __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:578
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f4d4862fef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f4d47288038 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
+RAX: ffffffffffffffda RBX: 00007f4d487e8058 RCX: 00007f4d4862fef9
+RDX: 00000000200005c0 RSI: 0000000020000180 RDI: 0000000020000080
+RBP: 00007f4d486a2b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000002000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f4d487e8058 R15: 00007ffd13b12528
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /22/mnt supports timestamps until 2038 (0x7fffffff)

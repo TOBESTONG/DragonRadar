@@ -1,0 +1,130 @@
+EXT4-fs error (device loop2): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 31 vs 150994969 free clusters
+9pnet: p9_fd_create_tcp (2205): problem connecting socket to 127.0.0.1
+------------[ cut here ]------------
+EXT4-fs error (device loop2) in ext4_reserve_inode_write:5740: Out of memory
+kernel BUG at fs/ext4/inline.c:221!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 2189 Comm: syz.2.34 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_write_inline_data+0x33a/0x3f0 fs/ext4/inline.c:221
+Code: 41 5c 41 5d 41 5e 41 5f e9 f3 08 a2 ff e8 ee 08 a2 ff b8 3c 00 00 00 48 29 e8 4c 63 e8 41 29 c4 e9 eb fe ff ff e8 d6 08 a2 ff <0f> 0b 48 c7 c7 e0 bf 2f 85 e8 d7 85 3c 02 e8 c3 08 a2 ff 0f 0b 48
+RSP: 0018:ffff88800dfe7b88 EFLAGS: 00010216
+RAX: 000000000000d47e RBX: ffff888013bf7958 RCX: ffffc90001fad000
+RDX: 0000000000040000 RSI: ffffffff81a405ea RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888010d5a3bf
+R10: 0000000000000000 R11: 0000000000000001 R12: 000000000000003c
+R13: 0000000000000000 R14: ffff88800dfe7d10 R15: ffff888013bf7e62
+FS:  00007f4fea5dd6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000200f01bf CR3: 000000000dd24000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_restore_inline_data fs/ext4/inline.c:1123 [inline]
+ ext4_convert_inline_data_nolock+0x252/0xd60 fs/ext4/inline.c:1247
+ ext4_convert_inline_data+0x37c/0x490 fs/ext4/inline.c:1986
+ ext4_fallocate+0x19d/0x3e70 fs/ext4/extents.c:4659
+ vfs_fallocate+0x494/0xdd0 fs/open.c:309
+ ksys_fallocate fs/open.c:332 [inline]
+ __do_sys_fallocate fs/open.c:340 [inline]
+ __se_sys_fallocate fs/open.c:338 [inline]
+ __x64_sys_fallocate+0xcf/0x140 fs/open.c:338
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f4feb963ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f4fea5dd038 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
+RAX: ffffffffffffffda RBX: 00007f4febb1bf80 RCX: 00007f4feb963ef9
+RDX: 0000000000007fff RSI: 0000000000000000 RDI: 000000000000000b
+RBP: 00007f4feb9d6b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f4febb1bf80 R15: 00007ffe31217148
+Modules linked in:
+EXT4-fs error (device loop2): ext4_dirty_inode:5942: inode #18: comm syz.2.34: mark_inode_dirty error
+EXT4-fs error (device loop2) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop2): ext4_dirty_inode:5942: inode #18: comm syz.2.34: mark_inode_dirty error
+EXT4-fs error (device loop2) in ext4_reserve_inode_write:5740: Out of memory
+---[ end trace 0bce05a317b7e9a8 ]---
+RIP: 0010:ext4_write_inline_data+0x33a/0x3f0 fs/ext4/inline.c:221
+Code: 41 5c 41 5d 41 5e 41 5f e9 f3 08 a2 ff e8 ee 08 a2 ff b8 3c 00 00 00 48 29 e8 4c 63 e8 41 29 c4 e9 eb fe ff ff e8 d6 08 a2 ff <0f> 0b 48 c7 c7 e0 bf 2f 85 e8 d7 85 3c 02 e8 c3 08 a2 ff 0f 0b 48
+EXT4-fs error (device loop2): ext4_ext_truncate:4353: inode #18: comm syz.2.34: mark_inode_dirty error
+EXT4-fs error (device loop2) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop2): ext4_truncate:4277: inode #18: comm syz.2.34: mark_inode_dirty error
+RSP: 0018:ffff88800dfe7b88 EFLAGS: 00010216
+RAX: 000000000000d47e RBX: ffff888013bf7958 RCX: ffffc90001fad000
+RDX: 0000000000040000 RSI: ffffffff81a405ea RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888010d5a3bf
+R10: 0000000000000000 R11: 0000000000000001 R12: 000000000000003c
+R13: 0000000000000000 R14: ffff88800dfe7d10 R15: ffff888013bf7e62
+FS:  00007f4fea5dd6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000200f11bf CR3: 000000000dd24000 CR4: 0000000000350ef0
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#2] PREEMPT SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 2189 Comm: syz.2.34 Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:jbd2__journal_start+0x84/0x960 fs/jbd2/transaction.c:479
+Code: c6 07 00 00 4d 8b bf d8 10 00 00 4d 85 ff 0f 84 97 00 00 00 e8 7d 1f 8e ff 4c 89 fa 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 ad 07 00 00 48 b8 00 00 00 00 00 fc ff df 49 8b
+RSP: 0018:ffff88800dfe7ab8 EFLAGS: 00010256
+RAX: dffffc0000000000 RBX: ffff88800cf24000 RCX: 0000000000000008
+RDX: 0000000000000000 RSI: ffffffff81b7ef43 RDI: ffff888008fc5ed8
+RBP: 0000000000000000 R08: 0000000000000c40 R09: 0000000000000005
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000008
+R13: 000000000000001d R14: 0000000000000c40 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000200f11bf CR3: 000000000bd74000 CR4: 0000000000350ef0
+Call Trace:
+ __ext4_journal_start_sb+0x210/0x490 fs/ext4/ext4_jbd2.c:105
+ __ext4_journal_start fs/ext4/ext4_jbd2.h:328 [inline]
+ ext4_evict_inode+0x96c/0x1890 fs/ext4/inode.c:246
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ dentry_unlink_inode+0x2b4/0x3e0 fs/dcache.c:374
+ __dentry_kill+0x36f/0x5b0 fs/dcache.c:579
+ dentry_kill fs/dcache.c:717 [inline]
+ dput+0x6ad/0xc70 fs/dcache.c:878
+ __fput+0x3a5/0x980 fs/file_table.c:294
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7f4feb963ef9
+Code: Unable to access opcode bytes at RIP 0x7f4feb963ecf.
+RSP: 002b:00007f4fea5dd038 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
+RAX: ffffffffffffffda RBX: 00007f4febb1bf80 RCX: 00007f4feb963ef9
+RDX: 0000000000007fff RSI: 0000000000000000 RDI: 000000000000000b
+RBP: 00007f4feb9d6b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f4febb1bf80 R15: 00007ffe31217148
+Modules linked in:
+---[ end trace 0bce05a317b7e9a9 ]---
+RIP: 0010:ext4_write_inline_data+0x33a/0x3f0 fs/ext4/inline.c:221
+Code: 41 5c 41 5d 41 5e 41 5f e9 f3 08 a2 ff e8 ee 08 a2 ff b8 3c 00 00 00 48 29 e8 4c 63 e8 41 29 c4 e9 eb fe ff ff e8 d6 08 a2 ff <0f> 0b 48 c7 c7 e0 bf 2f 85 e8 d7 85 3c 02 e8 c3 08 a2 ff 0f 0b 48
+RSP: 0018:ffff88800dfe7b88 EFLAGS: 00010216
+RAX: 000000000000d47e RBX: ffff888013bf7958 RCX: ffffc90001fad000
+RDX: 0000000000040000 RSI: ffffffff81a405ea RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888010d5a3bf
+R10: 0000000000000000 R11: 0000000000000001 R12: 000000000000003c
+R13: 0000000000000000 R14: ffff88800dfe7d10 R15: ffff888013bf7e62
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000200f11bf CR3: 000000000bd74000 CR4: 0000000000350ef0
+Fixing recursive fault but reboot is needed!
+----------------
+Code disassembly (best guess):
+   0:	c6 07 00             	movb   $0x0,(%rdi)
+   3:	00 4d 8b             	add    %cl,-0x75(%rbp)
+   6:	bf d8 10 00 00       	mov    $0x10d8,%edi
+   b:	4d 85 ff             	test   %r15,%r15
+   e:	0f 84 97 00 00 00    	je     0xab
+  14:	e8 7d 1f 8e ff       	call   0xff8e1f96
+  19:	4c 89 fa             	mov    %r15,%rdx
+  1c:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  23:	fc ff df
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 ad 07 00 00    	jne    0x7e1
+  34:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  3b:	fc ff df
+  3e:	49                   	rex.WB
+  3f:	8b                   	.byte 0x8b

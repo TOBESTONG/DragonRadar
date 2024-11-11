@@ -1,0 +1,115 @@
+SELinux: inode_doinit_use_xattr:  getxattr returned 117 for dev=loop0 ino=15
+EXT4-fs error (device loop0): ext4_get_inode_usage:838: inode #15: comm syz.0.422: corrupted xattr block 33
+=============================
+================================
+WARNING: suspicious RCU usage
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+ksoftirqd/1/16 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff88800b00c2a8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88800b00c2a8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+5.10.0 #1 Not tainted
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+-----------------------------
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 191174
+kernel/sched/core.c:4298 Illegal context switch in RCU-bh read-side critical section!
+hardirqs last  enabled at (191174): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (191174): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (191173): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (191173): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (191156): [<ffffffff81180dcd>] run_ksoftirqd kernel/softirq.c:653 [inline]
+softirqs last  enabled at (191156): [<ffffffff81180dcd>] run_ksoftirqd+0x2d/0x50 kernel/softirq.c:645
+
+other info that might help us debug this:
+
+softirqs last disabled at (191161): [<ffffffff81180dcd>] run_ksoftirqd kernel/softirq.c:653 [inline]
+softirqs last disabled at (191161): [<ffffffff81180dcd>] run_ksoftirqd+0x2d/0x50 kernel/softirq.c:645
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock
+
+rcu_scheduler_active = 2, debug_locks = 0
+);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+2 locks held by ksoftirqd/1/16:
+ #0: 
+no locks held by systemd-udevd/116.
+ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #1: 
+
+stack backtrace:
+ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 0 PID: 116 Comm: systemd-udevd Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ schedule_debug kernel/sched/core.c:4298 [inline]
+ __schedule+0x136c/0x2030 kernel/sched/core.c:4423
+ preempt_schedule_common+0x45/0xc0 kernel/sched/core.c:4687
+ preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:40
+ migrate_enable include/linux/preempt.h:352 [inline]
+ bpf_prog_run_pin_on_cpu include/linux/filter.h:598 [inline]
+ seccomp_run_filters kernel/seccomp.c:328 [inline]
+ __seccomp_filter+0x654/0x1560 kernel/seccomp.c:940
+ __secure_computing+0xac/0x290 kernel/seccomp.c:1073
+ syscall_trace_enter.constprop.0+0x80/0x240 kernel/entry/common.c:58
+ do_syscall_64+0xf/0x40 arch/x86/entry/common.c:41
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f515b8360f3
+Code: 8b 15 d9 ae 00 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8
+RSP: 002b:00007ffcbd0f0ac8 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+RAX: ffffffffffffffda RBX: 00007f515b28f6c0 RCX: 00007f515b8360f3
+RDX: 00007ffcbd0f0a38 RSI: 0000000000000000 RDI: 0000000000000013
+RBP: 0000000000000013 R08: 00005562dbcac140 R09: 0073656369766564
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000012 R14: 0000000000000012 R15: 00005562dbc683a1
+CPU: 1 PID: 16 Comm: ksoftirqd/1 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ run_ksoftirqd kernel/softirq.c:653 [inline]
+ run_ksoftirqd+0x2d/0x50 kernel/softirq.c:645
+ smpboot_thread_fn+0x684/0xa40 kernel/smpboot.c:165
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+audit: type=1400 audit(1731073118.978:130): avc:  denied  { create } for  pid=7463 comm="syz.3.426" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:object_r:mqueue_spool_t:s0 tclass=netlink_route_socket permissive=1

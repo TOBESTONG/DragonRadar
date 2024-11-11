@@ -1,0 +1,112 @@
+audit: type=1400 audit(1731307544.022:21): avc:  denied  { read } for  pid=2363 comm="syz.2.49" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=perf_event permissive=1
+==================================================================
+BUG: KASAN: use-after-free in memmove include/linux/string.h:414 [inline]
+BUG: KASAN: use-after-free in ext4_ext_insert_extent+0xc1b/0x4240 fs/ext4/extents.c:2108
+Read of size 329748 at addr ffff88801bda91b0 by task syz.2.49/2409
+
+CPU: 1 PID: 2409 Comm: syz.2.49 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0xf9/0x1e0 mm/kasan/generic.c:192
+ memmove+0x20/0x60 mm/kasan/common.c:94
+ memmove include/linux/string.h:414 [inline]
+ ext4_ext_insert_extent+0xc1b/0x4240 fs/ext4/extents.c:2108
+ ext4_ext_map_blocks+0x122b/0x5d50 fs/ext4/extents.c:4259
+ ext4_map_blocks+0x700/0x1740 fs/ext4/inode.c:628
+ _ext4_get_block+0x241/0x590 fs/ext4/inode.c:784
+ __block_write_begin_int+0x3f2/0x1b40 fs/buffer.c:2011
+ ext4_write_begin+0x649/0x1170 fs/ext4/inode.c:1200
+ ext4_da_write_begin+0x61e/0xe60 fs/ext4/inode.c:2952
+ generic_perform_write+0x1fe/0x4d0 mm/filemap.c:3329
+ ext4_buffered_write_iter+0x244/0x4d0 fs/ext4/file.c:270
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ __kernel_write+0x593/0xb00 fs/read_write.c:550
+ dump_emit+0x1db/0x2e0 fs/coredump.c:848
+ dump_user_range+0xbb/0x2a0 fs/coredump.c:901
+ elf_core_dump+0x290a/0x3540 fs/binfmt_elf.c:2274
+ do_coredump+0x2246/0x3380 fs/coredump.c:810
+ get_signal+0x20ac/0x2480 kernel/signal.c:2752
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ irqentry_exit_to_user_mode+0x5/0x40 kernel/entry/common.c:279
+ exc_page_fault+0xca/0x1a0 arch/x86/mm/fault.c:1488
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0x7f7cf1d30f01
+Code: 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 48 3d 01 f0 ff ff 73 01 <c3> 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f
+RSP: 002b:0000000000000030 EFLAGS: 00010217
+RAX: 0000000000000000 RBX: 00007f7cf1ee9130 RCX: 00007f7cf1d30ef9
+RDX: 0000000000000000 RSI: 0000000000000030 RDI: 0000000000000000
+RBP: 00007f7cf1da3b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000001 R14: 00007f7cf1ee9130 R15: 00007ffd5da2eae8
+
+The buggy address belongs to the page:
+page:00000000d0556167 refcount:2 mapcount:0 mapping:000000004df67a5f index:0x24 pfn:0x1bda9
+aops:def_blk_aops ino:0
+flags: 0x10000000002203e(referenced|uptodate|dirty|lru|active|private|mappedtodisk)
+raw: 010000000002203e ffffea00006a8988 ffffea0000566408 ffff8880139a96b0
+raw: 0000000000000024 ffff88801393ad98 00000002ffffffff ffff88801980e000
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff88801980e000
+
+Memory state around the buggy address:
+ ffff88801bda9f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88801bda9f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff88801bdaa000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff88801bdaa080: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff88801bdaa100: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+syz.2.49 (2409) used greatest stack depth: 22288 bytes left
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:2399!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 1088 Comm: kworker/u4:5 Tainted: G    B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: writeback wb_workfn (flush-7:2)
+RIP: 0010:mpage_map_one_extent fs/ext4/inode.c:2399 [inline]
+RIP: 0010:mpage_map_and_submit_extent fs/ext4/inode.c:2440 [inline]
+RIP: 0010:ext4_writepages+0x2e9d/0x3a00 fs/ext4/inode.c:2792
+Code: 00 fc ff df 44 89 64 24 68 48 c1 ea 03 80 3c 02 00 0f 84 8e e1 ff ff 48 8b 3c 24 e8 1d bc cc ff e9 80 e1 ff ff e8 c3 8b 9f ff <0f> 0b 48 c7 c7 a0 dd 2f 85 e8 c4 08 3a 02 8b 84 24 c0 00 00 00 31
+RSP: 0018:ffff8880112b7448 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff81a6716a
+RDX: ffff888019d63400 RSI: ffffffff81a682fd RDI: 0000000000000005
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffff888013bd647f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f71d1ba16f4 CR3: 000000000ac0a000 CR4: 0000000000350ee0
+Call Trace:
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __writeback_single_inode+0x108/0x1090 fs/fs-writeback.c:1461
+ writeback_sb_inodes+0x56e/0x1010 fs/fs-writeback.c:1721
+ wb_writeback+0x28e/0xbe0 fs/fs-writeback.c:1894
+ wb_do_writeback fs/fs-writeback.c:2039 [inline]
+ wb_workfn+0x1a4/0x1140 fs/fs-writeback.c:2080
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+---[ end trace e8b843d81fc2a64e ]---
+RIP: 0010:mpage_map_one_extent fs/ext4/inode.c:2399 [inline]
+RIP: 0010:mpage_map_and_submit_extent fs/ext4/inode.c:2440 [inline]
+RIP: 0010:ext4_writepages+0x2e9d/0x3a00 fs/ext4/inode.c:2792
+Code: 00 fc ff df 44 89 64 24 68 48 c1 ea 03 80 3c 02 00 0f 84 8e e1 ff ff 48 8b 3c 24 e8 1d bc cc ff e9 80 e1 ff ff e8 c3 8b 9f ff <0f> 0b 48 c7 c7 a0 dd 2f 85 e8 c4 08 3a 02 8b 84 24 c0 00 00 00 31
+RSP: 0018:ffff8880112b7448 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff81a6716a
+RDX: ffff888019d63400 RSI: ffffffff81a682fd RDI: 0000000000000005
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffff888013bd647f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f71d1ba16f4 CR3: 000000000c62a000 CR4: 0000000000350ee0

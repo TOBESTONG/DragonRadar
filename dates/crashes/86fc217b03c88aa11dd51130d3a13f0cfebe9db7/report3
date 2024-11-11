@@ -1,0 +1,84 @@
+EXT4-fs error (device loop1): ext4_free_branches:1008: inode #13: comm syz.1.223: invalid indirect mapped block 1 (level 2)
+EXT4-fs (loop1): 1 truncate cleaned up
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+watchdog: BUG: soft lockup - CPU#1 stuck for 22s! [systemd-udevd:2089]
+Modules linked in:
+irq event stamp: 784278
+hardirqs last  enabled at (784277): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (784278): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+softirqs last  enabled at (734160): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (734155): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+CPU: 1 PID: 2089 Comm: systemd-udevd Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:csd_lock_wait kernel/smp.c:227 [inline]
+RIP: 0010:smp_call_function_single+0x195/0x4c0 kernel/smp.c:512
+Code: 10 8b 7c 24 1c 48 8d 74 24 40 48 89 44 24 50 48 8b 44 24 08 48 89 44 24 58 e8 f7 fa ff ff 41 89 c5 eb 07 e8 9d ea 0a 00 f3 90 <44> 8b 64 24 48 31 ff 41 83 e4 01 44 89 e6 e8 48 e2 0a 00 45 85 e4
+RSP: 0018:ffff888012b07ba0 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 1ffff11002560f78 RCX: ffffffff813b2438
+RDX: ffff88800ccf9a00 RSI: ffffffff813b2423 RDI: 0000000000000005
+RBP: ffff888012b07c68 R08: 0000000000000001 R09: ffffffff86e5f6e7
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000200
+FS:  00007fd81b5348c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b31a20218 CR3: 0000000012aa0000 CR4: 0000000000350ee0
+Call Trace:
+ smp_call_function_many_cond+0x277/0xa80 kernel/smp.c:648
+ on_each_cpu_cond_mask+0x50/0x140 kernel/smp.c:899
+ kill_bdev fs/block_dev.c:85 [inline]
+ __blkdev_put+0x2a7/0x890 fs/block_dev.c:1776
+ blkdev_close+0x8c/0xb0 fs/block_dev.c:1851
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fd81badb0f3
+Code: 8b 15 d9 ae 00 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8
+RSP: 002b:00007ffc28c1e098 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 00007fd81b5346c0 RCX: 00007fd81badb0f3
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000007
+RBP: 0000000000000007 R08: 0000555e6aeb9400 R09: 0000000000000000
+R10: 00007fd81b5346c0 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00000000000007b0 R15: 00007ffc28c1e110
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 4394 Comm: syz.2.221 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:task_wait_context kernel/locking/lockdep.c:4446 [inline]
+RIP: 0010:check_wait_context kernel/locking/lockdep.c:4527 [inline]
+RIP: 0010:__lock_acquire+0x5ec/0x5ca0 kernel/locking/lockdep.c:4782
+Code: b6 41 21 31 d0 a8 60 74 c3 83 c3 01 65 8b 05 93 8f d7 7e 85 c0 0f 85 d4 0a 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 4c 24 38 <48> 89 ca 48 c1 ea 03 0f b6 14 02 48 89 c8 83 e0 07 83 c0 03 38 d0
+RSP: 0018:ffff8880193afb90 EFLAGS: 00000046
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffff88800c4a2334
+RDX: 0000000000000001 RSI: 0000000000000001 RDI: 0000000000000003
+RBP: ffff88800c4a1a00 R08: dffffc0000000000 R09: 0000000000000000
+R10: fffffbfff0dcbed9 R11: 0000000000000001 R12: ffff88800c4a2378
+R13: 0000000000000001 R14: ffff88800c4a2349 R15: 0000000000000001
+FS:  000055555632e500(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2fd2021c CR3: 0000000020258000 CR4: 0000000000350ef0
+Call Trace:
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
+ vga_put+0x37/0x100 drivers/gpu/vga/vgaarb.c:578
+ vga_arb_release+0x1bc/0x360 drivers/gpu/vga/vgaarb.c:1370
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f7315c4def9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe43c894e8 EFLAGS: 00000246 ORIG_RAX: 00000000000001b4
+RAX: 0000000000000000 RBX: 00007f7315e07a80 RCX: 00007f7315c4def9
+RDX: 0000000000000000 RSI: 000000000000001e RDI: 0000000000000003
+RBP: 00007f7315e07a80 R08: 0000000000000006 R09: 00007ffe43c897df
+R10: 000000000003fd48 R11: 0000000000000246 R12: 000000000000cd8e
+R13: 00007ffe43c895f0 R14: 0000000000000032 R15: ffffffffffffffff

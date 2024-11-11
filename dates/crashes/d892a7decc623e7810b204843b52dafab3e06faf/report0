@@ -1,0 +1,89 @@
+EXT4-fs error (device loop2): ext4_xattr_set_entry:1586: inode #18: comm syz.2.6: corrupted xattr entries
+EXT4-fs error (device loop2): ext4_xattr_set_entry:1586: inode #28: comm syz.2.6: corrupted xattr entries
+==================================================================
+BUG: KASAN: slab-out-of-bounds in ext4_xattr_inode_dec_ref_all+0x8de/0xa10 fs/ext4/xattr.c:1140
+Read of size 4 at addr ffff888008357018 by task syz.2.6/2066
+
+CPU: 0 PID: 2066 Comm: syz.2.6 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ ext4_xattr_inode_dec_ref_all+0x8de/0xa10 fs/ext4/xattr.c:1140
+ ext4_xattr_delete_inode+0x4b9/0xda0 fs/ext4/xattr.c:2878
+ ext4_evict_inode+0xb87/0x1890 fs/ext4/inode.c:290
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ dentry_unlink_inode+0x2b4/0x3e0 fs/dcache.c:374
+ __dentry_kill+0x36f/0x5b0 fs/dcache.c:579
+ dentry_kill fs/dcache.c:717 [inline]
+ dput+0x6ad/0xc70 fs/dcache.c:878
+ __fput+0x3a5/0x980 fs/file_table.c:294
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f0191c5cef9
+Code: Unable to access opcode bytes at RIP 0x7f0191c5cecf.
+RSP: 002b:00007f01908b50e8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: 0000000000000000 RBX: 00007f0191e15060 RCX: 00007f0191c5cef9
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f0191e15060
+RBP: 00007f0191e15058 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f0191e15064
+R13: 0000000000000000 R14: 00007fff7c3c7dd0 R15: 00007fff7c3c7eb8
+
+Allocated by task 94:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ kmalloc include/linux/slab.h:552 [inline]
+ __memcg_init_list_lru_node+0x8b/0x1e0 mm/list_lru.c:339
+ memcg_init_list_lru_node mm/list_lru.c:362 [inline]
+ memcg_init_list_lru mm/list_lru.c:448 [inline]
+ __list_lru_init+0x41f/0x740 mm/list_lru.c:615
+ alloc_super+0x88a/0xac0 fs/super.c:274
+ sget_fc+0x13e/0x740 fs/super.c:530
+ vfs_get_super fs/super.c:1186 [inline]
+ get_tree_nodev+0x24/0x1d0 fs/super.c:1221
+ hugetlbfs_get_tree fs/hugetlbfs/inode.c:1388 [inline]
+ hugetlbfs_get_tree+0x1e3/0x2b0 fs/hugetlbfs/inode.c:1383
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff888008357000
+ which belongs to the cache kmalloc-32 of size 32
+The buggy address is located 24 bytes inside of
+ 32-byte region [ffff888008357000, ffff888008357020)
+The buggy address belongs to the page:
+page:0000000056774b6a refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x8357
+flags: 0x100000000000200(slab)
+raw: 0100000000000200 ffffea000031f280 0000001d0000001d ffff888008041a00
+raw: 0000000000000000 0000000000400040 00000001ffffffff ffff88800ff86c01
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff88800ff86c01
+
+Memory state around the buggy address:
+ ffff888008356f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888008356f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff888008357000: 00 00 00 fc fc fc fc fc 00 00 00 fc fc fc fc fc
+                            ^
+ ffff888008357080: 00 00 00 fc fc fc fc fc 00 00 00 fc fc fc fc fc
+ ffff888008357100: 00 00 00 fc fc fc fc fc 00 00 00 00 fc fc fc fc
+==================================================================

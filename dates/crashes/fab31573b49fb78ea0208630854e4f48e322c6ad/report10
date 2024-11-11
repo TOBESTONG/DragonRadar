@@ -1,0 +1,190 @@
+EXT4-fs (loop2): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /1/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs error (device loop2): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 102 vs 96 free clusters
+BUG: unable to handle page fault for address: fffffbfffb380404
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 80190067 P4D 80190067 PUD 6ddb4067 PMD 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 2923 Comm: syz.2.83 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
+RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
+RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
+RIP: 0010:check_memory_region+0x189/0x1e0 mm/kasan/generic.c:192
+Code: 41 83 e1 07 49 39 c1 7d 89 41 bb 01 00 00 00 5b 5d 44 89 d8 41 5c c3 48 85 d2 74 ed 48 01 ea eb 09 48 83 c0 01 48 39 d0 74 df <80> 38 00 74 f2 e9 34 ff ff ff 48 29 c3 48 89 da 49 89 d3 49 c1 fb
+RSP: 0018:ffff888008b777c0 EFLAGS: 00010286
+RAX: fffffbfffb380404 RBX: fffffbfffb380405 RCX: ffffffff8195e26d
+RDX: fffffbfffb380405 RSI: 0000000000000004 RDI: ffffffffd9c02021
+RBP: fffffbfffb380404 R08: 0000000000000000 R09: ffffffffd9c02024
+R10: fffffbfffb380404 R11: 0000000000000001 R12: ffffffffd9c02041
+R13: ffffffffd9c02021 R14: 0000000000000001 R15: fffffbfffb380404
+FS:  00007ff6244fb6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfffb380404 CR3: 000000000c516000 CR4: 0000000000350ef0
+Call Trace:
+ instrument_atomic_read include/linux/instrumented.h:71 [inline]
+ atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
+ dqput.part.0+0xad/0x7e0 fs/quota/dquot.c:770
+ dqput fs/quota/dquot.c:757 [inline]
+ dqput_all fs/quota/dquot.c:397 [inline]
+ __dquot_initialize+0x482/0xd60 fs/quota/dquot.c:1530
+ ext4_xattr_set+0xbd/0x340 fs/ext4/xattr.c:2475
+ __vfs_setxattr+0x10f/0x170 fs/xattr.c:177
+ __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+ __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+ vfs_setxattr+0xe8/0x270 fs/xattr.c:283
+ setxattr+0x23d/0x330 fs/xattr.c:548
+ path_setxattr+0x170/0x190 fs/xattr.c:567
+ __do_sys_setxattr fs/xattr.c:582 [inline]
+ __se_sys_setxattr fs/xattr.c:578 [inline]
+ __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:578
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ff625881ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ff6244fb038 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
+RAX: ffffffffffffffda RBX: 00007ff625a39f80 RCX: 00007ff625881ef9
+RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000020000000
+RBP: 00007ff6258f4b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007ff625a39f80 R15: 00007ffd58431bc8
+Modules linked in:
+CR2: fffffbfffb380404
+---[ end trace ca9713fd0c917695 ]---
+RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
+RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
+RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
+RIP: 0010:check_memory_region+0x189/0x1e0 mm/kasan/generic.c:192
+Code: 41 83 e1 07 49 39 c1 7d 89 41 bb 01 00 00 00 5b 5d 44 89 d8 41 5c c3 48 85 d2 74 ed 48 01 ea eb 09 48 83 c0 01 48 39 d0 74 df <80> 38 00 74 f2 e9 34 ff ff ff 48 29 c3 48 89 da 49 89 d3 49 c1 fb
+RSP: 0018:ffff888008b777c0 EFLAGS: 00010286
+RAX: fffffbfffb380404 RBX: fffffbfffb380405 RCX: ffffffff8195e26d
+RDX: fffffbfffb380405 RSI: 0000000000000004 RDI: ffffffffd9c02021
+RBP: fffffbfffb380404 R08: 0000000000000000 R09: ffffffffd9c02024
+R10: fffffbfffb380404 R11: 0000000000000001 R12: ffffffffd9c02041
+R13: ffffffffd9c02021 R14: 0000000000000001 R15: fffffbfffb380404
+FS:  00007ff6244fb6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfffb380404 CR3: 000000000c516000 CR4: 0000000000350ef0
+note: syz.2.83[2923] exited with preempt_count 1
+BUG: sleeping function called from invalid context at include/linux/percpu-rwsem.h:49
+in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 2923, name: syz.2.83
+INFO: lockdep is turned off.
+irq event stamp: 2784
+hardirqs last  enabled at (2783): [<ffffffff817344eb>] quarantine_put+0xab/0x1c0 mm/kasan/quarantine.c:217
+hardirqs last disabled at (2784): [<ffffffff83eb1a25>] exc_page_fault+0x45/0x1a0 arch/x86/mm/fault.c:1482
+softirqs last  enabled at (2750): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (2727): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+CPU: 0 PID: 2923 Comm: syz.2.83 Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep.cold+0x65/0x79 kernel/sched/core.c:7304
+ percpu_down_read include/linux/percpu-rwsem.h:49 [inline]
+ cgroup_threadgroup_change_begin include/linux/cgroup-defs.h:733 [inline]
+ exit_signals+0x74/0x9e0 kernel/signal.c:2843
+ do_exit+0x237/0x28e0 kernel/exit.c:765
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7ff625881ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ff6244fb038 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
+RAX: ffffffffffffffda RBX: 00007ff625a39f80 RCX: 00007ff625881ef9
+RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000020000000
+RBP: 00007ff6258f4b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007ff625a39f80 R15: 00007ffd58431bc8
+------------[ cut here ]------------
+kernel BUG at fs/buffer.c:3015!
+invalid opcode: 0000 [#2] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 2541 Comm: kmmpd-loop0 Tainted: G      D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:submit_bh_wbc+0x5f2/0x7c0 fs/buffer.c:3015
+Code: ff e8 12 e4 bf ff 41 81 cc 00 10 00 00 e9 15 ff ff ff e8 01 e4 bf ff 0f 0b 48 c7 c7 40 3a 29 85 e8 02 61 5a 02 e8 ee e3 bf ff <0f> 0b 48 c7 c7 00 3a 29 85 e8 ef 60 5a 02 e8 db e3 bf ff 0f 0b 48
+RSP: 0018:ffff88800cf5fd70 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888013730e80 RCX: ffffffff81862583
+RDX: ffff888013f14e00 RSI: ffffffff81862ad2 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888013730e87
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000003800
+R13: 0000000000000001 R14: 0000000000000000 R15: ffff88800ae1e000
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f11cf5ea328 CR3: 000000000b72a000 CR4: 0000000000350ee0
+Call Trace:
+ write_mmp_block+0x333/0x6e0 fs/ext4/mmp.c:55
+ kmmpd+0x428/0xab0 fs/ext4/mmp.c:167
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+---[ end trace ca9713fd0c917696 ]---
+RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
+RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
+RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
+RIP: 0010:check_memory_region+0x189/0x1e0 mm/kasan/generic.c:192
+Code: 41 83 e1 07 49 39 c1 7d 89 41 bb 01 00 00 00 5b 5d 44 89 d8 41 5c c3 48 85 d2 74 ed 48 01 ea eb 09 48 83 c0 01 48 39 d0 74 df <80> 38 00 74 f2 e9 34 ff ff ff 48 29 c3 48 89 da 49 89 d3 49 c1 fb
+RSP: 0018:ffff888008b777c0 EFLAGS: 00010286
+RAX: fffffbfffb380404 RBX: fffffbfffb380405 RCX: ffffffff8195e26d
+RDX: fffffbfffb380405 RSI: 0000000000000004 RDI: ffffffffd9c02021
+RBP: fffffbfffb380404 R08: 0000000000000000 R09: ffffffffd9c02024
+R10: fffffbfffb380404 R11: 0000000000000001 R12: ffffffffd9c02041
+R13: ffffffffd9c02021 R14: 0000000000000001 R15: fffffbfffb380404
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fcafa42aa10 CR3: 000000000be02000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+EXT4-fs warning: 439 callbacks suppressed
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning: 467 callbacks suppressed
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+EXT4-fs warning (device loop3): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 32768
+----------------
+Code disassembly (best guess):
+   0:	41 83 e1 07          	and    $0x7,%r9d
+   4:	49 39 c1             	cmp    %rax,%r9
+   7:	7d 89                	jge    0xffffff92
+   9:	41 bb 01 00 00 00    	mov    $0x1,%r11d
+   f:	5b                   	pop    %rbx
+  10:	5d                   	pop    %rbp
+  11:	44 89 d8             	mov    %r11d,%eax
+  14:	41 5c                	pop    %r12
+  16:	c3                   	ret
+  17:	48 85 d2             	test   %rdx,%rdx
+  1a:	74 ed                	je     0x9
+  1c:	48 01 ea             	add    %rbp,%rdx
+  1f:	eb 09                	jmp    0x2a
+  21:	48 83 c0 01          	add    $0x1,%rax
+  25:	48 39 d0             	cmp    %rdx,%rax
+  28:	74 df                	je     0x9
+* 2a:	80 38 00             	cmpb   $0x0,(%rax) <-- trapping instruction
+  2d:	74 f2                	je     0x21
+  2f:	e9 34 ff ff ff       	jmp    0xffffff68
+  34:	48 29 c3             	sub    %rax,%rbx
+  37:	48 89 da             	mov    %rbx,%rdx
+  3a:	49 89 d3             	mov    %rdx,%r11
+  3d:	49                   	rex.WB
+  3e:	c1                   	.byte 0xc1
+  3f:	fb                   	sti

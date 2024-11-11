@@ -1,0 +1,53 @@
+R13: 00007ff6831f0a14 R14: 000000000000d812 R15: 00007fff90f3de80
+EXT4-fs (loop1): sb orphan head is 0
+sb_info orphan list:
+  inode loop1:16 at 00000000e5e2da4e: mode 100755, nlink 2, next 0
+------------[ cut here ]------------
+kernel BUG at fs/ext4/super.c:1243!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 4490 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_put_super+0xe1f/0x11b0 fs/ext4/super.c:1243
+Code: 6c 24 50 e8 33 ca 81 ff 4c 89 e7 e8 4b d3 ea ff 4c 89 e7 e8 43 cb f5 ff 4c 89 e7 e8 6b 8b ec ff e9 1d fe ff ff e8 d1 11 92 ff <0f> 0b 48 c7 c7 40 d1 31 85 e8 d2 8e 2c 02 48 8b 7c 24 10 e8 09 42
+RSP: 0018:ffff88801728fd98 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: dffffc0000000000 RCX: 0000000000000000
+RDX: ffff88800f874e00 RSI: ffffffff81b3fcef RDI: ffffed1002e51fa4
+RBP: ffff88800d11a000 R08: 0000000000000042 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800d11e000
+R13: ffff888013ff5bd0 R14: ffff88800d11a318 R15: ffff88800d11a318
+FS:  000055555597f500(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f96ab7dc6f4 CR3: 0000000010c20000 CR4: 0000000000350ef0
+Call Trace:
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ff68317f227
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007fff90f3cd08 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007ff6831f0a14 RCX: 00007ff68317f227
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007fff90f3cdc0
+RBP: 00007fff90f3cdc0 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fff90f3de40
+R13: 00007ff6831f0a14 R14: 000000000000d812 R15: 00007fff90f3de80
+Modules linked in:
+---[ end trace 60ca04837ac0168d ]---
+RIP: 0010:ext4_put_super+0xe1f/0x11b0 fs/ext4/super.c:1243
+Code: 6c 24 50 e8 33 ca 81 ff 4c 89 e7 e8 4b d3 ea ff 4c 89 e7 e8 43 cb f5 ff 4c 89 e7 e8 6b 8b ec ff e9 1d fe ff ff e8 d1 11 92 ff <0f> 0b 48 c7 c7 40 d1 31 85 e8 d2 8e 2c 02 48 8b 7c 24 10 e8 09 42
+RSP: 0018:ffff88801728fd98 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: dffffc0000000000 RCX: 0000000000000000
+RDX: ffff88800f874e00 RSI: ffffffff81b3fcef RDI: ffffed1002e51fa4
+RBP: ffff88800d11a000 R08: 0000000000000042 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800d11e000
+R13: ffff888013ff5bd0 R14: ffff88800d11a318 R15: ffff88800d11a318
+FS:  000055555597f500(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f96ab7dc6f4 CR3: 0000000010c20000 CR4: 0000000000350ef0

@@ -1,0 +1,96 @@
+audit: type=1326 audit(1731043669.481:45): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=7043 comm="syz.3.225" exe="/syz-executor" sig=0 arch=c000003e syscall=202 compat=0 ip=0x7f3c49447ef9 code=0x7ffc0000
+EXT4-fs (loop1): 1 truncate cleaned up
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+watchdog: BUG: soft lockup - CPU#1 stuck for 23s! [syz.3.232:7310]
+Modules linked in:
+irq event stamp: 4569906
+hardirqs last  enabled at (4569905): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (4569906): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+softirqs last  enabled at (144456): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (144205): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+CPU: 1 PID: 7310 Comm: syz.3.232 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:csd_lock_wait kernel/smp.c:227 [inline]
+RIP: 0010:smp_call_function_single+0x195/0x4c0 kernel/smp.c:512
+Code: 10 8b 7c 24 1c 48 8d 74 24 40 48 89 44 24 50 48 8b 44 24 08 48 89 44 24 58 e8 f7 fa ff ff 41 89 c5 eb 07 e8 9d ea 0a 00 f3 90 <44> 8b 64 24 48 31 ff 41 83 e4 01 44 89 e6 e8 48 e2 0a 00 45 85 e4
+RSP: 0018:ffff88801813fa60 EFLAGS: 00000246
+RAX: 0000000000040000 RBX: 1ffff11003027f50 RCX: ffffc90000cea000
+RDX: 0000000000040000 RSI: ffffffff813b2423 RDI: 0000000000000005
+RBP: ffff88801813fb40 R08: 0000000000000001 R09: ffff88806ce34507
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000200
+FS:  00007f3c480c16c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe7e869e6f4 CR3: 000000001c256000 CR4: 0000000000350ee0
+Call Trace:
+ smp_call_function_many_cond+0x277/0xa80 kernel/smp.c:648
+ __flush_tlb_others arch/x86/include/asm/paravirt.h:74 [inline]
+ flush_tlb_others arch/x86/mm/tlb.c:829 [inline]
+ flush_tlb_mm_range+0x2a7/0x3f0 arch/x86/mm/tlb.c:916
+ tlb_flush arch/x86/include/asm/tlb.h:24 [inline]
+ tlb_flush_mmu_tlbonly include/asm-generic/tlb.h:424 [inline]
+ tlb_flush_mmu_tlbonly include/asm-generic/tlb.h:414 [inline]
+ tlb_flush_mmu+0x26f/0x620 mm/mmu_gather.c:248
+ tlb_finish_mmu+0x93/0x230 mm/mmu_gather.c:328
+ unmap_region+0x2bd/0x380 mm/mmap.c:2679
+ __do_munmap+0x67c/0x11e0 mm/mmap.c:2908
+ __vm_munmap+0xe6/0x170 mm/mmap.c:2931
+ __do_sys_munmap mm/mmap.c:2957 [inline]
+ __se_sys_munmap mm/mmap.c:2953 [inline]
+ __x64_sys_munmap+0x62/0x80 mm/mmap.c:2953
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f3c49447f87
+Code: 00 00 00 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 0b 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f3c480c0e18 EFLAGS: 00000246 ORIG_RAX: 000000000000000b
+RAX: ffffffffffffffda RBX: 0000000000040000 RCX: 00007f3c49447f87
+RDX: 0000000000000000 RSI: 0000000008400000 RDI: 00007f3c3fca1000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 00000000000004c2
+R10: 00000000000003de R11: 0000000000000246 R12: 0000000000000006
+R13: 00007f3c480c0ef0 R14: 00007f3c480c0eb0 R15: 00007f3c3fca1000
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 7252 Comm: syz.1.230 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:lock_is_held_type+0xc2/0x100 kernel/locking/lockdep.c:5481
+Code: 03 44 39 f0 41 0f 94 c4 48 c7 c7 c0 df 46 84 e8 94 12 00 00 b8 ff ff ff ff 65 0f c1 05 77 df 16 7c 83 f8 01 75 23 ff 34 24 9d <48> 83 c4 08 44 89 e0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 45 31 e4 eb
+RSP: 0018:ffff888022c07910 EFLAGS: 00000002
+RAX: 0000000000000001 RBX: 0000000000000002 RCX: 1ffffffff0bacf77
+RDX: 0000000000000000 RSI: 0000000000000003 RDI: 0000000000000000
+RBP: ffffffff850e7e40 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: fffffbfff0bacd81 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff8880089d0950 R14: 00000000ffffffff R15: ffff8880089d0978
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f3c3fce0000 CR3: 000000001c256000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ lock_is_held include/linux/lockdep.h:271 [inline]
+ rcu_read_lock_sched_held+0x3a/0x70 kernel/rcu/update.c:123
+ trace_lock_release include/trace/events/lock.h:58 [inline]
+ lock_release+0x5a3/0x6f0 kernel/locking/lockdep.c:5448
+ __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:158 [inline]
+ _raw_spin_unlock_irqrestore+0x16/0x50 kernel/locking/spinlock.c:191
+ spin_unlock_irqrestore include/linux/spinlock.h:409 [inline]
+ vga_put+0xb9/0x100 drivers/gpu/vga/vgaarb.c:584
+ vga_arb_release+0x1bc/0x360 drivers/gpu/vga/vgaarb.c:1370
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f61c6de5ef9
+Code: Unable to access opcode bytes at RIP 0x7f61c6de5ecf.
+RSP: 002b:00007f61c5a5efe8 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+RAX: fffffffffffffff4 RBX: 00007f61c6f9df80 RCX: 00007f61c6de5ef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007f61c6e58b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f61c6f9df80 R15: 00007ffc75713ac8

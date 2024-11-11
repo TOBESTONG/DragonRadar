@@ -1,0 +1,118 @@
+EXT4-fs error (device loop3): ext4_readdir:243: inode #2: block 3: comm syz-executor: path /31/file1: bad entry in directory: inode out of bounds - offset=0, inode=2, rec_len=12, name_len=1, size=4096
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:833!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 232 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff888019267690 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff1100324ced4 RCX: ffffffff81a5939b
+RDX: ffff8880111fb400 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff88801c07dbf8 R08: 0000000000000008 R09: ffffffff84e14783
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801c07dbd0
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f846a8e5710 CR3: 000000000bd66000 CR4: 0000000000350ef0
+Call Trace:
+ ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+ ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+ v2_write_file_info+0x2b0/0x3e0 fs/quota/quota_v2.c:186
+ dquot_release+0x341/0x450 fs/quota/dquot.c:507
+ ext4_release_dquot+0x2a9/0x340 fs/ext4/super.c:6202
+ dqput.part.0+0x1d2/0x7e0 fs/quota/dquot.c:799
+ dqput fs/quota/dquot.c:757 [inline]
+ dqput_all fs/quota/dquot.c:397 [inline]
+ __dquot_drop+0x1cc/0x2a0 fs/quota/dquot.c:1577
+ dquot_drop+0x151/0x1a0 fs/quota/dquot.c:1602
+ ext4_clear_inode+0x52/0x1e0 fs/ext4/super.c:1405
+ ext4_evict_inode+0x1cb/0x1890 fs/ext4/inode.c:332
+ evict+0x284/0x6d0 fs/inode.c:578
+ dispose_list fs/inode.c:613 [inline]
+ evict_inodes+0x3c1/0x5e0 fs/inode.c:663
+ generic_shutdown_super+0xa6/0x370 fs/super.c:454
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f8469bfaef9
+Code: Unable to access opcode bytes at RIP 0x7f8469bfaecf.
+RSP: 002b:00007ffdc2845d68 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00007f8469c6da86 RCX: 00007f8469bfaef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000001
+RBP: 0000000000000010 R08: 00007ffdc2843b06 R09: 00007ffdc2847020
+R10: 000000000000000a R11: 0000000000000246 R12: 00007ffdc2847020
+R13: 00007f8469c6da14 R14: 0000555556e6f4a8 R15: 00007ffdc28480e0
+Modules linked in:
+
+=============================
+WARNING: suspicious RCU usage
+5.10.0 #1 Tainted: G      D          
+-----------------------------
+kernel/sched/core.c:7270 Illegal context switch in RCU-bh read-side critical section!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 0
+1 lock held by syz.0.152/3436:
+ #0: ffff888013afc140 (&mapping->i_mmap_rwsem){++++}-{3:3}, at: i_mmap_lock_read include/linux/fs.h:508 [inline]
+ #0: ffff888013afc140 (&mapping->i_mmap_rwsem){++++}-{3:3}, at: rmap_walk_file+0x3ce/0x710 mm/rmap.c:1920
+
+stack backtrace:
+CPU: 0 PID: 3436 Comm: syz.0.152 Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep+0x3ed/0x4d0 kernel/sched/core.c:7270
+ rmap_walk_file+0x26e/0x710 mm/rmap.c:1925
+ rmap_walk mm/rmap.c:1948 [inline]
+ try_to_munlock+0x28d/0x3d0 mm/rmap.c:1799
+ __munlock_isolated_page+0x8d/0x210 mm/mlock.c:141
+ __munlock_pagevec+0x669/0xf90 mm/mlock.c:351
+ munlock_vma_pages_range+0x62d/0x740 mm/mlock.c:504
+ munlock_vma_pages_all mm/internal.h:342 [inline]
+ exit_mmap+0x1fa/0x4e0 mm/mmap.c:3204
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ff0b4faeef9
+Code: Unable to access opcode bytes at RIP 0x7ff0b4faeecf.
+RSP: 002b:00007ff0b3c280e8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 00007ff0b5166f88 RCX: 00007ff0b4faeef9
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007ff0b5166f88
+RBP: 00007ff0b5166f80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ff0b5166f8c
+R13: 0000000000000000 R14: 00007ffe0e344080 R15: 00007ffe0e344168
+---[ end trace 033618a6dace302f ]---
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff888019267690 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff1100324ced4 RCX: ffffffff81a5939b
+RDX: ffff8880111fb400 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff88801c07dbf8 R08: 0000000000000008 R09: ffffffff84e14783
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801c07dbd0
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007febd2da5b78 CR3: 000000000bd66000 CR4: 0000000000350ee0
+Fixing recursive fault but reboot is needed!

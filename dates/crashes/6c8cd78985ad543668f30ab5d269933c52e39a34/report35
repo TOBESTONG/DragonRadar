@@ -1,0 +1,97 @@
+EXT4-fs error (device loop2): ext4_xattr_block_get:536: inode #18: comm syz.2.530: corrupted xattr block 37
+EXT4-fs error (device loop2): ext4_map_blocks:584: inode #2: block 3: comm syz-executor: lblock 0 mapped to illegal pblock 3 (length 1)
+==================================================================
+BUG: KASAN: use-after-free in ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+BUG: KASAN: use-after-free in ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+Read of size 4 at addr ffff88801d447ac4 by task kworker/u4:3/65
+
+CPU: 0 PID: 65 Comm: kworker/u4:3 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: writeback wb_workfn (flush-7:2)
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+ ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+ ext4_ext_map_blocks+0x1c8/0x5d50 fs/ext4/extents.c:4054
+ ext4_map_blocks+0x700/0x1740 fs/ext4/inode.c:628
+ mpage_map_one_extent fs/ext4/inode.c:2387 [inline]
+ mpage_map_and_submit_extent fs/ext4/inode.c:2440 [inline]
+ ext4_writepages+0x1c38/0x3a00 fs/ext4/inode.c:2792
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __writeback_single_inode+0x108/0x1090 fs/fs-writeback.c:1461
+ writeback_sb_inodes+0x56e/0x1010 fs/fs-writeback.c:1721
+ wb_writeback+0x28e/0xbe0 fs/fs-writeback.c:1894
+ wb_do_writeback fs/fs-writeback.c:2039 [inline]
+ wb_workfn+0x1a4/0x1140 fs/fs-writeback.c:2080
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+
+The buggy address belongs to the page:
+page:000000001383616b refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x1d447
+flags: 0x100000000000000()
+raw: 0100000000000000 dead000000000100 dead000000000122 0000000000000000
+raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88801d447980: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff88801d447a00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>ffff88801d447a80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                                           ^
+ ffff88801d447b00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff88801d447b80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:2399!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 65 Comm: kworker/u4:3 Tainted: G    B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: writeback wb_workfn (flush-7:2)
+RIP: 0010:mpage_map_one_extent fs/ext4/inode.c:2399 [inline]
+RIP: 0010:mpage_map_and_submit_extent fs/ext4/inode.c:2440 [inline]
+RIP: 0010:ext4_writepages+0x2e9d/0x3a00 fs/ext4/inode.c:2792
+Code: 00 fc ff df 44 89 64 24 68 48 c1 ea 03 80 3c 02 00 0f 84 8e e1 ff ff 48 8b 3c 24 e8 1d bc cc ff e9 80 e1 ff ff e8 c3 8b 9f ff <0f> 0b 48 c7 c7 a0 dd 2f 85 e8 c4 08 3a 02 8b 84 24 c0 00 00 00 31
+RSP: 0018:ffff88800beaf448 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff81a6716a
+RDX: ffff88800bea0000 RSI: ffffffff81a682fd RDI: 0000000000000005
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffff88801e92296f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc8e7d0f710 CR3: 0000000021ce6000 CR4: 0000000000350ee0
+Call Trace:
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __writeback_single_inode+0x108/0x1090 fs/fs-writeback.c:1461
+ writeback_sb_inodes+0x56e/0x1010 fs/fs-writeback.c:1721
+ wb_writeback+0x28e/0xbe0 fs/fs-writeback.c:1894
+ wb_do_writeback fs/fs-writeback.c:2039 [inline]
+ wb_workfn+0x1a4/0x1140 fs/fs-writeback.c:2080
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+---[ end trace cb107743f07227b4 ]---
+RIP: 0010:mpage_map_one_extent fs/ext4/inode.c:2399 [inline]
+RIP: 0010:mpage_map_and_submit_extent fs/ext4/inode.c:2440 [inline]
+RIP: 0010:ext4_writepages+0x2e9d/0x3a00 fs/ext4/inode.c:2792
+Code: 00 fc ff df 44 89 64 24 68 48 c1 ea 03 80 3c 02 00 0f 84 8e e1 ff ff 48 8b 3c 24 e8 1d bc cc ff e9 80 e1 ff ff e8 c3 8b 9f ff <0f> 0b 48 c7 c7 a0 dd 2f 85 e8 c4 08 3a 02 8b 84 24 c0 00 00 00 31
+RSP: 0018:ffff88800beaf448 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff81a6716a
+RDX: ffff88800bea0000 RSI: ffffffff81a682fd RDI: 0000000000000005
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffff88801e92296f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fae06d733f0 CR3: 000000000bd5a000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+EXT4-fs warning (device loop2): kmmpd:182: kmmpd being stopped since MMP feature has been disabled.

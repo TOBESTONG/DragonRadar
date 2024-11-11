@@ -1,0 +1,327 @@
+EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,nodiscard,nouid32,,errors=continue
+ext4 filesystem being mounted at /70/file0 supports timestamps until 2038 (0x7fffffff)
+========================================================
+WARNING: possible irq lock inversion dependency detected
+5.10.0 #1 Not tainted
+--------------------------------------------------------
+syz.1.192/5188 just changed the state of lock:
+ffff88800bbf6948 (&timer->lock){-...}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88800bbf6948 (&timer->lock){-...}-{2:2}, at: snd_hrtimer_callback+0x53/0x3e0 sound/core/hrtimer.c:38
+but this lock took another, HARDIRQ-READ-unsafe lock in the past:
+ (&new->fa_lock){.+.+}-{2:2}
+
+
+and interrupts could create inverse lock ordering between them.
+
+
+other info that might help us debug this:
+ Possible interrupt unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&new->fa_lock);
+                               local_irq_disable();
+                               lock(&timer->lock);
+                               lock(&new->fa_lock);
+  <Interrupt>
+    lock(&timer->lock);
+
+ *** DEADLOCK ***
+
+1 lock held by syz.1.192/5188:
+ #0: ffff88800b27b068 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_write_downgrade include/linux/mmap_lock.h:41 [inline]
+ #0: ffff88800b27b068 (&mm->mmap_lock#2){++++}-{3:3}, at: __do_munmap+0xf08/0x11e0 mm/mmap.c:2906
+
+the shortest dependencies between 2nd lock and 1st lock:
+ -> (&new->fa_lock){.+.+}-{2:2} {
+    HARDIRQ-ON-R at:
+                      lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                      lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                      __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                      _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+                      kill_fasync_rcu fs/fcntl.c:1002 [inline]
+                      kill_fasync+0x1a1/0x4c0 fs/fcntl.c:1023
+                      fuse_dev_wake_and_unlock+0x34/0x40 fs/fuse/dev.c:214
+                      __fuse_request_send fs/fuse/dev.c:428 [inline]
+                      fuse_simple_request+0x573/0xdc0 fs/fuse/dev.c:515
+                      fuse_send_open+0x1b9/0x230 fs/fuse/file.c:54
+                      fuse_do_open+0x33e/0x660 fs/fuse/file.c:151
+                      fuse_open_common+0x221/0x2f0 fs/fuse/file.c:245
+                      do_dentry_open+0x650/0x1090 fs/open.c:817
+                      do_open fs/namei.c:3252 [inline]
+                      path_openat+0x196a/0x26f0 fs/namei.c:3369
+                      do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+                      do_sys_openat2+0x16d/0x420 fs/open.c:1168
+                      do_sys_open fs/open.c:1184 [inline]
+                      __do_sys_creat fs/open.c:1258 [inline]
+                      __se_sys_creat fs/open.c:1252 [inline]
+                      __x64_sys_creat+0xc9/0x120 fs/open.c:1252
+                      do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+                      entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    SOFTIRQ-ON-R at:
+                      lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                      lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                      __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                      _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+                      kill_fasync_rcu fs/fcntl.c:1002 [inline]
+                      kill_fasync+0x1a1/0x4c0 fs/fcntl.c:1023
+                      fuse_dev_wake_and_unlock+0x34/0x40 fs/fuse/dev.c:214
+                      __fuse_request_send fs/fuse/dev.c:428 [inline]
+                      fuse_simple_request+0x573/0xdc0 fs/fuse/dev.c:515
+                      fuse_send_open+0x1b9/0x230 fs/fuse/file.c:54
+                      fuse_do_open+0x33e/0x660 fs/fuse/file.c:151
+                      fuse_open_common+0x221/0x2f0 fs/fuse/file.c:245
+                      do_dentry_open+0x650/0x1090 fs/open.c:817
+                      do_open fs/namei.c:3252 [inline]
+                      path_openat+0x196a/0x26f0 fs/namei.c:3369
+                      do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+                      do_sys_openat2+0x16d/0x420 fs/open.c:1168
+                      do_sys_open fs/open.c:1184 [inline]
+                      __do_sys_creat fs/open.c:1258 [inline]
+                      __se_sys_creat fs/open.c:1252 [inline]
+                      __x64_sys_creat+0xc9/0x120 fs/open.c:1252
+                      do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+                      entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    INITIAL USE at:
+                     lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                     lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                     __raw_write_lock_irq include/linux/rwlock_api_smp.h:196 [inline]
+                     _raw_write_lock_irq+0x32/0x50 kernel/locking/spinlock.c:311
+                     fasync_remove_entry+0xb6/0x1f0 fs/fcntl.c:880
+                     fasync_helper+0x9e/0xb0 fs/fcntl.c:983
+                     fuse_dev_fasync+0x72/0xa0 fs/fuse/dev.c:2213
+                     __fput+0x73e/0x980 fs/file_table.c:278
+                     task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+                     tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+                     exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+                     exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+                     syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+                     entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    INITIAL READ USE at:
+                          lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                          lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                          __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                          _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+                          kill_fasync_rcu fs/fcntl.c:1002 [inline]
+                          kill_fasync+0x1a1/0x4c0 fs/fcntl.c:1023
+                          fuse_dev_wake_and_unlock+0x34/0x40 fs/fuse/dev.c:214
+                          __fuse_request_send fs/fuse/dev.c:428 [inline]
+                          fuse_simple_request+0x573/0xdc0 fs/fuse/dev.c:515
+                          fuse_send_open+0x1b9/0x230 fs/fuse/file.c:54
+                          fuse_do_open+0x33e/0x660 fs/fuse/file.c:151
+                          fuse_open_common+0x221/0x2f0 fs/fuse/file.c:245
+                          do_dentry_open+0x650/0x1090 fs/open.c:817
+                          do_open fs/namei.c:3252 [inline]
+                          path_openat+0x196a/0x26f0 fs/namei.c:3369
+                          do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+                          do_sys_openat2+0x16d/0x420 fs/open.c:1168
+                          do_sys_open fs/open.c:1184 [inline]
+                          __do_sys_creat fs/open.c:1258 [inline]
+                          __se_sys_creat fs/open.c:1252 [inline]
+                          __x64_sys_creat+0xc9/0x120 fs/open.c:1252
+                          do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+                          entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  }
+  ... key      at: [<ffffffff8720a140>] __key.0+0x0/0x40
+  ... acquired at:
+   __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+   _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+   kill_fasync_rcu fs/fcntl.c:1002 [inline]
+   kill_fasync+0x1a1/0x4c0 fs/fcntl.c:1023
+   snd_timer_user_ccallback+0x2ab/0x350 sound/core/timer.c:1386
+   snd_timer_notify1+0x11a/0x3b0 sound/core/timer.c:516
+   snd_timer_start1+0x657/0x7c0 sound/core/timer.c:577
+   snd_timer_start sound/core/timer.c:696 [inline]
+   snd_timer_start sound/core/timer.c:689 [inline]
+   snd_timer_user_start+0x20c/0x290 sound/core/timer.c:1984
+   __snd_timer_user_ioctl+0xd82/0x23c0 sound/core/timer.c:2107
+   snd_timer_user_ioctl+0x5b/0x80 sound/core/timer.c:2128
+   vfs_ioctl fs/ioctl.c:48 [inline]
+   __do_sys_ioctl fs/ioctl.c:753 [inline]
+   __se_sys_ioctl fs/ioctl.c:739 [inline]
+   __x64_sys_ioctl+0x196/0x210 fs/ioctl.c:739
+   do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> (&timer->lock){-...}-{2:2} {
+   IN-HARDIRQ-W at:
+                    lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                    lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                    __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+                    _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+                    spin_lock include/linux/spinlock.h:354 [inline]
+                    snd_hrtimer_callback+0x53/0x3e0 sound/core/hrtimer.c:38
+                    __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+                    __hrtimer_run_queues+0x56e/0xba0 kernel/time/hrtimer.c:1583
+                    hrtimer_interrupt+0x357/0x9b0 kernel/time/hrtimer.c:1645
+                    local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+                    __sysvec_apic_timer_interrupt+0x170/0x560 arch/x86/kernel/apic/apic.c:1097
+                    asm_call_irq_on_stack+0x12/0x20
+                    __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
+                    run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
+                    sysvec_apic_timer_interrupt+0xb8/0xf0 arch/x86/kernel/apic/apic.c:1091
+                    asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+                    trace_mm_page_free include/trace/events/kmem.h:152 [inline]
+                    trace_mm_page_free include/trace/events/kmem.h:152 [inline]
+                    free_pages_prepare mm/page_alloc.c:1210 [inline]
+                    free_pcp_prepare+0x345/0x4b0 mm/page_alloc.c:1291
+                    free_unref_page_prepare mm/page_alloc.c:3157 [inline]
+                    free_unref_page_list+0x166/0x6d0 mm/page_alloc.c:3227
+                    release_pages+0x806/0xc40 mm/swap.c:952
+                    tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
+                    tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
+                    tlb_flush_mmu+0x8d/0x620 mm/mmu_gather.c:249
+                    tlb_finish_mmu+0x93/0x230 mm/mmu_gather.c:328
+                    unmap_region+0x2bd/0x380 mm/mmap.c:2679
+                    __do_munmap+0x67c/0x11e0 mm/mmap.c:2908
+                    __vm_munmap+0xe6/0x170 mm/mmap.c:2931
+                    __do_sys_munmap mm/mmap.c:2957 [inline]
+                    __se_sys_munmap mm/mmap.c:2953 [inline]
+                    __x64_sys_munmap+0x62/0x80 mm/mmap.c:2953
+                    do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+                    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+   INITIAL USE at:
+                   lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                   lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+                   _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
+                   snd_timer_resolution+0x55/0x110 sound/core/timer.c:489
+                   snd_seq_info_timer_read+0x108/0x310 sound/core/seq/seq_timer.c:489
+                   snd_info_seq_show+0xcd/0x120 sound/core/info.c:362
+                   seq_read_iter+0x4f3/0x11c0 fs/seq_file.c:227
+                   seq_read+0x3dd/0x5b0 fs/seq_file.c:159
+                   pde_read fs/proc/inode.c:321 [inline]
+                   proc_reg_read+0x226/0x300 fs/proc/inode.c:333
+                   vfs_read+0x228/0x580 fs/read_write.c:494
+                   ksys_read+0x12d/0x250 fs/read_write.c:634
+                   do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+                   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ }
+ ... key      at: [<ffffffff87a6c500>] __key.11+0x0/0x40
+ ... acquired at:
+   mark_usage kernel/locking/lockdep.c:4303 [inline]
+   __lock_acquire+0x1441/0x5ca0 kernel/locking/lockdep.c:4786
+   lock_acquire kernel/locking/lockdep.c:5437 [inline]
+   lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+   __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+   _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+   spin_lock include/linux/spinlock.h:354 [inline]
+   snd_hrtimer_callback+0x53/0x3e0 sound/core/hrtimer.c:38
+   __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+   __hrtimer_run_queues+0x56e/0xba0 kernel/time/hrtimer.c:1583
+   hrtimer_interrupt+0x357/0x9b0 kernel/time/hrtimer.c:1645
+   local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+   __sysvec_apic_timer_interrupt+0x170/0x560 arch/x86/kernel/apic/apic.c:1097
+   asm_call_irq_on_stack+0x12/0x20
+   __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
+   run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
+   sysvec_apic_timer_interrupt+0xb8/0xf0 arch/x86/kernel/apic/apic.c:1091
+   asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+   trace_mm_page_free include/trace/events/kmem.h:152 [inline]
+   trace_mm_page_free include/trace/events/kmem.h:152 [inline]
+   free_pages_prepare mm/page_alloc.c:1210 [inline]
+   free_pcp_prepare+0x345/0x4b0 mm/page_alloc.c:1291
+   free_unref_page_prepare mm/page_alloc.c:3157 [inline]
+   free_unref_page_list+0x166/0x6d0 mm/page_alloc.c:3227
+   release_pages+0x806/0xc40 mm/swap.c:952
+   tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
+   tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
+   tlb_flush_mmu+0x8d/0x620 mm/mmu_gather.c:249
+   tlb_finish_mmu+0x93/0x230 mm/mmu_gather.c:328
+   unmap_region+0x2bd/0x380 mm/mmap.c:2679
+   __do_munmap+0x67c/0x11e0 mm/mmap.c:2908
+   __vm_munmap+0xe6/0x170 mm/mmap.c:2931
+   __do_sys_munmap mm/mmap.c:2957 [inline]
+   __se_sys_munmap mm/mmap.c:2953 [inline]
+   __x64_sys_munmap+0x62/0x80 mm/mmap.c:2953
+   do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+stack backtrace:
+CPU: 0 PID: 5188 Comm: syz.1.192 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_irq_inversion_bug kernel/locking/lockdep.c:4397 [inline]
+ check_usage_forwards kernel/locking/lockdep.c:3849 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3981 [inline]
+ mark_lock.cold+0x46/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4303 [inline]
+ __lock_acquire+0x1441/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ snd_hrtimer_callback+0x53/0x3e0 sound/core/hrtimer.c:38
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x56e/0xba0 kernel/time/hrtimer.c:1583
+ hrtimer_interrupt+0x357/0x9b0 kernel/time/hrtimer.c:1645
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+ __sysvec_apic_timer_interrupt+0x170/0x560 arch/x86/kernel/apic/apic.c:1097
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
+ run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
+ sysvec_apic_timer_interrupt+0xb8/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:trace_mm_page_free include/trace/events/kmem.h:152 [inline]
+RIP: 0010:trace_mm_page_free include/trace/events/kmem.h:152 [inline]
+RIP: 0010:free_pages_prepare mm/page_alloc.c:1210 [inline]
+RIP: 0010:free_pcp_prepare+0x345/0x4b0 mm/page_alloc.c:1291
+Code: 31 97 95 7e 48 c7 c0 40 9e d4 85 48 ba 00 00 00 00 00 fc ff df 48 c1 e8 03 80 3c 10 00 0f 85 55 01 00 00 48 8b 05 4b 46 68 04 <e8> 96 c8 7e 02 85 c0 74 15 0f b6 1d c6 ce 67 04 80 fb 01 0f 87 9e
+RSP: 0018:ffff888022ef7af8 EFLAGS: 00000246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff816c550b
+RDX: dffffc0000000000 RSI: 0000000000000008 RDI: ffffffff85d66c08
+RBP: ffffea0000540000 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: fffffbfff0bacd81 R11: 0000000000000001 R12: 0000000000015000
+R13: ffff888022ef7bd8 R14: fffffbfff09954f0 R15: ffffea00007b85c0
+ free_unref_page_prepare mm/page_alloc.c:3157 [inline]
+ free_unref_page_list+0x166/0x6d0 mm/page_alloc.c:3227
+ release_pages+0x806/0xc40 mm/swap.c:952
+ tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
+ tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
+ tlb_flush_mmu+0x8d/0x620 mm/mmu_gather.c:249
+ tlb_finish_mmu+0x93/0x230 mm/mmu_gather.c:328
+ unmap_region+0x2bd/0x380 mm/mmap.c:2679
+ __do_munmap+0x67c/0x11e0 mm/mmap.c:2908
+ __vm_munmap+0xe6/0x170 mm/mmap.c:2931
+ __do_sys_munmap mm/mmap.c:2957 [inline]
+ __se_sys_munmap mm/mmap.c:2953 [inline]
+ __x64_sys_munmap+0x62/0x80 mm/mmap.c:2953
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f576ad3ff87
+Code: 00 00 00 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 0b 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f57699b8e18 EFLAGS: 00000246 ORIG_RAX: 000000000000000b
+RAX: ffffffffffffffda RBX: 0000000000040000 RCX: 00007f576ad3ff87
+RDX: 0000000000000000 RSI: 0000000008400000 RDI: 00007f5761578000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000434
+R10: 00000000000003ba R11: 0000000000000246 R12: 0000000000000007
+R13: 00007f57699b8ef0 R14: 00007f57699b8eb0 R15: 00007f5761578000
+----------------
+Code disassembly (best guess):
+   0:	31 97 95 7e 48 c7    	xor    %edx,-0x38b7816b(%rdi)
+   6:	c0 40 9e d4          	rolb   $0xd4,-0x62(%rax)
+   a:	85 48 ba             	test   %ecx,-0x46(%rax)
+   d:	00 00                	add    %al,(%rax)
+   f:	00 00                	add    %al,(%rax)
+  11:	00 fc                	add    %bh,%ah
+  13:	ff                   	lcall  (bad)
+  14:	df 48 c1             	fisttps -0x3f(%rax)
+  17:	e8 03 80 3c 10       	call   0x103c801f
+  1c:	00 0f                	add    %cl,(%rdi)
+  1e:	85 55 01             	test   %edx,0x1(%rbp)
+  21:	00 00                	add    %al,(%rax)
+  23:	48 8b 05 4b 46 68 04 	mov    0x468464b(%rip),%rax        # 0x4684675
+* 2a:	e8 96 c8 7e 02       	call   0x27ec8c5 <-- trapping instruction
+  2f:	85 c0                	test   %eax,%eax
+  31:	74 15                	je     0x48
+  33:	0f b6 1d c6 ce 67 04 	movzbl 0x467cec6(%rip),%ebx        # 0x467cf00
+  3a:	80 fb 01             	cmp    $0x1,%bl
+  3d:	0f                   	.byte 0xf
+  3e:	87                   	.byte 0x87
+  3f:	9e                   	sahf

@@ -1,0 +1,154 @@
+EXT4-fs error (device loop3): ext4_lookup:1706: inode #16: comm syz.3.82: iget: bad extended attribute block 281470681743360
+EXT4-fs error (device loop3): ext4_lookup:1706: inode #16: comm syz.3.82: iget: bad extended attribute block 281470681743360
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+syz.1.62/2848 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff88800cf1caa8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88800cf1caa8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 136226
+hardirqs last  enabled at (136226): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (136225): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+softirqs last  enabled at (134814): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (136131): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+2 locks held by syz.1.62/2848:
+ #0: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #1: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 1 PID: 2848 Comm: syz.1.62 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:arch_atomic_dec_and_test arch/x86/include/asm/atomic.h:123 [inline]
+RIP: 0010:atomic_dec_and_test include/asm-generic/atomic-instrumented.h:749 [inline]
+RIP: 0010:page_ref_dec_and_test include/linux/page_ref.h:148 [inline]
+RIP: 0010:put_page_testzero include/linux/mm.h:708 [inline]
+RIP: 0010:release_pages+0x162/0xc40 mm/swap.c:914
+Code: 5f 34 31 ff 89 de e8 fd 75 e9 ff 85 db 0f 84 4c 07 00 00 e8 30 7e e9 ff be 04 00 00 00 4c 89 e7 e8 e3 88 16 00 f0 41 ff 0c 24 <41> 0f 94 c4 31 ff 44 89 e6 e8 90 75 e9 ff 45 84 e4 0f 84 b2 05 00
+RSP: 0018:ffff88801980f640 EFLAGS: 00000206
+RAX: 0000000000000001 RBX: 0000000000000004 RCX: ffffffff815c909d
+RDX: fffff940000ce74f RSI: 0000000000000004 RDI: ffffea0000673a74
+RBP: 0000000000000110 R08: 0000000000000001 R09: ffffea0000673a77
+R10: fffff940000ce74e R11: 0000000000000001 R12: ffffea0000673a74
+R13: dffffc0000000000 R14: ffff88801dcb2898 R15: ffffea0000673a40
+ tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
+ tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
+ tlb_flush_mmu+0x8d/0x620 mm/mmu_gather.c:249
+ zap_pte_range mm/memory.c:1319 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0x16b8/0x2070 mm/memory.c:1428
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f200f362ef9
+Code: Unable to access opcode bytes at RIP 0x7f200f362ecf.
+RSP: 002b:00007f200dfdc0e8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 00007f200f51af88 RCX: 00007f200f362ef9
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f200f51af88
+RBP: 00007f200f51af80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f200f51af8c
+R13: 0000000000000000 R14: 00007ffe6070bf10 R15: 00007ffe6070bff8
+EXT4-fs error (device loop3): ext4_read_block_bitmap_nowait:436: comm kworker/u4:1: Invalid block bitmap block 12585311084402690743 in block_group 0
+sr 1:0:0:0: [sr0] tag#0 FAILED Result: hostbyte=DID_OK driverbyte=DRIVER_SENSE cmd_age=0s
+EXT4-fs (loop3): Delayed block allocation failed for inode 18 at logical offset 0 with max blocks 1 with error 117
+sr 1:0:0:0: [sr0] tag#0 Sense Key : Illegal Request [current] 
+sr 1:0:0:0: [sr0] tag#0 Add. Sense: Invalid command operation code
+sr 1:0:0:0: [sr0] tag#0 CDB: Write(10) 2a 00 00 00 00 00 00 00 02 00
+EXT4-fs (loop3): This should not happen!! Data will be lost
+
+blk_update_request: critical target error, dev sr0, sector 0 op 0x1:(WRITE) flags 0x800 phys_seg 8 prio class 0
+Buffer I/O error on dev sr0, logical block 0, lost async page write
+Buffer I/O error on dev sr0, logical block 1, lost async page write
+Buffer I/O error on dev sr0, logical block 2, lost async page write
+Buffer I/O error on dev sr0, logical block 3, lost async page write
+Buffer I/O error on dev sr0, logical block 4, lost async page write
+Buffer I/O error on dev sr0, logical block 5, lost async page write
+Buffer I/O error on dev sr0, logical block 6, lost async page write
+Buffer I/O error on dev sr0, logical block 7, lost async page write
+----------------
+Code disassembly (best guess), 2 bytes skipped:
+   0:	31 ff                	xor    %edi,%edi
+   2:	89 de                	mov    %ebx,%esi
+   4:	e8 fd 75 e9 ff       	call   0xffe97606
+   9:	85 db                	test   %ebx,%ebx
+   b:	0f 84 4c 07 00 00    	je     0x75d
+  11:	e8 30 7e e9 ff       	call   0xffe97e46
+  16:	be 04 00 00 00       	mov    $0x4,%esi
+  1b:	4c 89 e7             	mov    %r12,%rdi
+  1e:	e8 e3 88 16 00       	call   0x168906
+  23:	f0 41 ff 0c 24       	lock decl (%r12)
+* 28:	41 0f 94 c4          	sete   %r12b <-- trapping instruction
+  2c:	31 ff                	xor    %edi,%edi
+  2e:	44 89 e6             	mov    %r12d,%esi
+  31:	e8 90 75 e9 ff       	call   0xffe975c6
+  36:	45 84 e4             	test   %r12b,%r12b
+  39:	0f                   	.byte 0xf
+  3a:	84                   	.byte 0x84
+  3b:	b2 05                	mov    $0x5,%dl

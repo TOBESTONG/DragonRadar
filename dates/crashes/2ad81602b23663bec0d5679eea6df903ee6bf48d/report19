@@ -1,0 +1,76 @@
+EXT4-fs (loop2): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,discard,grpquota,noauto_da_alloc,lazytime,barrier,auto_da_alloc,grpjquota=,
+ext4 filesystem being mounted at /0/file1 supports timestamps until 2038 (0x7fffffff)
+netlink: 'syz.2.3': attribute type 1 has an invalid length.
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4.h:3196!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 2039 Comm: syz.2.3 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0000:ffff88800891e4e0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a81b22
+RDX: ffff888019e0b400 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff888011f32000 R08: 0000000000000000 R09: ffff888013b48a2f
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800d266000
+R13: ffff88800d266650 R14: 0000000000000001 R15: 0000000000000001
+FS:  00007f28a20cc6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fb9861008 CR3: 000000000f962000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_mb_find_by_goal+0xf4/0x1030 fs/ext4/mballoc.c:1884
+ ext4_mb_regular_allocator+0x235/0x1ee0 fs/ext4/mballoc.c:2320
+ ext4_mb_new_blocks+0x2322/0x4b60 fs/ext4/mballoc.c:4997
+ ext4_ext_map_blocks+0x1f8e/0x5d50 fs/ext4/extents.c:4238
+ ext4_map_blocks+0x700/0x1740 fs/ext4/inode.c:628
+ _ext4_get_block+0x241/0x590 fs/ext4/inode.c:784
+ __block_write_begin_int+0x3f2/0x1b40 fs/buffer.c:2011
+ ext4_write_begin+0x649/0x1170 fs/ext4/inode.c:1200
+ ext4_da_write_begin+0x61e/0xe60 fs/ext4/inode.c:2952
+ generic_perform_write+0x1fe/0x4d0 mm/filemap.c:3329
+ ext4_buffered_write_iter+0x244/0x4d0 fs/ext4/file.c:270
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ __kernel_write+0x593/0xb00 fs/read_write.c:550
+ dump_emit+0x1db/0x2e0 fs/coredump.c:848
+ elf_core_dump+0x230e/0x3540 fs/binfmt_elf.c:2226
+ do_coredump+0x2246/0x3380 fs/coredump.c:810
+ get_signal+0x20ac/0x2480 kernel/signal.c:2752
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ irqentry_exit_to_user_mode+0x5/0x40 kernel/entry/common.c:279
+ exc_page_fault+0xca/0x1a0 arch/x86/mm/fault.c:1488
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0x74f5d1ff06
+Code: Unable to access opcode bytes at RIP 0x74f5d1fedc.
+RSP: 002b:0000000020000138 EFLAGS: 00010217
+RAX: 0000000000000000 RBX: 00007f28a360af80 RCX: 00007f28a3452ef9
+RDX: 0000000020000280 RSI: 0000000020000130 RDI: 000000002a420480
+RBP: 00007f28a34c5b76 R08: 00000000200001c0 R09: 00000000200001c0
+R10: 0000000020000180 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f28a360af80 R15: 00007ffccea58538
+Modules linked in:
+EXT4-fs warning (device loop2): __ext4_unlink:3233: inode #16: comm syz-executor: Deleting file 'file3' with no links
+---[ end trace fab7625989b891f3 ]---
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0000:ffff88800891e4e0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a81b22
+RDX: ffff888019e0b400 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff888011f32000 R08: 0000000000000000 R09: ffff888013b48a2f
+EXT4-fs (loop3): Ignoring removed bh option
+EXT4-fs (loop3): Ignoring removed oldalloc option
+EXT4-fs (loop3): mounting ext3 file system using the ext4 subsystem
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800d266000
+R13: ffff88800d266650 R14: 0000000000000001 R15: 0000000000000001
+FS:  00007f28a20cc6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f791f152700 CR3: 000000000f962000 CR4: 0000000000350ee0
+EXT4-fs (loop3): 1 truncate cleaned up
+EXT4-fs (loop3): mounted filesystem without journal. Opts: init_itable,resgid=0x000000000000ee00,bh,noload,data_err=ignore,usrjquota=,errors=remount-ro,oldalloc,
+EXT4-fs (loop0): Ignoring removed bh option
+EXT4-fs (loop0): mounting ext3 file system using the ext4 subsystem
+EXT4-fs (loop0): 1 truncate cleaned up
+EXT4-fs (loop0): mounted filesystem without journal. Opts: jqfmt=vfsold,resgid=0x000000000000ee00,bh,noload,data_err=ignore,usrjquota=,,errors=continue

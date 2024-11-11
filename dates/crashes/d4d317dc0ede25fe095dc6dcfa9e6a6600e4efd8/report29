@@ -1,0 +1,81 @@
+EXT4-fs error (device loop3): ext4_ext_check_inode:459: inode #11: comm syz-executor: pblk 0 bad header/extent: invalid extent entries - magic f30a, entries 1, max 4(4), depth 0(0)
+EXT4-fs (loop2): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /15/file1 supports timestamps until 2038 (0x7fffffff)
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:833!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 2262 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff888017b17270 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff11002f62e50 RCX: ffffffff81a5939b
+RDX: ffff88800c0f3400 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff888020eae5d0 R08: 0000000000002000 R09: ffffffff86e5f747
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888020eae5a8
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffacccc6c68 CR3: 0000000021632000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+ ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+ write_blk+0x12f/0x220 fs/quota/quota_tree.c:73
+ remove_free_dqentry+0x1eb/0x4b0 fs/quota/quota_tree.c:169
+ free_dqentry fs/quota/quota_tree.c:437 [inline]
+ remove_tree+0xa0f/0x1100 fs/quota/quota_tree.c:492
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+ qtree_delete_dquot fs/quota/quota_tree.c:528 [inline]
+ qtree_release_dquot fs/quota/quota_tree.c:674 [inline]
+ qtree_release_dquot+0x1a2/0x1e0 fs/quota/quota_tree.c:670
+ v2_release_dquot+0xce/0x120 fs/quota/quota_v2.c:350
+ dquot_release+0x1d5/0x450 fs/quota/dquot.c:504
+ ext4_release_dquot+0x2a9/0x340 fs/ext4/super.c:6202
+ dqput.part.0+0x1d2/0x7e0 fs/quota/dquot.c:799
+ dqput fs/quota/dquot.c:757 [inline]
+ dqput_all fs/quota/dquot.c:397 [inline]
+ __dquot_drop+0x1cc/0x2a0 fs/quota/dquot.c:1577
+ dquot_drop+0x151/0x1a0 fs/quota/dquot.c:1602
+ ext4_clear_inode+0x52/0x1e0 fs/ext4/super.c:1405
+ ext4_evict_inode+0x1cb/0x1890 fs/ext4/inode.c:332
+ evict+0x284/0x6d0 fs/inode.c:578
+ dispose_list fs/inode.c:613 [inline]
+ evict_inodes+0x3c1/0x5e0 fs/inode.c:663
+ generic_shutdown_super+0xa6/0x370 fs/super.c:454
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f1c2636eef9
+Code: Unable to access opcode bytes at RIP 0x7f1c2636eecf.
+RSP: 002b:00007ffc2ff7a058 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00007f1c263e1a39 RCX: 00007f1c2636eef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000001
+RBP: 0000000000000075 R08: 00007ffc2ff77df5 R09: 00007ffc2ff7b310
+R10: 000000000000000b R11: 0000000000000246 R12: 00007ffc2ff7b310
+R13: 00007f1c263e1a14 R14: 000000000000edb7 R15: 00007ffc2ff7c3d0
+Modules linked in:
+---[ end trace 54ebafc98c627806 ]---
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff888017b17270 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff11002f62e50 RCX: ffffffff81a5939b
+RDX: ffff88800c0f3400 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff888020eae5d0 R08: 0000000000002000 R09: ffffffff86e5f747
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888020eae5a8
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f5f50d58970 CR3: 0000000010592000 CR4: 0000000000350ee0
+Fixing recursive fault but reboot is needed!

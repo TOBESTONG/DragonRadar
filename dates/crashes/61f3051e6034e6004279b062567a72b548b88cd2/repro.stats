@@ -1,0 +1,1682 @@
+Extracting prog: 45.850715379s
+Minimizing prog: 16m42.171294547s
+Simplifying prog options: 0s
+Extracting C: 20.032098137s
+Simplifying C: 1m31.769318195s
+
+
+24 programs, timeouts [30s 1m40s 6m0s]
+extracting reproducer from 24 programs
+first checking the prog from the crash report
+single: executing 1 programs separately with timeout 30s
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-open-sendfile-perf_event_open-pipe2$9p-ioctl$RTC_AIE_ON-io_uring_setup-openat-ioctl$FS_IOC_ENABLE_VERITY-io_uring_register$IORING_REGISTER_EVENTFD_ASYNC-socket$inet-syz_mount_image$vfat-openat$cgroup_ro-write$binfmt_script-mmap-fdatasync-madvise-ftruncate-pipe
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+r4 = open(0x0, 0x0, 0x0)
+sendfile(r3, r4, 0x0, 0x1ff01)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+pipe2$9p(&(0x7f0000000240), 0x0)
+ioctl$RTC_AIE_ON(0xffffffffffffffff, 0x7001)
+io_uring_setup(0x147, &(0x7f0000000040)={0x0, 0xfffffffd, 0x800})
+r5 = openat(0xffffffffffffff9c, &(0x7f0000000080)='./file0\x00', 0x0, 0x0)
+ioctl$FS_IOC_ENABLE_VERITY(r5, 0x40086604, 0x0)
+io_uring_register$IORING_REGISTER_EVENTFD_ASYNC(r3, 0x7, 0x0, 0x1)
+socket$inet(0x2, 0x2, 0x0)
+syz_mount_image$vfat(&(0x7f00000000c0), &(0x7f0000000480)='./file0\x00', 0x0, &(0x7f0000000000)=ANY=[], 0x8, 0x2d1, &(0x7f0000000100)="$eJzs3L9PE2EYwPGHUkpbAu1gNJoYnuiiywWqs7ExkBibSJAafyQmB1y16dmSXoOpMaKTq/GPcCCMbCTKP8DipouLG4uJgwzGml7vgEKhBiiH9vtJyD137/u8975wkOcuXNfvvX1ayDlGzqxIKKrSIyKyIZJsRC4/CrlxRLZ7JZcHfnw+f+f+g1vpTGZsUnU8PXUlpapDwx+evYh53Vb6ZS35aP176tva6bWz67+nnuQdzTtaLFXU1OnS14o5bVs6m3cKhuqEbZmOpfmiY5Ub7aVGe84uzc1V1SzODsbnypbjqFmsasGqaqWklXJVzcdmvqiGYehgXNBOdnFy0kwfMHnmiCeDDimX02aviMR2tWQXA5kQAAAI1M76P1Qv6d36P7TZ5xD1/9KF1crA3eUhr/5fibSq/69+aYzVVP9HRaTj9f/uiqi7HKr+x8kwHNl1qKdpr17/x73fX9frh0sjbkD9DwAAAAAAAAAAAAAAAAAAAADAv2CjVkvUarWEv/W/+kUkKiL+ftDzRGfw8+9uWy/uhYdE7Dfz2flsY+t1WBURWywZkYT8cq8HTz323zzSuqR8tBe8/IX5bK/bks5J3s0flYQkd+bXauM3M2Oj2tCc3yfx7fkpScip1vmplvkRuXRxW74hCfk0IyWxZda9rrfyX46q3rid2ZEfc/sBAAAAAPA/MHRTy/t3w9irXUTC3iB7Ph9o3F+PtLw/D8u5cKBLBwAAAACgazjV5wXTtq3yPkFM2vc5eBDu0Mj+Cv82y/9fhs6tdJ/AP3lTU9Q7GMB82gYhOUjWcH01etiz+4+N9uojE0F9W868e//z6Aa8thxts9KOBX3H9xcIAAAAwHHZKvr9I9eDnRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAF3oOD5OLOg1AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACfFnwAAAP//mWkM8Q==")
+r6 = openat$cgroup_ro(0xffffffffffffff9c, &(0x7f0000000080)='memory.current\x00', 0x275a, 0x0)
+write$binfmt_script(r6, &(0x7f0000003a80), 0x208e24b)
+mmap(&(0x7f0000000000/0xb36000)=nil, 0xb36000, 0x2, 0x28011, r6, 0x0)
+fdatasync(r6)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+ftruncate(r6, 0x3f00)
+pipe(&(0x7f0000000040))
+
+program crashed: WARNING in isolate_lru_page
+single: successfully extracted reproducer
+found reproducer with 30 syscalls
+minimizing guilty program
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-open-sendfile-perf_event_open-pipe2$9p-ioctl$RTC_AIE_ON-io_uring_setup-openat-ioctl$FS_IOC_ENABLE_VERITY-io_uring_register$IORING_REGISTER_EVENTFD_ASYNC-socket$inet-syz_mount_image$vfat-openat$cgroup_ro-write$binfmt_script-mmap-fdatasync-madvise-ftruncate
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+r4 = open(0x0, 0x0, 0x0)
+sendfile(r3, r4, 0x0, 0x1ff01)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+pipe2$9p(&(0x7f0000000240), 0x0)
+ioctl$RTC_AIE_ON(0xffffffffffffffff, 0x7001)
+io_uring_setup(0x147, &(0x7f0000000040)={0x0, 0xfffffffd, 0x800})
+r5 = openat(0xffffffffffffff9c, &(0x7f0000000080)='./file0\x00', 0x0, 0x0)
+ioctl$FS_IOC_ENABLE_VERITY(r5, 0x40086604, 0x0)
+io_uring_register$IORING_REGISTER_EVENTFD_ASYNC(r3, 0x7, 0x0, 0x1)
+socket$inet(0x2, 0x2, 0x0)
+syz_mount_image$vfat(&(0x7f00000000c0), &(0x7f0000000480)='./file0\x00', 0x0, &(0x7f0000000000)=ANY=[], 0x8, 0x2d1, &(0x7f0000000100)="$eJzs3L9PE2EYwPGHUkpbAu1gNJoYnuiiywWqs7ExkBibSJAafyQmB1y16dmSXoOpMaKTq/GPcCCMbCTKP8DipouLG4uJgwzGml7vgEKhBiiH9vtJyD137/u8975wkOcuXNfvvX1ayDlGzqxIKKrSIyKyIZJsRC4/CrlxRLZ7JZcHfnw+f+f+g1vpTGZsUnU8PXUlpapDwx+evYh53Vb6ZS35aP176tva6bWz67+nnuQdzTtaLFXU1OnS14o5bVs6m3cKhuqEbZmOpfmiY5Ub7aVGe84uzc1V1SzODsbnypbjqFmsasGqaqWklXJVzcdmvqiGYehgXNBOdnFy0kwfMHnmiCeDDimX02aviMR2tWQXA5kQAAAI1M76P1Qv6d36P7TZ5xD1/9KF1crA3eUhr/5fibSq/69+aYzVVP9HRaTj9f/uiqi7HKr+x8kwHNl1qKdpr17/x73fX9frh0sjbkD9DwAAAAAAAAAAAAAAAAAAAADAv2CjVkvUarWEv/W/+kUkKiL+ftDzRGfw8+9uWy/uhYdE7Dfz2flsY+t1WBURWywZkYT8cq8HTz323zzSuqR8tBe8/IX5bK/bks5J3s0flYQkd+bXauM3M2Oj2tCc3yfx7fkpScip1vmplvkRuXRxW74hCfk0IyWxZda9rrfyX46q3rid2ZEfc/sBAAAAAPA/MHRTy/t3w9irXUTC3iB7Ph9o3F+PtLw/D8u5cKBLBwAAAACgazjV5wXTtq3yPkFM2vc5eBDu0Mj+Cv82y/9fhs6tdJ/AP3lTU9Q7GMB82gYhOUjWcH01etiz+4+N9uojE0F9W868e//z6Aa8thxts9KOBX3H9xcIAAAAwHHZKvr9I9eDnRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAF3oOD5OLOg1AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACfFnwAAAP//mWkM8Q==")
+r6 = openat$cgroup_ro(0xffffffffffffff9c, &(0x7f0000000080)='memory.current\x00', 0x275a, 0x0)
+write$binfmt_script(r6, &(0x7f0000003a80), 0x208e24b)
+mmap(&(0x7f0000000000/0xb36000)=nil, 0xb36000, 0x2, 0x28011, r6, 0x0)
+fdatasync(r6)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+ftruncate(r6, 0x3f00)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-open-sendfile-perf_event_open-pipe2$9p-ioctl$RTC_AIE_ON-io_uring_setup-openat-ioctl$FS_IOC_ENABLE_VERITY-io_uring_register$IORING_REGISTER_EVENTFD_ASYNC-socket$inet-syz_mount_image$vfat-openat$cgroup_ro-write$binfmt_script-mmap-fdatasync-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+r4 = open(0x0, 0x0, 0x0)
+sendfile(r3, r4, 0x0, 0x1ff01)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+pipe2$9p(&(0x7f0000000240), 0x0)
+ioctl$RTC_AIE_ON(0xffffffffffffffff, 0x7001)
+io_uring_setup(0x147, &(0x7f0000000040)={0x0, 0xfffffffd, 0x800})
+r5 = openat(0xffffffffffffff9c, &(0x7f0000000080)='./file0\x00', 0x0, 0x0)
+ioctl$FS_IOC_ENABLE_VERITY(r5, 0x40086604, 0x0)
+io_uring_register$IORING_REGISTER_EVENTFD_ASYNC(r3, 0x7, 0x0, 0x1)
+socket$inet(0x2, 0x2, 0x0)
+syz_mount_image$vfat(&(0x7f00000000c0), &(0x7f0000000480)='./file0\x00', 0x0, &(0x7f0000000000)=ANY=[], 0x8, 0x2d1, &(0x7f0000000100)="$eJzs3L9PE2EYwPGHUkpbAu1gNJoYnuiiywWqs7ExkBibSJAafyQmB1y16dmSXoOpMaKTq/GPcCCMbCTKP8DipouLG4uJgwzGml7vgEKhBiiH9vtJyD137/u8975wkOcuXNfvvX1ayDlGzqxIKKrSIyKyIZJsRC4/CrlxRLZ7JZcHfnw+f+f+g1vpTGZsUnU8PXUlpapDwx+evYh53Vb6ZS35aP176tva6bWz67+nnuQdzTtaLFXU1OnS14o5bVs6m3cKhuqEbZmOpfmiY5Ub7aVGe84uzc1V1SzODsbnypbjqFmsasGqaqWklXJVzcdmvqiGYehgXNBOdnFy0kwfMHnmiCeDDimX02aviMR2tWQXA5kQAAAI1M76P1Qv6d36P7TZ5xD1/9KF1crA3eUhr/5fibSq/69+aYzVVP9HRaTj9f/uiqi7HKr+x8kwHNl1qKdpr17/x73fX9frh0sjbkD9DwAAAAAAAAAAAAAAAAAAAADAv2CjVkvUarWEv/W/+kUkKiL+ftDzRGfw8+9uWy/uhYdE7Dfz2flsY+t1WBURWywZkYT8cq8HTz323zzSuqR8tBe8/IX5bK/bks5J3s0flYQkd+bXauM3M2Oj2tCc3yfx7fkpScip1vmplvkRuXRxW74hCfk0IyWxZda9rrfyX46q3rid2ZEfc/sBAAAAAPA/MHRTy/t3w9irXUTC3iB7Ph9o3F+PtLw/D8u5cKBLBwAAAACgazjV5wXTtq3yPkFM2vc5eBDu0Mj+Cv82y/9fhs6tdJ/AP3lTU9Q7GMB82gYhOUjWcH01etiz+4+N9uojE0F9W868e//z6Aa8thxts9KOBX3H9xcIAAAAwHHZKvr9I9eDnRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAF3oOD5OLOg1AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACfFnwAAAP//mWkM8Q==")
+r6 = openat$cgroup_ro(0xffffffffffffff9c, &(0x7f0000000080)='memory.current\x00', 0x275a, 0x0)
+write$binfmt_script(r6, &(0x7f0000003a80), 0x208e24b)
+mmap(&(0x7f0000000000/0xb36000)=nil, 0xb36000, 0x2, 0x28011, r6, 0x0)
+fdatasync(r6)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-open-sendfile-perf_event_open-pipe2$9p-ioctl$RTC_AIE_ON-io_uring_setup-openat-ioctl$FS_IOC_ENABLE_VERITY-io_uring_register$IORING_REGISTER_EVENTFD_ASYNC-socket$inet-syz_mount_image$vfat-openat$cgroup_ro-write$binfmt_script-mmap-fdatasync
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+r4 = open(0x0, 0x0, 0x0)
+sendfile(r3, r4, 0x0, 0x1ff01)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+pipe2$9p(&(0x7f0000000240), 0x0)
+ioctl$RTC_AIE_ON(0xffffffffffffffff, 0x7001)
+io_uring_setup(0x147, &(0x7f0000000040)={0x0, 0xfffffffd, 0x800})
+r5 = openat(0xffffffffffffff9c, &(0x7f0000000080)='./file0\x00', 0x0, 0x0)
+ioctl$FS_IOC_ENABLE_VERITY(r5, 0x40086604, 0x0)
+io_uring_register$IORING_REGISTER_EVENTFD_ASYNC(r3, 0x7, 0x0, 0x1)
+socket$inet(0x2, 0x2, 0x0)
+syz_mount_image$vfat(&(0x7f00000000c0), &(0x7f0000000480)='./file0\x00', 0x0, &(0x7f0000000000)=ANY=[], 0x8, 0x2d1, &(0x7f0000000100)="$eJzs3L9PE2EYwPGHUkpbAu1gNJoYnuiiywWqs7ExkBibSJAafyQmB1y16dmSXoOpMaKTq/GPcCCMbCTKP8DipouLG4uJgwzGml7vgEKhBiiH9vtJyD137/u8975wkOcuXNfvvX1ayDlGzqxIKKrSIyKyIZJsRC4/CrlxRLZ7JZcHfnw+f+f+g1vpTGZsUnU8PXUlpapDwx+evYh53Vb6ZS35aP176tva6bWz67+nnuQdzTtaLFXU1OnS14o5bVs6m3cKhuqEbZmOpfmiY5Ub7aVGe84uzc1V1SzODsbnypbjqFmsasGqaqWklXJVzcdmvqiGYehgXNBOdnFy0kwfMHnmiCeDDimX02aviMR2tWQXA5kQAAAI1M76P1Qv6d36P7TZ5xD1/9KF1crA3eUhr/5fibSq/69+aYzVVP9HRaTj9f/uiqi7HKr+x8kwHNl1qKdpr17/x73fX9frh0sjbkD9DwAAAAAAAAAAAAAAAAAAAADAv2CjVkvUarWEv/W/+kUkKiL+ftDzRGfw8+9uWy/uhYdE7Dfz2flsY+t1WBURWywZkYT8cq8HTz323zzSuqR8tBe8/IX5bK/bks5J3s0flYQkd+bXauM3M2Oj2tCc3yfx7fkpScip1vmplvkRuXRxW74hCfk0IyWxZda9rrfyX46q3rid2ZEfc/sBAAAAAPA/MHRTy/t3w9irXUTC3iB7Ph9o3F+PtLw/D8u5cKBLBwAAAACgazjV5wXTtq3yPkFM2vc5eBDu0Mj+Cv82y/9fhs6tdJ/AP3lTU9Q7GMB82gYhOUjWcH01etiz+4+N9uojE0F9W868e//z6Aa8thxts9KOBX3H9xcIAAAAwHHZKvr9I9eDnRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAF3oOD5OLOg1AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACfFnwAAAP//mWkM8Q==")
+r6 = openat$cgroup_ro(0xffffffffffffff9c, &(0x7f0000000080)='memory.current\x00', 0x275a, 0x0)
+write$binfmt_script(r6, &(0x7f0000003a80), 0x208e24b)
+mmap(&(0x7f0000000000/0xb36000)=nil, 0xb36000, 0x2, 0x28011, r6, 0x0)
+fdatasync(r6)
+
+program did not crash
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-open-sendfile-perf_event_open-pipe2$9p-ioctl$RTC_AIE_ON-io_uring_setup-openat-ioctl$FS_IOC_ENABLE_VERITY-io_uring_register$IORING_REGISTER_EVENTFD_ASYNC-socket$inet-syz_mount_image$vfat-openat$cgroup_ro-write$binfmt_script-mmap-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+r4 = open(0x0, 0x0, 0x0)
+sendfile(r3, r4, 0x0, 0x1ff01)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+pipe2$9p(&(0x7f0000000240), 0x0)
+ioctl$RTC_AIE_ON(0xffffffffffffffff, 0x7001)
+io_uring_setup(0x147, &(0x7f0000000040)={0x0, 0xfffffffd, 0x800})
+r5 = openat(0xffffffffffffff9c, &(0x7f0000000080)='./file0\x00', 0x0, 0x0)
+ioctl$FS_IOC_ENABLE_VERITY(r5, 0x40086604, 0x0)
+io_uring_register$IORING_REGISTER_EVENTFD_ASYNC(r3, 0x7, 0x0, 0x1)
+socket$inet(0x2, 0x2, 0x0)
+syz_mount_image$vfat(&(0x7f00000000c0), &(0x7f0000000480)='./file0\x00', 0x0, &(0x7f0000000000)=ANY=[], 0x8, 0x2d1, &(0x7f0000000100)="$eJzs3L9PE2EYwPGHUkpbAu1gNJoYnuiiywWqs7ExkBibSJAafyQmB1y16dmSXoOpMaKTq/GPcCCMbCTKP8DipouLG4uJgwzGml7vgEKhBiiH9vtJyD137/u8975wkOcuXNfvvX1ayDlGzqxIKKrSIyKyIZJsRC4/CrlxRLZ7JZcHfnw+f+f+g1vpTGZsUnU8PXUlpapDwx+evYh53Vb6ZS35aP176tva6bWz67+nnuQdzTtaLFXU1OnS14o5bVs6m3cKhuqEbZmOpfmiY5Ub7aVGe84uzc1V1SzODsbnypbjqFmsasGqaqWklXJVzcdmvqiGYehgXNBOdnFy0kwfMHnmiCeDDimX02aviMR2tWQXA5kQAAAI1M76P1Qv6d36P7TZ5xD1/9KF1crA3eUhr/5fibSq/69+aYzVVP9HRaTj9f/uiqi7HKr+x8kwHNl1qKdpr17/x73fX9frh0sjbkD9DwAAAAAAAAAAAAAAAAAAAADAv2CjVkvUarWEv/W/+kUkKiL+ftDzRGfw8+9uWy/uhYdE7Dfz2flsY+t1WBURWywZkYT8cq8HTz323zzSuqR8tBe8/IX5bK/bks5J3s0flYQkd+bXauM3M2Oj2tCc3yfx7fkpScip1vmplvkRuXRxW74hCfk0IyWxZda9rrfyX46q3rid2ZEfc/sBAAAAAPA/MHRTy/t3w9irXUTC3iB7Ph9o3F+PtLw/D8u5cKBLBwAAAACgazjV5wXTtq3yPkFM2vc5eBDu0Mj+Cv82y/9fhs6tdJ/AP3lTU9Q7GMB82gYhOUjWcH01etiz+4+N9uojE0F9W868e//z6Aa8thxts9KOBX3H9xcIAAAAwHHZKvr9I9eDnRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAF3oOD5OLOg1AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACfFnwAAAP//mWkM8Q==")
+r6 = openat$cgroup_ro(0xffffffffffffff9c, &(0x7f0000000080)='memory.current\x00', 0x275a, 0x0)
+write$binfmt_script(r6, &(0x7f0000003a80), 0x208e24b)
+mmap(&(0x7f0000000000/0xb36000)=nil, 0xb36000, 0x2, 0x28011, r6, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-open-sendfile-perf_event_open-pipe2$9p-ioctl$RTC_AIE_ON-io_uring_setup-openat-ioctl$FS_IOC_ENABLE_VERITY-io_uring_register$IORING_REGISTER_EVENTFD_ASYNC-socket$inet-syz_mount_image$vfat-openat$cgroup_ro-write$binfmt_script-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+r4 = open(0x0, 0x0, 0x0)
+sendfile(r3, r4, 0x0, 0x1ff01)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+pipe2$9p(&(0x7f0000000240), 0x0)
+ioctl$RTC_AIE_ON(0xffffffffffffffff, 0x7001)
+io_uring_setup(0x147, &(0x7f0000000040)={0x0, 0xfffffffd, 0x800})
+r5 = openat(0xffffffffffffff9c, &(0x7f0000000080)='./file0\x00', 0x0, 0x0)
+ioctl$FS_IOC_ENABLE_VERITY(r5, 0x40086604, 0x0)
+io_uring_register$IORING_REGISTER_EVENTFD_ASYNC(r3, 0x7, 0x0, 0x1)
+socket$inet(0x2, 0x2, 0x0)
+syz_mount_image$vfat(&(0x7f00000000c0), &(0x7f0000000480)='./file0\x00', 0x0, &(0x7f0000000000)=ANY=[], 0x8, 0x2d1, &(0x7f0000000100)="$eJzs3L9PE2EYwPGHUkpbAu1gNJoYnuiiywWqs7ExkBibSJAafyQmB1y16dmSXoOpMaKTq/GPcCCMbCTKP8DipouLG4uJgwzGml7vgEKhBiiH9vtJyD137/u8975wkOcuXNfvvX1ayDlGzqxIKKrSIyKyIZJsRC4/CrlxRLZ7JZcHfnw+f+f+g1vpTGZsUnU8PXUlpapDwx+evYh53Vb6ZS35aP176tva6bWz67+nnuQdzTtaLFXU1OnS14o5bVs6m3cKhuqEbZmOpfmiY5Ub7aVGe84uzc1V1SzODsbnypbjqFmsasGqaqWklXJVzcdmvqiGYehgXNBOdnFy0kwfMHnmiCeDDimX02aviMR2tWQXA5kQAAAI1M76P1Qv6d36P7TZ5xD1/9KF1crA3eUhr/5fibSq/69+aYzVVP9HRaTj9f/uiqi7HKr+x8kwHNl1qKdpr17/x73fX9frh0sjbkD9DwAAAAAAAAAAAAAAAAAAAADAv2CjVkvUarWEv/W/+kUkKiL+ftDzRGfw8+9uWy/uhYdE7Dfz2flsY+t1WBURWywZkYT8cq8HTz323zzSuqR8tBe8/IX5bK/bks5J3s0flYQkd+bXauM3M2Oj2tCc3yfx7fkpScip1vmplvkRuXRxW74hCfk0IyWxZda9rrfyX46q3rid2ZEfc/sBAAAAAPA/MHRTy/t3w9irXUTC3iB7Ph9o3F+PtLw/D8u5cKBLBwAAAACgazjV5wXTtq3yPkFM2vc5eBDu0Mj+Cv82y/9fhs6tdJ/AP3lTU9Q7GMB82gYhOUjWcH01etiz+4+N9uojE0F9W868e//z6Aa8thxts9KOBX3H9xcIAAAAwHHZKvr9I9eDnRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAF3oOD5OLOg1AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACfFnwAAAP//mWkM8Q==")
+r6 = openat$cgroup_ro(0xffffffffffffff9c, &(0x7f0000000080)='memory.current\x00', 0x275a, 0x0)
+write$binfmt_script(r6, &(0x7f0000003a80), 0x208e24b)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-open-sendfile-perf_event_open-pipe2$9p-ioctl$RTC_AIE_ON-io_uring_setup-openat-ioctl$FS_IOC_ENABLE_VERITY-io_uring_register$IORING_REGISTER_EVENTFD_ASYNC-socket$inet-syz_mount_image$vfat-openat$cgroup_ro-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+r4 = open(0x0, 0x0, 0x0)
+sendfile(r3, r4, 0x0, 0x1ff01)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+pipe2$9p(&(0x7f0000000240), 0x0)
+ioctl$RTC_AIE_ON(0xffffffffffffffff, 0x7001)
+io_uring_setup(0x147, &(0x7f0000000040)={0x0, 0xfffffffd, 0x800})
+r5 = openat(0xffffffffffffff9c, &(0x7f0000000080)='./file0\x00', 0x0, 0x0)
+ioctl$FS_IOC_ENABLE_VERITY(r5, 0x40086604, 0x0)
+io_uring_register$IORING_REGISTER_EVENTFD_ASYNC(r3, 0x7, 0x0, 0x1)
+socket$inet(0x2, 0x2, 0x0)
+syz_mount_image$vfat(&(0x7f00000000c0), &(0x7f0000000480)='./file0\x00', 0x0, &(0x7f0000000000)=ANY=[], 0x8, 0x2d1, &(0x7f0000000100)="$eJzs3L9PE2EYwPGHUkpbAu1gNJoYnuiiywWqs7ExkBibSJAafyQmB1y16dmSXoOpMaKTq/GPcCCMbCTKP8DipouLG4uJgwzGml7vgEKhBiiH9vtJyD137/u8975wkOcuXNfvvX1ayDlGzqxIKKrSIyKyIZJsRC4/CrlxRLZ7JZcHfnw+f+f+g1vpTGZsUnU8PXUlpapDwx+evYh53Vb6ZS35aP176tva6bWz67+nnuQdzTtaLFXU1OnS14o5bVs6m3cKhuqEbZmOpfmiY5Ub7aVGe84uzc1V1SzODsbnypbjqFmsasGqaqWklXJVzcdmvqiGYehgXNBOdnFy0kwfMHnmiCeDDimX02aviMR2tWQXA5kQAAAI1M76P1Qv6d36P7TZ5xD1/9KF1crA3eUhr/5fibSq/69+aYzVVP9HRaTj9f/uiqi7HKr+x8kwHNl1qKdpr17/x73fX9frh0sjbkD9DwAAAAAAAAAAAAAAAAAAAADAv2CjVkvUarWEv/W/+kUkKiL+ftDzRGfw8+9uWy/uhYdE7Dfz2flsY+t1WBURWywZkYT8cq8HTz323zzSuqR8tBe8/IX5bK/bks5J3s0flYQkd+bXauM3M2Oj2tCc3yfx7fkpScip1vmplvkRuXRxW74hCfk0IyWxZda9rrfyX46q3rid2ZEfc/sBAAAAAPA/MHRTy/t3w9irXUTC3iB7Ph9o3F+PtLw/D8u5cKBLBwAAAACgazjV5wXTtq3yPkFM2vc5eBDu0Mj+Cv82y/9fhs6tdJ/AP3lTU9Q7GMB82gYhOUjWcH01etiz+4+N9uojE0F9W868e//z6Aa8thxts9KOBX3H9xcIAAAAwHHZKvr9I9eDnRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAF3oOD5OLOg1AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACfFnwAAAP//mWkM8Q==")
+openat$cgroup_ro(0xffffffffffffff9c, &(0x7f0000000080)='memory.current\x00', 0x275a, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-open-sendfile-perf_event_open-pipe2$9p-ioctl$RTC_AIE_ON-io_uring_setup-openat-ioctl$FS_IOC_ENABLE_VERITY-io_uring_register$IORING_REGISTER_EVENTFD_ASYNC-socket$inet-syz_mount_image$vfat-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+r4 = open(0x0, 0x0, 0x0)
+sendfile(r3, r4, 0x0, 0x1ff01)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+pipe2$9p(&(0x7f0000000240), 0x0)
+ioctl$RTC_AIE_ON(0xffffffffffffffff, 0x7001)
+io_uring_setup(0x147, &(0x7f0000000040)={0x0, 0xfffffffd, 0x800})
+r5 = openat(0xffffffffffffff9c, &(0x7f0000000080)='./file0\x00', 0x0, 0x0)
+ioctl$FS_IOC_ENABLE_VERITY(r5, 0x40086604, 0x0)
+io_uring_register$IORING_REGISTER_EVENTFD_ASYNC(r3, 0x7, 0x0, 0x1)
+socket$inet(0x2, 0x2, 0x0)
+syz_mount_image$vfat(&(0x7f00000000c0), &(0x7f0000000480)='./file0\x00', 0x0, &(0x7f0000000000)=ANY=[], 0x8, 0x2d1, &(0x7f0000000100)="$eJzs3L9PE2EYwPGHUkpbAu1gNJoYnuiiywWqs7ExkBibSJAafyQmB1y16dmSXoOpMaKTq/GPcCCMbCTKP8DipouLG4uJgwzGml7vgEKhBiiH9vtJyD137/u8975wkOcuXNfvvX1ayDlGzqxIKKrSIyKyIZJsRC4/CrlxRLZ7JZcHfnw+f+f+g1vpTGZsUnU8PXUlpapDwx+evYh53Vb6ZS35aP176tva6bWz67+nnuQdzTtaLFXU1OnS14o5bVs6m3cKhuqEbZmOpfmiY5Ub7aVGe84uzc1V1SzODsbnypbjqFmsasGqaqWklXJVzcdmvqiGYehgXNBOdnFy0kwfMHnmiCeDDimX02aviMR2tWQXA5kQAAAI1M76P1Qv6d36P7TZ5xD1/9KF1crA3eUhr/5fibSq/69+aYzVVP9HRaTj9f/uiqi7HKr+x8kwHNl1qKdpr17/x73fX9frh0sjbkD9DwAAAAAAAAAAAAAAAAAAAADAv2CjVkvUarWEv/W/+kUkKiL+ftDzRGfw8+9uWy/uhYdE7Dfz2flsY+t1WBURWywZkYT8cq8HTz323zzSuqR8tBe8/IX5bK/bks5J3s0flYQkd+bXauM3M2Oj2tCc3yfx7fkpScip1vmplvkRuXRxW74hCfk0IyWxZda9rrfyX46q3rid2ZEfc/sBAAAAAPA/MHRTy/t3w9irXUTC3iB7Ph9o3F+PtLw/D8u5cKBLBwAAAACgazjV5wXTtq3yPkFM2vc5eBDu0Mj+Cv82y/9fhs6tdJ/AP3lTU9Q7GMB82gYhOUjWcH01etiz+4+N9uojE0F9W868e//z6Aa8thxts9KOBX3H9xcIAAAAwHHZKvr9I9eDnRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAF3oOD5OLOg1AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACfFnwAAAP//mWkM8Q==")
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-open-sendfile-perf_event_open-pipe2$9p-ioctl$RTC_AIE_ON-io_uring_setup-openat-ioctl$FS_IOC_ENABLE_VERITY-io_uring_register$IORING_REGISTER_EVENTFD_ASYNC-socket$inet-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+r4 = open(0x0, 0x0, 0x0)
+sendfile(r3, r4, 0x0, 0x1ff01)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+pipe2$9p(&(0x7f0000000240), 0x0)
+ioctl$RTC_AIE_ON(0xffffffffffffffff, 0x7001)
+io_uring_setup(0x147, &(0x7f0000000040)={0x0, 0xfffffffd, 0x800})
+r5 = openat(0xffffffffffffff9c, &(0x7f0000000080)='./file0\x00', 0x0, 0x0)
+ioctl$FS_IOC_ENABLE_VERITY(r5, 0x40086604, 0x0)
+io_uring_register$IORING_REGISTER_EVENTFD_ASYNC(r3, 0x7, 0x0, 0x1)
+socket$inet(0x2, 0x2, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-open-sendfile-perf_event_open-pipe2$9p-ioctl$RTC_AIE_ON-io_uring_setup-openat-ioctl$FS_IOC_ENABLE_VERITY-io_uring_register$IORING_REGISTER_EVENTFD_ASYNC-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+r4 = open(0x0, 0x0, 0x0)
+sendfile(r3, r4, 0x0, 0x1ff01)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+pipe2$9p(&(0x7f0000000240), 0x0)
+ioctl$RTC_AIE_ON(0xffffffffffffffff, 0x7001)
+io_uring_setup(0x147, &(0x7f0000000040)={0x0, 0xfffffffd, 0x800})
+r5 = openat(0xffffffffffffff9c, &(0x7f0000000080)='./file0\x00', 0x0, 0x0)
+ioctl$FS_IOC_ENABLE_VERITY(r5, 0x40086604, 0x0)
+io_uring_register$IORING_REGISTER_EVENTFD_ASYNC(r3, 0x7, 0x0, 0x1)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-open-sendfile-perf_event_open-pipe2$9p-ioctl$RTC_AIE_ON-io_uring_setup-openat-ioctl$FS_IOC_ENABLE_VERITY-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+r4 = open(0x0, 0x0, 0x0)
+sendfile(r3, r4, 0x0, 0x1ff01)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+pipe2$9p(&(0x7f0000000240), 0x0)
+ioctl$RTC_AIE_ON(0xffffffffffffffff, 0x7001)
+io_uring_setup(0x147, &(0x7f0000000040)={0x0, 0xfffffffd, 0x800})
+r5 = openat(0xffffffffffffff9c, &(0x7f0000000080)='./file0\x00', 0x0, 0x0)
+ioctl$FS_IOC_ENABLE_VERITY(r5, 0x40086604, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-open-sendfile-perf_event_open-pipe2$9p-ioctl$RTC_AIE_ON-io_uring_setup-openat-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+r4 = open(0x0, 0x0, 0x0)
+sendfile(r3, r4, 0x0, 0x1ff01)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+pipe2$9p(&(0x7f0000000240), 0x0)
+ioctl$RTC_AIE_ON(0xffffffffffffffff, 0x7001)
+io_uring_setup(0x147, &(0x7f0000000040)={0x0, 0xfffffffd, 0x800})
+openat(0xffffffffffffff9c, &(0x7f0000000080)='./file0\x00', 0x0, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-open-sendfile-perf_event_open-pipe2$9p-ioctl$RTC_AIE_ON-io_uring_setup-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+r4 = open(0x0, 0x0, 0x0)
+sendfile(r3, r4, 0x0, 0x1ff01)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+pipe2$9p(&(0x7f0000000240), 0x0)
+ioctl$RTC_AIE_ON(0xffffffffffffffff, 0x7001)
+io_uring_setup(0x147, &(0x7f0000000040)={0x0, 0xfffffffd, 0x800})
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-open-sendfile-perf_event_open-pipe2$9p-ioctl$RTC_AIE_ON-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+r4 = open(0x0, 0x0, 0x0)
+sendfile(r3, r4, 0x0, 0x1ff01)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+pipe2$9p(&(0x7f0000000240), 0x0)
+ioctl$RTC_AIE_ON(0xffffffffffffffff, 0x7001)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-open-sendfile-perf_event_open-pipe2$9p-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+r4 = open(0x0, 0x0, 0x0)
+sendfile(r3, r4, 0x0, 0x1ff01)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+pipe2$9p(&(0x7f0000000240), 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in corrupted
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-open-sendfile-perf_event_open-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+r4 = open(0x0, 0x0, 0x0)
+sendfile(r3, r4, 0x0, 0x1ff01)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-open-sendfile-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+r4 = open(0x0, 0x0, 0x0)
+sendfile(r3, r4, 0x0, 0x1ff01)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-open-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+open(0x0, 0x0, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-lseek-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+lseek(r3, 0x200, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-ftruncate-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+r3 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+ftruncate(r3, 0x800)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-creat-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+creat(&(0x7f0000000040)='./bus\x00', 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-io_setup-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+io_setup(0x40000000008, &(0x7f0000000240))
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-dup3-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+r1 = creat(&(0x7f0000000400)='./bus\x00', 0x0)
+r2 = open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+dup3(r2, r1, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-open-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+creat(&(0x7f0000000400)='./bus\x00', 0x0)
+open(&(0x7f0000000440)='./bus\x00', 0x4d00, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-creat-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+creat(&(0x7f0000000400)='./bus\x00', 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-mmap-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-setsockopt$packet_tx_ring-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program did not crash
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-socket$packet-mmap-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+r0 = socket$packet(0x11, 0x3, 0x300)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program did not crash
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-syz_mount_image$vfat-setsockopt$packet_tx_ring-mmap-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+syz_mount_image$vfat(&(0x7f0000000200), &(0x7f0000000080)='./file0\x00', 0xa08886, &(0x7f0000000040)=ANY=[@ANYRES32=0x0], 0x1, 0x2bb, &(0x7f0000000840)="$eJzs3E1oE2kYwPEn/d4ubcKyLOzC7j67veyKDE3OQhukFTFQ0UaqBWFqJxoyJiEToinSRBB68eDFr6sfIFIoiAdBKPXgSVqkNw/eeuvBerKIOJKmtUmbtrRNG6H/3yF5yDPP5HnnfRmSN5D5I7cuxyKOETHTUtfikbpuycuiR3xSJyvy8v+Vibd/nj577kQwFOo5pdob7PcHVLX978nBa+P/TqV/PvO8/WWzTPvOzy8E5qZ/m/59/mv/paijUUfjibSaOpRIpM0h29LhO07MUD1pW6ZjaTTuWKmyfMROJJNZNePDba3JlOU4asazGrOymk5oOpVV86IZjTcYhqFtrYLNjWfuBzfOhp8uuq4spN+4bnNeXNctvNiyj+2hxpbm33VL5v9mrVvCPiq5qbeI2GOZcCZcfC7mgxGJii2WdIpXvkhhjbgPJ9ylpVJ4vBqYCM0eev1KVX0yaueW63OZcH15vV+84ivWFBXj3uOhHr8Wldc3SmtpfUC88mvl+sC6evFIuEn+6yipN8QrsxckIbbMTP7zaa5v7O5K/ahf9WhfaM37/yTDq5fpyccazQ8AAAAAAAAAADth6HcV9++NwgE3RlS1bU2+WF/p94G1+/OdFff3G+SPhtqOHQAAAACAg8LJjsRM27ZSuwwKX+WrcZ7dBvVVHtf6oFG2V/Xo+tbHeJa7/qt38xN2dNXPdL/LJ2t/nbcVfB74IdooD2R596lKK+rB9tv4UJXhrKydjY85Nvj+2ZbnaVp3fTYytXd3IwAAAAB7afVDf5fkIi8yuYHDt2vdEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB80O/nJs5l6llBaCXx5XStV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJv5FgAA///IH8cX")
+setsockopt$packet_tx_ring(0xffffffffffffffff, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, 0xffffffffffffffff, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program did not crash
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-socket$packet-setsockopt$packet_tx_ring-mmap-madvise
+detailed listing:
+executing program 0:
+openat$tcp_congestion(0xffffffffffffff9c, &(0x7f00000000c0), 0x1, 0x0)
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$packet-setsockopt$packet_tx_ring-mmap-madvise
+detailed listing:
+executing program 0:
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, &(0x7f0000000340)=@req3={0x8000, 0x6, 0x8000, 0x6}, 0x1c)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program crashed: WARNING in isolate_lru_page
+testing program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$packet-setsockopt$packet_tx_ring-mmap-madvise
+detailed listing:
+executing program 0:
+r0 = socket$packet(0x11, 0x3, 0x300)
+setsockopt$packet_tx_ring(r0, 0x107, 0x5, 0x0, 0x0)
+mmap(&(0x7f0000000000/0x2000)=nil, 0x30000, 0x2, 0x11, r0, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+
+program did not crash
+extracting C reproducer
+testing compiled C program (duration=56.667288571s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$packet-setsockopt$packet_tx_ring-mmap-madvise
+program crashed: WARNING in isolate_lru_page
+simplifying C reproducer
+testing compiled C program (duration=56.667288571s, {Threaded:false Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$packet-setsockopt$packet_tx_ring-mmap-madvise
+program crashed: WARNING in isolate_lru_page
+testing compiled C program (duration=56.667288571s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:false Cgroups:false BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$packet-setsockopt$packet_tx_ring-mmap-madvise
+program crashed: WARNING in isolate_lru_page
+testing compiled C program (duration=56.667288571s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox: SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:false UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$packet-setsockopt$packet_tx_ring-mmap-madvise
+program crashed: WARNING in isolate_lru_page
+testing compiled C program (duration=56.667288571s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox: SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:false UseTmpDir:false HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$packet-setsockopt$packet_tx_ring-mmap-madvise
+program crashed: WARNING in isolate_lru_page
+testing compiled C program (duration=56.667288571s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox: SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:false UseTmpDir:false HandleSegv:false Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$packet-setsockopt$packet_tx_ring-mmap-madvise
+program crashed: WARNING in isolate_lru_page
+testing compiled C program (duration=56.667288571s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox: SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:false Swap:false UseTmpDir:false HandleSegv:false Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$packet-setsockopt$packet_tx_ring-mmap-madvise
+program crashed: WARNING in isolate_lru_page
+reproducing took 19m19.823458918s
+repro crashed as (corrupted=false):
+audit: type=1400 audit(1730891328.592:6): avc:  denied  { execmem } for  pid=239 comm="syz-executor246" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000024c440 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000024c448
+R13: ffffea000024c434 R14: ffffea000024c401 R15: ffff888010520008
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 10375
+hardirqs last  enabled at (10385): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (10394): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (10200): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (10195): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf0 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000024c480 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000024c488
+R13: ffffea000024c434 R14: ffffea000024c401 R15: ffff888010520010
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 10921
+hardirqs last  enabled at (10929): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (10938): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (10850): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (10845): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf1 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000024c4c0 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000024c4c8
+R13: ffffea000024c434 R14: ffffea000024c401 R15: ffff888010520018
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 11459
+hardirqs last  enabled at (11469): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (11478): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (11094): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (11497): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf2 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000024c500 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000024c508
+R13: ffffea000024c434 R14: ffffea000024c401 R15: ffff888010520020
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 12005
+hardirqs last  enabled at (12013): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (12022): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (11616): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (11605): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf3 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000024c540 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000024c548
+R13: ffffea000024c434 R14: ffffea000024c401 R15: ffff888010520028
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 12541
+hardirqs last  enabled at (12549): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (12558): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (12168): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (12163): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf4 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000024c580 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000024c588
+R13: ffffea000024c434 R14: ffffea000024c401 R15: ffff888010520030
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 13085
+hardirqs last  enabled at (13093): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (13102): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (12838): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (12833): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf5 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000024c5c0 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000024c5c8
+R13: ffffea000024c434 R14: ffffea000024c401 R15: ffff888010520038
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 13623
+hardirqs last  enabled at (13633): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (13642): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (13534): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (13529): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf6 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000043e440 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000043e448
+R13: ffffea000043e434 R14: ffffea000043e401 R15: ffff888010520048
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 14151
+hardirqs last  enabled at (14167): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (14176): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (14164): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (14159): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf7 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000043e480 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000043e488
+R13: ffffea000043e434 R14: ffffea000043e401 R15: ffff888010520050
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 14691
+hardirqs last  enabled at (14701): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (14710): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (14164): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (14159): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf8 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000043e4c0 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000043e4c8
+R13: ffffea000043e434 R14: ffffea000043e401 R15: ffff888010520058
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 15231
+hardirqs last  enabled at (15241): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (15250): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (15162): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (15157): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf9 ]---
+
+final repro crashed as (corrupted=false):
+audit: type=1400 audit(1730891328.592:6): avc:  denied  { execmem } for  pid=239 comm="syz-executor246" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000024c440 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000024c448
+R13: ffffea000024c434 R14: ffffea000024c401 R15: ffff888010520008
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 10375
+hardirqs last  enabled at (10385): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (10394): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (10200): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (10195): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf0 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000024c480 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000024c488
+R13: ffffea000024c434 R14: ffffea000024c401 R15: ffff888010520010
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 10921
+hardirqs last  enabled at (10929): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (10938): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (10850): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (10845): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf1 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000024c4c0 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000024c4c8
+R13: ffffea000024c434 R14: ffffea000024c401 R15: ffff888010520018
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 11459
+hardirqs last  enabled at (11469): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (11478): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (11094): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (11497): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf2 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000024c500 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000024c508
+R13: ffffea000024c434 R14: ffffea000024c401 R15: ffff888010520020
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 12005
+hardirqs last  enabled at (12013): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (12022): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (11616): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (11605): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf3 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000024c540 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000024c548
+R13: ffffea000024c434 R14: ffffea000024c401 R15: ffff888010520028
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 12541
+hardirqs last  enabled at (12549): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (12558): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (12168): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (12163): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf4 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000024c580 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000024c588
+R13: ffffea000024c434 R14: ffffea000024c401 R15: ffff888010520030
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 13085
+hardirqs last  enabled at (13093): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (13102): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (12838): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (12833): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf5 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000024c5c0 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000024c5c8
+R13: ffffea000024c434 R14: ffffea000024c401 R15: ffff888010520038
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 13623
+hardirqs last  enabled at (13633): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (13642): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (13534): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (13529): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf6 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000043e440 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000043e448
+R13: ffffea000043e434 R14: ffffea000043e401 R15: ffff888010520048
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 14151
+hardirqs last  enabled at (14167): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (14176): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (14164): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (14159): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf7 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000043e480 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000043e488
+R13: ffffea000043e434 R14: ffffea000043e401 R15: ffff888010520050
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 14691
+hardirqs last  enabled at (14701): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (14710): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (14164): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (14159): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf8 ]---
+------------[ cut here ]------------
+trying to isolate tail page
+WARNING: CPU: 0 PID: 239 at mm/vmscan.c:1767 isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Modules linked in:
+CPU: 0 PID: 239 Comm: syz-executor246 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:isolate_lru_page+0x724/0x900 mm/vmscan.c:1767
+Code: 85 e8 30 55 ad 00 31 ff 89 c3 89 c6 e8 c5 87 e6 ff 85 db 0f 84 d1 f9 ff ff e8 f8 8f e6 ff 48 c7 c7 e0 bf 4c 84 e8 18 25 7c 02 <0f> 0b e9 b9 f9 ff ff e8 e0 8f e6 ff 48 8b 1c 24 48 83 eb 01 e9 e0
+RSP: 0018:ffff88800af4f8c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88800fd61a00 RSI: ffffffff812d93c5 RDI: ffffed10015e9f0a
+RBP: ffffea000043e4c0 R08: 0000000000000001 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea000043e4c8
+R13: ffffea000043e434 R14: ffffea000043e401 R15: ffff888010520058
+FS:  0000555556b7b380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0fc29105b8 CR3: 000000000b7d2000 CR4: 0000000000350ef0
+Call Trace:
+ madvise_cold_or_pageout_pte_range+0x5cc/0xb00 mm/madvise.c:460
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xf6a/0x1ed0 mm/pagewalk.c:331
+ walk_page_range+0x20c/0x410 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:526 [inline]
+ madvise_pageout+0x21b/0x390 mm/madvise.c:562
+ madvise_vma mm/madvise.c:945 [inline]
+ do_madvise.part.0+0x4df/0x1b20 mm/madvise.c:1144
+ do_madvise mm/madvise.c:1170 [inline]
+ __do_sys_madvise mm/madvise.c:1170 [inline]
+ __se_sys_madvise mm/madvise.c:1168 [inline]
+ __x64_sys_madvise+0x108/0x160 mm/madvise.c:1168
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f649fbd5f9d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffab689ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f649fbd5f9d
+RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 00007fffab689b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fffab689c08
+R13: 00007fffab689c18 R14: 00007f649fc6ad10 R15: 0000000000000001
+irq event stamp: 15231
+hardirqs last  enabled at (15241): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (15250): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (15162): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (15157): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 04002f4622ecadf9 ]---
+

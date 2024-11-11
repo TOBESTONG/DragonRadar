@@ -1,0 +1,124 @@
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /5/file1 supports timestamps until 2038 (0x7fffffff)
+======================================================
+WARNING: possible circular locking dependency detected
+5.10.0 #1 Not tainted
+------------------------------------------------------
+syz.1.24/2320 is trying to acquire lock:
+ffff8880139e8aa0 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_get+0x14e/0xa40 fs/ext4/xattr.c:650
+
+but task is already holding lock:
+ffff8880139e8e60 (&ea_inode->i_rwsem#14/1){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ffff8880139e8e60 (&ea_inode->i_rwsem#14/1){+.+.}-{3:3}, at: ext4_buffered_write_iter+0xb6/0x4d0 fs/ext4/file.c:264
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&ea_inode->i_rwsem#14/1){+.+.}-{3:3}:
+       down_write+0x8d/0x150 kernel/locking/rwsem.c:1531
+       inode_lock include/linux/fs.h:774 [inline]
+       ext4_xattr_inode_create fs/ext4/xattr.c:1438 [inline]
+       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1518 [inline]
+       ext4_xattr_set_entry+0x299e/0x37c0 fs/ext4/xattr.c:1646
+       ext4_xattr_block_set+0x834/0x2f50 fs/ext4/xattr.c:1942
+       ext4_xattr_set_handle+0xd01/0x12b0 fs/ext4/xattr.c:2390
+       ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2491
+       __vfs_setxattr+0x10f/0x170 fs/xattr.c:177
+       __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+       __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+       vfs_setxattr+0xe8/0x270 fs/xattr.c:283
+       setxattr+0x23d/0x330 fs/xattr.c:548
+       path_setxattr+0x170/0x190 fs/xattr.c:567
+       __do_sys_setxattr fs/xattr.c:582 [inline]
+       __se_sys_setxattr fs/xattr.c:578 [inline]
+       __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:578
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #0 (&ei->xattr_sem){++++}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:2868 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+       validate_chain kernel/locking/lockdep.c:3608 [inline]
+       __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+       lock_acquire kernel/locking/lockdep.c:5437 [inline]
+       lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+       down_read+0x96/0x450 kernel/locking/rwsem.c:1492
+       ext4_xattr_get+0x14e/0xa40 fs/ext4/xattr.c:650
+       __vfs_getxattr+0xdb/0x140 fs/xattr.c:375
+       cap_inode_need_killpriv+0x3c/0x60 security/commoncap.c:300
+       security_inode_need_killpriv+0x46/0xa0 security/security.c:1352
+       dentry_needs_remove_privs fs/inode.c:1899 [inline]
+       dentry_needs_remove_privs fs/inode.c:1889 [inline]
+       file_remove_privs+0x30b/0x540 fs/inode.c:1939
+       file_modified+0x14/0xa0 fs/inode.c:2008
+       ext4_write_checks fs/ext4/file.c:248 [inline]
+       ext4_buffered_write_iter+0xff/0x4d0 fs/ext4/file.c:265
+       ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+       call_write_iter include/linux/fs.h:1903 [inline]
+       new_sync_write+0x42c/0x670 fs/read_write.c:518
+       vfs_write+0x81b/0xac0 fs/read_write.c:605
+       ksys_write+0x12d/0x250 fs/read_write.c:658
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ea_inode->i_rwsem#14/1);
+                               lock(&ei->xattr_sem);
+                               lock(&ea_inode->i_rwsem#14/1);
+  lock(&ei->xattr_sem);
+
+ *** DEADLOCK ***
+
+3 locks held by syz.1.24/2320:
+ #0: ffff88800c800370 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+ #1: ffff88800bc42438 (sb_writers#3){.+.+}-{0:0}, at: ksys_write+0x12d/0x250 fs/read_write.c:658
+ #2: ffff8880139e8e60 (&ea_inode->i_rwsem#14/1){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ #2: ffff8880139e8e60 (&ea_inode->i_rwsem#14/1){+.+.}-{3:3}, at: ext4_buffered_write_iter+0xb6/0x4d0 fs/ext4/file.c:264
+
+stack backtrace:
+CPU: 1 PID: 2320 Comm: syz.1.24 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
+ check_prev_add kernel/locking/lockdep.c:2868 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+ validate_chain kernel/locking/lockdep.c:3608 [inline]
+ __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ down_read+0x96/0x450 kernel/locking/rwsem.c:1492
+ ext4_xattr_get+0x14e/0xa40 fs/ext4/xattr.c:650
+syz.0.21 (2231) used greatest stack depth: 23752 bytes left
+ __vfs_getxattr+0xdb/0x140 fs/xattr.c:375
+ cap_inode_need_killpriv+0x3c/0x60 security/commoncap.c:300
+ security_inode_need_killpriv+0x46/0xa0 security/security.c:1352
+ dentry_needs_remove_privs fs/inode.c:1899 [inline]
+ dentry_needs_remove_privs fs/inode.c:1889 [inline]
+ file_remove_privs+0x30b/0x540 fs/inode.c:1939
+ file_modified+0x14/0xa0 fs/inode.c:2008
+ ext4_write_checks fs/ext4/file.c:248 [inline]
+ ext4_buffered_write_iter+0xff/0x4d0 fs/ext4/file.c:265
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ call_write_iter include/linux/fs.h:1903 [inline]
+ new_sync_write+0x42c/0x670 fs/read_write.c:518
+ vfs_write+0x81b/0xac0 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fbeda9bfef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fbed9618038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fbedab78058 RCX: 00007fbeda9bfef9
+RDX: 00000000000000bf RSI: 0000000020000500 RDI: 0000000000000008
+RBP: 00007fbedaa32b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fbedab78058 R15: 00007fff29f711a8

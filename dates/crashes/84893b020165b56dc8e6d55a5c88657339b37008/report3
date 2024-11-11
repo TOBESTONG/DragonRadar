@@ -1,0 +1,68 @@
+EXT4-fs (loop1): mounted filesystem without journal. Opts: errors=remount-ro,norecovery,dioread_lock,errors=remount-ro,noauto_da_alloc,resgid=0x0000000000000000,barrier,auto_da_alloc,max_dir_size_kb=0x00000000000004e1,
+ext4 filesystem being mounted at /20/file1 supports timestamps until 2038 (0x7fffffff)
+------------[ cut here ]------------
+Trying to write to read-only block-device loop1 (partno 0)
+WARNING: CPU: 1 PID: 235 at block/blk-core.c:704 bio_check_ro block/blk-core.c:704 [inline]
+WARNING: CPU: 1 PID: 235 at block/blk-core.c:704 submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Modules linked in:
+CPU: 1 PID: 235 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:bio_check_ro block/blk-core.c:704 [inline]
+RIP: 0010:submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Code: 03 00 00 45 8b a4 24 64 05 00 00 48 89 ef 48 8d 74 24 50 e8 43 37 fe ff 48 c7 c7 00 ee 5b 84 48 89 c6 44 89 e2 e8 bd 1c e7 01 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 80 3c 02
+RSP: 0018:ffff888019237448 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 1ffff11003246e8f RCX: 0000000000000000
+RDX: ffff888008393400 RSI: ffffffff812d93c5 RDI: ffffed1003246e7b
+RBP: ffff88800fa8f100 R08: 0000000000000001 R09: ffff88806cf2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff88800b990c10 R14: ffff88800fa8f110 R15: ffff88800fa8f108
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007faa1adfaea0 CR3: 000000000ab6e000 CR4: 0000000000350ee0
+Call Trace:
+ submit_bio_noacct+0x82/0x1000 block/blk-core.c:1044
+ submit_bio+0xfd/0x540 block/blk-core.c:1129
+ submit_bh_wbc+0x580/0x7c0 fs/buffer.c:3054
+ __block_write_full_page+0x810/0x1080 fs/buffer.c:1810
+ block_write_full_page+0x23b/0x2b0 fs/buffer.c:2980
+ __writepage+0x67/0x180 mm/page-writeback.c:2311
+ write_cache_pages+0x594/0xfb0 mm/page-writeback.c:2246
+ generic_writepages mm/page-writeback.c:2337 [inline]
+ generic_writepages+0xe2/0x150 mm/page-writeback.c:2326
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __filemap_fdatawrite_range mm/filemap.c:422 [inline]
+ __filemap_fdatawrite mm/filemap.c:430 [inline]
+ filemap_flush+0x239/0x2e0 mm/filemap.c:457
+ __sync_blockdev fs/block_dev.c:508 [inline]
+ __sync_blockdev+0xa1/0xe0 fs/block_dev.c:503
+ __sync_filesystem fs/sync.c:40 [inline]
+ sync_filesystem fs/sync.c:64 [inline]
+ sync_filesystem+0x13d/0x270 fs/sync.c:48
+ generic_shutdown_super+0x70/0x370 fs/super.c:448
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f05d8df8ef9
+Code: Unable to access opcode bytes at RIP 0x7f05d8df8ecf.
+RSP: 002b:00007ffef83ba808 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00007f05d8e55470 RCX: 00007f05d8df8ef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000001
+RBP: 0000000000000018 R08: 00007ffef83b85a6 R09: 00007ffef83bbac0
+R10: 000000000000000a R11: 0000000000000246 R12: 00007ffef83bbac0
+R13: 00007f05d8e6ba14 R14: 000000000000901d R15: 00007ffef84b57d0
+irq event stamp: 143775
+hardirqs last  enabled at (143783): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (143800): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (143818): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (143831): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 54007ac4bb4b2c87 ]---

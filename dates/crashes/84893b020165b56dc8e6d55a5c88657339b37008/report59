@@ -1,0 +1,43 @@
+EXT4-fs warning (device loop3): htree_dirblock_to_tree:1003: inode #2: lblock 0: comm syz-executor: error -117 reading directory block
+------------[ cut here ]------------
+Trying to write to read-only block-device loop3 (partno 0)
+WARNING: CPU: 1 PID: 6532 at block/blk-core.c:704 bio_check_ro block/blk-core.c:704 [inline]
+WARNING: CPU: 1 PID: 6532 at block/blk-core.c:704 submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Modules linked in:
+CPU: 1 PID: 6532 Comm: kmmpd-loop3 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:bio_check_ro block/blk-core.c:704 [inline]
+RIP: 0010:submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Code: 03 00 00 45 8b a4 24 64 05 00 00 48 89 ef 48 8d 74 24 50 e8 43 37 fe ff 48 c7 c7 00 ee 5b 84 48 89 c6 44 89 e2 e8 bd 1c e7 01 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 80 3c 02
+RSP: 0018:ffff8880176dfad8 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 1ffff11002edbf61 RCX: 0000000000000000
+RDX: ffff888011591a00 RSI: ffffffff812d93c5 RDI: ffffed1002edbf4d
+RBP: ffff88801740db00 R08: 0000000000000001 R09: ffff88806cf2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff88800b93a430 R14: ffff88801740db10 R15: ffff88801740db08
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffed69c1d08 CR3: 00000000174a0000 CR4: 0000000000350ef0
+Call Trace:
+ submit_bio_noacct+0x82/0x1000 block/blk-core.c:1044
+ submit_bio+0xfd/0x540 block/blk-core.c:1129
+ submit_bh_wbc+0x580/0x7c0 fs/buffer.c:3054
+ write_mmp_block+0x333/0x6e0 fs/ext4/mmp.c:55
+ kmmpd+0x734/0xab0 fs/ext4/mmp.c:245
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+EXT4-fs error (device loop1): ext4_orphan_get:1385: inode #13: comm syz.1.259: iget: bad extra_isize 288 (inode size 256)
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+EXT4-fs error (device loop1): ext4_orphan_get:1388: comm syz.1.259: couldn't read orphan inode 13 (err -117)
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+irq event stamp: 1193
+hardirqs last  enabled at (1213): [<ffffffff83ecb0ef>] __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:168 [inline]
+hardirqs last  enabled at (1213): [<ffffffff83ecb0ef>] _raw_spin_unlock_irq+0x1f/0x40 kernel/locking/spinlock.c:199
+hardirqs last disabled at (1222): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (1208): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (1201): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace a4c9ae42dcf2f506 ]---
+EXT4-fs warning (device loop1): dx_probe:775: inode #2: comm syz.1.259: Unrecognised inode hash code 20
+EXT4-fs warning (device loop1): dx_probe:886: inode #2: comm syz.1.259: Corrupt directory, running e2fsck is recommended
+EXT4-fs warning (device loop1): dx_probe:775: inode #2: comm syz.1.259: Unrecognised inode hash code 20
+EXT4-fs warning (device loop1): dx_probe:886: inode #2: comm syz.1.259: Corrupt directory, running e2fsck is recommended
+EXT4-fs error (device loop1): ext4_find_dest_de:1947: inode #2: block 13: comm syz.1.259: bad entry in directory: rec_len % 4 != 0 - offset=108, inode=4294901777, rec_len=65535, name_len=9, size=1024

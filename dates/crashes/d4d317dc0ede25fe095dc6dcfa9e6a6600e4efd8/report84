@@ -1,0 +1,86 @@
+EXT4-fs error (device loop1): ext4_dirty_inode:5942: inode #2: comm syz.1.10: mark_inode_dirty error
+EXT4-fs error (device loop1) in ext4_do_update_inode:5151: error 27
+EXT4-fs error (device loop1): __ext4_ext_dirty:169: inode #2: comm syz.1.10: mark_inode_dirty error
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:833!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 2105 Comm: syz.3.9 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff888019eaf2a8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff110033d5e57 RCX: ffffffff81a5939b
+RDX: ffff88800c5e0000 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff888013f765d0 R08: 0000000000001400 R09: ffffffff86e5f757
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888013f765a8
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000000be5a000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+ ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+ write_blk+0x12f/0x220 fs/quota/quota_tree.c:73
+ remove_free_dqentry+0x1eb/0x4b0 fs/quota/quota_tree.c:169
+ free_dqentry fs/quota/quota_tree.c:437 [inline]
+ remove_tree+0xa0f/0x1100 fs/quota/quota_tree.c:492
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+ qtree_delete_dquot fs/quota/quota_tree.c:528 [inline]
+ qtree_release_dquot fs/quota/quota_tree.c:674 [inline]
+ qtree_release_dquot+0x1a2/0x1e0 fs/quota/quota_tree.c:670
+ v2_release_dquot+0xce/0x120 fs/quota/quota_v2.c:350
+ dquot_release+0x1d5/0x450 fs/quota/dquot.c:504
+ ext4_release_dquot+0x2a9/0x340 fs/ext4/super.c:6202
+ dqput.part.0+0x1d2/0x7e0 fs/quota/dquot.c:799
+ dqput fs/quota/dquot.c:757 [inline]
+ dqput_all fs/quota/dquot.c:397 [inline]
+ __dquot_drop+0x1cc/0x2a0 fs/quota/dquot.c:1577
+ dquot_drop+0x151/0x1a0 fs/quota/dquot.c:1602
+ ext4_clear_inode+0x52/0x1e0 fs/ext4/super.c:1405
+ ext4_evict_inode+0x1cb/0x1890 fs/ext4/inode.c:332
+ evict+0x284/0x6d0 fs/inode.c:578
+ dispose_list fs/inode.c:613 [inline]
+ evict_inodes+0x3c1/0x5e0 fs/inode.c:663
+ generic_shutdown_super+0xa6/0x370 fs/super.c:454
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ __do_sys_exit kernel/exit.c:875 [inline]
+ __se_sys_exit kernel/exit.c:873 [inline]
+ __x64_sys_exit+0x3e/0x50 kernel/exit.c:873
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ffb50ff9ef9
+Code: Unable to access opcode bytes at RIP 0x7ffb50ff9ecf.
+RSP: 002b:00007ffb4fc72fe8 EFLAGS: 00000246 ORIG_RAX: 000000000000003c
+RAX: ffffffffffffffda RBX: 00007ffb511b1f80 RCX: 00007ffb50ff9ef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007ffb5106cb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007ffb511b1f80 R15: 00007ffce0c91ec8
+Modules linked in:
+---[ end trace 695a23246617b30d ]---
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+EXT4-fs error (device loop1): ext4_readdir:243: inode #2: block 3: comm syz.1.10: path /1/file2: bad entry in directory: rec_len is smaller than minimal - offset=12, inode=514, rec_len=0, name_len=0, size=2048
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+EXT4-fs error (device loop1): ext4_readdir:243: inode #2: block 12: comm syz.1.10: path /1/file2: bad entry in directory: rec_len is smaller than minimal - offset=0, inode=5066064, rec_len=1, name_len=0, size=2048
+RSP: 0018:ffff888019eaf2a8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff110033d5e57 RCX: ffffffff81a5939b
+RDX: ffff88800c5e0000 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff888013f765d0 R08: 0000000000001400 R09: ffffffff86e5f757
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888013f765a8
+EXT4-fs error (device loop1): ext4_readdir:243: inode #2: block 13: comm syz.1.10: path /1/file2: bad entry in directory: rec_len is smaller than minimal - offset=0, inode=3653246737, rec_len=1, name_len=0, size=2048
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffb51ce4710 CR3: 000000000be5a000 CR4: 0000000000350ef0
+Fixing recursive fault but reboot is needed!
+EXT4-fs error (device loop1): ext4_readdir:243: inode #2: block 14: comm syz.1.10: path /1/file2: bad entry in directory: rec_len is smaller than minimal - offset=0, inode=3, rec_len=0, name_len=0, size=2048
+EXT4-fs error (device loop1): ext4_readdir:243: inode #2: block 15: comm syz.1.10: path /1/file2: bad entry in directory: rec_len is smaller than minimal - offset=0, inode=5, rec_len=0, name_len=0, size=2048
+EXT4-fs error (device loop1): ext4_readdir:243: inode #2: block 16: comm syz.1.10: path /1/file2: bad entry in directory: rec_len is smaller than minimal - offset=0, inode=3653245223, rec_len=1, name_len=0, size=2048

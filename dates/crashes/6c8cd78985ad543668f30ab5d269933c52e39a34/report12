@@ -1,0 +1,223 @@
+EXT4-fs (loop2): mounted filesystem without journal. Opts: max_batch_time=0x0000000000000008,resgid=0x000000000000ee00,bh,noload,data_err=ignore,usrjquota=,,errors=continue
+==================================================================
+BUG: KASAN: use-after-free in ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+BUG: KASAN: use-after-free in ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+Read of size 4 at addr ffff88801bc4b3b8 by task syz.0.722/15581
+
+CPU: 0 PID: 15581 Comm: syz.0.722 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+EXT4-fs error (device loop2): ext4_lookup:1698: inode #2: comm syz.2.724: bad inode number: 12
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+ ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+ ext4_ext_remove_space+0x1445/0x4470 fs/ext4/extents.c:2806
+ ext4_punch_hole+0x678/0x1130 fs/ext4/inode.c:4105
+ ext4_fallocate+0x10e7/0x3e70 fs/ext4/extents.c:4655
+ vfs_fallocate+0x494/0xdd0 fs/open.c:309
+ ioctl_preallocate+0x18e/0x200 fs/ioctl.c:494
+ file_ioctl fs/ioctl.c:537 [inline]
+ do_vfs_ioctl+0xe3c/0x1140 fs/ioctl.c:732
+ __do_sys_ioctl fs/ioctl.c:751 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x108/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fa6f9d11ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fa6f898b038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fa6f9ec9f80 RCX: 00007fa6f9d11ef9
+RDX: 0000000020000080 RSI: 0000000040305829 RDI: 0000000000000004
+RBP: 00007fa6f9d84b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fa6f9ec9f80 R15: 00007ffe75b11148
+
+Allocated by task 15270:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ kmem_cache_zalloc include/linux/slab.h:654 [inline]
+ seq_open+0x57/0x180 fs/seq_file.c:60
+ single_open+0xf9/0x1e0 fs/seq_file.c:569
+ proc_reg_open+0x25d/0x5d0 fs/proc/inode.c:538
+ do_dentry_open+0x650/0x1090 fs/open.c:817
+ do_open fs/namei.c:3252 [inline]
+ path_openat+0x196a/0x26f0 fs/namei.c:3369
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff88801bc4b378
+ which belongs to the cache seq_file of size 232
+The buggy address is located 64 bytes inside of
+ 232-byte region [ffff88801bc4b378, ffff88801bc4b460)
+The buggy address belongs to the page:
+page:000000004f86b039 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88801bc4b5c8 pfn:0x1bc4b
+flags: 0x100000000000200(slab)
+raw: 0100000000000200 ffffea00003f1540 0000000200000002 ffff8880081448c0
+raw: ffff88801bc4b5c8 00000000800d0001 00000001ffffffff ffff88800cb53401
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff88800cb53401
+
+Memory state around the buggy address:
+ ffff88801bc4b280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88801bc4b300: fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc fb
+>ffff88801bc4b380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                        ^
+ ffff88801bc4b400: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+ ffff88801bc4b480: fc fc fc fc fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+------------[ cut here ]------------
+kernel BUG at fs/ext4/extents.c:3159!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 15581 Comm: syz.0.722 Tainted: G    B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_split_extent_at+0x70b/0xe90 fs/ext4/extents.c:3159
+Code: c8 4c 89 f1 e8 06 40 ff ff 31 ff 89 c6 89 04 24 e8 4a d7 a5 ff 8b 04 24 85 c0 0f 84 37 06 00 00 41 89 c7 eb 1f e8 75 df a5 ff <0f> 0b 48 c7 c7 20 d1 2e 85 e8 76 5c 40 02 41 89 df 48 8b 44 24 08
+RSP: 0018:ffff8880189ff7a8 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: 000000001ff7fdfd RCX: ffffc9000174f000
+RDX: 0000000000040000 RSI: ffffffff81a02f4b RDI: 0000000000000004
+RBP: ffff88800b838030 R08: 0000000000000000 R09: 0000000050000028
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801bc4d764
+R13: 0000000000000000 R14: ffff88801b940d10 R15: 0000000000000000
+FS:  00007fa6f898b6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fff9855a830 CR3: 000000001891c000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ ext4_force_split_extent_at fs/ext4/extents.c:305 [inline]
+ ext4_ext_remove_space+0x2dcf/0x4470 fs/ext4/extents.c:2853
+ ext4_punch_hole+0x678/0x1130 fs/ext4/inode.c:4105
+ ext4_fallocate+0x10e7/0x3e70 fs/ext4/extents.c:4655
+ vfs_fallocate+0x494/0xdd0 fs/open.c:309
+ ioctl_preallocate+0x18e/0x200 fs/ioctl.c:494
+ file_ioctl fs/ioctl.c:537 [inline]
+ do_vfs_ioctl+0xe3c/0x1140 fs/ioctl.c:732
+ __do_sys_ioctl fs/ioctl.c:751 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x108/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fa6f9d11ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fa6f898b038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fa6f9ec9f80 RCX: 00007fa6f9d11ef9
+RDX: 0000000020000080 RSI: 0000000040305829 RDI: 0000000000000004
+RBP: 00007fa6f9d84b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fa6f9ec9f80 R15: 00007ffe75b11148
+Modules linked in:
+---[ end trace 79a6199d0b73e02d ]---
+RIP: 0010:ext4_split_extent_at+0x70b/0xe90 fs/ext4/extents.c:3159
+Code: c8 4c 89 f1 e8 06 40 ff ff 31 ff 89 c6 89 04 24 e8 4a d7 a5 ff 8b 04 24 85 c0 0f 84 37 06 00 00 41 89 c7 eb 1f e8 75 df a5 ff <0f> 0b 48 c7 c7 20 d1 2e 85 e8 76 5c 40 02 41 89 df 48 8b 44 24 08
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+audit: type=1326 audit(1731169359.958:4684): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=15590 comm="syz.2.724" exe="/syz-executor" sig=0 arch=c000003e syscall=202 compat=0 ip=0x7ffa26022ef9 code=0x7ffc0000
+audit: type=1326 audit(1731169359.958:4685): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=15590 comm="syz.2.724" exe="/syz-executor" sig=0 arch=c000003e syscall=202 compat=0 ip=0x7ffa26022ef9 code=0x7ffc0000
+RSP: 0018:ffff8880189ff7a8 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: 000000001ff7fdfd RCX: ffffc9000174f000
+RDX: 0000000000040000 RSI: ffffffff81a02f4b RDI: 0000000000000004
+ext4 filesystem being mounted at /0/file0 supports timestamps until 2038 (0x7fffffff)
+RBP: ffff88800b838030 R08: 0000000000000000 R09: 0000000050000028
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801bc4d764
+EXT4-fs error (device loop1): ext4_xattr_block_get:536: inode #15: comm syz.1.681: corrupted xattr block 33
+SELinux: inode_doinit_use_xattr:  getxattr returned 117 for dev=loop1 ino=15
+EXT4-fs error (device loop1): ext4_xattr_block_get:536: inode #15: comm syz.1.681: corrupted xattr block 33
+EXT4-fs error (device loop1): ext4_xattr_block_get:536: inode #15: comm syz.1.681: corrupted xattr block 33
+SELinux: inode_doinit_use_xattr:  getxattr returned 117 for dev=loop1 ino=15
+EXT4-fs error (device loop1): ext4_get_inode_usage:838: inode #15: comm syz.1.681: corrupted xattr block 33
+R13: 0000000000000000 R14: ffff88801b940d10 R15: 0000000000000000
+FS:  00007fa6f898b6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000110c29343f CR3: 000000001891c000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#2] PREEMPT SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 15581 Comm: syz.0.722 Tainted: G    B D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:jbd2__journal_start+0x84/0x960 fs/jbd2/transaction.c:479
+Code: c6 07 00 00 4d 8b bf d8 10 00 00 4d 85 ff 0f 84 97 00 00 00 e8 7d 1f 8e ff 4c 89 fa 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 ad 07 00 00 48 b8 00 00 00 00 00 fc ff df 49 8b
+RSP: 0018:ffff8880189ffab8 EFLAGS: 00010256
+RAX: dffffc0000000000 RBX: ffff88800cf8c000 RCX: 0000000000000008
+RDX: 0000000000000000 RSI: ffffffff81b7ef43 RDI: ffff8880198e2ad8
+RBP: 0000000000000000 R08: 0000000000000c40 R09: 0000000000000005
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000008
+R13: 0000000000000021 R14: 0000000000000c40 R15: 0000000000000002
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f99e76c6d08 CR3: 000000000b67e000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ __ext4_journal_start_sb+0x210/0x490 fs/ext4/ext4_jbd2.c:105
+ __ext4_journal_start fs/ext4/ext4_jbd2.h:328 [inline]
+ ext4_evict_inode+0x96c/0x1890 fs/ext4/inode.c:246
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ dentry_unlink_inode+0x2b4/0x3e0 fs/dcache.c:374
+ __dentry_kill+0x36f/0x5b0 fs/dcache.c:579
+ dentry_kill fs/dcache.c:717 [inline]
+ dput+0x6ad/0xc70 fs/dcache.c:878
+ __fput+0x3a5/0x980 fs/file_table.c:294
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fa6f9d11ef9
+Code: Unable to access opcode bytes at RIP 0x7fa6f9d11ecf.
+RSP: 002b:00007fa6f898b038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fa6f9ec9f80 RCX: 00007fa6f9d11ef9
+RDX: 0000000020000080 RSI: 0000000040305829 RDI: 0000000000000004
+RBP: 00007fa6f9d84b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fa6f9ec9f80 R15: 00007ffe75b11148
+Modules linked in:
+---[ end trace 79a6199d0b73e02e ]---
+RIP: 0010:ext4_split_extent_at+0x70b/0xe90 fs/ext4/extents.c:3159
+Code: c8 4c 89 f1 e8 06 40 ff ff 31 ff 89 c6 89 04 24 e8 4a d7 a5 ff 8b 04 24 85 c0 0f 84 37 06 00 00 41 89 c7 eb 1f e8 75 df a5 ff <0f> 0b 48 c7 c7 20 d1 2e 85 e8 76 5c 40 02 41 89 df 48 8b 44 24 08
+RSP: 0018:ffff8880189ff7a8 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: 000000001ff7fdfd RCX: ffffc9000174f000
+RDX: 0000000000040000 RSI: ffffffff81a02f4b RDI: 0000000000000004
+RBP: ffff88800b838030 R08: 0000000000000000 R09: 0000000050000028
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801bc4d764
+R13: 0000000000000000 R14: ffff88801b940d10 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f99e78e5000 CR3: 000000000b092000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Fixing recursive fault but reboot is needed!
+EXT4-fs warning (device loop0): kmmpd:182: kmmpd being stopped since MMP feature has been disabled.
+----------------
+Code disassembly (best guess):
+   0:	c6 07 00             	movb   $0x0,(%rdi)
+   3:	00 4d 8b             	add    %cl,-0x75(%rbp)
+   6:	bf d8 10 00 00       	mov    $0x10d8,%edi
+   b:	4d 85 ff             	test   %r15,%r15
+   e:	0f 84 97 00 00 00    	je     0xab
+  14:	e8 7d 1f 8e ff       	call   0xff8e1f96
+  19:	4c 89 fa             	mov    %r15,%rdx
+  1c:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  23:	fc ff df
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 ad 07 00 00    	jne    0x7e1
+  34:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  3b:	fc ff df
+  3e:	49                   	rex.WB
+  3f:	8b                   	.byte 0x8b

@@ -1,0 +1,307 @@
+EXT4-fs (loop0): mounted filesystem without journal. Opts: jqfmt=vfsold,resgid=0x000000000000ee00,bh,noload,data_err=ignore,usrjquota=,,errors=continue
+EXT4-fs (loop0): 1 truncate cleaned up
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+========================================================
+WARNING: possible irq lock inversion dependency detected
+5.10.0 #1 Not tainted
+--------------------------------------------------------
+kworker/1:0/17 just changed the state of lock:
+ffff88800bea6148 (&timer->lock){-...}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88800bea6148 (&timer->lock){-...}-{2:2}, at: snd_hrtimer_callback+0x53/0x3e0 sound/core/hrtimer.c:38
+but this lock took another, HARDIRQ-READ-unsafe lock in the past:
+ (&new->fa_lock){.+.+}-{2:2}
+
+
+and interrupts could create inverse lock ordering between them.
+
+
+other info that might help us debug this:
+ Possible interrupt unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&new->fa_lock);
+                               local_irq_disable();
+                               lock(&timer->lock);
+                               lock(&new->fa_lock);
+  <Interrupt>
+    lock(&timer->lock);
+
+ *** DEADLOCK ***
+
+3 locks held by kworker/1:0/17:
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff888008297da8 ((work_completion)(&(&ssp->work)->work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+ #2: ffffffff857f9a08 (&ssp->srcu_gp_mutex){+.+.}-{3:3}, at: srcu_advance_state kernel/rcu/srcutree.c:1095 [inline]
+ #2: ffffffff857f9a08 (&ssp->srcu_gp_mutex){+.+.}-{3:3}, at: process_srcu+0x31/0xf40 kernel/rcu/srcutree.c:1240
+
+the shortest dependencies between 2nd lock and 1st lock:
+ -> (&new->fa_lock){.+.+}-{2:2} {
+    HARDIRQ-ON-R at:
+                      lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                      lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                      __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                      _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+                      kill_fasync_rcu fs/fcntl.c:1002 [inline]
+                      kill_fasync+0x1a1/0x4c0 fs/fcntl.c:1023
+                      sock_wake_async+0xd2/0x160 net/socket.c:1331
+                      sk_wake_async include/net/sock.h:2261 [inline]
+                      sk_wake_async+0x1a6/0x2d0 include/net/sock.h:2257
+                      tcp_rcv_state_process+0x2e66/0x47d0 net/ipv4/tcp_input.c:6411
+                      tcp_v6_do_rcv+0x7b0/0x12c0 net/ipv6/tcp_ipv6.c:1502
+                      sk_backlog_rcv include/net/sock.h:1010 [inline]
+                      __release_sock+0x139/0x3b0 net/core/sock.c:2523
+                      release_sock+0x54/0x1b0 net/core/sock.c:3053
+                      tcp_sendmsg+0x36/0x40 net/ipv4/tcp.c:1445
+                      inet6_sendmsg+0xb5/0x140 net/ipv6/af_inet6.c:638
+                      sock_sendmsg_nosec net/socket.c:651 [inline]
+                      sock_sendmsg+0xee/0x190 net/socket.c:671
+                      __sys_sendto+0x21c/0x320 net/socket.c:1992
+                      __do_sys_sendto net/socket.c:2004 [inline]
+                      __se_sys_sendto net/socket.c:2000 [inline]
+                      __x64_sys_sendto+0xdd/0x1b0 net/socket.c:2000
+                      do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+                      entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    SOFTIRQ-ON-R at:
+                      lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                      lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                      __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                      _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+                      kill_fasync_rcu fs/fcntl.c:1002 [inline]
+                      kill_fasync+0x1a1/0x4c0 fs/fcntl.c:1023
+                      sock_wake_async+0xd2/0x160 net/socket.c:1331
+                      sk_wake_async include/net/sock.h:2261 [inline]
+                      sk_wake_async+0x1a6/0x2d0 include/net/sock.h:2257
+                      tcp_rcv_state_process+0x2e66/0x47d0 net/ipv4/tcp_input.c:6411
+                      tcp_v6_do_rcv+0x7b0/0x12c0 net/ipv6/tcp_ipv6.c:1502
+                      sk_backlog_rcv include/net/sock.h:1010 [inline]
+                      __release_sock+0x139/0x3b0 net/core/sock.c:2523
+                      release_sock+0x54/0x1b0 net/core/sock.c:3053
+                      tcp_sendmsg+0x36/0x40 net/ipv4/tcp.c:1445
+                      inet6_sendmsg+0xb5/0x140 net/ipv6/af_inet6.c:638
+                      sock_sendmsg_nosec net/socket.c:651 [inline]
+                      sock_sendmsg+0xee/0x190 net/socket.c:671
+                      __sys_sendto+0x21c/0x320 net/socket.c:1992
+                      __do_sys_sendto net/socket.c:2004 [inline]
+                      __se_sys_sendto net/socket.c:2000 [inline]
+                      __x64_sys_sendto+0xdd/0x1b0 net/socket.c:2000
+                      do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+                      entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    INITIAL USE at:
+                     lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                     lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                     __raw_write_lock_irq include/linux/rwlock_api_smp.h:196 [inline]
+                     _raw_write_lock_irq+0x32/0x50 kernel/locking/spinlock.c:311
+                     fasync_remove_entry+0xb6/0x1f0 fs/fcntl.c:880
+                     fasync_helper+0x9e/0xb0 fs/fcntl.c:983
+                     sock_fasync+0x94/0x140 net/socket.c:1302
+                     __fput+0x73e/0x980 fs/file_table.c:278
+                     task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+                     tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+                     exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+                     exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+                     syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+                     entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    INITIAL READ USE at:
+                          lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                          lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                          __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                          _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+                          kill_fasync_rcu fs/fcntl.c:1002 [inline]
+                          kill_fasync+0x1a1/0x4c0 fs/fcntl.c:1023
+                          sock_wake_async+0xd2/0x160 net/socket.c:1331
+                          sk_wake_async include/net/sock.h:2261 [inline]
+                          sk_wake_async+0x1a6/0x2d0 include/net/sock.h:2257
+                          tcp_rcv_state_process+0x2e66/0x47d0 net/ipv4/tcp_input.c:6411
+                          tcp_v6_do_rcv+0x7b0/0x12c0 net/ipv6/tcp_ipv6.c:1502
+                          sk_backlog_rcv include/net/sock.h:1010 [inline]
+                          __release_sock+0x139/0x3b0 net/core/sock.c:2523
+                          release_sock+0x54/0x1b0 net/core/sock.c:3053
+                          tcp_sendmsg+0x36/0x40 net/ipv4/tcp.c:1445
+                          inet6_sendmsg+0xb5/0x140 net/ipv6/af_inet6.c:638
+                          sock_sendmsg_nosec net/socket.c:651 [inline]
+                          sock_sendmsg+0xee/0x190 net/socket.c:671
+                          __sys_sendto+0x21c/0x320 net/socket.c:1992
+                          __do_sys_sendto net/socket.c:2004 [inline]
+                          __se_sys_sendto net/socket.c:2000 [inline]
+                          __x64_sys_sendto+0xdd/0x1b0 net/socket.c:2000
+                          do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+                          entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  }
+  ... key      at: [<ffffffff8720a140>] __key.0+0x0/0x40
+  ... acquired at:
+   __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+   _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+   kill_fasync_rcu fs/fcntl.c:1002 [inline]
+   kill_fasync+0x1a1/0x4c0 fs/fcntl.c:1023
+   snd_timer_user_ccallback+0x2ab/0x350 sound/core/timer.c:1386
+   snd_timer_notify1+0x11a/0x3b0 sound/core/timer.c:516
+   snd_timer_start1+0x657/0x7c0 sound/core/timer.c:577
+   snd_timer_start sound/core/timer.c:696 [inline]
+   snd_timer_start sound/core/timer.c:689 [inline]
+   snd_timer_user_start+0x20c/0x290 sound/core/timer.c:1984
+   __snd_timer_user_ioctl+0xd82/0x23c0 sound/core/timer.c:2107
+   snd_timer_user_ioctl+0x5b/0x80 sound/core/timer.c:2128
+   vfs_ioctl fs/ioctl.c:48 [inline]
+   __do_sys_ioctl fs/ioctl.c:753 [inline]
+   __se_sys_ioctl fs/ioctl.c:739 [inline]
+   __x64_sys_ioctl+0x196/0x210 fs/ioctl.c:739
+   do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> (&timer->lock){-...}-{2:2} {
+   IN-HARDIRQ-W at:
+                    lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                    lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                    __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+                    _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+                    spin_lock include/linux/spinlock.h:354 [inline]
+                    snd_hrtimer_callback+0x53/0x3e0 sound/core/hrtimer.c:38
+                    __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+                    __hrtimer_run_queues+0x56e/0xba0 kernel/time/hrtimer.c:1583
+                    hrtimer_interrupt+0x357/0x9b0 kernel/time/hrtimer.c:1645
+                    local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+                    __sysvec_apic_timer_interrupt+0x170/0x560 arch/x86/kernel/apic/apic.c:1097
+                    asm_call_irq_on_stack+0x12/0x20
+                    __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
+                    run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
+                    sysvec_apic_timer_interrupt+0xb8/0xf0 arch/x86/kernel/apic/apic.c:1091
+                    asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+                    rep_nop arch/x86/include/asm/vdso/processor.h:13 [inline]
+                    delay_tsc+0x2e/0xb0 arch/x86/lib/delay.c:78
+                    try_check_zero+0x273/0x4e0 kernel/rcu/srcutree.c:705
+                    srcu_advance_state kernel/rcu/srcutree.c:1145 [inline]
+                    process_srcu+0x2e8/0xf40 kernel/rcu/srcutree.c:1240
+                    process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+                    worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+                    kthread+0x3b2/0x4a0 kernel/kthread.c:292
+                    ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+   INITIAL USE at:
+                   lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                   lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+                   __raw_spin_lock_irq include/linux/spinlock_api_smp.h:128 [inline]
+                   _raw_spin_lock_irq+0x32/0x50 kernel/locking/spinlock.c:167
+                   spin_lock_irq include/linux/spinlock.h:379 [inline]
+                   snd_timer_close_locked+0x5e/0x9b0 sound/core/timer.c:396
+                   snd_timer_close+0x87/0xf0 sound/core/timer.c:463
+                   snd_seq_timer_close+0x8c/0xd0 sound/core/seq/seq_timer.c:318
+                   queue_delete+0x4a/0xa0 sound/core/seq/seq_queue.c:134
+                   snd_seq_queue_client_leave+0x33/0x1a0 sound/core/seq/seq_queue.c:579
+                   seq_free_client1.part.0+0x14a/0x340 sound/core/seq/seq_clientmgr.c:280
+                   seq_free_client1 sound/core/seq/seq_clientmgr.c:273 [inline]
+                   seq_free_client+0x77/0x170 sound/core/seq/seq_clientmgr.c:302
+                   snd_seq_release+0x4d/0xe0 sound/core/seq/seq_clientmgr.c:383
+                   __fput+0x280/0x980 fs/file_table.c:281
+                   task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+                   tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+                   exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+                   exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+                   syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+                   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ }
+ ... key      at: [<ffffffff87a6c500>] __key.11+0x0/0x40
+ ... acquired at:
+   mark_usage kernel/locking/lockdep.c:4303 [inline]
+   __lock_acquire+0x1441/0x5ca0 kernel/locking/lockdep.c:4786
+   lock_acquire kernel/locking/lockdep.c:5437 [inline]
+   lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+   __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+   _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+   spin_lock include/linux/spinlock.h:354 [inline]
+   snd_hrtimer_callback+0x53/0x3e0 sound/core/hrtimer.c:38
+   __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+   __hrtimer_run_queues+0x56e/0xba0 kernel/time/hrtimer.c:1583
+   hrtimer_interrupt+0x357/0x9b0 kernel/time/hrtimer.c:1645
+   local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+   __sysvec_apic_timer_interrupt+0x170/0x560 arch/x86/kernel/apic/apic.c:1097
+   asm_call_irq_on_stack+0x12/0x20
+   __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
+   run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
+   sysvec_apic_timer_interrupt+0xb8/0xf0 arch/x86/kernel/apic/apic.c:1091
+   asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+   rep_nop arch/x86/include/asm/vdso/processor.h:13 [inline]
+   delay_tsc+0x2e/0xb0 arch/x86/lib/delay.c:78
+   try_check_zero+0x273/0x4e0 kernel/rcu/srcutree.c:705
+   srcu_advance_state kernel/rcu/srcutree.c:1145 [inline]
+   process_srcu+0x2e8/0xf40 kernel/rcu/srcutree.c:1240
+   process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+   worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+   kthread+0x3b2/0x4a0 kernel/kthread.c:292
+   ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+
+
+stack backtrace:
+CPU: 1 PID: 17 Comm: kworker/1:0 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: rcu_gp process_srcu
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_irq_inversion_bug kernel/locking/lockdep.c:4397 [inline]
+ check_usage_forwards kernel/locking/lockdep.c:3849 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3981 [inline]
+ mark_lock.cold+0x46/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4303 [inline]
+ __lock_acquire+0x1441/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ snd_hrtimer_callback+0x53/0x3e0 sound/core/hrtimer.c:38
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x56e/0xba0 kernel/time/hrtimer.c:1583
+ hrtimer_interrupt+0x357/0x9b0 kernel/time/hrtimer.c:1645
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+ __sysvec_apic_timer_interrupt+0x170/0x560 arch/x86/kernel/apic/apic.c:1097
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
+ run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
+ sysvec_apic_timer_interrupt+0xb8/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:delay_tsc+0x2e/0xb0 arch/x86/lib/delay.c:79
+Code: fd bf 01 00 00 00 41 54 55 53 e8 3d f5 10 ff e8 a8 4e db 01 41 89 c4 0f 01 f9 66 90 48 c1 e2 20 48 09 c2 48 89 d5 eb 16 f3 90 <bf> 01 00 00 00 e8 18 f5 10 ff e8 83 4e db 01 44 39 e0 75 36 0f 01
+RSP: 0018:ffff888008297bb8 EFLAGS: 00000286
+RAX: 0000000080000000 RBX: 0000001c2d103ab7 RCX: 0000000000000000
+RDX: 0000000000000001 RSI: 0000000000000001 RDI: 0000000000000001
+RBP: 0000001c2d101779 R08: 0000000000000040 R09: ffffffff84caf718
+R10: 0000000000000040 R11: 0000000000000001 R12: 0000000000000001
+R13: 0000000000002bf3 R14: 0000000000000006 R15: dffffc0000000000
+ try_check_zero+0x273/0x4e0 kernel/rcu/srcutree.c:705
+ srcu_advance_state kernel/rcu/srcutree.c:1145 [inline]
+ process_srcu+0x2e8/0xf40 kernel/rcu/srcutree.c:1240
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+----------------
+Code disassembly (best guess):
+   0:	fd                   	std
+   1:	bf 01 00 00 00       	mov    $0x1,%edi
+   6:	41 54                	push   %r12
+   8:	55                   	push   %rbp
+   9:	53                   	push   %rbx
+   a:	e8 3d f5 10 ff       	call   0xff10f54c
+   f:	e8 a8 4e db 01       	call   0x1db4ebc
+  14:	41 89 c4             	mov    %eax,%r12d
+  17:	0f 01 f9             	rdtscp
+  1a:	66 90                	xchg   %ax,%ax
+  1c:	48 c1 e2 20          	shl    $0x20,%rdx
+  20:	48 09 c2             	or     %rax,%rdx
+  23:	48 89 d5             	mov    %rdx,%rbp
+  26:	eb 16                	jmp    0x3e
+  28:	f3 90                	pause
+* 2a:	bf 01 00 00 00       	mov    $0x1,%edi <-- trapping instruction
+  2f:	e8 18 f5 10 ff       	call   0xff10f54c
+  34:	e8 83 4e db 01       	call   0x1db4ebc
+  39:	44 39 e0             	cmp    %r12d,%eax
+  3c:	75 36                	jne    0x74
+  3e:	0f                   	.byte 0xf
+  3f:	01                   	.byte 0x1

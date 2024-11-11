@@ -1,0 +1,93 @@
+netlink: 24 bytes leftover after parsing attributes in process `syz.0.247'.
+SELinux: failed to load policy
+SELinux:  policydb table sizes (0,0) do not match mine (8,7)
+SELinux: failed to load policy
+INFO: task syz.0.8:2086 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.0.8         state:D stack:27440 pid: 2086 ppid:   231 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ rwsem_down_read_slowpath+0x2ad/0xb90 kernel/locking/rwsem.c:1099
+ __down_read kernel/locking/rwsem.c:1341 [inline]
+ down_read+0x1ec/0x450 kernel/locking/rwsem.c:1494
+ inode_lock_shared include/linux/fs.h:784 [inline]
+ lookup_slow fs/namei.c:1560 [inline]
+ walk_component+0x40b/0x6a0 fs/namei.c:1861
+ lookup_last fs/namei.c:2310 [inline]
+ path_lookupat+0x146/0x6c0 fs/namei.c:2334
+ filename_lookup+0x19f/0x560 fs/namei.c:2367
+ user_path_at include/linux/namei.h:59 [inline]
+ do_mount fs/namespace.c:3215 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x1e9/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7effdafdcef9
+RSP: 002b:00007effd9c56038 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007effdb194f80 RCX: 00007effdafdcef9
+RDX: 00000000200000c0 RSI: 0000000020000040 RDI: 0000000000000000
+RBP: 00007effdb04fb76 R08: 0000000020000100 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007effdb194f80 R15: 00007fff2a691578
+INFO: task syz.0.8:2115 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.0.8         state:D stack:26640 pid: 2115 ppid:   231 flags:0x00000004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ rwsem_down_read_slowpath+0x2ad/0xb90 kernel/locking/rwsem.c:1099
+ __down_read kernel/locking/rwsem.c:1341 [inline]
+ down_read+0x1ec/0x450 kernel/locking/rwsem.c:1494
+ inode_lock_shared include/linux/fs.h:784 [inline]
+ lookup_slow fs/namei.c:1560 [inline]
+ walk_component+0x40b/0x6a0 fs/namei.c:1861
+ lookup_last fs/namei.c:2310 [inline]
+ path_lookupat+0x146/0x6c0 fs/namei.c:2334
+ filename_lookup+0x19f/0x560 fs/namei.c:2367
+ user_path_at include/linux/namei.h:59 [inline]
+ do_mount fs/namespace.c:3215 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x1e9/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7effdafdcef9
+RSP: 002b:00007effd9c14038 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007effdb195130 RCX: 00007effdafdcef9
+RDX: 0000000020000400 RSI: 0000000020000040 RDI: 0000000020000000
+RBP: 00007effdb04fb76 R08: 0000000020000680 R09: 0000000000000000
+R10: 0000000000003000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007effdb195130 R15: 00007fff2a691578
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/23:
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x28c kernel/locking/lockdep.c:6254
+3 locks held by kworker/u4:3/65:
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008384938 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88800bec7da8 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+ #2: ffff88800b73e0e0 (&type->s_umount_key#56){++++}-{3:3}, at: trylock_super+0x1d/0x100 fs/super.c:418
+1 lock held by in:imklog/154:
+ #0: ffff88800c490d70 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+1 lock held by syz.0.8/2086:
+ #0: ffff888013730d90 (&sb->s_type->i_mutex_key#20){++++}-{3:3}, at: inode_lock_shared include/linux/fs.h:784 [inline]
+ #0: ffff888013730d90 (&sb->s_type->i_mutex_key#20){++++}-{3:3}, at: lookup_slow fs/namei.c:1560 [inline]
+ #0: ffff888013730d90 (&sb->s_type->i_mutex_key#20){++++}-{3:3}, at: walk_component+0x40b/0x6a0 fs/namei.c:1861
+6 locks held by syz.0.8/2107:
+1 lock held by syz.0.8/2115:
+ #0: ffff888013730d90 (&sb->s_type->i_mutex_key#20){++++}-{3:3}, at: inode_lock_shared include/linux/fs.h:784 [inline]
+ #0: ffff888013730d90 (&sb->s_type->i_mutex_key#20){++++}-{3:3}, at: lookup_slow fs/namei.c:1560 [inline]
+ #0: ffff888013730d90 (&sb->s_type->i_mutex_key#20){++++}-{3:3}, at: walk_component+0x40b/0x6a0 fs/namei.c:1861
+
+=============================================
+

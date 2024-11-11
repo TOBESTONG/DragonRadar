@@ -1,0 +1,35 @@
+EXT4-fs error (device loop2): ext4_map_blocks:584: inode #2: block 3: comm syz-executor: lblock 0 mapped to illegal pblock 3 (length 1)
+EXT4-fs (loop2): Remounting filesystem read-only
+------------[ cut here ]------------
+Trying to write to read-only block-device loop2 (partno 0)
+WARNING: CPU: 1 PID: 4397 at block/blk-core.c:704 bio_check_ro block/blk-core.c:704 [inline]
+WARNING: CPU: 1 PID: 4397 at block/blk-core.c:704 submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Modules linked in:
+CPU: 1 PID: 4397 Comm: kmmpd-loop2 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:bio_check_ro block/blk-core.c:704 [inline]
+RIP: 0010:submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Code: 03 00 00 45 8b a4 24 64 05 00 00 48 89 ef 48 8d 74 24 50 e8 43 37 fe ff 48 c7 c7 00 ee 5b 84 48 89 c6 44 89 e2 e8 bd 1c e7 01 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 80 3c 02
+RSP: 0018:ffff88801969fad8 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 1ffff110032d3f61 RCX: 0000000000000000
+RDX: ffff88800cf91a00 RSI: ffffffff812d93c5 RDI: ffffed10032d3f4d
+RBP: ffff8880111d9500 R08: 0000000000000001 R09: ffff88806cf2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff88800b951820 R14: ffff8880111d9510 R15: ffff8880111d9508
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8a1d857938 CR3: 0000000018efc000 CR4: 0000000000350ee0
+Call Trace:
+ submit_bio_noacct+0x82/0x1000 block/blk-core.c:1044
+ submit_bio+0xfd/0x540 block/blk-core.c:1129
+ submit_bh_wbc+0x580/0x7c0 fs/buffer.c:3054
+ write_mmp_block+0x333/0x6e0 fs/ext4/mmp.c:55
+ kmmpd+0x734/0xab0 fs/ext4/mmp.c:245
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+irq event stamp: 549
+hardirqs last  enabled at (557): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (586): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (582): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (605): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 8a508f8f4440ab0d ]---

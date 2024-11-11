@@ -1,0 +1,64 @@
+EXT4-fs (loop1): sb orphan head is 0
+sb_info orphan list:
+  inode loop1:16 at 000000007bd4c4bd: mode 100755, nlink 2, next 0
+------------[ cut here ]------------
+0-2
+kernel BUG at fs/ext4/super.c:1243!
+, 18-18
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+, 34-34
+CPU: 0 PID: 5488 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+
+RIP: 0010:ext4_put_super+0xe1f/0x11b0 fs/ext4/super.c:1243
+Code: 6c 24 50 e8 33 ca 81 ff 4c 89 e7 e8 4b d3 ea ff 4c 89 e7 e8 43 cb f5 ff 4c 89 e7 e8 6b 8b ec ff e9 1d fe ff ff e8 d1 11 92 ff <0f> 0b 48 c7 c7 40 d1 31 85 e8 d2 8e 2c 02 48 8b 7c 24 10 e8 09 42
+RSP: 0018:ffff888018a9fd98 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: dffffc0000000000 RCX: 0000000000000000
+RDX: ffff88800909b400 RSI: ffffffff81b3fcef RDI: ffffed1003153fa4
+RBP: ffff888010572000 R08: 0000000000000042 R09: ffff88806ce1ff9b
+EXT4-fs (loop0): orphan cleanup on readonly fs
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888010570000
+R13: ffff8880137a3e48 R14: ffff888010572318 R15: ffff888010572318
+FS:  0000555555f6a500(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f30036406f4 CR3: 000000001625e000 CR4: 0000000000350ef0
+EXT4-fs error (device loop0): ext4_ext_check_inode:459: inode #11: comm syz.0.274: pblk 0 bad header/extent: invalid extent entries - magic f30a, entries 1, max 4(4), depth 0(0)
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+EXT4-fs error (device loop0): ext4_orphan_get:1388: comm syz.0.274: couldn't read orphan inode 11 (err -117)
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+EXT4-fs (loop0): mounted filesystem without journal. Opts: nouser_xattr,max_dir_size_kb=0x000000000000000b,lazytime,norecovery,journal_dev=0x0000000000004d40,norecovery,nogrpid,noload,resgid=0x00000000000000002,errors=continue
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f0a3609e227
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007fff08640c98 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007f0a3610fa14 RCX: 00007f0a3609e227
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007fff08640d50
+RBP: 00007fff08640d50 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fff08641dd0
+R13: 00007f0a3610fa14 R14: 000000000000f63a R15: 00007fff08641e10
+Modules linked in:
+---[ end trace 11272827373e4da2 ]---
+RIP: 0010:ext4_put_super+0xe1f/0x11b0 fs/ext4/super.c:1243
+Code: 6c 24 50 e8 33 ca 81 ff 4c 89 e7 e8 4b d3 ea ff 4c 89 e7 e8 43 cb f5 ff 4c 89 e7 e8 6b 8b ec ff e9 1d fe ff ff e8 d1 11 92 ff <0f> 0b 48 c7 c7 40 d1 31 85 e8 d2 8e 2c 02 48 8b 7c 24 10 e8 09 42
+RSP: 0018:ffff888018a9fd98 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: dffffc0000000000 RCX: 0000000000000000
+RDX: ffff88800909b400 RSI: ffffffff81b3fcef RDI: ffffed1003153fa4
+RBP: ffff888010572000 R08: 0000000000000042 R09: ffff88806ce1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888010570000
+R13: ffff8880137a3e48 R14: ffff888010572318 R15: ffff888010572318
+FS:  0000555555f6a500(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffec311adb8 CR3: 000000001625e000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600

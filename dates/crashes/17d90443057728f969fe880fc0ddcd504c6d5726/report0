@@ -1,0 +1,88 @@
+EXT4-fs (loop1): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,dioread_lock,grpquota,noauto_da_alloc,resgid=0x0000000000000000,barrier,auto_da_alloc,usrquota,
+ext4 filesystem being mounted at /43/file1 supports timestamps until 2038 (0x7fffffff)
+netlink: 'syz.1.511': attribute type 46 has an invalid length.
+INFO: task syz.2.398:10261 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.2.398       state:D stack:25056 pid:10261 ppid:  8663 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ rwsem_down_write_slowpath+0x5c5/0xc00 kernel/locking/rwsem.c:1235
+ __down_write kernel/locking/rwsem.c:1389 [inline]
+ down_write+0x137/0x150 kernel/locking/rwsem.c:1532
+ inode_lock include/linux/fs.h:774 [inline]
+ lock_mount+0x8a/0x2e0 fs/namespace.c:2192
+ do_new_mount_fc fs/namespace.c:2818 [inline]
+ do_new_mount fs/namespace.c:2877 [inline]
+ path_mount+0x14be/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f24a5894ef9
+RSP: 002b:00007f24a450e038 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f24a5a4cf80 RCX: 00007f24a5894ef9
+RDX: 0000000020000300 RSI: 0000000020026ff8 RDI: 0000000000000000
+RBP: 00007f24a5907b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f24a5a4cf80 R15: 00007ffd31a4aba8
+INFO: task syz.2.398:10288 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.2.398       state:D stack:26096 pid:10288 ppid:  8663 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ bit_wait_io+0x12/0xa0 kernel/sched/wait_bit.c:209
+ __wait_on_bit_lock+0x131/0x1c0 kernel/sched/wait_bit.c:90
+ out_of_line_wait_on_bit_lock+0xd5/0x110 kernel/sched/wait_bit.c:117
+ wait_on_bit_lock_io include/linux/wait_bit.h:208 [inline]
+ __lock_buffer fs/buffer.c:69 [inline]
+ lock_buffer include/linux/buffer_head.h:366 [inline]
+ __sync_dirty_buffer+0x34f/0x3e0 fs/buffer.c:3142
+ __ext4_handle_dirty_metadata+0x28b/0x9b0 fs/ext4/ext4_jbd2.c:364
+ ext4_finish_convert_inline_dir fs/ext4/inline.c:1164 [inline]
+ ext4_convert_inline_data_nolock+0x9b5/0xd60 fs/ext4/inline.c:1240
+ ext4_try_add_inline_entry+0x38f/0x650 fs/ext4/inline.c:1313
+ ext4_add_entry+0x34e/0xc60 fs/ext4/namei.c:2209
+ __ext4_link+0x45e/0x5c0 fs/ext4/namei.c:3443
+ ext4_link+0x207/0x280 fs/ext4/namei.c:3484
+ vfs_link+0x83e/0xc20 fs/namei.c:4074
+ do_linkat+0x3c5/0x560 fs/namei.c:4142
+ __do_sys_link fs/namei.c:4171 [inline]
+ __se_sys_link fs/namei.c:4169 [inline]
+ __x64_sys_link+0x5d/0x80 fs/namei.c:4169
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f24a5894ef9
+RSP: 002b:00007f24a44ed038 EFLAGS: 00000246 ORIG_RAX: 0000000000000056
+RAX: ffffffffffffffda RBX: 00007f24a5a4d058 RCX: 00007f24a5894ef9
+RDX: 0000000000000000 RSI: 0000000020000100 RDI: 00000000200000c0
+RBP: 00007f24a5907b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f24a5a4d058 R15: 00007ffd31a4aba8
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/23:
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x28c kernel/locking/lockdep.c:6254
+1 lock held by in:imklog/154:
+1 lock held by syz.2.398/10261:
+ #0: ffff88801bfbd348 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ #0: ffff88801bfbd348 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: lock_mount+0x8a/0x2e0 fs/namespace.c:2192
+4 locks held by syz.2.398/10288:
+ #0: ffff888008a18438 (sb_writers#3){.+.+}-{0:0}, at: filename_create+0x104/0x490 fs/namei.c:3462
+ #1: ffff88801bfbd348 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+ #1: ffff88801bfbd348 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: filename_create+0x15a/0x490 fs/namei.c:3467
+ #2: ffff88801bfbfaa8 (&sb->s_type->i_mutex_key#14){++++}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ #2: ffff88801bfbfaa8 (&sb->s_type->i_mutex_key#14){++++}-{3:3}, at: vfs_link+0x575/0xc20 fs/namei.c:4065
+ #3: ffff88801bfbcf88 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ #3: ffff88801bfbcf88 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_add_inline_entry+0x108/0x650 fs/ext4/inline.c:1271
+
+=============================================
+

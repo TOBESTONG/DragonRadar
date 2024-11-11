@@ -1,0 +1,56 @@
+audit: type=1326 audit(1731339366.060:19): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=3881 comm="syz.1.102" exe="/syz-executor" sig=0 arch=c000003e syscall=1 compat=0 ip=0x7f36c40ce9df code=0x7ffc0000
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4.h:3196!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 3885 Comm: syz.0.99 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff88801b887b38 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 00000000ffff4bab RCX: ffffffff81a81b22
+RDX: ffff88800a894e00 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff888008862000 R08: 0000000000000000 R09: ffff888013ff7da3
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800ccaa000
+R13: ffff88800ccaa650 R14: 0000000000000001 R15: 00000000ffff4bab
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000561bc33eb238 CR3: 000000000ae2a000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ ext4_mb_load_buddy_gfp+0xe3/0x13d0 fs/ext4/mballoc.c:1174
+ ext4_discard_preallocations+0x86a/0xe70 fs/ext4/mballoc.c:4422
+ ext4_release_file+0x2f0/0x370 fs/ext4/file.c:150
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ __do_sys_exit kernel/exit.c:875 [inline]
+ __se_sys_exit kernel/exit.c:873 [inline]
+ __x64_sys_exit+0x3e/0x50 kernel/exit.c:873
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f501bc29ef9
+Code: Unable to access opcode bytes at RIP 0x7f501bc29ecf.
+RSP: 002b:00007f501a8a2fe8 EFLAGS: 00000246 ORIG_RAX: 000000000000003c
+RAX: ffffffffffffffda RBX: 00007f501bde1f80 RCX: 00007f501bc29ef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007f501bc9cb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f501bde1f80 R15: 00007fffcdb2b0d8
+Modules linked in:
+---[ end trace 61d7bc9dc8d491ab ]---
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff88801b887b38 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 00000000ffff4bab RCX: ffffffff81a81b22
+RDX: ffff88800a894e00 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff888008862000 R08: 0000000000000000 R09: ffff888013ff7da3
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800ccaa000
+R13: ffff88800ccaa650 R14: 0000000000000001 R15: 00000000ffff4bab
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f3760c596d0 CR3: 000000000cf10000 CR4: 0000000000350ee0
+Fixing recursive fault but reboot is needed!

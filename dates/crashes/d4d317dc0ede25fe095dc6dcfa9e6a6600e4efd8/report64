@@ -1,0 +1,615 @@
+loop2: p5 size 52736 extends beyond EOD, truncated
+loop2: p6 size 52736 extends beyond EOD, truncated
+loop2: p7 size 52736 extends beyond EOD, truncated
+loop2: p8 size 52736 extends beyond EOD, truncated
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:833!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 233 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff8880192df3b8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff1100325be79 RCX: ffffffff81a5939b
+RDX: ffff88800c50b400 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff88801339c848 R08: 0000000000002000 R09: ffffffff86e5f757
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801339c820
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000555556110500(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+loop2: p9 size 52736 extends beyond EOD, 
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+truncated
+CR2: 00007fcc4dd9e000 CR3: 00000000192e0000 CR4: 0000000000350ef0
+Call Trace:
+loop2: p10 size 52736 extends beyond EOD, 
+truncated
+ ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+ ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+loop2: p11 size 52736 extends beyond EOD, 
+ write_blk+0x12f/0x220 fs/quota/quota_tree.c:73
+truncated
+ remove_free_dqentry+0x1eb/0x4b0 fs/quota/quota_tree.c:169
+ free_dqentry fs/quota/quota_tree.c:437 [inline]
+ remove_tree+0xa0f/0x1100 fs/quota/quota_tree.c:492
+loop2: p12 size 52736 extends beyond EOD, 
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+truncated
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+loop2: p13 size 52736 extends beyond EOD, 
+truncated
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+loop2: p14 size 52736 extends beyond EOD, 
+ qtree_delete_dquot fs/quota/quota_tree.c:528 [inline]
+ qtree_release_dquot fs/quota/quota_tree.c:674 [inline]
+ qtree_release_dquot+0x1a2/0x1e0 fs/quota/quota_tree.c:670
+ v2_release_dquot+0xce/0x120 fs/quota/quota_v2.c:350
+truncated
+ dquot_release+0x1d5/0x450 fs/quota/dquot.c:504
+ ext4_release_dquot+0x2a9/0x340 fs/ext4/super.c:6202
+ dqput.part.0+0x1d2/0x7e0 fs/quota/dquot.c:799
+loop2: p15 size 52736 extends beyond EOD, 
+ dqput fs/quota/dquot.c:757 [inline]
+ dqput_all fs/quota/dquot.c:397 [inline]
+ __dquot_drop+0x1cc/0x2a0 fs/quota/dquot.c:1577
+truncated
+ dquot_drop+0x151/0x1a0 fs/quota/dquot.c:1602
+loop2: p16 size 52736 extends beyond EOD, 
+ ext4_clear_inode+0x52/0x1e0 fs/ext4/super.c:1405
+truncated
+ ext4_evict_inode+0x1cb/0x1890 fs/ext4/inode.c:332
+loop2: p17 size 52736 extends beyond EOD, 
+truncated
+loop2: p18 size 52736 extends beyond EOD, 
+truncated
+ evict+0x284/0x6d0 fs/inode.c:578
+ dispose_list fs/inode.c:613 [inline]
+ evict_inodes+0x3c1/0x5e0 fs/inode.c:663
+loop2: p19 size 52736 extends beyond EOD, 
+truncated
+ generic_shutdown_super+0xa6/0x370 fs/super.c:454
+loop2: p20 size 52736 extends beyond EOD, 
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+truncated
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+loop2: p21 size 52736 extends beyond EOD, 
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+truncated
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+loop2: p22 size 52736 extends beyond EOD, 
+RIP: 0033:0x7ff6fc116227
+truncated
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007ffec34570b8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007ff6fc187a14 RCX: 00007ff6fc116227
+loop2: p23 size 52736 extends beyond EOD, 
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffec3457170
+RBP: 00007ffec3457170 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffec34581f0
+R13: 00007ff6fc187a14 R14: 0000000000006b95 R15: 00007ffec3458230
+Modules linked in:
+truncated
+
+loop2: p24 size 52736 extends beyond EOD, truncated
+loop2: p25 size 52736 extends beyond EOD, truncated
+---[ end trace 046fc54027ce7888 ]---
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff8880192df3b8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff1100325be79 RCX: ffffffff81a5939b
+RDX: ffff88800c50b400 RSI: ffffffff81a5947b RDI: 0000000000000005
+loop2: p26 size 52736 extends beyond EOD, 
+RBP: ffff88801339c848 R08: 0000000000002000 R09: ffffffff86e5f757
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801339c820
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+truncated
+FS:  0000555556110500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f942de44d58 CR3: 00000000192e0000 CR4: 0000000000350ee0
+loop2: p27 size 52736 extends beyond EOD, truncated
+loop2: p28 size 52736 extends beyond EOD, truncated
+loop2: p29 size 52736 extends beyond EOD, truncated
+loop2: p30 size 52736 extends beyond EOD, truncated
+loop2: p31 size 52736 extends beyond EOD, truncated
+loop2: p32 size 52736 extends beyond EOD, truncated
+loop2: p33 size 52736 extends beyond EOD, truncated
+loop2: p34 size 52736 extends beyond EOD, truncated
+loop2: p35 size 52736 extends beyond EOD, truncated
+loop2: p36 size 52736 extends beyond EOD, truncated
+loop2: p37 size 52736 extends beyond EOD, truncated
+loop2: p38 size 52736 extends beyond EOD, truncated
+loop2: p39 size 52736 extends beyond EOD, truncated
+loop2: p40 size 52736 extends beyond EOD, truncated
+loop2: p41 size 52736 extends beyond EOD, truncated
+loop2: p42 size 52736 extends beyond EOD, truncated
+loop2: p43 size 52736 extends beyond EOD, truncated
+loop2: p44 size 52736 extends beyond EOD, truncated
+loop2: p45 size 52736 extends beyond EOD, truncated
+loop2: p46 size 52736 extends beyond EOD, truncated
+loop2: p47 size 52736 extends beyond EOD, truncated
+loop2: p48 size 52736 extends beyond EOD, truncated
+loop2: p49 size 52736 extends beyond EOD, truncated
+loop2: p50 size 52736 extends beyond EOD, truncated
+loop2: p51 size 52736 extends beyond EOD, truncated
+loop2: p52 size 52736 extends beyond EOD, truncated
+loop2: p53 size 52736 extends beyond EOD, truncated
+loop2: p54 size 52736 extends beyond EOD, truncated
+loop2: p55 size 52736 extends beyond EOD, truncated
+loop2: p56 size 52736 extends beyond EOD, truncated
+loop2: p57 size 52736 extends beyond EOD, truncated
+loop2: p58 size 52736 extends beyond EOD, truncated
+loop2: p59 size 52736 extends beyond EOD, truncated
+loop2: p60 size 52736 extends beyond EOD, truncated
+loop2: p61 size 52736 extends beyond EOD, truncated
+loop2: p62 size 52736 extends beyond EOD, truncated
+loop2: p63 size 52736 extends beyond EOD, truncated
+loop2: p64 size 52736 extends beyond EOD, truncated
+loop2: p65 size 52736 extends beyond EOD, truncated
+loop2: p66 size 52736 extends beyond EOD, truncated
+loop2: p67 size 52736 extends beyond EOD, truncated
+loop2: p68 size 52736 extends beyond EOD, truncated
+loop2: p69 size 52736 extends beyond EOD, truncated
+loop2: p70 size 52736 extends beyond EOD, truncated
+loop2: p71 size 52736 extends beyond EOD, truncated
+loop2: p72 size 52736 extends beyond EOD, truncated
+loop2: p73 size 52736 extends beyond EOD, truncated
+loop2: p74 size 52736 extends beyond EOD, truncated
+loop2: p75 size 52736 extends beyond EOD, truncated
+loop2: p76 size 52736 extends beyond EOD, truncated
+loop2: p77 size 52736 extends beyond EOD, truncated
+loop2: p78 size 52736 extends beyond EOD, truncated
+loop2: p79 size 52736 extends beyond EOD, truncated
+loop2: p80 size 52736 extends beyond EOD, truncated
+loop2: p81 size 52736 extends beyond EOD, truncated
+loop2: p82 size 52736 extends beyond EOD, truncated
+loop2: p83 size 52736 extends beyond EOD, truncated
+loop2: p84 size 52736 extends beyond EOD, truncated
+loop2: p85 size 52736 extends beyond EOD, truncated
+loop2: p86 size 52736 extends beyond EOD, truncated
+loop2: p87 size 52736 extends beyond EOD, truncated
+loop2: p88 size 52736 extends beyond EOD, truncated
+loop2: p89 size 52736 extends beyond EOD, truncated
+loop2: p90 size 52736 extends beyond EOD, truncated
+loop2: p91 size 52736 extends beyond EOD, truncated
+loop2: p92 size 52736 extends beyond EOD, truncated
+loop2: p93 size 52736 extends beyond EOD, truncated
+loop2: p94 size 52736 extends beyond EOD, truncated
+loop2: p95 size 52736 extends beyond EOD, truncated
+loop2: p96 size 52736 extends beyond EOD, truncated
+loop2: p97 size 52736 extends beyond EOD, truncated
+loop2: p98 size 52736 extends beyond EOD, truncated
+loop2: p99 size 52736 extends beyond EOD, truncated
+loop2: p100 size 52736 extends beyond EOD, truncated
+loop2: p101 size 52736 extends beyond EOD, truncated
+loop2: p102 size 52736 extends beyond EOD, truncated
+loop2: p103 size 52736 extends beyond EOD, truncated
+loop2: p104 size 52736 extends beyond EOD, truncated
+loop2: p105 size 52736 extends beyond EOD, truncated
+loop2: p106 size 52736 extends beyond EOD, truncated
+loop2: p107 size 52736 extends beyond EOD, truncated
+loop2: p108 size 52736 extends beyond EOD, truncated
+loop2: p109 size 52736 extends beyond EOD, truncated
+loop2: p110 size 52736 extends beyond EOD, truncated
+loop2: p111 size 52736 extends beyond EOD, truncated
+loop2: p112 size 52736 extends beyond EOD, truncated
+loop2: p113 size 52736 extends beyond EOD, truncated
+loop2: p114 size 52736 extends beyond EOD, truncated
+loop2: p115 size 52736 extends beyond EOD, truncated
+loop2: p116 size 52736 extends beyond EOD, truncated
+loop2: p117 size 52736 extends beyond EOD, truncated
+loop2: p118 size 52736 extends beyond EOD, truncated
+loop2: p119 size 52736 extends beyond EOD, truncated
+loop2: p120 size 52736 extends beyond EOD, truncated
+loop2: p121 size 52736 extends beyond EOD, truncated
+loop2: p122 size 52736 extends beyond EOD, truncated
+loop2: p123 size 52736 extends beyond EOD, truncated
+loop2: p124 size 52736 extends beyond EOD, truncated
+loop2: p125 size 52736 extends beyond EOD, truncated
+loop2: p126 size 52736 extends beyond EOD, truncated
+loop2: p127 size 52736 extends beyond EOD, truncated
+loop2: p128 size 52736 extends beyond EOD, truncated
+loop2: p129 size 52736 extends beyond EOD, truncated
+loop2: p130 size 52736 extends beyond EOD, truncated
+loop2: p131 size 52736 extends beyond EOD, truncated
+loop2: p132 size 52736 extends beyond EOD, truncated
+loop2: p133 size 52736 extends beyond EOD, truncated
+loop2: p134 size 52736 extends beyond EOD, truncated
+loop2: p135 size 52736 extends beyond EOD, truncated
+loop2: p136 size 52736 extends beyond EOD, truncated
+loop2: p137 size 52736 extends beyond EOD, truncated
+loop2: p138 size 52736 extends beyond EOD, truncated
+loop2: p139 size 52736 extends beyond EOD, truncated
+loop2: p140 size 52736 extends beyond EOD, truncated
+loop2: p141 size 52736 extends beyond EOD, truncated
+loop2: p142 size 52736 extends beyond EOD, truncated
+loop2: p143 size 52736 extends beyond EOD, truncated
+loop2: p144 size 52736 extends beyond EOD, truncated
+loop2: p145 size 52736 extends beyond EOD, truncated
+loop2: p146 size 52736 extends beyond EOD, truncated
+loop2: p147 size 52736 extends beyond EOD, truncated
+loop2: p148 size 52736 extends beyond EOD, truncated
+loop2: p149 size 52736 extends beyond EOD, truncated
+loop2: p150 size 52736 extends beyond EOD, truncated
+loop2: p151 size 52736 extends beyond EOD, truncated
+loop2: p152 size 52736 extends beyond EOD, truncated
+loop2: p153 size 52736 extends beyond EOD, truncated
+loop2: p154 size 52736 extends beyond EOD, truncated
+loop2: p155 size 52736 extends beyond EOD, truncated
+loop2: p156 size 52736 extends beyond EOD, truncated
+loop2: p157 size 52736 extends beyond EOD, truncated
+loop2: p158 size 52736 extends beyond EOD, truncated
+loop2: p159 size 52736 extends beyond EOD, truncated
+loop2: p160 size 52736 extends beyond EOD, truncated
+loop2: p161 size 52736 extends beyond EOD, truncated
+loop2: p162 size 52736 extends beyond EOD, truncated
+loop2: p163 size 52736 extends beyond EOD, truncated
+loop2: p164 size 52736 extends beyond EOD, truncated
+loop2: p165 size 52736 extends beyond EOD, truncated
+loop2: p166 size 52736 extends beyond EOD, truncated
+loop2: p167 size 52736 extends beyond EOD, truncated
+loop2: p168 size 52736 extends beyond EOD, truncated
+loop2: p169 size 52736 extends beyond EOD, truncated
+loop2: p170 size 52736 extends beyond EOD, truncated
+loop2: p171 size 52736 extends beyond EOD, truncated
+loop2: p172 size 52736 extends beyond EOD, truncated
+loop2: p173 size 52736 extends beyond EOD, truncated
+loop2: p174 size 52736 extends beyond EOD, truncated
+loop2: p175 size 52736 extends beyond EOD, truncated
+loop2: p176 size 52736 extends beyond EOD, truncated
+loop2: p177 size 52736 extends beyond EOD, truncated
+loop2: p178 size 52736 extends beyond EOD, truncated
+loop2: p179 size 52736 extends beyond EOD, truncated
+loop2: p180 size 52736 extends beyond EOD, truncated
+loop2: p181 size 52736 extends beyond EOD, truncated
+loop2: p182 size 52736 extends beyond EOD, truncated
+loop2: p183 size 52736 extends beyond EOD, truncated
+loop2: p184 size 52736 extends beyond EOD, truncated
+loop2: p185 size 52736 extends beyond EOD, truncated
+loop2: p186 size 52736 extends beyond EOD, truncated
+loop2: p187 size 52736 extends beyond EOD, truncated
+loop2: p188 size 52736 extends beyond EOD, truncated
+loop2: p189 size 52736 extends beyond EOD, truncated
+loop2: p190 size 52736 extends beyond EOD, truncated
+loop2: p191 size 52736 extends beyond EOD, truncated
+loop2: p192 size 52736 extends beyond EOD, truncated
+loop2: p193 size 52736 extends beyond EOD, truncated
+loop2: p194 size 52736 extends beyond EOD, truncated
+loop2: p195 size 52736 extends beyond EOD, truncated
+loop2: p196 size 52736 extends beyond EOD, truncated
+loop2: p197 size 52736 extends beyond EOD, truncated
+loop2: p198 size 52736 extends beyond EOD, truncated
+loop2: p199 size 52736 extends beyond EOD, truncated
+loop2: p200 size 52736 extends beyond EOD, truncated
+loop2: p201 size 52736 extends beyond EOD, truncated
+loop2: p202 size 52736 extends beyond EOD, truncated
+loop2: p203 size 52736 extends beyond EOD, truncated
+loop2: p204 size 52736 extends beyond EOD, truncated
+loop2: p205 size 52736 extends beyond EOD, truncated
+loop2: p206 size 52736 extends beyond EOD, truncated
+loop2: p207 size 52736 extends beyond EOD, truncated
+loop2: p208 size 52736 extends beyond EOD, truncated
+loop2: p209 size 52736 extends beyond EOD, truncated
+loop2: p210 size 52736 extends beyond EOD, truncated
+loop2: p211 size 52736 extends beyond EOD, truncated
+loop2: p212 size 52736 extends beyond EOD, truncated
+loop2: p213 size 52736 extends beyond EOD, truncated
+loop2: p214 size 52736 extends beyond EOD, truncated
+loop2: p215 size 52736 extends beyond EOD, truncated
+loop2: p216 size 52736 extends beyond EOD, truncated
+loop2: p217 size 52736 extends beyond EOD, truncated
+loop2: p218 size 52736 extends beyond EOD, truncated
+loop2: p219 size 52736 extends beyond EOD, truncated
+loop2: p220 size 52736 extends beyond EOD, truncated
+loop2: p221 size 52736 extends beyond EOD, truncated
+loop2: p222 size 52736 extends beyond EOD, truncated
+loop2: p223 size 52736 extends beyond EOD, truncated
+loop2: p224 size 52736 extends beyond EOD, truncated
+loop2: p225 size 52736 extends beyond EOD, truncated
+loop2: p226 size 52736 extends beyond EOD, truncated
+loop2: p227 size 52736 extends beyond EOD, truncated
+loop2: p228 size 52736 extends beyond EOD, truncated
+loop2: p229 size 52736 extends beyond EOD, truncated
+loop2: p230 size 52736 extends beyond EOD, truncated
+loop2: p231 size 52736 extends beyond EOD, truncated
+loop2: p232 size 52736 extends beyond EOD, truncated
+loop2: p233 size 52736 extends beyond EOD, truncated
+loop2: p234 size 52736 extends beyond EOD, truncated
+loop2: p235 size 52736 extends beyond EOD, truncated
+loop2: p236 size 52736 extends beyond EOD, truncated
+loop2: p237 size 52736 extends beyond EOD, truncated
+loop2: p238 size 52736 extends beyond EOD, truncated
+loop2: p239 size 52736 extends beyond EOD, truncated
+loop2: p240 size 52736 extends beyond EOD, truncated
+loop2: p241 size 52736 extends beyond EOD, truncated
+loop2: p242 size 52736 extends beyond EOD, truncated
+loop2: p243 size 52736 extends beyond EOD, truncated
+loop2: p244 size 52736 extends beyond EOD, truncated
+loop2: p245 size 52736 extends beyond EOD, truncated
+loop2: p246 size 52736 extends beyond EOD, truncated
+loop2: p247 size 52736 extends beyond EOD, truncated
+loop2: p248 size 52736 extends beyond EOD, truncated
+loop2: p249 size 52736 extends beyond EOD, truncated
+loop2: p250 size 52736 extends beyond EOD, truncated
+loop2: p251 size 52736 extends beyond EOD, truncated
+loop2: p252 size 52736 extends beyond EOD, truncated
+loop2: p253 size 52736 extends beyond EOD, truncated
+loop2: p254 size 52736 extends beyond EOD, truncated
+loop2: p255 size 52736 extends beyond EOD, truncated
+ loop2: p1 < p5 p6 p7 p8 p9 p10 p11 p12 p13 p14 p15 p16 p17 p18 p19 p20 p21 p22 p23 p24 p25 p26 p27 p28 p29 p30 p31 p32 p33 p34 p35 p36 p37 p38 p39 p40 p41 p42 p43 p44 p45 p46 p47 p48 p49 p50 p51 p52 p53 p54 p55 p56 p57 p58 p59 p60 p61 p62 p63 p64 p65 p66 p67 p68 p69 p70 p71 p72 p73 p74 p75 p76 p77 p78 p79 p80 p81 p82 p83 p84 p85 p86 p87 p88 p89 p90 p91 p92 p93 p94 p95 p96 p97 p98 p99 p100 p101 p102 p103 p104 p105 p106 p107 p108 p109 p110 p111 p112 p113 p114 p115 p116 p117 p118 p119 p120 p121 p122 p123 p124 p125 p126 p127 p128 p129 p130 p131 p132 p133 p134 p135 p136 p137 p138 p139 p140 p141 p142 p143 p144 p145 p146 p147 p148 p149 p150 p151 p152 p153 p154 p155 p156 p157 p158 p159 p160 p161 p162 p163 p164 p165 p166 p167 p168 p169 p170 p171 p172 p173 p174 p175 p176 p177 p178 p179 p180 p181 p182 p183 p184 p185 p186 p187 p188 p189 p190 p191 p192 p193 p194 p195 p196 p197 p198 p199 p200 p201 p202 p203 p204 p205 p206 p207 p208 p209 p210 p211 p212 p213 p214 p215 p216 p217 p218 p219 p
+loop2: p2 size 52736 extends beyond EOD, truncated
+loop2: p5 size 52736 extends beyond EOD, truncated
+loop2: p6 size 52736 extends beyond EOD, truncated
+loop2: p7 size 52736 extends beyond EOD, truncated
+loop2: p8 size 52736 extends beyond EOD, truncated
+loop2: p9 size 52736 extends beyond EOD, truncated
+loop2: p10 size 52736 extends beyond EOD, truncated
+loop2: p11 size 52736 extends beyond EOD, truncated
+loop2: p12 size 52736 extends beyond EOD, truncated
+loop2: p13 size 52736 extends beyond EOD, truncated
+loop2: p14 size 52736 extends beyond EOD, truncated
+loop2: p15 size 52736 extends beyond EOD, truncated
+loop2: p16 size 52736 extends beyond EOD, truncated
+loop2: p17 size 52736 extends beyond EOD, truncated
+loop2: p18 size 52736 extends beyond EOD, truncated
+loop2: p19 size 52736 extends beyond EOD, truncated
+loop2: p20 size 52736 extends beyond EOD, truncated
+loop2: p21 size 52736 extends beyond EOD, truncated
+loop2: p22 size 52736 extends beyond EOD, truncated
+loop2: p23 size 52736 extends beyond EOD, truncated
+loop2: p24 size 52736 extends beyond EOD, truncated
+loop2: p25 size 52736 extends beyond EOD, truncated
+loop2: p26 size 52736 extends beyond EOD, truncated
+loop2: p27 size 52736 extends beyond EOD, truncated
+loop2: p28 size 52736 extends beyond EOD, truncated
+loop2: p29 size 52736 extends beyond EOD, truncated
+loop2: p30 size 52736 extends beyond EOD, truncated
+loop2: p31 size 52736 extends beyond EOD, truncated
+loop2: p32 size 52736 extends beyond EOD, truncated
+loop2: p33 size 52736 extends beyond EOD, truncated
+loop2: p34 size 52736 extends beyond EOD, truncated
+loop2: p35 size 52736 extends beyond EOD, truncated
+loop2: p36 size 52736 extends beyond EOD, truncated
+loop2: p37 size 52736 extends beyond EOD, truncated
+loop2: p38 size 52736 extends beyond EOD, truncated
+loop2: p39 size 52736 extends beyond EOD, truncated
+loop2: p40 size 52736 extends beyond EOD, truncated
+loop2: p41 size 52736 extends beyond EOD, truncated
+loop2: p42 size 52736 extends beyond EOD, truncated
+loop2: p43 size 52736 extends beyond EOD, truncated
+loop2: p44 size 52736 extends beyond EOD, truncated
+loop2: p45 size 52736 extends beyond EOD, truncated
+loop2: p46 size 52736 extends beyond EOD, truncated
+loop2: p47 size 52736 extends beyond EOD, truncated
+loop2: p48 size 52736 extends beyond EOD, truncated
+loop2: p49 size 52736 extends beyond EOD, truncated
+loop2: p50 size 52736 extends beyond EOD, truncated
+loop2: p51 size 52736 extends beyond EOD, truncated
+loop2: p52 size 52736 extends beyond EOD, truncated
+loop2: p53 size 52736 extends beyond EOD, truncated
+loop2: p54 size 52736 extends beyond EOD, truncated
+loop2: p55 size 52736 extends beyond EOD, truncated
+loop2: p56 size 52736 extends beyond EOD, truncated
+loop2: p57 size 52736 extends beyond EOD, truncated
+loop2: p58 size 52736 extends beyond EOD, truncated
+loop2: p59 size 52736 extends beyond EOD, truncated
+loop2: p60 size 52736 extends beyond EOD, truncated
+loop2: p61 size 52736 extends beyond EOD, truncated
+loop2: p62 size 52736 extends beyond EOD, truncated
+loop2: p63 size 52736 extends beyond EOD, truncated
+loop2: p64 size 52736 extends beyond EOD, truncated
+loop2: p65 size 52736 extends beyond EOD, truncated
+loop2: p66 size 52736 extends beyond EOD, truncated
+loop2: p67 size 52736 extends beyond EOD, truncated
+loop2: p68 size 52736 extends beyond EOD, truncated
+loop2: p69 size 52736 extends beyond EOD, truncated
+loop2: p70 size 52736 extends beyond EOD, truncated
+loop2: p71 size 52736 extends beyond EOD, truncated
+loop2: p72 size 52736 extends beyond EOD, truncated
+loop2: p73 size 52736 extends beyond EOD, truncated
+loop2: p74 size 52736 extends beyond EOD, truncated
+loop2: p75 size 52736 extends beyond EOD, truncated
+loop2: p76 size 52736 extends beyond EOD, truncated
+loop2: p77 size 52736 extends beyond EOD, truncated
+loop2: p78 size 52736 extends beyond EOD, truncated
+loop2: p79 size 52736 extends beyond EOD, truncated
+loop2: p80 size 52736 extends beyond EOD, truncated
+loop2: p81 size 52736 extends beyond EOD, truncated
+loop2: p82 size 52736 extends beyond EOD, truncated
+loop2: p83 size 52736 extends beyond EOD, truncated
+loop2: p84 size 52736 extends beyond EOD, truncated
+loop2: p85 size 52736 extends beyond EOD, truncated
+loop2: p86 size 52736 extends beyond EOD, truncated
+loop2: p87 size 52736 extends beyond EOD, truncated
+loop2: p88 size 52736 extends beyond EOD, truncated
+loop2: p89 size 52736 extends beyond EOD, truncated
+loop2: p90 size 52736 extends beyond EOD, truncated
+loop2: p91 size 52736 extends beyond EOD, truncated
+loop2: p92 size 52736 extends beyond EOD, truncated
+loop2: p93 size 52736 extends beyond EOD, truncated
+loop2: p94 size 52736 extends beyond EOD, truncated
+loop2: p95 size 52736 extends beyond EOD, truncated
+loop2: p96 size 52736 extends beyond EOD, truncated
+loop2: p97 size 52736 extends beyond EOD, truncated
+loop2: p98 size 52736 extends beyond EOD, truncated
+loop2: p99 size 52736 extends beyond EOD, truncated
+loop2: p100 size 52736 extends beyond EOD, truncated
+loop2: p101 size 52736 extends beyond EOD, truncated
+loop2: p102 size 52736 extends beyond EOD, truncated
+loop2: p103 size 52736 extends beyond EOD, truncated
+loop2: p104 size 52736 extends beyond EOD, truncated
+loop2: p105 size 52736 extends beyond EOD, truncated
+loop2: p106 size 52736 extends beyond EOD, truncated
+loop2: p107 size 52736 extends beyond EOD, truncated
+loop2: p108 size 52736 extends beyond EOD, truncated
+loop2: p109 size 52736 extends beyond EOD, truncated
+loop2: p110 size 52736 extends beyond EOD, truncated
+loop2: p111 size 52736 extends beyond EOD, truncated
+loop2: p112 size 52736 extends beyond EOD, truncated
+loop2: p113 size 52736 extends beyond EOD, truncated
+loop2: p114 size 52736 extends beyond EOD, truncated
+loop2: p115 size 52736 extends beyond EOD, truncated
+loop2: p116 size 52736 extends beyond EOD, truncated
+loop2: p117 size 52736 extends beyond EOD, truncated
+loop2: p118 size 52736 extends beyond EOD, truncated
+loop2: p119 size 52736 extends beyond EOD, truncated
+loop2: p120 size 52736 extends beyond EOD, truncated
+loop2: p121 size 52736 extends beyond EOD, truncated
+loop2: p122 size 52736 extends beyond EOD, truncated
+loop2: p123 size 52736 extends beyond EOD, truncated
+loop2: p124 size 52736 extends beyond EOD, truncated
+loop2: p125 size 52736 extends beyond EOD, truncated
+loop2: p126 size 52736 extends beyond EOD, truncated
+loop2: p127 size 52736 extends beyond EOD, truncated
+loop2: p128 size 52736 extends beyond EOD, truncated
+loop2: p129 size 52736 extends beyond EOD, truncated
+loop2: p130 size 52736 extends beyond EOD, truncated
+loop2: p131 size 52736 extends beyond EOD, truncated
+loop2: p132 size 52736 extends beyond EOD, truncated
+loop2: p133 size 52736 extends beyond EOD, truncated
+loop2: p134 size 52736 extends beyond EOD, truncated
+loop2: p135 size 52736 extends beyond EOD, truncated
+loop2: p136 size 52736 extends beyond EOD, truncated
+loop2: p137 size 52736 extends beyond EOD, truncated
+loop2: p138 size 52736 extends beyond EOD, truncated
+loop2: p139 size 52736 extends beyond EOD, truncated
+loop2: p140 size 52736 extends beyond EOD, truncated
+loop2: p141 size 52736 extends beyond EOD, truncated
+loop2: p142 size 52736 extends beyond EOD, truncated
+loop2: p143 size 52736 extends beyond EOD, truncated
+loop2: p144 size 52736 extends beyond EOD, truncated
+loop2: p145 size 52736 extends beyond EOD, truncated
+loop2: p146 size 52736 extends beyond EOD, truncated
+loop2: p147 size 52736 extends beyond EOD, truncated
+loop2: p148 size 52736 extends beyond EOD, truncated
+loop2: p149 size 52736 extends beyond EOD, truncated
+loop2: p150 size 52736 extends beyond EOD, truncated
+loop2: p151 size 52736 extends beyond EOD, truncated
+loop2: p152 size 52736 extends beyond EOD, truncated
+loop2: p153 size 52736 extends beyond EOD, truncated
+loop2: p154 size 52736 extends beyond EOD, truncated
+loop2: p155 size 52736 extends beyond EOD, truncated
+loop2: p156 size 52736 extends beyond EOD, truncated
+loop2: p157 size 52736 extends beyond EOD, truncated
+loop2: p158 size 52736 extends beyond EOD, truncated
+loop2: p159 size 52736 extends beyond EOD, truncated
+loop2: p160 size 52736 extends beyond EOD, truncated
+loop2: p161 size 52736 extends beyond EOD, truncated
+loop2: p162 size 52736 extends beyond EOD, truncated
+loop2: p163 size 52736 extends beyond EOD, truncated
+loop2: p164 size 52736 extends beyond EOD, truncated
+loop2: p165 size 52736 extends beyond EOD, truncated
+loop2: p166 size 52736 extends beyond EOD, truncated
+loop2: p167 size 52736 extends beyond EOD, truncated
+loop2: p168 size 52736 extends beyond EOD, truncated
+loop2: p169 size 52736 extends beyond EOD, truncated
+loop2: p170 size 52736 extends beyond EOD, truncated
+loop2: p171 size 52736 extends beyond EOD, truncated
+loop2: p172 size 52736 extends beyond EOD, truncated
+loop2: p173 size 52736 extends beyond EOD, truncated
+loop2: p174 size 52736 extends beyond EOD, truncated
+loop2: p175 size 52736 extends beyond EOD, truncated
+loop2: p176 size 52736 extends beyond EOD, truncated
+loop2: p177 size 52736 extends beyond EOD, truncated
+loop2: p178 size 52736 extends beyond EOD, truncated
+loop2: p179 size 52736 extends beyond EOD, truncated
+loop2: p180 size 52736 extends beyond EOD, truncated
+loop2: p181 size 52736 extends beyond EOD, truncated
+loop2: p182 size 52736 extends beyond EOD, truncated
+loop2: p183 size 52736 extends beyond EOD, truncated
+loop2: p184 size 52736 extends beyond EOD, truncated
+loop2: p185 size 52736 extends beyond EOD, truncated
+loop2: p186 size 52736 extends beyond EOD, truncated
+loop2: p187 size 52736 extends beyond EOD, truncated
+loop2: p188 size 52736 extends beyond EOD, truncated
+loop2: p189 size 52736 extends beyond EOD, truncated
+loop2: p190 size 52736 extends beyond EOD, truncated
+loop2: p191 size 52736 extends beyond EOD, truncated
+loop2: p192 size 52736 extends beyond EOD, truncated
+loop2: p193 size 52736 extends beyond EOD, truncated
+loop2: p194 size 52736 extends beyond EOD, truncated
+loop2: p195 size 52736 extends beyond EOD, truncated
+loop2: p196 size 52736 extends beyond EOD, truncated
+loop2: p197 size 52736 extends beyond EOD, truncated
+loop2: p198 size 52736 extends beyond EOD, truncated
+loop2: p199 size 52736 extends beyond EOD, truncated
+loop2: p200 size 52736 extends beyond EOD, truncated
+loop2: p201 size 52736 extends beyond EOD, truncated
+loop2: p202 size 52736 extends beyond EOD, truncated
+loop2: p203 size 52736 extends beyond EOD, truncated
+loop2: p204 size 52736 extends beyond EOD, truncated
+loop2: p205 size 52736 extends beyond EOD, truncated
+loop2: p206 size 52736 extends beyond EOD, truncated
+loop2: p207 size 52736 extends beyond EOD, truncated
+loop2: p208 size 52736 extends beyond EOD, truncated
+loop2: p209 size 52736 extends beyond EOD, truncated
+loop2: p210 size 52736 extends beyond EOD, truncated
+loop2: p211 size 52736 extends beyond EOD, truncated
+loop2: p212 size 52736 extends beyond EOD, truncated
+loop2: p213 size 52736 extends beyond EOD, truncated
+loop2: p214 size 52736 extends beyond EOD, truncated
+loop2: p215 size 52736 extends beyond EOD, truncated
+loop2: p216 size 52736 extends beyond EOD, truncated
+loop2: p217 size 52736 extends beyond EOD, truncated
+loop2: p218 size 52736 extends beyond EOD, truncated
+loop2: p219 size 52736 extends beyond EOD, truncated
+loop2: p220 size 52736 extends beyond EOD, truncated
+loop2: p221 size 52736 extends beyond EOD, truncated
+loop2: p222 size 52736 extends beyond EOD, truncated
+loop2: p223 size 52736 extends beyond EOD, truncated
+loop2: p224 size 52736 extends beyond EOD, truncated
+loop2: p225 size 52736 extends beyond EOD, truncated
+loop2: p226 size 52736 extends beyond EOD, truncated
+loop2: p227 size 52736 extends beyond EOD, truncated
+loop2: p228 size 52736 extends beyond EOD, truncated
+loop2: p229 size 52736 extends beyond EOD, truncated
+loop2: p230 size 52736 extends beyond EOD, truncated
+loop2: p231 size 52736 extends beyond EOD, truncated
+loop2: p232 size 52736 extends beyond EOD, truncated
+loop2: p233 size 52736 extends beyond EOD, truncated
+loop2: p234 size 52736 extends beyond EOD, truncated
+loop2: p235 size 52736 extends beyond EOD, truncated
+loop2: p236 size 52736 extends beyond EOD, truncated
+loop2: p237 size 52736 extends beyond EOD, truncated
+loop2: p238 size 52736 extends beyond EOD, truncated
+loop2: p239 size 52736 extends beyond EOD, truncated
+loop2: p240 size 52736 extends beyond EOD, truncated
+loop2: p241 size 52736 extends beyond EOD, truncated
+loop2: p242 size 52736 extends beyond EOD, truncated
+loop2: p243 size 52736 extends beyond EOD, truncated
+loop2: p244 size 52736 extends beyond EOD, truncated
+loop2: p245 size 52736 extends beyond EOD, truncated
+loop2: p246 size 52736 extends beyond EOD, truncated
+loop2: p247 size 52736 extends beyond EOD, truncated
+loop2: p248 size 52736 extends beyond EOD, truncated
+loop2: p249 size 52736 extends beyond EOD, truncated
+loop2: p250 size 52736 extends beyond EOD, truncated
+loop2: p251 size 52736 extends beyond EOD, truncated
+loop2: p252 size 52736 extends beyond EOD, truncated
+loop2: p253 size 52736 extends beyond EOD, truncated
+loop2: p254 size 52736 extends beyond EOD, truncated
+loop2: p255 size 52736 extends beyond EOD, truncated
+----------------
+Code disassembly (best guess), 3 bytes skipped:
+   0:	ff f7                	push   %rdi
+   2:	d8 64 89 01          	fsubs  0x1(%rcx,%rcx,4)
+   6:	48 83 c8 ff          	or     $0xffffffffffffffff,%rax
+   a:	c3                   	ret
+   b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+  10:	31 f6                	xor    %esi,%esi
+  12:	e9 09 00 00 00       	jmp    0x20
+  17:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
+  1e:	00 00
+  20:	b8 a6 00 00 00       	mov    $0xa6,%eax
+  25:	0f 05                	syscall
+* 27:	48 3d 00 f0 ff ff    	cmp    $0xfffffffffffff000,%rax <-- trapping instruction
+  2d:	77 01                	ja     0x30
+  2f:	c3                   	ret
+  30:	48 c7 c2 a8 ff ff ff 	mov    $0xffffffffffffffa8,%rdx
+  37:	f7 d8                	neg    %eax
+  39:	64 89 02             	mov    %eax,%fs:(%rdx)
+  3c:	b8                   	.byte 0xb8

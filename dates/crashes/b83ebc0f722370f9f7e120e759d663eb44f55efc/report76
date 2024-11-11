@@ -1,0 +1,486 @@
+Code: 48 0f a3 15 cd 93 ab 04 0f 82 01 02 00 00 48 c7 c2 bc 7b d6 85 48 b8 00 00 00 00 00 fc ff df 48 89 d1 48 c1 e9 03 0f b6 0c 01 <48> 89 d0 83 e0 07 83 c0 03 38 c8 7c 08 84 c9 0f 85 d5 05 00 00 44
+RSP: 0018:ffff88800cac71f0 EFLAGS: 00000217
+==================================================================
+BUG: KASAN: stack-out-of-bounds in __show_regs+0x658/0x6d0 arch/x86/kernel/process_64.c:80
+Read of size 8 at addr ffff88800cac7170 by task oom_reaper/25
+
+CPU: 1 PID: 25 Comm: oom_reaper Tainted: G S                5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ __show_regs+0x658/0x6d0 arch/x86/kernel/process_64.c:80
+ show_trace_log_lvl+0x2a7/0x2fd arch/x86/kernel/dumpstack.c:298
+ sched_show_task kernel/sched/core.c:6456 [inline]
+ sched_show_task+0x476/0x5e0 kernel/sched/core.c:6431
+ oom_reap_task mm/oom_kill.c:624 [inline]
+ oom_reaper+0x847/0xd50 mm/oom_kill.c:654
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+
+The buggy address belongs to the page:
+page:000000008c8e5a99 refcount:0 mapcount:0 mapping:0000000000000000 index:0x2 pfn:0xcac7
+flags: 0x100000000000000()
+raw: 0100000000000000 0000000000000000 dead000000000122 0000000000000000
+raw: 0000000000000002 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88800cac7000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88800cac7080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff88800cac7100: 00 00 00 00 00 00 00 f1 f1 f1 f1 00 00 f3 f3 00
+                                                             ^
+ ffff88800cac7180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88800cac7200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+Mem-Info:
+active_anon:24901 inactive_anon:26165 isolated_anon:0
+ active_file:20 inactive_file:22 isolated_file:0
+ unevictable:2084 dirty:0 writeback:0
+ slab_reclaimable:7448 slab_unreclaimable:38738
+ mapped:327930 shmem:34125 pagetables:2195 bounce:0
+ free:2385 free_pcp:272 free_cma:0
+RAX: ffffffff850e7f00 RBX: 0000000000000002 RCX: 0000000000000000
+RDX: ffff88800bd3bc00 RSI: 0000000000000001 RDI: ffffffff812853bb
+RBP: 0000000000000000 R08: 1ffff11001958e37 R09: 0000000000000001
+R10: 0000000000000001 R11: ffffffff812ada55 R12: 1ffff11001958e32
+R13: 0000000041b58ab3 R14: 0000000000000000 R15: 0000000000000001
+Node 0 active_anon:99604kB inactive_anon:104660kB active_file:164kB inactive_file:0kB unevictable:8336kB isolated(anon):0kB isolated(file):0kB mapped:1311720kB dirty:0kB writeback:0kB shmem:136500kB writeback_tmp:0kB kernel_stack:8000kB all_unreclaimable? yes
+Node 0 DMA free:6488kB min:48kB low:60kB high:72kB reserved_highatomic:0KB active_anon:4744kB inactive_anon:56kB active_file:4kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15908kB mlocked:0kB pagetables:24kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+INFO: lockdep is turned off.
+lowmem_reserve[]: 0 1616 1616 1616
+Node 0 DMA32 free:3052kB min:9212kB low:10864kB high:12516kB reserved_highatomic:0KB active_anon:94860kB inactive_anon:104604kB active_file:140kB inactive_file:72kB unevictable:8336kB writepending:0kB present:2082688kB managed:1660364kB mlocked:8336kB pagetables:8756kB bounce:0kB free_pcp:1088kB local_pcp:840kB free_cma:0kB
+lowmem_reserve[]: 0 0 0 0
+Node 0 DMA: 8*4kB (UM) 13*8kB (ME) 9*16kB (UM) 6*32kB (UME) 4*64kB (ME) 1*128kB (E) 2*256kB (ME) 2*512kB (ME) 2*1024kB (UE) 1*2048kB (E) 0*4096kB = 6488kB
+Node 0 DMA32: 599*4kB (ME) 82*8kB (UM) 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB = 3052kB
+Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=2048kB
+41811 total pagecache pages
+7644 pages in swap cache
+Swap cache stats: add 36838, delete 29194, find 2012/2048
+Free swap  = 0kB
+Total swap = 124996kB
+524670 pages RAM
+0 pages HighMem/MovableOnly
+105602 pages reserved
+oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=/,mems_allowed=0,global_oom,task_memcg=/system.slice/systemd-journald.service,task=systemd-journal,pid=101,uid=0
+Out of memory (oom_kill_allocating_task): Killed process 101 (systemd-journal) total-vm:31896kB, anon-rss:588kB, file-rss:0kB, shmem-rss:4kB, UID:0 pgtables:76kB oom_score_adj:-250
+oom_reaper: reaped process 101 (systemd-journal), now anon-rss:0kB, file-rss:0kB, shmem-rss:4kB
+systemd invoked oom-killer: gfp_mask=0x100cca(GFP_HIGHUSER_MOVABLE), order=0, oom_score_adj=0
+CPU: 1 PID: 1 Comm: systemd Tainted: G S  B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ dump_header+0x107/0x930 mm/oom_kill.c:461
+ oom_kill_process+0x15b/0x4c0 mm/oom_kill.c:978
+ out_of_memory+0x37f/0x1580 mm/oom_kill.c:1115
+ __alloc_pages_may_oom mm/page_alloc.c:4069 [inline]
+ __alloc_pages_slowpath.constprop.0+0x1cd8/0x23a0 mm/page_alloc.c:4799
+ __alloc_pages_nodemask+0x582/0x6a0 mm/page_alloc.c:4965
+ alloc_pages_current+0x191/0x2a0 mm/mempolicy.c:2271
+ alloc_pages include/linux/gfp.h:547 [inline]
+ __page_cache_alloc mm/filemap.c:977 [inline]
+ __page_cache_alloc+0x2ce/0x370 mm/filemap.c:962
+ pagecache_get_page+0x2be/0xcb0 mm/filemap.c:1836
+ filemap_fault+0x1856/0x2310 mm/filemap.c:2743
+ ext4_filemap_fault+0x87/0xc0 fs/ext4/inode.c:6192
+ __do_fault+0x113/0x410 mm/memory.c:3612
+ do_read_fault mm/memory.c:4006 [inline]
+ do_fault mm/memory.c:4134 [inline]
+ handle_pte_fault mm/memory.c:4374 [inline]
+ __handle_mm_fault mm/memory.c:4509 [inline]
+ handle_mm_fault+0x1ed0/0x37e0 mm/memory.c:4607
+ do_user_addr_fault+0x645/0xc40 arch/x86/mm/fault.c:1372
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa2/0x1a0 arch/x86/mm/fault.c:1485
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0x558a5f10bf50
+Code: Unable to access opcode bytes at RIP 0x558a5f10bf26.
+RSP: 002b:00007ffc048c6d38 EFLAGS: 00010206
+RAX: 0000000000000000 RBX: 0000558a60a11290 RCX: 00000000000000ff
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: 00000000000000a0
+RBP: 0000558a60a9de70 R08: 14f3c9486fb100d5 R09: 802ce65823a867ff
+R10: 2415bde6b7d6539a R11: 0000000000000010 R12: 0000558a60a9de70
+R13: 0000558a60ab6900 R14: 00007ffc048c6e01 R15: 0000558a60a11290
+Mem-Info:
+active_anon:24676 inactive_anon:25826 isolated_anon:0
+ active_file:31 inactive_file:26 isolated_file:0
+ unevictable:2084 dirty:0 writeback:0
+ slab_reclaimable:7448 slab_unreclaimable:38730
+ mapped:327931 shmem:34122 pagetables:2178 bounce:0
+ free:2821 free_pcp:0 free_cma:0
+Node 0 active_anon:98704kB inactive_anon:103304kB active_file:124kB inactive_file:20kB unevictable:8336kB isolated(anon):0kB isolated(file):0kB mapped:1311724kB dirty:0kB writeback:0kB shmem:136488kB writeback_tmp:0kB kernel_stack:7968kB all_unreclaimable? yes
+Node 0 DMA free:6488kB min:48kB low:60kB high:72kB reserved_highatomic:0KB active_anon:4744kB inactive_anon:56kB active_file:4kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15908kB mlocked:0kB pagetables:24kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+lowmem_reserve[]: 0 1616 1616 1616
+Node 0 DMA32 free:4076kB min:9212kB low:10864kB high:12516kB reserved_highatomic:0KB active_anon:93916kB inactive_anon:103512kB active_file:0kB inactive_file:108kB unevictable:8336kB writepending:0kB present:2082688kB managed:1660364kB mlocked:8336kB pagetables:8688kB bounce:0kB free_pcp:248kB local_pcp:0kB free_cma:0kB
+lowmem_reserve[]: 0 0 0 0
+Node 0 DMA: 8*4kB (UM) 13*8kB (ME) 9*16kB (UM) 6*32kB (UME) 4*64kB (ME) 1*128kB (E) 2*256kB (ME) 2*512kB (ME) 2*1024kB (UE) 1*2048kB (E) 0*4096kB = 6488kB
+Node 0 DMA32: 720*4kB (UME) 106*8kB (M) 6*16kB (UM) 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB = 3824kB
+Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=2048kB
+41507 total pagecache pages
+7324 pages in swap cache
+Swap cache stats: add 36920, delete 29596, find 2012/2048
+Free swap  = 0kB
+Total swap = 124996kB
+524670 pages RAM
+0 pages HighMem/MovableOnly
+105602 pages reserved
+oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=/,mems_allowed=0,global_oom,task_memcg=/system.slice/ssh.service,task=syz.1.519,pid=37450,uid=0
+Out of memory: Killed process 37468 (syz.1.519) total-vm:89364kB, anon-rss:644kB, file-rss:16388kB, shmem-rss:11480kB, UID:0 pgtables:136kB oom_score_adj:1000
+oom_reaper: reaped process 37468 (syz.1.519), now anon-rss:0kB, file-rss:16384kB, shmem-rss:11480kB
+systemd invoked oom-killer: gfp_mask=0x100cca(GFP_HIGHUSER_MOVABLE), order=0, oom_score_adj=0
+CPU: 1 PID: 1 Comm: systemd Tainted: G S  B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ dump_header+0x107/0x930 mm/oom_kill.c:461
+ oom_kill_process+0x15b/0x4c0 mm/oom_kill.c:978
+ out_of_memory+0x37f/0x1580 mm/oom_kill.c:1115
+ __alloc_pages_may_oom mm/page_alloc.c:4069 [inline]
+ __alloc_pages_slowpath.constprop.0+0x1cd8/0x23a0 mm/page_alloc.c:4799
+ __alloc_pages_nodemask+0x582/0x6a0 mm/page_alloc.c:4965
+ alloc_pages_current+0x191/0x2a0 mm/mempolicy.c:2271
+ alloc_pages include/linux/gfp.h:547 [inline]
+ __page_cache_alloc mm/filemap.c:977 [inline]
+ __page_cache_alloc+0x2ce/0x370 mm/filemap.c:962
+ pagecache_get_page+0x2be/0xcb0 mm/filemap.c:1836
+ filemap_fault+0x1856/0x2310 mm/filemap.c:2743
+ ext4_filemap_fault+0x87/0xc0 fs/ext4/inode.c:6192
+ __do_fault+0x113/0x410 mm/memory.c:3612
+ do_read_fault mm/memory.c:4006 [inline]
+ do_fault mm/memory.c:4134 [inline]
+ handle_pte_fault mm/memory.c:4374 [inline]
+ __handle_mm_fault mm/memory.c:4509 [inline]
+ handle_mm_fault+0x1ed0/0x37e0 mm/memory.c:4607
+ do_user_addr_fault+0x645/0xc40 arch/x86/mm/fault.c:1372
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa2/0x1a0 arch/x86/mm/fault.c:1485
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0x558a5f10bf50
+Code: Unable to access opcode bytes at RIP 0x558a5f10bf26.
+RSP: 002b:00007ffc048c6d38 EFLAGS: 00010206
+RAX: 0000000000000000 RBX: 0000558a60a11290 RCX: 00000000000000ff
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: 00000000000000a0
+RBP: 0000558a60a9de70 R08: 14f3c9486fb100d5 R09: 802ce65823a867ff
+R10: 2415bde6b7d6539a R11: 0000000000000010 R12: 0000558a60a9de70
+R13: 0000558a60ab6900 R14: 00007ffc048c6e01 R15: 0000558a60a11290
+Mem-Info:
+active_anon:24667 inactive_anon:25668 isolated_anon:0
+ active_file:12 inactive_file:11 isolated_file:0
+ unevictable:2084 dirty:0 writeback:0
+ slab_reclaimable:7448 slab_unreclaimable:38735
+ mapped:327929 shmem:34122 pagetables:2178 bounce:0
+ free:2561 free_pcp:62 free_cma:0
+Node 0 active_anon:98668kB inactive_anon:102672kB active_file:48kB inactive_file:44kB unevictable:8336kB isolated(anon):0kB isolated(file):0kB mapped:1311716kB dirty:0kB writeback:0kB shmem:136488kB writeback_tmp:0kB kernel_stack:7968kB all_unreclaimable? no
+Node 0 DMA free:6488kB min:48kB low:60kB high:72kB reserved_highatomic:0KB active_anon:4736kB inactive_anon:40kB active_file:4kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15908kB mlocked:0kB pagetables:24kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+lowmem_reserve[]: 0 1616 1616 1616
+Node 0 DMA32 free:3252kB min:11260kB low:12912kB high:14564kB reserved_highatomic:0KB active_anon:93932kB inactive_anon:102632kB active_file:84kB inactive_file:80kB unevictable:8336kB writepending:0kB present:2082688kB managed:1660364kB mlocked:8336kB pagetables:8688kB bounce:0kB free_pcp:248kB local_pcp:0kB free_cma:0kB
+lowmem_reserve[]: 0 0 0 0
+Node 0 DMA: 12*4kB (UM) 15*8kB (UME) 9*16kB (UM) 5*32kB (ME) 4*64kB (ME) 1*128kB (E) 2*256kB (ME) 2*512kB (ME) 2*1024kB (UE) 1*2048kB (E) 0*4096kB = 6488kB
+Node 0 DMA32: 645*4kB (UME) 84*8kB (UM) 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB = 3252kB
+Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=2048kB
+41505 total pagecache pages
+7341 pages in swap cache
+Swap cache stats: add 36957, delete 29616, find 2012/2048
+Free swap  = 0kB
+Total swap = 124996kB
+524670 pages RAM
+0 pages HighMem/MovableOnly
+105602 pages reserved
+oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=/,mems_allowed=0,global_oom,task_memcg=/system.slice/ssh.service,task=syz.0.527,pid=37598,uid=0
+Out of memory: Killed process 37599 (syz.0.527) total-vm:89364kB, anon-rss:480kB, file-rss:16324kB, shmem-rss:11112kB, UID:0 pgtables:132kB oom_score_adj:1000
+oom_reaper: reaped process 37599 (syz.0.527), now anon-rss:0kB, file-rss:16320kB, shmem-rss:11112kB
+syz-executor invoked oom-killer: gfp_mask=0x100cca(GFP_HIGHUSER_MOVABLE), order=0, oom_score_adj=0
+CPU: 0 PID: 223 Comm: syz-executor Tainted: G S  B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ dump_header+0x107/0x930 mm/oom_kill.c:461
+ oom_kill_process+0x15b/0x4c0 mm/oom_kill.c:978
+ out_of_memory+0x1170/0x1580 mm/oom_kill.c:1097
+ __alloc_pages_may_oom mm/page_alloc.c:4069 [inline]
+ __alloc_pages_slowpath.constprop.0+0x1cd8/0x23a0 mm/page_alloc.c:4799
+ __alloc_pages_nodemask+0x582/0x6a0 mm/page_alloc.c:4965
+ alloc_pages_current+0x191/0x2a0 mm/mempolicy.c:2271
+ alloc_pages include/linux/gfp.h:547 [inline]
+ __page_cache_alloc mm/filemap.c:977 [inline]
+ __page_cache_alloc+0x2ce/0x370 mm/filemap.c:962
+ pagecache_get_page+0x2be/0xcb0 mm/filemap.c:1836
+ filemap_fault+0x1856/0x2310 mm/filemap.c:2743
+ ext4_filemap_fault+0x87/0xc0 fs/ext4/inode.c:6192
+ __do_fault+0x113/0x410 mm/memory.c:3612
+ do_read_fault mm/memory.c:4006 [inline]
+ do_fault mm/memory.c:4134 [inline]
+ handle_pte_fault mm/memory.c:4374 [inline]
+ __handle_mm_fault mm/memory.c:4509 [inline]
+ handle_mm_fault+0x1ed0/0x37e0 mm/memory.c:4607
+ do_user_addr_fault+0x645/0xc40 arch/x86/mm/fault.c:1372
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa2/0x1a0 arch/x86/mm/fault.c:1485
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0x7fb2247922e5
+Code: Unable to access opcode bytes at RIP 0x7fb2247922bb.
+RSP: 002b:00007ffd06a282c0 EFLAGS: 00010212
+RAX: 00007fb21f53bf34 RBX: 00007ffd06a283c0 RCX: 0000000000000000
+RDX: 00007fb21f53bf30 RSI: 0000000000000008 RDI: 00007ffd06a283c0
+RBP: 00000000000003e6 R08: 0000000000000000 R09: 0000000000000000
+R10: 00007ffd06a283a0 R11: 0000000000000000 R12: 0000000000000000
+R13: 00000000000000cc R14: ffffffffffffff34 R15: 00000000000000cc
+Mem-Info:
+active_anon:24596 inactive_anon:25520 isolated_anon:13
+ active_file:38 inactive_file:4 isolated_file:0
+ unevictable:2084 dirty:0 writeback:0
+ slab_reclaimable:7449 slab_unreclaimable:38735
+ mapped:327929 shmem:34122 pagetables:2178 bounce:0
+ free:2447 free_pcp:62 free_cma:0
+Node 0 active_anon:98384kB inactive_anon:102080kB active_file:152kB inactive_file:16kB unevictable:8336kB isolated(anon):52kB isolated(file):0kB mapped:1311716kB dirty:0kB writeback:0kB shmem:136488kB writeback_tmp:0kB kernel_stack:7968kB all_unreclaimable? no
+Node 0 DMA free:6488kB min:48kB low:60kB high:72kB reserved_highatomic:0KB active_anon:4732kB inactive_anon:12kB active_file:4kB inactive_file:4kB unevictable:0kB writepending:0kB present:15992kB managed:15908kB mlocked:0kB pagetables:24kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+lowmem_reserve[]: 0 1616 1616 1616
+Node 0 DMA32 free:3300kB min:5116kB low:6768kB high:8420kB reserved_highatomic:0KB active_anon:93700kB inactive_anon:101648kB active_file:152kB inactive_file:12kB unevictable:8336kB writepending:0kB present:2082688kB managed:1660364kB mlocked:8336kB pagetables:8688kB bounce:0kB free_pcp:248kB local_pcp:0kB free_cma:0kB
+lowmem_reserve[]: 0 0 0 0
+Node 0 DMA: 15*4kB (UME) 14*8kB (M) 9*16kB (M) 5*32kB (ME) 4*64kB (ME) 1*128kB (E) 2*256kB (ME) 2*512kB (ME) 2*1024kB (UE) 1*2048kB (E) 0*4096kB = 6492kB
+Node 0 DMA32: 621*4kB (UME) 71*8kB (M) 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB = 3052kB
+Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=2048kB
+41497 total pagecache pages
+7330 pages in swap cache
+Swap cache stats: add 37036, delete 29706, find 2012/2048
+Free swap  = 0kB
+Total swap = 124996kB
+524670 pages RAM
+0 pages HighMem/MovableOnly
+105602 pages reserved
+oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=/,mems_allowed=0,global_oom,task_memcg=/system.slice/ssh.service,task=syz-executor,pid=223,uid=0
+Out of memory (oom_kill_allocating_task): Killed process 223 (syz-executor) total-vm:122460kB, anon-rss:1176kB, file-rss:0kB, shmem-rss:0kB, UID:0 pgtables:112kB oom_score_adj:0
+oom_reaper: reaped process 223 (syz-executor), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
+systemd[1]: systemd-udevd.service: A process of this unit has been killed by the OOM killer.
+systemd[1]: systemd-udevd.service: Killing process 117 (systemd-udevd) with signal SIGKILL.
+systemd[1]: ssh.service: A process of this unit has been killed by the OOM killer.
+systemd[1]: systemd-journald.service: Main process exited, code=killed, status=9/KILL
+systemd[1]: systemd-journald.service: Failed with result 'oom-kill'.
+systemd[1]: systemd-journald.service: Failed to destroy cgroup /system.slice/systemd-journald.service, ignoring: Read-only file system
+systemd[1]: systemd-journald.service: Consumed 3.528s CPU time.
+systemd[1]: systemd-udevd.service: Failed with result 'oom-kill'.
+systemd[1]: systemd-udevd.service: Failed to destroy cgroup /system.slice/systemd-udevd.service, ignoring: Read-only file system
+systemd[1]: systemd-udevd.service: Consumed 19.990s CPU time.
+systemd[1]: systemd-journald.service: Scheduled restart job, restart counter is at 1.
+systemd[1]: systemd-udevd.service: Scheduled restart job, restart counter is at 1.
+systemd[1]: Stopped System Logging Service.
+systemd[1]: rsyslog.service: Consumed 1.046s CPU time.
+systemd[1]: rsyslog.service: Failed to enable/disable controllers on cgroup /system.slice/rsyslog.service, ignoring: Read-only file system
+systemd[1]: Starting System Logging Service...
+systemd[1]: systemd-journal-flush.service: Failed to create cgroup /system.slice/systemd-journal-flush.service: Read-only file system
+systemd[1]: Stopping Flush Journal to Persistent Storage...
+systemd[1]: Stopped Rule-based Manager for Device Events and Files.
+systemd[1]: systemd-udevd.service: Consumed 19.990s CPU time.
+systemd[1]: systemd-udevd.service: Failed to enable/disable controllers on cgroup /system.slice/systemd-udevd.service, ignoring: Read-only file system
+systemd[1]: Starting Rule-based Manager for Device Events and Files...
+systemd[1]: ssh.service: Failed with result 'oom-kill'.
+systemd[1]: ssh.service: Unit process 5903 (syz.1.248) remains running after unit stopped.
+systemd[43016]: systemd-journal-flush.service: Failed to attach to cgroup /system.slice/systemd-journal-flush.service: No such file or directory
+systemd[1]: ssh.service: Unit process 7384 (syz.1.267) remains running after unit stopped.
+systemd[43015]: rsyslog.service: Failed to attach to cgroup /system.slice/rsyslog.service: Read-only file system
+systemd[43017]: systemd-udevd.service: Failed to attach to cgroup /system.slice/systemd-udevd.service: Read-only file system
+systemd[1]: ssh.service: Unit process 9169 (syz.1.270) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 11563 (syz.1.284) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 14128 (syz.1.302) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 16025 (syz.1.324) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 17805 (syz.1.334) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 20055 (syz.1.355) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 21491 (syz.1.361) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 23965 (syz.1.394) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 26157 (syz.1.433) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 28192 (syz.1.451) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 30086 (syz.1.468) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 31963 (syz.1.482) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 33836 (syz.1.497) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 35717 (syz.1.514) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 37450 (syz.1.519) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 40263 (syz.1.555) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 41970 (syz.1.581) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 5929 (syz.0.251) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 7369 (syz.0.265) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 9282 (syz.0.272) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 11575 (syz.0.285) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 13509 (syz.0.300) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 17473 (syz.0.335) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 20548 (syz.0.359) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 21970 (syz.0.373) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 24189 (syz.0.401) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 26138 (syz.0.432) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 28198 (syz.0.449) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 30072 (syz.0.465) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 31954 (syz.0.481) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 33845 (syz.0.500) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 35728 (syz.0.516) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 37598 (syz.0.527) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 39570 (syz.0.540) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 41394 (syz.0.570) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 6177 (syz.3.259) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 8046 (syz.3.263) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 10681 (syz.3.283) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 12510 (syz.3.287) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 14991 (syz.3.308) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 16803 (syz.3.333) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 18646 (syz.3.340) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 20989 (syz.3.360) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 22412 (syz.3.375) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 24395 (syz.3.405) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 26971 (syz.3.441) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 30555 (syz.3.471) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 32487 (syz.3.485) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 34462 (syz.3.503) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 36341 (syz.3.517) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 38462 (syz.3.530) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 40907 (syz.3.561) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 42998 (syz.3.583) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 6427 (syz.2.256) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 8302 (syz.2.268) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 10245 (syz.2.273) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 12097 (syz.2.290) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 14393 (syz.2.304) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 16311 (syz.2.330) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 18161 (syz.2.336) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 21138 (syz.2.372) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 23193 (syz.2.382) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 24933 (syz.2.416) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 27276 (syz.2.448) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 29151 (syz.2.462) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 31023 (syz.2.474) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 32895 (syz.2.488) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 34793 (syz.2.511) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 36648 (syz.2.518) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 38523 (syz.2.529) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 41051 (syz.2.567) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 42990 (syz.2.575) remains running after unit stopped.
+systemd[1]: ssh.service: Unit process 28713 (syz.3.454) remains running after unit stopped.
+systemd[1]: ssh.service: Failed to destroy cgroup /system.slice/ssh.service, ignoring: Read-only file system
+systemd[1]: ssh.service: Consumed 1min 28.090s CPU time.
+systemd[1]: rsyslog.service: Main process exited, code=exited, status=219/CGROUP
+systemd[1]: rsyslog.service: Failed with result 'exit-code'.
+systemd[1]: rsyslog.service: Failed to destroy cgroup /system.slice/rsyslog.service, ignoring: Read-only file system
+systemd[1]: Failed to start System Logging Service.
+systemd[1]: systemd-journal-flush.service: Control process exited, code=exited, status=219/CGROUP
+systemd[1]: systemd-journal-flush.service: Failed with result 'exit-code'.
+systemd[1]: systemd-journal-flush.service: Failed to destroy cgroup /system.slice/systemd-journal-flush.service, ignoring: Read-only file system
+systemd[1]: Stopped Flush Journal to Persistent Storage.
+systemd[1]: systemd-udevd.service: Main process exited, code=exited, status=219/CGROUP
+systemd[1]: systemd-udevd.service: Failed with result 'exit-code'.
+systemd[1]: systemd-udevd.service: Failed to destroy cgroup /system.slice/systemd-udevd.service, ignoring: Read-only file system
+systemd[1]: Failed to start Rule-based Manager for Device Events and Files.
+systemd[1]: systemd-udevd.service: Scheduled restart job, restart counter is at 2.
+systemd[1]: Stopped Journal Service.
+systemd[1]: systemd-journald.service: Consumed 3.528s CPU time.
+systemd[1]: systemd-journald.service: Failed to enable/disable controllers on cgroup /system.slice/systemd-journald.service, ignoring: Read-only file system
+systemd[1]: Starting Journal Service...
+systemd[1]: Stopped Rule-based Manager for Device Events and Files.
+systemd[43018]: systemd-journald.service: Failed to attach to cgroup /system.slice/systemd-journald.service: Read-only file system
+systemd[1]: systemd-udevd.service: Failed to enable/disable controllers on cgroup /system.slice/systemd-udevd.service, ignoring: Read-only file system
+systemd[1]: Starting Rule-based Manager for Device Events and Files...
+systemd[43019]: systemd-udevd.service: Failed to attach to cgroup /system.slice/systemd-udevd.service: Read-only file system
+systemd[1]: systemd-journald.service: Main process exited, code=exited, status=219/CGROUP
+systemd[1]: systemd-journald.service: Failed with result 'exit-code'.
+systemd[1]: systemd-journald.service: Failed to destroy cgroup /system.slice/systemd-journald.service, ignoring: Read-only file system
+systemd[1]: Failed to start Journal Service.
+systemd[1]: Dependency failed for Flush Journal to Persistent Storage.
+systemd[1]: systemd-journal-flush.service: Job systemd-journal-flush.service/start failed with result 'dependency'.
+systemd[1]: systemd-udevd.service: Main process exited, code=exited, status=219/CGROUP
+systemd[1]: systemd-udevd.service: Failed with result 'exit-code'.
+systemd[1]: systemd-udevd.service: Failed to destroy cgroup /system.slice/systemd-udevd.service, ignoring: Read-only file system
+systemd[1]: Failed to start Rule-based Manager for Device Events and Files.
+systemd[1]: systemd-journald.service: Scheduled restart job, restart counter is at 2.
+systemd[1]: systemd-udevd.service: Scheduled restart job, restart counter is at 3.
+systemd[1]: Stopped Journal Service.
+systemd[1]: systemd-journald.service: Failed to enable/disable controllers on cgroup /system.slice/systemd-journald.service, ignoring: Read-only file system
+systemd[1]: Starting Journal Service...
+systemd[1]: Stopped Rule-based Manager for Device Events and Files.
+systemd[43020]: systemd-journald.service: Failed to attach to cgroup /system.slice/systemd-journald.service: Read-only file system
+systemd[1]: systemd-udevd.service: Failed to enable/disable controllers on cgroup /system.slice/systemd-udevd.service, ignoring: Read-only file system
+systemd[1]: Starting Rule-based Manager for Device Events and Files...
+systemd[1]: systemd-journald.service: Main process exited, code=exited, status=219/CGROUP
+systemd[43021]: systemd-udevd.service: Failed to attach to cgroup /system.slice/systemd-udevd.service: Read-only file system
+systemd[1]: systemd-journald.service: Failed with result 'exit-code'.
+systemd[1]: systemd-journald.service: Failed to destroy cgroup /system.slice/systemd-journald.service, ignoring: Read-only file system
+systemd[1]: Failed to start Journal Service.
+systemd[1]: ssh.service: Scheduled restart job, restart counter is at 1.
+systemd[1]: systemd-udevd.service: Main process exited, code=exited, status=219/CGROUP
+systemd[1]: systemd-udevd.service: Failed with result 'exit-code'.
+systemd[1]: systemd-udevd.service: Failed to destroy cgroup /system.slice/systemd-udevd.service, ignoring: Read-only file system
+systemd[1]: Failed to start Rule-based Manager for Device Events and Files.
+systemd[1]: rsyslog.service: Scheduled restart job, restart counter is at 2.
+systemd[1]: systemd-journald.service: Scheduled restart job, restart counter is at 3.
+systemd[1]: systemd-udevd.service: Scheduled restart job, restart counter is at 4.
+systemd[1]: Stopped System Logging Service.
+systemd[1]: rsyslog.service: Failed to enable/disable controllers on cgroup /system.slice/rsyslog.service, ignoring: Read-only file system
+systemd[1]: Starting System Logging Service...
+systemd[1]: ssh.service: Failed to destroy cgroup /system.slice/ssh.service, ignoring: Read-only file system
+systemd[43022]: rsyslog.service: Failed to attach to cgroup /system.slice/rsyslog.service: Read-only file system
+systemd[1]: Stopped OpenBSD Secure Shell server.
+systemd[1]: ssh.service: Consumed 1min 28.090s CPU time.
+systemd[1]: ssh.service: Found left-over process 5903 (syz.1.248) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 7384 (syz.1.267) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 9169 (syz.1.270) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 11563 (syz.1.284) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 14128 (syz.1.302) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 16025 (syz.1.324) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 17805 (syz.1.334) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 20055 (syz.1.355) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 21491 (syz.1.361) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 23965 (syz.1.394) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 26157 (syz.1.433) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 28192 (syz.1.451) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 30086 (syz.1.468) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 31963 (syz.1.482) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 33836 (syz.1.497) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 35717 (syz.1.514) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 37450 (syz.1.519) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 40263 (syz.1.555) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 41970 (syz.1.581) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 5929 (syz.0.251) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 7369 (syz.0.265) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+systemd[1]: ssh.service: Found left-over process 9282 (syz.0.272) in control group while starting unit. Ignoring.
+systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.
+----------------
+Code disassembly (best guess):
+   0:	48 0f a3 15 cd 93 ab 	bt     %rdx,0x4ab93cd(%rip)        # 0x4ab93d5
+   7:	04
+   8:	0f 82 01 02 00 00    	jb     0x20f
+   e:	48 c7 c2 bc 7b d6 85 	mov    $0xffffffff85d67bbc,%rdx
+  15:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  1c:	fc ff df
+  1f:	48 89 d1             	mov    %rdx,%rcx
+  22:	48 c1 e9 03          	shr    $0x3,%rcx
+  26:	0f b6 0c 01          	movzbl (%rcx,%rax,1),%ecx
+* 2a:	48 89 d0             	mov    %rdx,%rax <-- trapping instruction
+  2d:	83 e0 07             	and    $0x7,%eax
+  30:	83 c0 03             	add    $0x3,%eax
+  33:	38 c8                	cmp    %cl,%al
+  35:	7c 08                	jl     0x3f
+  37:	84 c9                	test   %cl,%cl
+  39:	0f 85 d5 05 00 00    	jne    0x614
+  3f:	44                   	rex.R

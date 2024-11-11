@@ -1,0 +1,61 @@
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs error (device loop3): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 25 vs 150994969 free clusters
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:2696!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 4375 Comm: syz.3.202 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff888016567968 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+RDX: ffff888013f41a00 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff88801a803188 R08: 0000000000000000 R09: ffff88801a80318f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff88801a803470 R15: ffff88801a072000
+FS:  00007f1d5475d6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000318 CR3: 0000000011b38000 CR4: 0000000000350ee0
+Call Trace:
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __filemap_fdatawrite_range+0x24b/0x2f0 mm/filemap.c:422
+ file_write_and_wait_range+0xb2/0x120 mm/filemap.c:761
+ ext4_sync_file+0x225/0xf40 fs/ext4/fsync.c:151
+ vfs_fsync_range fs/sync.c:200 [inline]
+ vfs_fsync fs/sync.c:214 [inline]
+ do_fsync fs/sync.c:224 [inline]
+ __do_sys_fdatasync fs/sync.c:237 [inline]
+ __se_sys_fdatasync fs/sync.c:235 [inline]
+ __x64_sys_fdatasync+0xc7/0x140 fs/sync.c:235
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f1d55ae3ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f1d5475d038 EFLAGS: 00000246 ORIG_RAX: 000000000000004b
+RAX: ffffffffffffffda RBX: 00007f1d55c9bf80 RCX: 00007f1d55ae3ef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000004
+RBP: 00007f1d55b56b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f1d55c9bf80 R15: 00007ffcb075a638
+Modules linked in:
+---[ end trace eb68dbea37cf7acb ]---
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff888016567968 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+RDX: ffff888013f41a00 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff88801a803188 R08: 0000000000000000 R09: ffff88801a80318f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff88801a803470 R15: ffff88801a072000
+FS:  00007f1d5475d6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa16da571a0 CR3: 0000000011b38000 CR4: 0000000000350ee0
+EXT4-fs (loop2): Mount option "nouser_xattr" will be removed by 3.5
+Contact linux-ext4@vger.kernel.org if you think we should keep it.
+
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs (loop2): 1 orphan inode deleted
+EXT4-fs (loop2): mounted filesystem without journal. Opts: nouid32,norecovery,bsdgroups,nouser_xattr,usrquota,init_itable=0x00000000000007ff,barrier,auto_da_alloc,max_dir_size_kb=0x00000000000004de,,errors=continue
+ext4 filesystem being mounted at /80/file1 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs error (device loop3): ext4_lookup:1706: inode #16: comm syz-executor: iget: bad extended attribute block 281470681743360
+EXT4-fs error (device loop3): ext4_lookup:1706: inode #16: comm syz-executor: iget: bad extended attribute block 281470681743360

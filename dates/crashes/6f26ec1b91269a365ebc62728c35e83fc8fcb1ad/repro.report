@@ -1,0 +1,96 @@
+EXT4-fs error (device loop2): ext4_dirty_inode:5942: inode #19: comm syz.2.108: mark_inode_dirty error
+EXT4-fs warning (device loop2): ext4_da_update_reserve_space:355: ext4_da_update_reserve_space: ino 19, used 1 with only 0 reserved data blocks
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 17410 at fs/ext4/inode.c:359 ext4_da_update_reserve_space+0x62e/0x7b0 fs/ext4/inode.c:355
+Modules linked in:
+CPU: 0 PID: 17410 Comm: syz.2.108 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_da_update_reserve_space+0x62e/0x7b0 fs/ext4/inode.c:359
+Code: 11 00 0f 85 76 01 00 00 48 8b 7d 28 41 55 ba 63 01 00 00 49 c7 c0 c0 b5 52 84 53 48 c7 c1 20 9f 52 84 4c 89 c6 e8 b2 df 0e 00 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 48 8b 54 24 10 48 c1 ea 03 0f
+RSP: 0018:ffff88801102f3b0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88801f973400 RSI: ffffffff81b43718 RDI: ffffed1002205e45
+RBP: ffff88801884ef80 R08: 000000000000008f R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 0000000000000000 R14: ffff888011688000 R15: ffff88801884f538
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f935a3b46f4 CR3: 0000000004e26000 CR4: 0000000000350ef0
+Call Trace:
+ ext4_map_blocks+0xab6/0x1740 fs/ext4/inode.c:649
+ mpage_map_one_extent fs/ext4/inode.c:2387 [inline]
+ mpage_map_and_submit_extent fs/ext4/inode.c:2440 [inline]
+ ext4_writepages+0x1c38/0x3a00 fs/ext4/inode.c:2792
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __filemap_fdatawrite_range mm/filemap.c:422 [inline]
+ __filemap_fdatawrite mm/filemap.c:430 [inline]
+ filemap_flush+0x239/0x2e0 mm/filemap.c:457
+ ext4_alloc_da_blocks+0x1b9/0x300 fs/ext4/inode.c:3156
+ ext4_release_file+0x183/0x370 fs/ext4/file.c:142
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ irqentry_exit_to_user_mode+0x5/0x40 kernel/entry/common.c:279
+ exc_page_fault+0xca/0x1a0 arch/x86/mm/fault.c:1488
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0xb419aea62a
+Code: Unable to access opcode bytes at RIP 0xb419aea600.
+RSP: 002b:0000000020000458 EFLAGS: 00010217
+RAX: 0000000000000000 RBX: 00007fcd98878f80 RCX: 00007fcd986c0ef9
+RDX: 0000000020000200 RSI: 0000000020000450 RDI: 0000000000200000
+RBP: 00007fcd98733b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000020000280 R11: 0000000000000206 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fcd98878f80 R15: 00007ffca7367e28
+irq event stamp: 2391
+hardirqs last  enabled at (2399): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (2408): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (1866): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (1861): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace dce4b88177a42bb2 ]---
+EXT4-fs error (device loop2) in ext4_reserve_inode_write:5740: Corrupt filesystem
+EXT4-fs error (device loop2): ext4_dirty_inode:5942: inode #19: comm syz.2.108: mark_inode_dirty error
+EXT4-fs error (device loop2): ext4_map_blocks:708: inode #19: block 4: comm syz.2.108: lblock 1 mapped to illegal pblock 4 (length 1)
+EXT4-fs (loop2): Delayed block allocation failed for inode 19 at logical offset 1 with max blocks 1 with error 117
+EXT4-fs (loop2): This should not happen!! Data will be lost
+
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs warning (device loop1): ext4_read_inode_bitmap:147: Cannot read inode bitmap - block_group = 0, inode_bitmap = 54537135037631373
+EXT4-fs error (device loop1): htree_dirblock_to_tree:1027: inode #2: block 16: comm syz-executor: bad entry in directory: rec_len is smaller than minimal - offset=0, inode=0, rec_len=0, name_len=0, size=2048
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Corrupt filesystem
+EXT4-fs error (device loop1): ext4_dirty_inode:5942: inode #2: comm syz-executor: mark_inode_dirty error
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs warning (device loop3): ext4_read_inode_bitmap:147: Cannot read inode bitmap - block_group = 0, inode_bitmap = 54537135037631373
+EXT4-fs error (device loop3): htree_dirblock_to_tree:1027: inode #2: block 16: comm syz-executor: bad entry in directory: rec_len is smaller than minimal - offset=0, inode=0, rec_len=0, name_len=0, size=2048
+EXT4-fs error (device loop3) in ext4_reserve_inode_write:5740: Corrupt filesystem
+EXT4-fs error (device loop3): ext4_dirty_inode:5942: inode #2: comm syz-executor: mark_inode_dirty error
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs warning (device loop0): ext4_read_inode_bitmap:147: Cannot read inode bitmap - block_group = 0, inode_bitmap = 54537135037631373
+EXT4-fs error (device loop0): htree_dirblock_to_tree:1027: inode #2: block 16: comm syz-executor: bad entry in directory: rec_len is smaller than minimal - offset=0, inode=0, rec_len=0, name_len=0, size=2048
+EXT4-fs error (device loop0) in ext4_reserve_inode_write:5740: Corrupt filesystem
+EXT4-fs error (device loop0): ext4_dirty_inode:5942: inode #2: comm syz-executor: mark_inode_dirty error
+EXT4-fs (loop2): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs warning (device loop2): ext4_read_inode_bitmap:147: Cannot read inode bitmap - block_group = 0, inode_bitmap = 54537135037631373
+EXT4-fs error (device loop2): htree_dirblock_to_tree:1027: inode #2: block 16: comm syz-executor: bad entry in directory: rec_len is smaller than minimal - offset=0, inode=0, rec_len=0, name_len=0, size=2048
+EXT4-fs error (device loop2) in ext4_reserve_inode_write:5740: Corrupt filesystem
+EXT4-fs error (device loop2): ext4_dirty_inode:5942: inode #2: comm syz-executor: mark_inode_dirty error
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs warning (device loop1): ext4_read_inode_bitmap:147: Cannot read inode bitmap - block_group = 0, inode_bitmap = 54537135037631373
+EXT4-fs error (device loop1): htree_dirblock_to_tree:1027: inode #2: block 16: comm syz-executor: bad entry in directory: rec_len is smaller than minimal - offset=0, inode=0, rec_len=0, name_len=0, size=2048
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Corrupt filesystem
+EXT4-fs error (device loop1): ext4_dirty_inode:5942: inode #2: comm syz-executor: mark_inode_dirty error
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs warning (device loop0): ext4_read_inode_bitmap:147: Cannot read inode bitmap - block_group = 0, inode_bitmap = 54537135037631373
+EXT4-fs warning (device loop3): ext4_read_inode_bitmap:147: Cannot read inode bitmap - block_group = 0, inode_bitmap = 54537135037631373
+EXT4-fs error (device loop0): htree_dirblock_to_tree:1027: inode #2: block 16: comm syz-executor: bad entry in directory: rec_len is smaller than minimal - offset=0, inode=0, rec_len=0, name_len=0, size=2048
+EXT4-fs error (device loop0) in ext4_reserve_inode_write:5740: Corrupt filesystem
+EXT4-fs error (device loop0): ext4_dirty_inode:5942: inode #2: comm syz-executor: mark_inode_dirty error
+EXT4-fs error (device loop3): htree_dirblock_to_tree:1027: inode #2: block 16: comm syz-executor: bad entry in directory: rec_len is smaller than minimal - offset=0, inode=0, rec_len=0, name_len=0, size=2048
+EXT4-fs error (device loop3) in ext4_reserve_inode_write:5740: Corrupt filesystem
+EXT4-fs error (device loop3): ext4_dirty_inode:5942: inode #2: comm syz-executor: mark_inode_dirty error

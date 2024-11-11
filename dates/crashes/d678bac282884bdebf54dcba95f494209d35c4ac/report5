@@ -1,0 +1,169 @@
+RBP: 00007fdebb2a0090 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 0000000000000000 R14: 00007fdebc7def80 R15: 00007ffe61731ef8
+======================================================
+WARNING: possible circular locking dependency detected
+5.10.0 #1 Not tainted
+------------------------------------------------------
+syz.3.1084/13238 is trying to acquire lock:
+ffffffff84ff1ec0 (console_owner){-.-.}-{0:0}, at: console_unlock+0x334/0xba0 kernel/printk/printk.c:2484
+
+but task is already holding lock:
+ffff8880105fa158 (&port->lock){-.-.}-{2:2}, at: pty_write+0xf4/0x1f0 drivers/tty/pty.c:120
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&port->lock){-.-.}-{2:2}:
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
+       tty_port_tty_get+0x1f/0x100 drivers/tty/tty_port.c:288
+       tty_port_default_wakeup+0x11/0x40 drivers/tty/tty_port.c:47
+       serial8250_tx_chars+0x53f/0xa20 drivers/tty/serial/8250/8250_port.c:1832
+       serial8250_handle_irq.part.0+0x3f1/0x4c0 drivers/tty/serial/8250/8250_port.c:1919
+       serial8250_handle_irq drivers/tty/serial/8250/8250_port.c:1892 [inline]
+       serial8250_default_handle_irq+0xb8/0x230 drivers/tty/serial/8250/8250_port.c:1935
+       serial8250_interrupt+0xf4/0x1a0 drivers/tty/serial/8250/8250_core.c:126
+       __handle_irq_event_percpu+0x2ef/0x940 kernel/irq/handle.c:156
+       handle_irq_event_percpu+0x76/0x170 kernel/irq/handle.c:196
+       handle_irq_event+0xa1/0x130 kernel/irq/handle.c:213
+       handle_edge_irq+0x267/0xd20 kernel/irq/chip.c:819
+       asm_call_irq_on_stack+0x12/0x20
+       __run_irq_on_irqstack arch/x86/include/asm/irq_stack.h:48 [inline]
+       run_irq_on_irqstack_cond arch/x86/include/asm/irq_stack.h:101 [inline]
+       handle_irq arch/x86/kernel/irq.c:230 [inline]
+       __common_interrupt arch/x86/kernel/irq.c:249 [inline]
+       common_interrupt+0x12c/0x220 arch/x86/kernel/irq.c:239
+       asm_common_interrupt+0x1e/0x40 arch/x86/include/asm/idtentry.h:622
+       native_safe_halt arch/x86/include/asm/irqflags.h:60 [inline]
+       arch_safe_halt arch/x86/include/asm/irqflags.h:103 [inline]
+       default_idle+0xe/0x10 arch/x86/kernel/process.c:688
+       default_idle_call+0x87/0xd0 kernel/sched/idle.c:112
+       cpuidle_idle_call kernel/sched/idle.c:194 [inline]
+       do_idle+0x3bc/0x530 kernel/sched/idle.c:299
+       cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:395
+       secondary_startup_64_no_verify+0xc2/0xcb
+
+-> #1 (&port_lock_key){-.-.}-{2:2}:
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
+       serial8250_console_write+0x87a/0xa90 drivers/tty/serial/8250/8250_port.c:3292
+       call_console_drivers kernel/printk/printk.c:1885 [inline]
+       console_unlock+0x870/0xba0 kernel/printk/printk.c:2499
+       register_console kernel/printk/printk.c:2840 [inline]
+       register_console+0x5c9/0x8d0 kernel/printk/printk.c:2730
+       univ8250_console_init+0x3a/0x46 drivers/tty/serial/8250/8250_core.c:690
+       console_init+0x428/0x623 kernel/printk/printk.c:2950
+       start_kernel+0x32c/0x4d4 init/main.c:988
+       secondary_startup_64_no_verify+0xc2/0xcb
+
+-> #0 (console_owner){-.-.}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:2868 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+       validate_chain kernel/locking/lockdep.c:3608 [inline]
+       __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+       lock_acquire kernel/locking/lockdep.c:5437 [inline]
+       lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+       console_lock_spinning_enable kernel/printk/printk.c:1737 [inline]
+       console_unlock+0x3b1/0xba0 kernel/printk/printk.c:2496
+       vprintk_emit+0x1cb/0x430 kernel/printk/printk.c:2028
+       vprintk_func+0x8d/0x250 kernel/printk/printk_safe.c:393
+       printk+0xba/0xed kernel/printk/printk.c:2076
+       fail_dump lib/fault-inject.c:45 [inline]
+       should_fail+0x48d/0x5b0 lib/fault-inject.c:146
+       should_failslab+0x5/0x10 mm/slab_common.c:1194
+       slab_pre_alloc_hook mm/slab.h:518 [inline]
+       slab_alloc_node mm/slub.c:2816 [inline]
+       slab_alloc mm/slub.c:2899 [inline]
+       __kmalloc+0x72/0x2e0 mm/slub.c:3966
+       kmalloc include/linux/slab.h:557 [inline]
+       tty_buffer_alloc+0x23f/0x2a0 drivers/tty/tty_buffer.c:175
+       __tty_buffer_request_room+0x156/0x2a0 drivers/tty/tty_buffer.c:273
+       tty_insert_flip_string_fixed_flag+0x91/0x250 drivers/tty/tty_buffer.c:318
+       tty_insert_flip_string include/linux/tty_flip.h:37 [inline]
+       pty_write+0x126/0x1f0 drivers/tty/pty.c:122
+       process_output_block drivers/tty/n_tty.c:595 [inline]
+       n_tty_write+0x3d4/0xf80 drivers/tty/n_tty.c:2333
+       do_tty_write drivers/tty/tty_io.c:962 [inline]
+       tty_write+0x4f0/0x910 drivers/tty/tty_io.c:1046
+       vfs_write+0x29a/0xac0 fs/read_write.c:603
+       ksys_write+0x12d/0x250 fs/read_write.c:658
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+other info that might help us debug this:
+
+Chain exists of:
+  console_owner --> &port_lock_key --> &port->lock
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&port->lock);
+                               lock(&port_lock_key);
+                               lock(&port->lock);
+  lock(console_owner);
+
+ *** DEADLOCK ***
+
+6 locks held by syz.3.1084/13238:
+ #0: ffff888008f95098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffff888008f95130 (&tty->atomic_write_lock){+.+.}-{3:3}, at: tty_write_lock drivers/tty/tty_io.c:888 [inline]
+ #1: ffff888008f95130 (&tty->atomic_write_lock){+.+.}-{3:3}, at: do_tty_write drivers/tty/tty_io.c:911 [inline]
+ #1: ffff888008f95130 (&tty->atomic_write_lock){+.+.}-{3:3}, at: tty_write+0x283/0x910 drivers/tty/tty_io.c:1046
+ #2: ffff888008f952e8 (&o_tty->termios_rwsem/1){++++}-{3:3}, at: n_tty_write+0x1bf/0xf80 drivers/tty/n_tty.c:2316
+ #3: ffffc90000750378 (&ldata->output_lock){+.+.}-{3:3}, at: process_output_block drivers/tty/n_tty.c:550 [inline]
+ #3: ffffc90000750378 (&ldata->output_lock){+.+.}-{3:3}, at: n_tty_write+0x500/0xf80 drivers/tty/n_tty.c:2333
+ #4: ffff8880105fa158 (&port->lock){-.-.}-{2:2}, at: pty_write+0xf4/0x1f0 drivers/tty/pty.c:120
+ #5: ffffffff850d2240 (console_lock){+.+.}-{0:0}, at: vprintk_func+0x8d/0x250 kernel/printk/printk_safe.c:393
+
+stack backtrace:
+CPU: 1 PID: 13238 Comm: syz.3.1084 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
+ check_prev_add kernel/locking/lockdep.c:2868 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+ validate_chain kernel/locking/lockdep.c:3608 [inline]
+ __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ console_lock_spinning_enable kernel/printk/printk.c:1737 [inline]
+ console_unlock+0x3b1/0xba0 kernel/printk/printk.c:2496
+ vprintk_emit+0x1cb/0x430 kernel/printk/printk.c:2028
+ vprintk_func+0x8d/0x250 kernel/printk/printk_safe.c:393
+ printk+0xba/0xed kernel/printk/printk.c:2076
+ fail_dump lib/fault-inject.c:45 [inline]
+ should_fail+0x48d/0x5b0 lib/fault-inject.c:146
+ should_failslab+0x5/0x10 mm/slab_common.c:1194
+ slab_pre_alloc_hook mm/slab.h:518 [inline]
+ slab_alloc_node mm/slub.c:2816 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ __kmalloc+0x72/0x2e0 mm/slub.c:3966
+ kmalloc include/linux/slab.h:557 [inline]
+ tty_buffer_alloc+0x23f/0x2a0 drivers/tty/tty_buffer.c:175
+ __tty_buffer_request_room+0x156/0x2a0 drivers/tty/tty_buffer.c:273
+ tty_insert_flip_string_fixed_flag+0x91/0x250 drivers/tty/tty_buffer.c:318
+ tty_insert_flip_string include/linux/tty_flip.h:37 [inline]
+ pty_write+0x126/0x1f0 drivers/tty/pty.c:122
+ process_output_block drivers/tty/n_tty.c:595 [inline]
+ n_tty_write+0x3d4/0xf80 drivers/tty/n_tty.c:2333
+ do_tty_write drivers/tty/tty_io.c:962 [inline]
+ tty_write+0x4f0/0x910 drivers/tty/tty_io.c:1046
+ vfs_write+0x29a/0xac0 fs/read_write.c:603
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fdebc626ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fdebb2a0038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fdebc7def80 RCX: 00007fdebc626ef9
+RDX: 0000000000000004 RSI: 0000000020000040 RDI: 0000000000000003
+RBP: 00007fdebb2a0090 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 0000000000000000 R14: 00007fdebc7def80 R15: 00007ffe61731ef8

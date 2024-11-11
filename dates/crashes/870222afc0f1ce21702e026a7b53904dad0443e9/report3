@@ -1,0 +1,174 @@
+ext4 filesystem being mounted at /10/file0 supports timestamps until 2038 (0x7fffffff)
+__quota_error: 83 callbacks suppressed
+Quota error (device loop1): qtree_write_dquot: Error -1040187392 occurred while creating quota
+BUG: unable to handle page fault for address: fffffbfff840001d
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 80190067 P4D 80190067 PUD 6ddb4067 PMD 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 2774 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:__lock_acquire+0xde7/0x5ca0 kernel/locking/lockdep.c:4702
+Code: 74 05 41 bf 01 00 00 00 0f 86 8e 00 00 00 89 05 5f be 74 05 e9 83 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 d1 2e 00 00 49 81 3f c0 91 74 86 0f 84 e6 f2 ff
+RSP: 0018:ffff8880161173d0 EFLAGS: 00010016
+RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 1ffffffff840001d RSI: 0000000000000000 RDI: ffffffffc20000e8
+RBP: ffff88800fe23400 R08: 0000000000000001 R09: 0000000000000000
+R10: fffffbfff0bacd81 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: ffffffffc20000e8
+FS:  00005555573de500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfff840001d CR3: 0000000016414000 CR4: 0000000000350ee0
+Call Trace:
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ __dquot_free_space+0x2a7/0xa20 fs/quota/dquot.c:1876
+ dquot_free_space_nodirty include/linux/quotaops.h:376 [inline]
+ dquot_free_space include/linux/quotaops.h:381 [inline]
+ dquot_free_block include/linux/quotaops.h:392 [inline]
+ ext4_free_blocks+0xfea/0x22a0 fs/ext4/mballoc.c:5493
+ ext4_remove_blocks fs/ext4/extents.c:2498 [inline]
+ ext4_ext_rm_leaf fs/ext4/extents.c:2664 [inline]
+ ext4_ext_remove_space+0x20ff/0x4470 fs/ext4/extents.c:2912
+ ext4_ext_truncate+0x1fb/0x260 fs/ext4/extents.c:4370
+ ext4_truncate+0xed8/0x1390 fs/ext4/inode.c:4254
+ ext4_evict_inode+0xb59/0x1890 fs/ext4/inode.c:280
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ dentry_unlink_inode+0x2b4/0x3e0 fs/dcache.c:374
+ d_delete+0x167/0x1c0 fs/dcache.c:2470
+ vfs_rmdir.part.0+0x3d5/0x4b0 fs/namei.c:3727
+ vfs_rmdir fs/namei.c:3696 [inline]
+ do_rmdir+0x2f6/0x3c0 fs/namei.c:3774
+ __do_sys_unlinkat fs/namei.c:3937 [inline]
+ __se_sys_unlinkat fs/namei.c:3931 [inline]
+ __x64_sys_unlinkat+0xeb/0x130 fs/namei.c:3931
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fb3707be4d7
+Code: 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 07 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff62ef7238 EFLAGS: 00000207 ORIG_RAX: 0000000000000107
+RAX: ffffffffffffffda RBX: 0000000000000065 RCX: 00007fb3707be4d7
+RDX: 0000000000000200 RSI: 00007fff62ef83e0 RDI: 00000000ffffff9c
+RBP: 00007fb370831a14 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000100 R11: 0000000000000207 R12: 00007fff62ef83e0
+R13: 00007fb370831a14 R14: 0000000000009e0d R15: 00007fff62efa590
+Modules linked in:
+CR2: fffffbfff840001d
+---[ end trace f8574df68ad447a8 ]---
+RIP: 0010:__lock_acquire+0xde7/0x5ca0 kernel/locking/lockdep.c:4702
+Code: 74 05 41 bf 01 00 00 00 0f 86 8e 00 00 00 89 05 5f be 74 05 e9 83 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 d1 2e 00 00 49 81 3f c0 91 74 86 0f 84 e6 f2 ff
+RSP: 0018:ffff8880161173d0 EFLAGS: 00010016
+RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 1ffffffff840001d RSI: 0000000000000000 RDI: ffffffffc20000e8
+RBP: ffff88800fe23400 R08: 0000000000000001 R09: 0000000000000000
+R10: fffffbfff0bacd81 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: ffffffffc20000e8
+FS:  00005555573de500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfff840001d CR3: 0000000016414000 CR4: 0000000000350ee0
+note: syz-executor[2774] exited with preempt_count 2
+BUG: sleeping function called from invalid context at include/linux/percpu-rwsem.h:49
+in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 2774, name: syz-executor
+INFO: lockdep is turned off.
+irq event stamp: 73685
+hardirqs last  enabled at (73685): [<ffffffff81864465>] lookup_bh_lru fs/buffer.c:1312 [inline]
+hardirqs last  enabled at (73685): [<ffffffff81864465>] __find_get_block+0x225/0xcd0 fs/buffer.c:1324
+hardirqs last disabled at (73684): [<ffffffff818645e8>] lookup_bh_lru fs/buffer.c:1293 [inline]
+hardirqs last disabled at (73684): [<ffffffff818645e8>] __find_get_block+0x3a8/0xcd0 fs/buffer.c:1324
+softirqs last  enabled at (73386): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (73347): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+CPU: 1 PID: 2774 Comm: syz-executor Tainted: G      D           5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep.cold+0x65/0x79 kernel/sched/core.c:7304
+ percpu_down_read include/linux/percpu-rwsem.h:49 [inline]
+ cgroup_threadgroup_change_begin include/linux/cgroup-defs.h:733 [inline]
+ exit_signals+0x74/0x9e0 kernel/signal.c:2843
+ do_exit+0x237/0x28e0 kernel/exit.c:765
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fb3707be4d7
+Code: 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 07 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff62ef7238 EFLAGS: 00000207 ORIG_RAX: 0000000000000107
+RAX: ffffffffffffffda RBX: 0000000000000065 RCX: 00007fb3707be4d7
+RDX: 0000000000000200 RSI: 00007fff62ef83e0 RDI: 00000000ffffff9c
+RBP: 00007fb370831a14 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000100 R11: 0000000000000207 R12: 00007fff62ef83e0
+R13: 00007fb370831a14 R14: 0000000000009e0d R15: 00007fff62efa590
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#2] PREEMPT SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 1 PID: 2774 Comm: syz-executor Tainted: G      D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:jbd2__journal_start+0x84/0x960 fs/jbd2/transaction.c:479
+Code: c6 07 00 00 4d 8b bf d8 10 00 00 4d 85 ff 0f 84 97 00 00 00 e8 7d 1f 8e ff 4c 89 fa 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 ad 07 00 00 48 b8 00 00 00 00 00 fc ff df 49 8b
+RSP: 0018:ffff888016117ab8 EFLAGS: 00010256
+RAX: dffffc0000000000 RBX: ffff88800cf78000 RCX: 0000000000000008
+RDX: 0000000000000000 RSI: ffffffff81b7ef43 RDI: ffff88800fe244d8
+RBP: 0000000000000000 R08: 0000000000000c40 R09: 0000000000000005
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000008
+R13: 000000000000001d R14: 0000000000000c40 R15: 0000000000000003
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfff840001d CR3: 000000000adca000 CR4: 0000000000350ee0
+Call Trace:
+ __ext4_journal_start_sb+0x210/0x490 fs/ext4/ext4_jbd2.c:105
+ __ext4_journal_start fs/ext4/ext4_jbd2.h:328 [inline]
+ ext4_evict_inode+0x96c/0x1890 fs/ext4/inode.c:246
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ dentry_unlink_inode+0x2b4/0x3e0 fs/dcache.c:374
+ __dentry_kill+0x36f/0x5b0 fs/dcache.c:579
+ dentry_kill fs/dcache.c:717 [inline]
+ dput+0x6ad/0xc70 fs/dcache.c:878
+ __fput+0x3a5/0x980 fs/file_table.c:294
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7fb3707be4d7
+Code: Unable to access opcode bytes at RIP 0x7fb3707be4ad.
+RSP: 002b:00007fff62ef7238 EFLAGS: 00000207 ORIG_RAX: 0000000000000107
+RAX: ffffffffffffffda RBX: 0000000000000065 RCX: 00007fb3707be4d7
+RDX: 0000000000000200 RSI: 00007fff62ef83e0 RDI: 00000000ffffff9c
+RBP: 00007fb370831a14 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000100 R11: 0000000000000207 R12: 00007fff62ef83e0
+R13: 00007fb370831a14 R14: 0000000000009e0d R15: 00007fff62efa590
+Modules linked in:
+---[ end trace f8574df68ad447a9 ]---
+RIP: 0010:__lock_acquire+0xde7/0x5ca0 kernel/locking/lockdep.c:4702
+Code: 74 05 41 bf 01 00 00 00 0f 86 8e 00 00 00 89 05 5f be 74 05 e9 83 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 d1 2e 00 00 49 81 3f c0 91 74 86 0f 84 e6 f2 ff
+RSP: 0018:ffff8880161173d0 EFLAGS: 00010016
+RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 1ffffffff840001d RSI: 0000000000000000 RDI: ffffffffc20000e8
+RBP: ffff88800fe23400 R08: 0000000000000001 R09: 0000000000000000
+R10: fffffbfff0bacd81 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: ffffffffc20000e8
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfff840001d CR3: 000000000adaa000 CR4: 0000000000350ee0
+Fixing recursive fault but reboot is needed!
+----------------
+Code disassembly (best guess):
+   0:	74 05                	je     0x7
+   2:	41 bf 01 00 00 00    	mov    $0x1,%r15d
+   8:	0f 86 8e 00 00 00    	jbe    0x9c
+   e:	89 05 5f be 74 05    	mov    %eax,0x574be5f(%rip)        # 0x574be73
+  14:	e9 83 00 00 00       	jmp    0x9c
+  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  20:	fc ff df
+  23:	4c 89 fa             	mov    %r15,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 d1 2e 00 00    	jne    0x2f05
+  34:	49 81 3f c0 91 74 86 	cmpq   $0xffffffff867491c0,(%r15)
+  3b:	0f                   	.byte 0xf
+  3c:	84 e6                	test   %ah,%dh
+  3e:	f2                   	repnz
+  3f:	ff                   	.byte 0xff

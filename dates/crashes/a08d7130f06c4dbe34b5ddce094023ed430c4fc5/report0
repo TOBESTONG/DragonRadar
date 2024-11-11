@@ -1,0 +1,55 @@
+EXT4-fs (loop3): warning: mounting fs with errors, running e2fsck is recommended
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs (loop3): re-mounted. Opts: (null)
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5080 at fs/ext4/xattr.c:2045 ext4_xattr_block_set+0x2cab/0x2f50 fs/ext4/xattr.c:2045
+Modules linked in:
+CPU: 0 PID: 5080 Comm: syz.3.126 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_xattr_block_set+0x2cab/0x2f50 fs/ext4/xattr.c:2045
+Code: db bc ff e9 95 fe ff ff e8 e2 aa 8f ff 0f 0b 48 c7 c7 40 8f 35 85 e8 e3 27 2a 02 e8 1f db bc ff e9 8e e8 ff ff e8 c5 aa 8f ff <0f> 0b e9 b6 e8 ff ff e8 f9 da bc ff e9 de e8 ff ff e8 ff da bc ff
+RSP: 0018:ffff888008bf7170 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81b64cb0
+RDX: ffff888008c40000 RSI: ffffffff81b663fb RDI: 0000000000000001
+RBP: 000000004cdc3a98 R08: 0000000000000001 R09: ffff888010e31ecf
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff8880111b8018
+R13: dffffc0000000000 R14: ffff8880136f0338 R15: dffffc0000000000
+FS:  00007efd283086c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055a057edabc0 CR3: 000000001af72000 CR4: 0000000000350ef0
+Call Trace:
+ ext4_xattr_set_handle+0xd01/0x12b0 fs/ext4/xattr.c:2390
+ ext4_initxattrs+0xb5/0x120 fs/ext4/xattr_security.c:43
+ security_inode_init_security+0x1a7/0x350 security/security.c:1053
+ __ext4_new_inode+0x38ec/0x55b0 fs/ext4/ialloc.c:1317
+ ext4_create+0x2ce/0x4d0 fs/ext4/namei.c:2619
+ lookup_open+0xf52/0x1330 fs/namei.c:3104
+ open_last_lookups fs/namei.c:3178 [inline]
+ path_openat+0x93f/0x26f0 fs/namei.c:3366
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7efd296d0ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007efd28308038 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00007efd29889130 RCX: 00007efd296d0ef9
+RDX: 000000000000275a RSI: 0000000020000280 RDI: ffffffffffffff9c
+RBP: 00007efd29743b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007efd29889130 R15: 00007ffcd94f4268
+irq event stamp: 1881
+hardirqs last  enabled at (1889): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (2034): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (2054): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (2045): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 37af777f876a0d38 ]---
+EXT4-fs error (device loop3): ext4_mb_mark_diskspace_used:3233: comm syz.3.126: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs error (device loop3): ext4_mb_mark_diskspace_used:3233: comm syz.3.126: Allocating blocks 41-42 which overlap fs metadata
+Quota error (device loop3): write_blk: dquota write failed
+Quota error (device loop3): qtree_write_dquot: Error -117 occurred while creating quota
+syz.3.126 (5054) used greatest stack depth: 23312 bytes left

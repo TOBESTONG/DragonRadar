@@ -1,0 +1,97 @@
+tmpfs: Bad value for 'mpol'
+tmpfs: Bad value for 'mpol'
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+==================================================================
+BUG: KASAN: use-after-free in crc16+0xcb/0xe0 lib/crc16.c:58
+Read of size 1 at addr ffff888008b00000 by task syz.3.142/4213
+
+CPU: 0 PID: 4213 Comm: syz.3.142 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ crc16+0xcb/0xe0 lib/crc16.c:58
+ ext4_group_desc_csum+0x62d/0x8a0 fs/ext4/super.c:2837
+ ext4_group_desc_csum_set+0xc3/0x1a0 fs/ext4/super.c:2860
+ __ext4_new_inode+0x1d15/0x55b0 fs/ext4/ialloc.c:1221
+ ext4_create+0x2ce/0x4d0 fs/ext4/namei.c:2619
+ lookup_open+0xf52/0x1330 fs/namei.c:3104
+ open_last_lookups fs/namei.c:3178 [inline]
+ path_openat+0x93f/0x26f0 fs/namei.c:3366
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fc4b5af5ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fc4b472d038 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00007fc4b5cae130 RCX: 00007fc4b5af5ef9
+RDX: 000000000000275a RSI: 0000000020000000 RDI: ffffffffffffff9c
+RBP: 00007fc4b5b68b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fc4b5cae130 R15: 00007fff4df40f28
+
+Allocated by task 101:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ kmalloc include/linux/slab.h:552 [inline]
+ kzalloc include/linux/slab.h:664 [inline]
+ uevent_show+0x15f/0x390 drivers/base/core.c:1964
+ dev_attr_show+0x4d/0xd0 drivers/base/core.c:1671
+ sysfs_kf_seq_show+0x1fa/0x460 fs/sysfs/file.c:61
+ seq_read_iter+0x4f3/0x11c0 fs/seq_file.c:227
+ seq_read+0x3dd/0x5b0 fs/seq_file.c:159
+ kernfs_fop_read+0xe9/0x590 fs/kernfs/file.c:251
+ vfs_read+0x228/0x580 fs/read_write.c:494
+ ksys_read+0x12d/0x250 fs/read_write.c:634
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 101:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kfree+0xc7/0x370 mm/slub.c:4124
+ uevent_show+0x2cd/0x390 drivers/base/core.c:1977
+ dev_attr_show+0x4d/0xd0 drivers/base/core.c:1671
+ sysfs_kf_seq_show+0x1fa/0x460 fs/sysfs/file.c:61
+ seq_read_iter+0x4f3/0x11c0 fs/seq_file.c:227
+ seq_read+0x3dd/0x5b0 fs/seq_file.c:159
+ kernfs_fop_read+0xe9/0x590 fs/kernfs/file.c:251
+ vfs_read+0x228/0x580 fs/read_write.c:494
+ ksys_read+0x12d/0x250 fs/read_write.c:634
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff888008b00000
+ which belongs to the cache kmalloc-4k of size 4096
+The buggy address is located 0 bytes inside of
+ 4096-byte region [ffff888008b00000, ffff888008b01000)
+The buggy address belongs to the page:
+page:00000000e679accc refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x8b00
+head:00000000e679accc order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x100000000010200(slab|head)
+raw: 0100000000010200 dead000000000100 dead000000000122 ffff888008042140
+raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888008afff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888008afff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff888008b00000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff888008b00080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888008b00100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================

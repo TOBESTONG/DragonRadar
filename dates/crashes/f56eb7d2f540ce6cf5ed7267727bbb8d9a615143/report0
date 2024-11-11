@@ -1,0 +1,35 @@
+audit: type=1400 audit(1730913372.327:198): avc:  denied  { create } for  pid=9834 comm="syz.0.443" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=dccp_socket permissive=1
+netlink: 608 bytes leftover after parsing attributes in process `syz.2.446'.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 64 at lib/percpu-refcount.c:112 __percpu_ref_exit+0x98/0x100 lib/percpu-refcount.c:112
+Modules linked in:
+CPU: 0 PID: 64 Comm: kworker/u4:2 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: events_unbound io_ring_exit_work
+RIP: 0010:__percpu_ref_exit+0x98/0x100 lib/percpu-refcount.c:112
+Code: ff 49 8d 7c 24 10 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 61 49 83 7c 24 10 00 74 07 e8 08 2f 47 ff <0f> 0b e8 01 2f 47 ff 48 89 ef e8 f9 c7 63 ff 48 89 da 48 b8 00 00
+RSP: 0018:ffff88800bccfc90 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff8880180fd000 RCX: ffffffff81fedf58
+RDX: ffff88800aa0ce00 RSI: ffffffff81fedfb8 RDI: ffff88800a987690
+RBP: 0000607f92e0c7f8 R08: 0000000000000001 R09: ffffffff86e5f757
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800a987680
+R13: 0000000000000000 R14: ffff88800a987680 R15: ffff888019094e20
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6af6f23ab8 CR3: 00000000248c8000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ percpu_ref_exit+0x3b/0x140 lib/percpu-refcount.c:133
+ io_ring_ctx_free fs/io_uring.c:8312 [inline]
+ io_ring_exit_work+0x43e/0x670 fs/io_uring.c:8376
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+irq event stamp: 1688831
+hardirqs last  enabled at (1688839): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (1688848): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (1688770): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (1688879): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 4defa90074c5274e ]---

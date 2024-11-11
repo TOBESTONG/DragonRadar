@@ -1,0 +1,170 @@
+EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,grpquota,dioread_lock,debug,noblock_validity,barrier,orlov,init_itable=0x0000000000000100,acl,
+ext4 filesystem being mounted at /67/file1 supports timestamps until 2038 (0x7fffffff)
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+syz-executor/230 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff8880110d50a8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff8880110d50a8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+EXT4-fs error (device loop2) in ext4_do_update_inode:5151: error 27
+irq event stamp: 287192
+hardirqs last  enabled at (287192): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (287192): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (287191): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (287191): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (287068): [<ffffffff8357f6e5>] tcp_close+0x8d5/0x1280 net/ipv4/tcp.c:2578
+EXT4-fs error (device loop2): ext4_dirty_inode:5942: inode #3: comm syz.2.204: mark_inode_dirty error
+softirqs last disabled at (287089): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+4 locks held by syz-executor/230:
+EXT4-fs error (device loop2) in ext4_do_update_inode:5151: error 27
+ #0: ffff888013a34210 (&sb->s_type->i_mutex_key#11){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ #0: ffff888013a34210 (&sb->s_type->i_mutex_key#11){+.+.}-{3:3}, at: __sock_release+0x86/0x290 net/socket.c:595
+ #1: 
+EXT4-fs error (device loop2): __ext4_ext_dirty:169: inode #3: comm syz.2.204: mark_inode_dirty error
+ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x110
+ #2: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #3: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+EXT4-fs error (device loop2): mb_free_blocks:1506: group 0, 
+
+stack backtrace:
+CPU: 0 PID: 230 Comm: syz-executor Not tainted 5.10.0 #1
+inode 16: 
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+block 39:
+freeing already freed block (bit 39); block bitmap corrupt.
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+EXT4-fs error (device loop2): ext4_mb_generate_buddy:802: group 0, 
+block bitmap and bg descriptor inconsistent: 43 vs 44 free clusters
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+EXT4-fs (loop2): 1 orphan inode deleted
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+EXT4-fs (loop2): mounting with "discard" option, but the device does not support discard
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+EXT4-fs (loop2): mounted filesystem without journal. Opts: ,errors=continue
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ext4 filesystem being mounted at /18/file1 supports timestamps until 2038 (0x7fffffff)
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:native_save_fl arch/x86/include/asm/irqflags.h:29 [inline]
+RIP: 0010:arch_local_save_flags arch/x86/include/asm/irqflags.h:79 [inline]
+RIP: 0010:arch_local_irq_save arch/x86/include/asm/irqflags.h:120 [inline]
+RIP: 0010:lock_is_held_type+0x21/0x100 kernel/locking/lockdep.c:5472
+Code: 0f 1f 84 00 00 00 00 00 90 41 57 41 56 41 89 f6 41 55 41 54 55 48 89 fd 53 48 83 ec 08 e8 47 56 3e fd 84 c0 0f 84 b8 00 00 00 <9c> 8f 04 24 fa 48 c7 c7 80 df 46 84 31 db e8 0c 13 00 00 65 4c 8b
+RSP: 0018:ffff8880180d7b20 EFLAGS: 00000202
+RAX: 0000000000000001 RBX: 0000000000000000 RCX: 1ffffffff0bacf77
+RDX: 0000000000000000 RSI: 00000000ffffffff RDI: ffff88800bf2bd4c
+RBP: ffffffff850e7e40 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: fffffbfff0bacd81 R11: 0000000000000001 R12: 0000000000000001
+R13: ffff88800bbc9780 R14: 00000000ffffffff R15: ffff8880801dc000
+ lock_is_held include/linux/lockdep.h:271 [inline]
+ rcu_read_lock_sched_held+0x3a/0x70 kernel/rcu/update.c:123
+ trace_lock_release include/trace/events/lock.h:58 [inline]
+ lock_release+0x5a3/0x6f0 kernel/locking/lockdep.c:5448
+ percpu_ref_put include/linux/percpu-refcount.h:338 [inline]
+ obj_cgroup_put include/linux/memcontrol.h:517 [inline]
+ memcg_slab_free_hook mm/slab.h:388 [inline]
+ memcg_slab_free_hook+0x1c7/0x310 mm/slab.h:354
+ do_slab_free mm/slub.c:3098 [inline]
+ slab_free mm/slub.c:3143 [inline]
+ kmem_cache_free+0xc2/0x340 mm/slub.c:3158
+ sk_prot_free net/core/sock.c:1701 [inline]
+ __sk_destruct+0x525/0x740 net/core/sock.c:1788
+ sk_destruct+0xbd/0xe0 net/core/sock.c:1803
+ __sk_free+0xef/0x3d0 net/core/sock.c:1814
+ sk_free+0x78/0xa0 net/core/sock.c:1825
+ sock_put include/net/sock.h:1779 [inline]
+ tcp_close+0xb6a/0x1280 net/ipv4/tcp.c:2579
+ inet_release+0xe9/0x1f0 net/ipv4/af_inet.c:431
+ inet6_release+0x4c/0x70 net/ipv6/af_inet6.c:475
+ __sock_release+0xd2/0x290 net/socket.c:596
+ sock_close+0x18/0x20 net/socket.c:1277
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f0df8c0fb60
+Code: 00 00 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d4 e8 10 46 00 00 80 3d e1 f9 18 00 00 74 17 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c
+RSP: 002b:00007fff5e945b38 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 0000000000000003 RCX: 00007f0df8c0fb60
+RDX: 00007f0df8d9af38 RSI: 000000f165baaa38 RDI: 0000000000000003
+RBP: 00007fff5e945b6c R08: 00007fff5e94546c R09: 00007fff5e945887
+R10: 00007fff5e9454d0 R11: 0000000000000202 R12: 0000000000000032
+R13: 000000000000cf31 R14: 000000000000cf17 R15: 00007fff5e945bc0
+syz.2.204 (3595) used greatest stack depth: 22616 bytes left
+----------------
+Code disassembly (best guess):
+   0:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+   7:	00
+   8:	90                   	nop
+   9:	41 57                	push   %r15
+   b:	41 56                	push   %r14
+   d:	41 89 f6             	mov    %esi,%r14d
+  10:	41 55                	push   %r13
+  12:	41 54                	push   %r12
+  14:	55                   	push   %rbp
+  15:	48 89 fd             	mov    %rdi,%rbp
+  18:	53                   	push   %rbx
+  19:	48 83 ec 08          	sub    $0x8,%rsp
+  1d:	e8 47 56 3e fd       	call   0xfd3e5669
+  22:	84 c0                	test   %al,%al
+  24:	0f 84 b8 00 00 00    	je     0xe2
+* 2a:	9c                   	pushf <-- trapping instruction
+  2b:	8f 04 24             	pop    (%rsp)
+  2e:	fa                   	cli
+  2f:	48 c7 c7 80 df 46 84 	mov    $0xffffffff8446df80,%rdi
+  36:	31 db                	xor    %ebx,%ebx
+  38:	e8 0c 13 00 00       	call   0x1349
+  3d:	65                   	gs
+  3e:	4c                   	rex.WR
+  3f:	8b                   	.byte 0x8b

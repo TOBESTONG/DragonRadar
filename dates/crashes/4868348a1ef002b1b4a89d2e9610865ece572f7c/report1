@@ -1,0 +1,40 @@
+audit: type=1326 audit(1730881898.422:23): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=3674 comm="syz.1.236" exe="/syz-executor" sig=0 arch=c000003e syscall=202 compat=0 ip=0x7f57c5a4eef9 code=0x7ffc0000
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 3708 at fs/inode.c:362 inc_nlink+0x144/0x160 fs/inode.c:362
+Modules linked in:
+CPU: 0 PID: 3708 Comm: syz.1.239 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:inc_nlink+0x144/0x160 fs/inode.c:362
+Code: ff 4c 89 e7 e8 dd 1c f5 ff e9 42 ff ff ff 4c 89 e7 e8 60 1c f5 ff e9 fc fe ff ff 4c 89 e7 e8 53 1c f5 ff eb d4 e8 0c ec c7 ff <0f> 0b e9 6e ff ff ff e8 50 1c f5 ff e9 44 ff ff ff e8 46 1c f5 ff
+RSP: 0018:ffff8880093f7c68 EFLAGS: 00010212
+RAX: 000000000000a421 RBX: ffff88801c401380 RCX: ffffc90000ba6000
+RDX: 0000000000040000 RSI: ffffffff817e22b4 RDI: 0000000000000007
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffff88800a46b2bf
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801c4013c8
+R13: ffff88801c4018a8 R14: 0000000000000000 R15: ffff8880093f7cf0
+FS:  00007f57c46c86c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020001140 CR3: 0000000018a94000 CR4: 0000000000350ef0
+Call Trace:
+ fuse_link+0x35b/0x5b0 fs/fuse/dir.c:951
+ vfs_link+0x83e/0xc20 fs/namei.c:4074
+ do_linkat+0x3c5/0x560 fs/namei.c:4142
+ __do_sys_link fs/namei.c:4171 [inline]
+ __se_sys_link fs/namei.c:4169 [inline]
+ __x64_sys_link+0x5d/0x80 fs/namei.c:4169
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f57c5a4eef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f57c46c8038 EFLAGS: 00000246 ORIG_RAX: 0000000000000056
+RAX: ffffffffffffffda RBX: 00007f57c5c06f80 RCX: 00007f57c5a4eef9
+RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000020000040
+RBP: 00007f57c5ac1b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f57c5c06f80 R15: 00007ffe63fb7628
+irq event stamp: 1135
+hardirqs last  enabled at (1145): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (1154): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (826): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (815): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 2f13f6d808cf45c7 ]---

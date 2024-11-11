@@ -1,0 +1,73 @@
+R13: 00007f47d897eeb0 R14: 00000000000004c9 R15: 000000000000002c
+EXT4-fs (loop0): sb orphan head is 0
+sb_info orphan list:
+  inode loop0:16 at 000000006b360615: mode 100755, nlink 2, next 0
+------------[ cut here ]------------
+kernel BUG at fs/ext4/super.c:1243!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 2161 Comm: syz.0.24 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_put_super+0xe1f/0x11b0 fs/ext4/super.c:1243
+Code: 6c 24 50 e8 33 ca 81 ff 4c 89 e7 e8 4b d3 ea ff 4c 89 e7 e8 43 cb f5 ff 4c 89 e7 e8 6b 8b ec ff e9 1d fe ff ff e8 d1 11 92 ff <0f> 0b 48 c7 c7 40 d1 31 85 e8 d2 8e 2c 02 48 8b 7c 24 10 e8 09 42
+RSP: 0018:ffff88801984fd98 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: dffffc0000000000 RCX: ffffc90000bbe000
+RDX: 0000000000040000 RSI: ffffffff81b3fcef RDI: ffffed1003309fa4
+RBP: ffff88801a12a000 R08: 0000000000000042 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801a128000
+R13: ffff888013383470 R14: ffff88801a12a318 R15: ffff88801a12a318
+FS:  00007f47d897f6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffcdb5e8698 CR3: 000000000c554000 CR4: 0000000000350ef0
+Call Trace:
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f47d9d0769a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f47d897ee68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffec RBX: 00007f47d897eef0 RCX: 00007f47d9d0769a
+RDX: 0000000020000040 RSI: 00000000200001c0 RDI: 00007f47d897eeb0
+RBP: 0000000020000040 R08: 00007f47d897eef0 R09: 0000000000000004
+R10: 0000000000000004 R11: 0000000000000246 R12: 00000000200001c0
+R13: 00007f47d897eeb0 R14: 00000000000004c9 R15: 000000000000002c
+Modules linked in:
+EXT4-fs (loop2): ext4_check_descriptors: Block bitmap for group 0 overlaps superblock
+EXT4-fs (loop2): ext4_check_descriptors: Checksum for group 0 failed (4996!=20869)
+audit: type=1400 audit(1731233821.960:11): avc:  denied  { block_suspend } for  pid=2188 comm="syz.3.30" capability=36  scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=capability2 permissive=1
+EXT4-fs (loop2): INFO: recovery required on readonly filesystem
+EXT4-fs (loop2): write access will be enabled during recovery
+EXT4-fs (loop2): barriers disabled
+JBD2: no valid journal superblock found
+EXT4-fs (loop2): error loading journal
+---[ end trace 1e6d77247c8a5fd3 ]---
+RIP: 0010:ext4_put_super+0xe1f/0x11b0 fs/ext4/super.c:1243
+Code: 6c 24 50 e8 33 ca 81 ff 4c 89 e7 e8 4b d3 ea ff 4c 89 e7 e8 43 cb f5 ff 4c 89 e7 e8 6b 8b ec ff e9 1d fe ff ff e8 d1 11 92 ff <0f> 0b 48 c7 c7 40 d1 31 85 e8 d2 8e 2c 02 48 8b 7c 24 10 e8 09 42
+RSP: 0018:ffff88801984fd98 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: dffffc0000000000 RCX: ffffc90000bbe000
+RDX: 0000000000040000 RSI: ffffffff81b3fcef RDI: ffffed1003309fa4
+RBP: ffff88801a12a000 R08: 0000000000000042 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801a128000
+R13: ffff888013383470 R14: ffff88801a12a318 R15: ffff88801a12a318
+FS:  00007f47d897f6c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+EXT4-fs (loop1): 1 truncate cleaned up
+CR2: 00005555555ad4e8 CR3: 000000000c554000 CR4: 0000000000350ee0
+syz.0.24 (2161) used greatest stack depth: 23648 bytes left
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /5/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs error (device loop3): ext4_xattr_block_get:536: inode #15: comm syz.3.30: corrupted xattr block 33
+SELinux: inode_doinit_use_xattr:  getxattr returned 117 for dev=loop3 ino=15
+EXT4-fs error (device loop3): ext4_find_dest_de:1947: inode #12: block 32: comm syz.3.30: bad entry in directory: rec_len is smaller than minimal - offset=0, inode=3, rec_len=0, name_len=0, size=2048
+EXT4-fs error (device loop3): ext4_xattr_block_get:536: inode #15: comm syz.3.30: corrupted xattr block 33
+EXT4-fs error (device loop3): ext4_xattr_block_get:536: inode #15: comm syz.3.30: corrupted xattr block 33
+netlink: 'syz.3.30': attribute type 4 has an invalid length.
+SELinux: inode_doinit_use_xattr:  getxattr returned 117 for dev=loop3 ino=15

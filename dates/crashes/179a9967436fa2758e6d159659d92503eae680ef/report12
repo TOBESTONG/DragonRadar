@@ -1,0 +1,57 @@
+EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,dioread_lock,quota,noauto_da_alloc,resgid=0x0000000000000000,barrier,auto_da_alloc,usrquota,
+ext4 filesystem being mounted at /1/file1 supports timestamps until 2038 (0x7fffffff)
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4.h:3196!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 3613 Comm: syz.0.73 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff88800c207398 EFLAGS: 00010216
+RAX: 00000000000007b5 RBX: 0000000000000001 RCX: ffffc900043b6000
+RDX: 0000000000040000 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff8880185ec000 R08: ffffffff81a261d0 R09: ffff88800c207790
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880185ea000
+R13: ffff8880185ea650 R14: 0000000000000001 R15: 0000000000000001
+FS:  00007f8ed61c16c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ff9256654a1 CR3: 0000000019b0e000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_mb_load_buddy_gfp+0xe3/0x13d0 fs/ext4/mballoc.c:1174
+ ext4_mb_load_buddy fs/ext4/mballoc.c:1296 [inline]
+ ext4_mballoc_query_range+0xa3/0x880 fs/ext4/mballoc.c:5900
+ ext4_getfsmap_datadev+0x1754/0x27c0 fs/ext4/fsmap.c:537
+ ext4_getfsmap+0x6e7/0xa90 fs/ext4/fsmap.c:708
+ ext4_ioc_getfsmap+0x2b0/0x830 fs/ext4/ioctl.c:707
+ __ext4_ioctl+0x90f/0x41e0 fs/ext4/ioctl.c:823
+ ext4_ioctl+0x46/0x90 fs/ext4/ioctl.c:1319
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x196/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f8ed7568ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f8ed61c1038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f8ed7721058 RCX: 00007f8ed7568ef9
+RDX: 0000000020000940 RSI: 00000000c0c0583b RDI: 0000000000000006
+RBP: 00007f8ed75dbb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000001 R14: 00007f8ed7721058 R15: 00007ffdac109ae8
+Modules linked in:
+---[ end trace bc99909b2ddfbeb4 ]---
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff88800c207398 EFLAGS: 00010216
+RAX: 00000000000007b5 RBX: 0000000000000001 RCX: ffffc900043b6000
+RDX: 0000000000040000 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff8880185ec000 R08: ffffffff81a261d0 R09: ffff88800c207790
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880185ea000
+R13: ffff8880185ea650 R14: 0000000000000001 R15: 0000000000000001
+FS:  00007f8ed61c16c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ff9259ca6f4 CR3: 0000000019b0e000 CR4: 0000000000350ee0
+syz-executor (231) used greatest stack depth: 23752 bytes left

@@ -1,0 +1,534 @@
+Extracting prog: 28.660047003s
+Minimizing prog: 16m41.67810623s
+Simplifying prog options: 0s
+Extracting C: 21.063754859s
+Simplifying C: 5m35.687214053s
+
+
+24 programs, timeouts [30s 1m40s 6m0s]
+extracting reproducer from 24 programs
+first checking the prog from the crash report
+single: executing 1 programs separately with timeout 30s
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0) (async)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0) (async)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, &(0x7f00000001c0))
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program crashed: KASAN: out-of-bounds Read in ext4_ext_remove_space
+single: successfully extracted reproducer
+found reproducer with 10 syscalls
+minimizing guilty program
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0) (async)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0) (async)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, &(0x7f00000001c0))
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0) (async)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0) (async)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, &(0x7f00000001c0))
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0) (async)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0) (async)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, &(0x7f00000001c0))
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0) (async)
+open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0) (async)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r1 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r1, 0x0, 0x8000005c)
+write$binfmt_script(r1, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0) (async)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0) (async)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, &(0x7f00000001c0))
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0) (async)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0) (async)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+sendfile(r0, 0xffffffffffffffff, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, &(0x7f00000001c0))
+write$binfmt_script(0xffffffffffffffff, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0) (async)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0) (async)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, &(0x7f00000001c0))
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0) (async)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r1 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r1, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(0xffffffffffffffff, 0xc0502100, &(0x7f00000001c0))
+write$binfmt_script(r1, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0) (async)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r1 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(0xffffffffffffffff, r1, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r0, 0xc0502100, &(0x7f00000001c0))
+write$binfmt_script(r1, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(0xffffffffffffffff, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(0xffffffffffffffff, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0) (async)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0) (async)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, &(0x7f00000001c0))
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, &(0x7f00000001c0))
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000))
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(0x0, 0x147942, 0x0) (async)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0) (async)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, &(0x7f00000001c0))
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0) (async)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, &(0x7f00000001c0))
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program crashed: KASAN: out-of-bounds Read in ext4_ext_remove_space
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0)
+r1 = open(0x0, 0x14d27e, 0x0) (async)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, &(0x7f00000001c0))
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, &(0x7f00000001c0))
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program crashed: KASAN: out-of-bounds Read in ext4_ext_remove_space
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0)
+mount(0x0, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, &(0x7f00000001c0))
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, 0x0, 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, &(0x7f00000001c0))
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(0x0, 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, &(0x7f00000001c0))
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, 0x0)
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program crashed: KASAN: out-of-bounds Read in ext4_ext_remove_space
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, 0x0)
+write$binfmt_script(r2, 0x0, 0x0) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, 0x0)
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, &(0x7f0000000000)) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, 0x0)
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, 0x0) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program crashed: KASAN: out-of-bounds Read in ext4_ext_remove_space
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, 0x0)
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, 0x0)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x1ff7fdfd000, 0x0, 0x48000000})
+
+program did not crash
+testing program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000500)='./file1\x00', 0x4500, &(0x7f0000000540)={[{@errors_remount}, {@sysvgroups}, {@dioread_lock}, {@grpquota}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@usrquota}]}, 0x12, 0x4b4, &(0x7f0000001b00)="$eJzs3d9rW9cdAPDvvbay/HBmZ9tDFlgWlgwnbJHseEnMHrIMxvIU2Ja9Z54tG2PZMpacxCYMh/0BgzHWQp/61JdC/4BCyZ9QCoH2vbSlpbRJ+9CHtiqSrtLElWKHyL5gfz5wfM+5V9L3e2x0dc+9x7oB7FunIuJqRAxExLmIGM7Wp1m51mxstB/36OHd6WZJotG48VkSSbau81pJtjzSfkocjIi/XYv4Z/LDuLW19YWpSqW8krVL9cXlUm1t/fz84tRcea68NDExfmny8uTFybG+9HMkIq786aP//+e1P19567e337/5ydl/NdMayrY/2Y9+ane90PpddAxGxMpOBMvBQLYs5JwHAADb0zzG/0lE/Kp1/D8cA62jUwAAAGAvafxhKL5OIhoAAADAnpW25sAmaTGbCzAUaVostufw/iwOp5Vqrf6b2erq0kx7ruxIFNLZ+Up5LJsrPBKFpNkez+bYdtoXNrUnIuJYRPxv+FCrXZyuVmbyPvkBAAAA+8SRTeP/L4fb438AAABgjxnJOwEAAABgxxn/AwAAwN5n/A8AAAB72l+uX2+WRuf+1zO31lYXqrfOz5RrC8XF1enidHVluThXrc61vrNvcavXq1Sry7+LpdU7pXq5Vi/V1tZvLlZXl+o355+6BTYAAACwi4798v57SURs/P5QqzQdyDspYFckz/PgD3cuD2D3DeSdAJCbwbwTAHJTyDsBIHdbnQfoOXnn7f7nAgAA7IzRn/e+/u/cAOxtad4JAAC7zvV/2L8KZgDCvvfjLba/+PX/RuO5EgIAAPpuqFWStJhdCxyKNC0WI462bgtQSGbnK+WxbHzw7nDhR832eOuZyfP97zAAAAAAAAAAAAAAAAAAAAAAAAAA7GONRhINAAAAYE+LSD9OWt/mHzE6fGZo8/mBA8lXw61lRNx+5cZLd6bq9ZXx5vrPH6+vv5ytv5DHGQwAAABgs844vTOOBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB+evTw7nSn7GbcT/8YESPd4g/GwdbyYBQi4vAXSQw+8bwkIgb6EH/jXkQc7xY/aaYVI1kW3eIfyjF+GhFH+hAf9rP7zf3P1W7vvzROtZbd33+DWXlRvfd/6eP930CP/c/RbcY48eCNUs/49yJODHbf/3TiJz3in95m/H/8fX2917bGqxGjXT9/kqdileqLy6Xa2vr5+cWpufJceWliYvzS5OXJi5Njpdn5Sjn72TXGf3/x5rfP6v/hHvFHtuj/mW32/5sHdx7+tF0tdIt/9nT3z9/jPeKn2Wffr7N6c/top77Rrj/p5OvvnHxW/2d69H+rv//Zbfb/3F///cE2HwoA7ILa2vrCVKVSXlFRUVF5XMl7zwQAAPTb9wf9eWcCAAAAAAAAAAAAAAAAAAAA+9dufJ3Y5pgb+XQVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCZvgsAAP//96DU7Q==")
+r0 = open(&(0x7f00000000c0)='./file1\x00', 0x147942, 0x0)
+r1 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0)
+mount(&(0x7f0000000380)=@loop={'/dev/loop', 0x0}, &(0x7f0000000140)='./bus\x00', 0x0, 0x1000, 0x0)
+r2 = open(&(0x7f0000000400)='./bus\x00', 0x14113e, 0x0)
+sendfile(r0, r2, 0x0, 0x8000005c)
+ioctl$SECCOMP_IOCTL_NOTIF_RECV(r1, 0xc0502100, 0x0)
+write$binfmt_script(r2, &(0x7f0000000100), 0x208e24b) (async)
+ioctl$FAT_IOCTL_GET_VOLUME_ID(r0, 0x80047213, 0x0) (async)
+ioctl$FS_IOC_RESVSP(r0, 0x40305829, 0x0)
+
+program did not crash
+extracting C reproducer
+testing compiled C program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+program crashed: KASAN: out-of-bounds Read in ext4_ext_remove_space
+simplifying C reproducer
+testing compiled C program (duration=37.684337271s, {Threaded:false Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+program did not crash
+testing compiled C program (duration=37.684337271s, {Threaded:true Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:false Cgroups:false BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+program did not crash
+testing compiled C program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:1 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+program did not crash
+testing compiled C program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox: SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:false UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+program did not crash
+testing compiled C program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+program crashed: KASAN: out-of-bounds Read in ext4_ext_remove_space
+testing compiled C program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+program crashed: KASAN: out-of-bounds Read in ext4_ext_remove_space
+testing compiled C program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+program did not crash
+testing compiled C program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:true BinfmtMisc:false CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+program did not crash
+testing compiled C program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:false Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+program crashed: KASAN: out-of-bounds Read in ext4_ext_remove_space
+testing compiled C program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:false Swap:true UseTmpDir:true HandleSegv:false Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+program did not crash
+testing compiled C program (duration=37.684337271s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:false UseTmpDir:true HandleSegv:false Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-open-open-mount-open-sendfile-ioctl$SECCOMP_IOCTL_NOTIF_RECV-write$binfmt_script-ioctl$FAT_IOCTL_GET_VOLUME_ID-ioctl$FS_IOC_RESVSP
+program did not crash
+reproducing took 23m7.089142556s
+repro crashed as (corrupted=false):
+EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,dioread_lock,grpquota,noauto_da_alloc,resgid=0x0000000000000000,barrier,auto_da_alloc,usrquota,
+ext4 filesystem being mounted at /0/file1 supports timestamps until 2038 (0x7fffffff)
+==================================================================
+BUG: KASAN: out-of-bounds in memmove include/linux/string.h:414 [inline]
+BUG: KASAN: out-of-bounds in ext4_ext_rm_leaf fs/ext4/extents.c:2690 [inline]
+BUG: KASAN: out-of-bounds in ext4_ext_remove_space+0x1a22/0x4470 fs/ext4/extents.c:2912
+Read of size 18446744073709551556 at addr ffff888011030048 by task syz-executor158/293
+
+CPU: 1 PID: 293 Comm: syz-executor158 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0xf9/0x1e0 mm/kasan/generic.c:192
+ memmove+0x20/0x60 mm/kasan/common.c:94
+ memmove include/linux/string.h:414 [inline]
+ ext4_ext_rm_leaf fs/ext4/extents.c:2690 [inline]
+ ext4_ext_remove_space+0x1a22/0x4470 fs/ext4/extents.c:2912
+ ext4_punch_hole+0x678/0x1130 fs/ext4/inode.c:4105
+ ext4_fallocate+0x10e7/0x3e70 fs/ext4/extents.c:4655
+ vfs_fallocate+0x494/0xdd0 fs/open.c:309
+ ioctl_preallocate+0x18e/0x200 fs/ioctl.c:494
+ file_ioctl fs/ioctl.c:537 [inline]
+ do_vfs_ioctl+0xe3c/0x1140 fs/ioctl.c:732
+ __do_sys_ioctl fs/ioctl.c:751 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x108/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f77fc74475d
+Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f77fc6d3208 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f77fc7efd80 RCX: 00007f77fc74475d
+RDX: 0000000020000080 RSI: 0000000040305829 RDI: 0000000000000004
+RBP: 00007f77fc7bee18 R08: 00007f77fc6d36c0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0031656c69662f2e
+R13: 6f6f6c2f7665642f R14: 000001ff7fdfd000 R15: 00007f77fc7efd88
+
+The buggy address belongs to the page:
+page:000000007241e315 refcount:3 mapcount:0 mapping:00000000925866f6 index:0x26 pfn:0x11030
+aops:def_blk_aops ino:0
+flags: 0x100000000022034(uptodate|lru|active|private|mappedtodisk)
+raw: 0100000000022034 ffffea0000547e48 ffff88800b05c030 ffff888009e38a30
+raw: 0000000000000026 ffff8880190343a0 00000003ffffffff ffff888010764000
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff888010764000
+
+Memory state around the buggy address:
+ ffff88801102ff00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88801102ff80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff888011030000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                              ^
+ ffff888011030080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888011030100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+EXT4-fs error (device loop0): ext4_lookup:1708: inode #2: comm syz-executor158: deleted inode referenced: 11
+EXT4-fs (loop0): Remounting filesystem read-only
+EXT4-fs error (device loop0): ext4_lookup:1708: inode #2: comm syz-executor158: deleted inode referenced: 11
+
+final repro crashed as (corrupted=false):
+EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,dioread_lock,grpquota,noauto_da_alloc,resgid=0x0000000000000000,barrier,auto_da_alloc,usrquota,
+ext4 filesystem being mounted at /0/file1 supports timestamps until 2038 (0x7fffffff)
+==================================================================
+BUG: KASAN: out-of-bounds in memmove include/linux/string.h:414 [inline]
+BUG: KASAN: out-of-bounds in ext4_ext_rm_leaf fs/ext4/extents.c:2690 [inline]
+BUG: KASAN: out-of-bounds in ext4_ext_remove_space+0x1a22/0x4470 fs/ext4/extents.c:2912
+Read of size 18446744073709551556 at addr ffff888011030048 by task syz-executor158/293
+
+CPU: 1 PID: 293 Comm: syz-executor158 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0xf9/0x1e0 mm/kasan/generic.c:192
+ memmove+0x20/0x60 mm/kasan/common.c:94
+ memmove include/linux/string.h:414 [inline]
+ ext4_ext_rm_leaf fs/ext4/extents.c:2690 [inline]
+ ext4_ext_remove_space+0x1a22/0x4470 fs/ext4/extents.c:2912
+ ext4_punch_hole+0x678/0x1130 fs/ext4/inode.c:4105
+ ext4_fallocate+0x10e7/0x3e70 fs/ext4/extents.c:4655
+ vfs_fallocate+0x494/0xdd0 fs/open.c:309
+ ioctl_preallocate+0x18e/0x200 fs/ioctl.c:494
+ file_ioctl fs/ioctl.c:537 [inline]
+ do_vfs_ioctl+0xe3c/0x1140 fs/ioctl.c:732
+ __do_sys_ioctl fs/ioctl.c:751 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x108/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f77fc74475d
+Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f77fc6d3208 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f77fc7efd80 RCX: 00007f77fc74475d
+RDX: 0000000020000080 RSI: 0000000040305829 RDI: 0000000000000004
+RBP: 00007f77fc7bee18 R08: 00007f77fc6d36c0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0031656c69662f2e
+R13: 6f6f6c2f7665642f R14: 000001ff7fdfd000 R15: 00007f77fc7efd88
+
+The buggy address belongs to the page:
+page:000000007241e315 refcount:3 mapcount:0 mapping:00000000925866f6 index:0x26 pfn:0x11030
+aops:def_blk_aops ino:0
+flags: 0x100000000022034(uptodate|lru|active|private|mappedtodisk)
+raw: 0100000000022034 ffffea0000547e48 ffff88800b05c030 ffff888009e38a30
+raw: 0000000000000026 ffff8880190343a0 00000003ffffffff ffff888010764000
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff888010764000
+
+Memory state around the buggy address:
+ ffff88801102ff00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88801102ff80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff888011030000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                              ^
+ ffff888011030080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888011030100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+EXT4-fs error (device loop0): ext4_lookup:1708: inode #2: comm syz-executor158: deleted inode referenced: 11
+EXT4-fs (loop0): Remounting filesystem read-only
+EXT4-fs error (device loop0): ext4_lookup:1708: inode #2: comm syz-executor158: deleted inode referenced: 11
+

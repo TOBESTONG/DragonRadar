@@ -1,0 +1,57 @@
+EXT4-fs (loop1): mounted filesystem without journal. Opts: bsdgroups,user_xattr,nobh,resuid=0x000000000000ee00,delalloc,journal_dev=0x0000000000000005,usrjquota=,min_batch_time=0x0000000000000a9f,nodiscard,jqfmt=vfsv1,nodiscard,dioread_lock,usrquota,abort,barrier,,errors=continue
+------------[ cut here ]------------
+Trying to write to read-only block-device loop3 (partno 0)
+EXT4-fs (loop1): error: could not find journal device path: error -2
+WARNING: CPU: 0 PID: 4608 at block/blk-core.c:704 bio_check_ro block/blk-core.c:704 [inline]
+WARNING: CPU: 0 PID: 4608 at block/blk-core.c:704 submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Modules linked in:
+CPU: 0 PID: 4608 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:bio_check_ro block/blk-core.c:704 [inline]
+RIP: 0010:submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Code: 03 00 00 45 8b a4 24 64 05 00 00 48 89 ef 48 8d 74 24 50 e8 43 37 fe ff 48 c7 c7 00 ee 5b 84 48 89 c6 44 89 e2 e8 bd 1c e7 01 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 80 3c 02
+RSP: 0018:ffff88802597fa10 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 1ffff11004b2ff48 RCX: 0000000000000000
+RDX: ffff88801a061a00 RSI: ffffffff812d93c5 RDI: ffffed1004b2ff34
+RBP: ffff88801a323500 R08: 0000000000000001 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff88800b97a430 R14: ffff88801a323510 R15: ffff88801a323508
+FS:  0000555555819500(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f62679d3f60 CR3: 000000000d20a000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ submit_bio_noacct+0x82/0x1000 block/blk-core.c:1044
+ submit_bio+0xfd/0x540 block/blk-core.c:1129
+ submit_bh_wbc+0x580/0x7c0 fs/buffer.c:3054
+ submit_bh fs/buffer.c:3060 [inline]
+ __sync_dirty_buffer+0x168/0x3e0 fs/buffer.c:3155
+ ext4_commit_super+0x7fd/0xce0 fs/ext4/super.c:5546
+ ext4_put_super+0x205/0x11b0 fs/ext4/super.c:1213
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fbbd69f2227
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007ffd41259178 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007fbbd6a63a14 RCX: 00007fbbd69f2227
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffd41259230
+RBP: 00007ffd41259230 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffd4125a2b0
+R13: 00007fbbd6a63a14 R14: 0000000000017037 R15: 00007ffd4125a2f0
+irq event stamp: 232049
+hardirqs last  enabled at (232069): [<ffffffff83ecb0ef>] __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:168 [inline]
+hardirqs last  enabled at (232069): [<ffffffff83ecb0ef>] _raw_spin_unlock_irq+0x1f/0x40 kernel/locking/spinlock.c:199
+hardirqs last disabled at (232122): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (232160): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (232173): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 0bcf7b15d49f7cec ]---

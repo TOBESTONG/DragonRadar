@@ -1,0 +1,43 @@
+EXT4-fs error (device loop0): ext4_dirty_inode:5942: inode #15: comm syz-executor168: mark_inode_dirty error
+EXT4-fs error (device loop0): ext4_read_block_bitmap_nowait:436: comm syz-executor168: Invalid block bitmap block 3133704341 in block_group 0
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 237 at fs/ext4/file.c:301 ext4_handle_inode_extension fs/ext4/file.c:301 [inline]
+WARNING: CPU: 0 PID: 237 at fs/ext4/file.c:301 ext4_dio_write_iter fs/ext4/file.c:558 [inline]
+WARNING: CPU: 0 PID: 237 at fs/ext4/file.c:301 ext4_file_write_iter+0x1742/0x1b20 fs/ext4/file.c:662
+Modules linked in:
+CPU: 0 PID: 237 Comm: syz-executor168 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_handle_inode_extension fs/ext4/file.c:301 [inline]
+RIP: 0010:ext4_dio_write_iter fs/ext4/file.c:558 [inline]
+RIP: 0010:ext4_file_write_iter+0x1742/0x1b20 fs/ext4/file.c:662
+Code: 89 81 c8 fe ff ff e8 7d ce a3 ff 48 89 df e8 45 fd 86 ff e9 db fc ff ff e8 6b ce a3 ff 49 89 ec e9 61 f5 ff ff e8 5e ce a3 ff <0f> 0b e9 74 f9 ff ff e8 52 ce a3 ff 48 8b 5c 24 38 48 8b 74 24 20
+RSP: 0018:ffff888008d4fbd0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000002007ffb RCX: ffffffff81a239d4
+RDX: ffff88800c623400 RSI: ffffffff81a24062 RDI: 0000000000000006
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffffffff86e5f717
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffffffffffff8b
+R13: 00000000175d9003 R14: 0000000000000000 R15: ffff888008d4fdb8
+FS:  0000555556395380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000556c9a67e190 CR3: 000000000c3b8000 CR4: 0000000000350ef0
+Call Trace:
+ call_write_iter include/linux/fs.h:1903 [inline]
+ new_sync_write+0x42c/0x670 fs/read_write.c:518
+ vfs_write+0x81b/0xac0 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f42aecf2f4d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff5e4681d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f42aecf2f4d
+RDX: 00000000175d9003 RSI: 0000000020000200 RDI: 0000000000000004
+RBP: 00007fff5e468280 R08: 00007fff5e468280 R09: 00007fff5e468280
+R10: 00007fff5e468280 R11: 0000000000000246 R12: 00007fff5e4682f8
+R13: 00007fff5e468308 R14: 00007f42aed80d10 R15: 0000000000000001
+irq event stamp: 22503
+hardirqs last  enabled at (22513): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (22522): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (22188): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (22183): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 05d3f7beb72b8cc1 ]---

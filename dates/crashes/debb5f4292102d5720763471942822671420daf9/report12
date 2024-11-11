@@ -1,0 +1,139 @@
+EXT4-fs warning (device loop1): ext4_multi_mount_protect:385: Unable to create kmmpd thread for loop1.
+raw_sendmsg: syz.0.133 forgot to set AF_INET. Fix it!
+==================================================================
+BUG: KASAN: use-after-free in radix_tree_next_slot include/linux/radix-tree.h:422 [inline]
+BUG: KASAN: use-after-free in idr_for_each+0x208/0x220 lib/idr.c:202
+Read of size 8 at addr ffff88801d01cdf8 by task syz.1.121/5299
+
+CPU: 0 PID: 5299 Comm: syz.1.121 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ radix_tree_next_slot include/linux/radix-tree.h:422 [inline]
+ idr_for_each+0x208/0x220 lib/idr.c:202
+ io_ring_ctx_wait_and_kill+0x12e/0x440 fs/io_uring.c:8395
+ io_uring_release+0x3e/0x50 fs/io_uring.c:8420
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fb1d22a069a
+Code: Unable to access opcode bytes at RIP 0x7fb1d22a0670.
+RSP: 002b:00007fb1d0f17e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffea RBX: 00007fb1d0f17ef0 RCX: 00007fb1d22a069a
+RDX: 0000000020001140 RSI: 00000000200007c0 RDI: 00007fb1d0f17eb0
+RBP: 0000000020001140 R08: 00007fb1d0f17ef0 R09: 0000000002000480
+R10: 0000000002000480 R11: 0000000000000246 R12: 00000000200007c0
+R13: 00007fb1d0f17eb0 R14: 000000000000075b R15: 0000000020004080
+
+Allocated by task 5299:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ radix_tree_node_alloc.constprop.0+0x7c/0x390 lib/radix-tree.c:274
+ idr_get_free+0x557/0xae0 lib/radix-tree.c:1504
+ idr_alloc_u32+0x170/0x2d0 lib/idr.c:46
+ idr_alloc_cyclic+0x102/0x230 lib/idr.c:125
+ io_register_personality fs/io_uring.c:9476 [inline]
+ __io_uring_register fs/io_uring.c:9705 [inline]
+ __do_sys_io_uring_register+0x9b4/0x40a0 fs/io_uring.c:9755
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 5424:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+
+Last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ radix_tree_node_free lib/radix-tree.c:308 [inline]
+ delete_node+0x58d/0x8b0 lib/radix-tree.c:571
+ __radix_tree_delete+0x194/0x380 lib/radix-tree.c:1377
+ radix_tree_delete_item+0xe7/0x230 lib/radix-tree.c:1428
+ io_remove_personalities+0x1d/0x140 fs/io_uring.c:8351
+ idr_for_each+0x115/0x220 lib/idr.c:208
+ io_ring_ctx_wait_and_kill+0x12e/0x440 fs/io_uring.c:8395
+ io_uring_release+0x3e/0x50 fs/io_uring.c:8420
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Second to last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ radix_tree_node_free lib/radix-tree.c:308 [inline]
+ delete_node+0xef/0x8b0 lib/radix-tree.c:571
+ __radix_tree_delete+0x194/0x380 lib/radix-tree.c:1377
+ radix_tree_delete_item+0xe7/0x230 lib/radix-tree.c:1428
+ free_pid+0x9f/0x260 kernel/pid.c:152
+ __change_pid+0x1c7/0x2d0 kernel/pid.c:353
+ __unhash_process kernel/exit.c:77 [inline]
+ __exit_signal kernel/exit.c:147 [inline]
+ release_task+0xd02/0x1510 kernel/exit.c:198
+ wait_task_zombie kernel/exit.c:1091 [inline]
+ wait_consider_task+0x30ca/0x3cc0 kernel/exit.c:1318
+ do_wait_thread kernel/exit.c:1381 [inline]
+ do_wait+0x35c/0x980 kernel/exit.c:1452
+ kernel_wait4+0x14c/0x260 kernel/exit.c:1614
+ __do_sys_wait4+0x13f/0x150 kernel/exit.c:1642
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff88801d01cdc0
+ which belongs to the cache radix_tree_node of size 576
+The buggy address is located 56 bytes inside of
+ 576-byte region [ffff88801d01cdc0, ffff88801d01d000)
+The buggy address belongs to the page:
+page:00000000a0c7cbe1 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88801d01e100 pfn:0x1d01c
+head:00000000a0c7cbe1 order:2 compound_mapcount:0 compound_pincount:0
+flags: 0x100000000010200(slab|head)
+raw: 0100000000010200 ffffea00004fde00 0000000200000002 ffff88800804da00
+raw: ffff88801d01e100 0000000080170010 00000001ffffffff ffff888011a0aa01
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff888011a0aa01
+
+Memory state around the buggy address:
+ ffff88801d01cc80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88801d01cd00: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
+>ffff88801d01cd80: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
+                                                                ^
+ ffff88801d01ce00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88801d01ce80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================

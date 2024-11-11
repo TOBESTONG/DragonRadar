@@ -1,0 +1,124 @@
+EXT4-fs error (device loop0): ext4_get_inode_usage:838: inode #15: comm syz.0.226: corrupted xattr block 33
+kernel profiling enabled (shift: 1027)
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:110:31
+shift exponent 1027 is too large for 64-bit type 'long int'
+CPU: 1 PID: 5012 Comm: syz.0.226 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ profile_init+0xfc/0x110 kernel/profile.c:110
+ profiling_store+0x5e/0xd0 kernel/ksysfs.c:80
+ kobj_attr_store+0x53/0x80 lib/kobject.c:856
+ sysfs_kf_write+0x113/0x170 fs/sysfs/file.c:139
+ kernfs_fop_write+0x26a/0x490 fs/kernfs/file.c:315
+ vfs_write+0x29a/0xac0 fs/read_write.c:603
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f34437b1ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f344242b038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f3443969f80 RCX: 00007f34437b1ef9
+RDX: 0000000000000012 RSI: 0000000020000000 RDI: 0000000000000006
+RBP: 00007f3443824b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f3443969f80 R15: 00007ffd5eff95a8
+================================================================================
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:291:7
+shift exponent 1027 is too large for 64-bit type 'long unsigned int'
+CPU: 1 PID: 5012 Comm: syz.0.226 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ do_profile_hits.constprop.0.cold+0x17/0x1c kernel/profile.c:291
+ profile_hits kernel/profile.c:398 [inline]
+ profile_hit include/linux/profile.h:64 [inline]
+ profile_tick+0xe7/0x100 kernel/profile.c:408
+ tick_sched_timer+0x10f/0x150 kernel/time/tick-sched.c:1328
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x1c1/0xba0 kernel/time/hrtimer.c:1583
+ hrtimer_interrupt+0x357/0x9b0 kernel/time/hrtimer.c:1645
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+ __sysvec_apic_timer_interrupt+0x170/0x560 arch/x86/kernel/apic/apic.c:1097
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
+ run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
+ sysvec_apic_timer_interrupt+0xb8/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:lock_is_held_type+0xc2/0x100 kernel/locking/lockdep.c:5481
+Code: 03 44 39 f0 41 0f 94 c4 48 c7 c7 c0 df 46 84 e8 94 12 00 00 b8 ff ff ff ff 65 0f c1 05 77 df 16 7c 83 f8 01 75 23 ff 34 24 9d <48> 83 c4 08 44 89 e0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 45 31 e4 eb
+RSP: 0018:ffff88801a46f958 EFLAGS: 00000202
+RAX: 0000000000000001 RBX: 0000000000000006 RCX: 1ffffffff0bacf77
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: ffffffff850e7e40 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: fffffbfff0bacd81 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff888008a5bd50 R14: 00000000ffffffff R15: ffff888008a5be18
+ lock_is_held include/linux/lockdep.h:271 [inline]
+ rcu_read_lock_sched_held+0x3a/0x70 kernel/rcu/update.c:123
+ trace_lock_acquire include/trace/events/lock.h:13 [inline]
+ lock_acquire+0x6ba/0x9b0 kernel/locking/lockdep.c:5408
+ __fs_reclaim_acquire mm/page_alloc.c:4291 [inline]
+ fs_reclaim_acquire+0xc1/0xf0 mm/page_alloc.c:4302
+ prepare_alloc_pages mm/page_alloc.c:4889 [inline]
+ __alloc_pages_nodemask+0x165/0x6a0 mm/page_alloc.c:4936
+ __alloc_pages include/linux/gfp.h:511 [inline]
+ __alloc_pages_node include/linux/gfp.h:524 [inline]
+ profile_prepare_cpu+0x21a/0x4d0 kernel/profile.c:363
+ cpuhp_invoke_callback+0x23c/0xdf0 kernel/cpu.c:173
+ cpuhp_issue_call+0x46f/0x600 kernel/cpu.c:1777
+ __cpuhp_setup_state_cpuslocked+0x2d5/0x7b0 kernel/cpu.c:1922
+ __cpuhp_setup_state+0x123/0x2e0 kernel/cpu.c:1951
+ cpuhp_setup_state include/linux/cpuhotplug.h:223 [inline]
+ create_proc_profile+0x5a/0x130 kernel/profile.c:538
+ profiling_store kernel/ksysfs.c:83 [inline]
+ profiling_store+0x8c/0xd0 kernel/ksysfs.c:66
+ kobj_attr_store+0x53/0x80 lib/kobject.c:856
+ sysfs_kf_write+0x113/0x170 fs/sysfs/file.c:139
+ kernfs_fop_write+0x26a/0x490 fs/kernfs/file.c:315
+ vfs_write+0x29a/0xac0 fs/read_write.c:603
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f34437b1ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f344242b038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f3443969f80 RCX: 00007f34437b1ef9
+RDX: 0000000000000012 RSI: 0000000020000000 RDI: 0000000000000006
+RBP: 00007f3443824b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f3443969f80 R15: 00007ffd5eff95a8
+================================================================================
+----------------
+Code disassembly (best guess):
+   0:	03 44 39 f0          	add    -0x10(%rcx,%rdi,1),%eax
+   4:	41 0f 94 c4          	sete   %r12b
+   8:	48 c7 c7 c0 df 46 84 	mov    $0xffffffff8446dfc0,%rdi
+   f:	e8 94 12 00 00       	call   0x12a8
+  14:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+  19:	65 0f c1 05 77 df 16 	xadd   %eax,%gs:0x7c16df77(%rip)        # 0x7c16df98
+  20:	7c
+  21:	83 f8 01             	cmp    $0x1,%eax
+  24:	75 23                	jne    0x49
+  26:	ff 34 24             	push   (%rsp)
+  29:	9d                   	popf
+* 2a:	48 83 c4 08          	add    $0x8,%rsp <-- trapping instruction
+  2e:	44 89 e0             	mov    %r12d,%eax
+  31:	5b                   	pop    %rbx
+  32:	5d                   	pop    %rbp
+  33:	41 5c                	pop    %r12
+  35:	41 5d                	pop    %r13
+  37:	41 5e                	pop    %r14
+  39:	41 5f                	pop    %r15
+  3b:	c3                   	ret
+  3c:	45 31 e4             	xor    %r12d,%r12d
+  3f:	eb                   	.byte 0xeb

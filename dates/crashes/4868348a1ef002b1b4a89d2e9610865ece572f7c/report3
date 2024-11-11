@@ -1,0 +1,42 @@
+netlink: 32 bytes leftover after parsing attributes in process `syz.0.930'.
+netlink: 'syz.0.930': attribute type 27 has an invalid length.
+netlink: 4 bytes leftover after parsing attributes in process `syz.0.930'.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 13506 at fs/inode.c:362 inc_nlink+0x144/0x160 fs/inode.c:362
+Modules linked in:
+CPU: 0 PID: 13506 Comm: syz.0.931 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:inc_nlink+0x144/0x160 fs/inode.c:362
+Code: ff 4c 89 e7 e8 dd 1c f5 ff e9 42 ff ff ff 4c 89 e7 e8 60 1c f5 ff e9 fc fe ff ff 4c 89 e7 e8 53 1c f5 ff eb d4 e8 0c ec c7 ff <0f> 0b e9 6e ff ff ff e8 50 1c f5 ff e9 44 ff ff ff e8 46 1c f5 ff
+RSP: 0018:ffff88803027fc68 EFLAGS: 00010216
+RAX: 0000000000006f34 RBX: ffff88801b950680 RCX: ffffc90011224000
+RDX: 0000000000040000 RSI: ffffffff817e22b4 RDI: 0000000000000007
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffff88800a1ecabf
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801b9506c8
+R13: ffff88801b950ba8 R14: 0000000000000000 R15: ffff88803027fcf0
+FS:  00007f037450f6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020001140 CR3: 000000002cea0000 CR4: 0000000000350ef0
+Call Trace:
+ fuse_link+0x35b/0x5b0 fs/fuse/dir.c:951
+ vfs_link+0x83e/0xc20 fs/namei.c:4074
+ do_linkat+0x3c5/0x560 fs/namei.c:4142
+ __do_sys_link fs/namei.c:4171 [inline]
+ __se_sys_link fs/namei.c:4169 [inline]
+ __x64_sys_link+0x5d/0x80 fs/namei.c:4169
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f0375895ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f037450f038 EFLAGS: 00000246 ORIG_RAX: 0000000000000056
+RAX: ffffffffffffffda RBX: 00007f0375a4df80 RCX: 00007f0375895ef9
+RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000020000040
+RBP: 00007f0375908b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f0375a4df80 R15: 00007ffdd9311548
+irq event stamp: 1249
+hardirqs last  enabled at (1261): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (1270): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (1100): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (1071): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace dcfe6732a289bc1d ]---

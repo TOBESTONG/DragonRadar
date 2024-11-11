@@ -1,0 +1,59 @@
+EXT4-fs error (device loop1): ext4_read_inline_dir:1554: inode #12: block 5: comm syz.1.197: path /25/file0/file0: bad entry in directory: rec_len is smaller than minimal - offset=24, inode=0, rec_len=0, name_len=5, size=80
+------------[ cut here ]------------
+Trying to write to read-only block-device sda (partno 0)
+WARNING: CPU: 0 PID: 5757 at block/blk-core.c:704 bio_check_ro block/blk-core.c:704 [inline]
+WARNING: CPU: 0 PID: 5757 at block/blk-core.c:704 submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Modules linked in:
+CPU: 0 PID: 5757 Comm: journal-offline Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:bio_check_ro block/blk-core.c:704 [inline]
+RIP: 0010:submit_bio_checks+0x166f/0x1a70 block/blk-core.c:832
+Code: 03 00 00 45 8b a4 24 64 05 00 00 48 89 ef 48 8d 74 24 50 e8 43 37 fe ff 48 c7 c7 00 ee 5b 84 48 89 c6 44 89 e2 e8 bd 1c e7 01 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 80 3c 02
+RSP: 0018:ffff88801625f390 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 1ffff11002c4be78 RCX: 0000000000000000
+RDX: ffff8880106eb400 RSI: ffffffff812d93c5 RDI: ffffed1002c4be64
+RBP: ffff8880179de900 R08: 0000000000000001 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff88800b966080 R14: ffff8880179de910 R15: ffff8880179de908
+FS:  00007fa470967700(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ff9d4f48000 CR3: 000000000b586000 CR4: 0000000000350ef0
+Call Trace:
+ submit_bio_noacct+0x82/0x1000 block/blk-core.c:1044
+ submit_bio+0xfd/0x540 block/blk-core.c:1129
+ ext4_io_submit fs/ext4/page-io.c:382 [inline]
+ io_submit_add_bh fs/ext4/page-io.c:425 [inline]
+ ext4_bio_write_page+0x96e/0x1330 fs/ext4/page-io.c:552
+ mpage_submit_page+0x14b/0x260 fs/ext4/inode.c:2092
+ mpage_process_page_bufs+0x63b/0x7d0 fs/ext4/inode.c:2206
+ mpage_prepare_extent_to_map+0x696/0xc40 fs/ext4/inode.c:2618
+ ext4_writepages+0xa0f/0x3a00 fs/ext4/inode.c:2746
+EXT4-fs (loop3): Quota format mount options ignored when QUOTA feature is enabled
+EXT4-fs (loop3): Unrecognized mount option "noauto_da_alloc2uid<00000000000000016749" or missing value
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __filemap_fdatawrite_range+0x24b/0x2f0 mm/filemap.c:422
+ file_write_and_wait_range+0xb2/0x120 mm/filemap.c:761
+ ext4_sync_file+0x225/0xf40 fs/ext4/fsync.c:151
+ vfs_fsync_range+0x13d/0x230 fs/sync.c:200
+ vfs_fsync fs/sync.c:214 [inline]
+ do_fsync fs/sync.c:224 [inline]
+ __do_sys_fsync fs/sync.c:232 [inline]
+ __se_sys_fsync fs/sync.c:230 [inline]
+ __x64_sys_fsync+0x6b/0xc0 fs/sync.c:230
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fa471e3c0cb
+Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8 b3 e9 f8 ff 8b 7c 24 0c 41 89 c0 b8 4a 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 f1 e9 f8 ff 8b 44
+RSP: 002b:00007fa470966cf0 EFLAGS: 00000293 ORIG_RAX: 000000000000004a
+RAX: ffffffffffffffda RBX: 000055e4044720b0 RCX: 00007fa471e3c0cb
+RDX: 00007fa47217e8d4 RSI: 00007fa47217e8d4 RDI: 0000000000000015
+RBP: 00007fa4721811f0 R08: 0000000000000000 R09: 00007fa470967700
+R10: 00007fa470967700 R11: 0000000000000293 R12: 0000000000000002
+R13: 00007ffe17d8a56f R14: 00007fa470966e00 R15: 000055e40446f620
+irq event stamp: 1521
+hardirqs last  enabled at (1551): [<ffffffff83ecb0ef>] __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:168 [inline]
+hardirqs last  enabled at (1551): [<ffffffff83ecb0ef>] _raw_spin_unlock_irq+0x1f/0x40 kernel/locking/spinlock.c:199
+hardirqs last disabled at (1616): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (1612): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (1639): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 3739dcf98aacf4a8 ]---

@@ -1,0 +1,1146 @@
+Warning: Permanently added '[localhost]:42313' (ED25519) to the list of known hosts.
+syzkaller login: [  205.281595] audit: type=1400 audit(1731043174.921:6): avc:  denied  { execmem } for  pid=241 comm="syz-executor391" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+executing program
+[  205.309372] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  205.351606] EXT4-fs (loop0): Ignoring removed bh option
+[  205.352914] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  205.358791] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  205.363320] ext4 filesystem being mounted at /syzkaller.KLrcfA/1/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  205.404945] EXT4-fs (loop0): Ignoring removed bh option
+[  205.405828] ================================================================================
+[  205.407648] UBSAN: shift-out-of-bounds in fs/ext4/super.c:2491:15
+[  205.409040] shift exponent 808464432 is too large for 32-bit type 'int'
+[  205.410289] CPU: 0 PID: 253 Comm: syz-executor391 Not tainted 5.10.0 #1
+[  205.411711] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[  205.413948] Call Trace:
+[  205.414343]  dump_stack+0x107/0x163
+[  205.415332]  ubsan_epilogue+0xb/0x5a
+[  205.415900]  __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186
+[  205.416782]  ? kyber_init_hctx+0x7e2/0xbf0
+[  205.417430]  parse_options.cold+0x19/0x83
+[  205.418068]  ? clear_qf_name+0x220/0x220
+[  205.418645]  ? kasan_unpoison_shadow+0x33/0x40
+[  205.419322]  ? __kasan_kmalloc.constprop.0+0xc2/0xd0
+[  205.420110]  ? map_id_range_down+0x293/0x340
+[  205.420749]  ? crypto_create_tfm_node+0x15a/0x330
+[  205.421458]  ? chksum_update+0x4c/0xb0
+[  205.422030]  ext4_fill_super+0x1b0a/0xd960
+[  205.422659]  ? snprintf+0xbb/0xf0
+[  205.423176]  ? ext4_calculate_overhead+0x1390/0x1390
+[  205.423939]  ? wait_for_completion+0x260/0x260
+[  205.424600]  ? set_blocksize+0x1d5/0x410
+[  205.425208]  mount_bdev+0x350/0x410
+[  205.425726]  ? ext4_calculate_overhead+0x1390/0x1390
+[  205.426459]  ? ext4_nfs_get_inode+0xd0/0xd0
+[  205.427080]  legacy_get_tree+0x105/0x220
+[  205.427661]  ? ns_capable_common+0x117/0x140
+[  205.428299]  vfs_get_tree+0x8e/0x360
+[  205.428844]  path_mount+0x1318/0x2060
+[  205.429393]  ? strncpy_from_user+0x9e/0x490
+[  205.430021]  ? finish_automount+0xa90/0xa90
+[  205.430647]  ? getname_flags.part.0+0x1dd/0x4f0
+[  205.431342]  ? _copy_from_user+0x160/0x1b0
+[  205.431969]  __x64_sys_mount+0x27e/0x300
+[  205.432555]  ? path_mount+0x2060/0x2060
+[  205.433149]  ? syscall_enter_from_user_mode+0x27/0x80
+[  205.433909]  do_syscall_64+0x33/0x40
+[  205.434429]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  205.435186] RIP: 0033:0x7f905ef328ae
+[  205.435719] Code: 0f 1f 40 00 48 c7 c2 b8 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+[  205.438399] RSP: 002b:00007f905ef0d068 EFLAGS: 00000206 ORIG_RAX: 00000000000000a5
+[  205.439510] RAX: ffffffffffffffda RBX: 00007f905ef0d0c0 RCX: 00007f905ef328ae
+[  205.440550] RDX: 0000000020000000 RSI: 0000000020000280 RDI: 00007f905ef0d080
+[  205.441586] RBP: 00007f905ef0d678 R08: 00007f905ef0d0c0 R09: 0000000000000242
+[  205.442623] R10: 0000000000000010 R11: 0000000000000206 R12: 00007f905ef0d080
+[  205.443663] R13: 0000000000000004 R14: 0000000000000010 R15: 0000000000000000
+[  205.446112] ================================================================================
+[  205.447608] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  205.483453] EXT4-fs (loop0): Ignoring removed bh option
+[  205.484465] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  205.489098] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  205.492083] ext4 filesystem being mounted at /syzkaller.KLrcfA/3/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  205.538460] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  205.578595] EXT4-fs (loop0): Ignoring removed bh option
+[  205.579555] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  205.587527] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  205.590012] ext4 filesystem being mounted at /syzkaller.KLrcfA/5/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  205.635978] EXT4-fs (loop0): Ignoring removed bh option
+[  205.636858] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  205.638574] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  205.642515] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  205.674396] EXT4-fs (loop0): Ignoring removed bh option
+[  205.675323] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  205.678174] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  205.681088] EXT4-fs (loop0): get root inode failed
+[  205.682703] EXT4-fs (loop0): mount failed
+executing program
+[  205.713279] EXT4-fs (loop0): Ignoring removed bh option
+[  205.715085] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  205.717724] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  205.727281] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  205.757078] EXT4-fs (loop0): Ignoring removed bh option
+[  205.757960] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  205.766302] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  205.768185] EXT4-fs (loop0): get root inode failed
+[  205.769751] EXT4-fs (loop0): mount failed
+executing program
+[  205.800323] EXT4-fs (loop0): Ignoring removed bh option
+[  205.801494] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  205.805291] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  205.808790] EXT4-fs (loop0): get root inode failed
+[  205.809951] EXT4-fs (loop0): mount failed
+executing program
+[  205.849428] EXT4-fs (loop0): Ignoring removed bh option
+[  205.850399] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  205.855020] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  205.857633] ext4 filesystem being mounted at /syzkaller.KLrcfA/11/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  205.916463] EXT4-fs (loop0): Ignoring removed bh option
+[  205.917347] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  205.924479] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  205.927117] ext4 filesystem being mounted at /syzkaller.KLrcfA/12/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  205.968363] EXT4-fs (loop0): Ignoring removed bh option
+[  205.969310] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  205.971635] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  206.007029] EXT4-fs (loop0): Ignoring removed bh option
+[  206.008939] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  206.011101] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  206.012894] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  206.044447] EXT4-fs (loop0): Ignoring removed bh option
+[  206.045435] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  206.051981] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  206.054358] EXT4-fs (loop0): get root inode failed
+[  206.055262] EXT4-fs (loop0): mount failed
+executing program
+[  206.079646] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  206.114433] EXT4-fs (loop0): Ignoring removed bh option
+[  206.115355] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  206.129115] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  206.131669] ext4 filesystem being mounted at /syzkaller.KLrcfA/17/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+executing program
+[  206.188080] EXT4-fs (loop0): Ignoring removed bh option
+[  206.189102] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  206.193202] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  206.196222] ext4 filesystem being mounted at /syzkaller.KLrcfA/19/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  206.229437] EXT4-fs (loop0): Ignoring removed bh option
+[  206.230425] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  206.234322] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  206.237365] ext4 filesystem being mounted at /syzkaller.KLrcfA/20/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+executing program
+[  206.289765] EXT4-fs (loop0): Ignoring removed bh option
+[  206.290749] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  206.293986] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  206.296378] ext4 filesystem being mounted at /syzkaller.KLrcfA/22/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  206.331284] EXT4-fs (loop0): Ignoring removed bh option
+[  206.332153] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  206.336146] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  206.338900] ext4 filesystem being mounted at /syzkaller.KLrcfA/23/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  206.376111] EXT4-fs (loop0): Ignoring removed bh option
+[  206.377046] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  206.379939] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  206.382205] EXT4-fs (loop0): get root inode failed
+[  206.382989] EXT4-fs (loop0): mount failed
+executing program
+[  206.413207] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  206.437012] EXT4-fs (loop0): Ignoring removed bh option
+[  206.439025] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  206.447914] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  206.450604] EXT4-fs (loop0): get root inode failed
+[  206.451547] EXT4-fs (loop0): mount failed
+executing program
+[  206.477662] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  206.514935] EXT4-fs (loop0): Ignoring removed bh option
+[  206.515775] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  206.520955] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  206.561196] EXT4-fs (loop0): Ignoring removed bh option
+[  206.562121] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  206.565827] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  206.586587] EXT4-fs (loop0): Ignoring removed bh option
+[  206.587595] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  206.596799] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  206.599621] ext4 filesystem being mounted at /syzkaller.KLrcfA/30/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  206.659912] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  206.729034] EXT4-fs (loop0): Ignoring removed bh option
+[  206.732115] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  206.740207] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  206.743004] ext4 filesystem being mounted at /syzkaller.KLrcfA/32/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  206.802117] EXT4-fs (loop0): Ignoring removed bh option
+[  206.803038] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  206.814378] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  206.816960] ext4 filesystem being mounted at /syzkaller.KLrcfA/33/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  206.884219] EXT4-fs (loop0): Ignoring removed bh option
+[  206.885990] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  206.890910] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  206.893355] ext4 filesystem being mounted at /syzkaller.KLrcfA/34/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  206.940310] EXT4-fs (loop0): Ignoring removed bh option
+[  206.941294] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  206.944155] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  206.967028] EXT4-fs (loop0): Ignoring removed bh option
+[  206.967997] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  206.975698] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  206.978521] EXT4-fs (loop0): get root inode failed
+[  206.980246] EXT4-fs (loop0): mount failed
+executing program
+[  207.015415] EXT4-fs (loop0): Ignoring removed bh option
+[  207.016486] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  207.019909] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  207.022296] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  207.047772] EXT4-fs (loop0): Ignoring removed bh option
+[  207.048635] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  207.058549] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  207.060599] EXT4-fs (loop0): get root inode failed
+[  207.062755] EXT4-fs (loop0): mount failed
+executing program
+[  207.091204] EXT4-fs (loop0): Ignoring removed bh option
+[  207.092252] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  207.096248] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  207.133567] EXT4-fs (loop0): Ignoring removed bh option
+[  207.134752] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  207.139323] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  207.143896] ext4 filesystem being mounted at /syzkaller.KLrcfA/40/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  207.186667] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  207.236248] EXT4-fs (loop0): Ignoring removed bh option
+[  207.237424] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  207.242856] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  207.246907] ext4 filesystem being mounted at /syzkaller.KLrcfA/42/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  207.298046] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  207.339851] EXT4-fs (loop0): Ignoring removed bh option
+[  207.340676] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  207.347349] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  207.350132] EXT4-fs (loop0): get root inode failed
+[  207.350946] EXT4-fs (loop0): mount failed
+executing program
+[  207.393020] EXT4-fs (loop0): Ignoring removed bh option
+[  207.393952] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  207.396428] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  207.400862] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  207.447758] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  207.472736] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  207.499202] EXT4-fs (loop0): Ignoring removed bh option
+[  207.500093] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  207.504548] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  207.507009] ext4 filesystem being mounted at /syzkaller.KLrcfA/48/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  207.551774] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  207.583255] EXT4-fs (loop0): Ignoring removed bh option
+[  207.584702] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  207.631310] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  207.665053] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  207.692086] EXT4-fs (loop0): Ignoring removed bh option
+[  207.692972] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  207.700993] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  207.705057] EXT4-fs (loop0): get root inode failed
+[  207.706762] EXT4-fs (loop0): mount failed
+executing program
+[  207.737965] EXT4-fs (loop0): Ignoring removed bh option
+[  207.738937] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  207.742374] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  207.746154] ext4 filesystem being mounted at /syzkaller.KLrcfA/54/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  207.779243] EXT4-fs (loop0): Ignoring removed bh option
+[  207.780311] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  207.787163] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  207.791098] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  207.818112] EXT4-fs (loop0): Ignoring removed bh option
+[  207.819031] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  207.825334] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  207.827404] EXT4-fs (loop0): get root inode failed
+[  207.829454] EXT4-fs (loop0): mount failed
+executing program
+[  207.858130] EXT4-fs (loop0): Ignoring removed bh option
+[  207.859063] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  207.865998] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  207.868542] ext4 filesystem being mounted at /syzkaller.KLrcfA/57/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  207.899479] EXT4-fs (loop0): Ignoring removed bh option
+[  207.900366] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  207.906097] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  207.908123] EXT4-fs (loop0): get root inode failed
+[  207.909479] EXT4-fs (loop0): mount failed
+executing program
+[  207.930084] EXT4-fs (loop0): Ignoring removed bh option
+[  207.930930] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  207.934600] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  207.937185] ext4 filesystem being mounted at /syzkaller.KLrcfA/59/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+executing program
+[  207.997331] EXT4-fs (loop0): Ignoring removed bh option
+[  207.998256] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  208.002008] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  208.004543] ext4 filesystem being mounted at /syzkaller.KLrcfA/61/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  208.042080] EXT4-fs (loop0): Ignoring removed bh option
+[  208.042969] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  208.082864] EXT4-fs (loop0): Ignoring removed bh option
+[  208.083775] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  208.088225] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  208.090957] ext4 filesystem being mounted at /syzkaller.KLrcfA/63/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+executing program
+[  208.148395] EXT4-fs (loop0): Ignoring removed bh option
+[  208.149423] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  208.159142] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  208.161322] EXT4-fs (loop0): get root inode failed
+[  208.162996] EXT4-fs (loop0): mount failed
+executing program
+[  208.197141] EXT4-fs (loop0): Ignoring removed bh option
+[  208.198016] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  208.207033] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  208.209117] EXT4-fs (loop0): get root inode failed
+[  208.210684] EXT4-fs (loop0): mount failed
+executing program
+[  208.236929] EXT4-fs (loop0): Ignoring removed bh option
+[  208.238102] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  208.241107] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  208.249229] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  208.274684] EXT4-fs (loop0): Ignoring removed bh option
+[  208.275545] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  208.278701] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  208.280414] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  208.311680] EXT4-fs (loop0): Ignoring removed bh option
+[  208.312567] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  208.315506] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  208.322757] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  208.355108] EXT4-fs (loop0): Ignoring removed bh option
+[  208.356065] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  208.360079] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  208.363700] ext4 filesystem being mounted at /syzkaller.KLrcfA/70/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  208.420362] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  208.453703] EXT4-fs (loop0): Ignoring removed bh option
+[  208.454569] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  208.457842] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  208.499488] EXT4-fs (loop0): Ignoring removed bh option
+[  208.500530] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  208.505966] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  208.541767] EXT4-fs (loop0): Ignoring removed bh option
+[  208.542718] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  208.546493] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  208.549058] ext4 filesystem being mounted at /syzkaller.KLrcfA/74/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  208.593954] EXT4-fs (loop0): Ignoring removed bh option
+[  208.594877] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  208.601930] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  208.603464] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  208.637883] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  208.653393] EXT4-fs (loop0): Ignoring removed bh option
+[  208.654331] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  208.658039] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  208.660735] ext4 filesystem being mounted at /syzkaller.KLrcfA/77/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  208.692376] EXT4-fs (loop0): Ignoring removed bh option
+[  208.693334] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  208.697131] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  208.699574] ext4 filesystem being mounted at /syzkaller.KLrcfA/78/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  208.741164] EXT4-fs (loop0): Ignoring removed bh option
+[  208.745040] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  208.773319] EXT4-fs (loop0): Ignoring removed bh option
+[  208.775893] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  208.799754] EXT4-fs (loop0): Ignoring removed bh option
+[  208.800897] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  208.802833] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  208.829655] EXT4-fs (loop0): Ignoring removed bh option
+[  208.830558] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  208.835465] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  208.837889] ext4 filesystem being mounted at /syzkaller.KLrcfA/82/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  208.875344] EXT4-fs (loop0): Ignoring removed bh option
+[  208.876406] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  208.885935] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  208.889550] EXT4-fs (loop0): get root inode failed
+[  208.890540] EXT4-fs (loop0): mount failed
+executing program
+[  208.915698] EXT4-fs (loop0): Ignoring removed bh option
+[  208.916835] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  208.919616] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  208.923167] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  208.968874] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  209.001117] EXT4-fs (loop0): Ignoring removed bh option
+[  209.002273] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  209.009248] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  209.013035] ext4 filesystem being mounted at /syzkaller.KLrcfA/86/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  209.126178] EXT4-fs (loop0): Ignoring removed bh option
+[  209.127498] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  209.144008] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  209.147551] ext4 filesystem being mounted at /syzkaller.KLrcfA/87/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+executing program
+[  209.234974] EXT4-fs (loop0): Ignoring removed bh option
+[  209.235905] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  209.240142] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  209.276349] EXT4-fs (loop0): Ignoring removed bh option
+[  209.281440] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  209.308118] EXT4-fs (loop0): Ignoring removed bh option
+[  209.309064] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  209.310870] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  209.312419] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  209.342216] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  209.383209] EXT4-fs (loop0): Ignoring removed bh option
+[  209.384204] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  209.388030] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  209.390975] ext4 filesystem being mounted at /syzkaller.KLrcfA/93/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  209.434183] EXT4-fs (loop0): Ignoring removed bh option
+[  209.435324] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  209.444417] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  209.446428] EXT4-fs (loop0): get root inode failed
+[  209.447724] EXT4-fs (loop0): mount failed
+executing program
+[  209.483387] EXT4-fs (loop0): Ignoring removed bh option
+[  209.484384] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  209.492669] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  209.500775] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  209.537440] EXT4-fs (loop0): Ignoring removed bh option
+[  209.538581] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  209.545329] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  209.548869] EXT4-fs (loop0): get root inode failed
+[  209.549776] EXT4-fs (loop0): mount failed
+executing program
+[  209.580117] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  209.646134] EXT4-fs (loop0): Ignoring removed bh option
+[  209.647170] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  209.651450] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  209.654498] EXT4-fs (loop0): get root inode failed
+[  209.655407] EXT4-fs (loop0): mount failed
+executing program
+[  209.684204] EXT4-fs (loop0): Ignoring removed bh option
+[  209.685113] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  209.689061] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  209.691584] ext4 filesystem being mounted at /syzkaller.KLrcfA/99/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  209.736172] EXT4-fs (loop0): Ignoring removed bh option
+[  209.737176] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  209.741440] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  209.743951] ext4 filesystem being mounted at /syzkaller.KLrcfA/100/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  209.799785] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  209.833942] EXT4-fs (loop0): Ignoring removed bh option
+[  209.834961] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  209.837418] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  209.839659] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  209.869086] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  209.907418] EXT4-fs (loop0): Ignoring removed bh option
+[  209.908515] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  209.910238] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  209.912563] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  209.941121] EXT4-fs (loop0): Ignoring removed bh option
+[  209.942155] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  209.946051] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  209.948659] ext4 filesystem being mounted at /syzkaller.KLrcfA/105/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  209.991632] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  210.021375] EXT4-fs (loop0): Ignoring removed bh option
+[  210.022588] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  210.027020] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  210.029648] ext4 filesystem being mounted at /syzkaller.KLrcfA/107/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  210.064976] EXT4-fs (loop0): Ignoring removed bh option
+[  210.065833] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  210.076079] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  210.078057] EXT4-fs (loop0): get root inode failed
+[  210.080295] EXT4-fs (loop0): mount failed
+executing program
+[  210.129893] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  210.159442] EXT4-fs (loop0): Ignoring removed bh option
+[  210.160363] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  210.163047] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 3)!
+[  210.164464] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  210.189890] EXT4-fs (loop0): Ignoring removed bh option
+[  210.194912] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  210.231995] EXT4-fs (loop0): Ignoring removed bh option
+[  210.233065] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  210.234838] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  210.236364] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  210.262373] EXT4-fs (loop0): Ignoring removed bh option
+[  210.263360] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  210.266433] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  210.269548] ext4 filesystem being mounted at /syzkaller.KLrcfA/113/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+executing program
+[  210.327117] EXT4-fs (loop0): Ignoring removed bh option
+[  210.328058] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  210.334239] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  210.336292] EXT4-fs (loop0): get root inode failed
+[  210.337433] EXT4-fs (loop0): mount failed
+executing program
+[  210.359988] EXT4-fs (loop0): Ignoring removed bh option
+[  210.362480] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  210.364396] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  210.366002] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  210.403636] EXT4-fs (loop0): Ignoring removed bh option
+[  210.404507] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  210.408720] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  210.411607] EXT4-fs (loop0): get root inode failed
+[  210.412365] EXT4-fs (loop0): mount failed
+executing program
+[  210.447874] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  210.488546] EXT4-fs (loop0): Ignoring removed bh option
+[  210.489452] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  210.493613] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  210.496106] ext4 filesystem being mounted at /syzkaller.KLrcfA/119/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  210.537153] EXT4-fs (loop0): Ignoring removed bh option
+[  210.538142] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  210.540181] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  210.570746] EXT4-fs (loop0): Ignoring removed bh option
+[  210.572211] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  210.575860] EXT4-fs (loop0): mounted filesystem without journal. Opts: *jŠØ,Z¬ÌN"1Y1ºÉÎ‘ù|`vfvß›ßf¾o·6@kOr1I'Ét’^’bƒ{êåüîîòÔúÕd; quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  210.581738] ext4 filesystem being mounted at /syzkaller.KLrcfA/121/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  210.630895] EXT4-fs (loop0): Ignoring removed bh option
+[  210.632037] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  210.635134] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  210.642906] EXT4-fs (loop0): get root inode failed
+[  210.643689] EXT4-fs (loop0): mount failed
+executing program
+[  210.674890] EXT4-fs (loop0): Ignoring removed bh option
+[  210.675754] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  210.679529] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  210.682020] ext4 filesystem being mounted at /syzkaller.KLrcfA/123/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  210.716424] EXT4-fs (loop0): Ignoring removed bh option
+[  210.717334] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  210.725971] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  210.728613] ext4 filesystem being mounted at /syzkaller.KLrcfA/124/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  210.776485] EXT4-fs (loop0): Ignoring removed bh option
+[  210.777526] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  210.781777] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  210.784251] ext4 filesystem being mounted at /syzkaller.KLrcfA/125/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  210.828214] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  210.856139] EXT4-fs (loop0): Ignoring removed bh option
+[  210.857317] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  210.863350] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  210.866327] EXT4-fs (loop0): get root inode failed
+[  210.867761] EXT4-fs (loop0): mount failed
+executing program
+[  210.895665] EXT4-fs (loop0): Ignoring removed bh option
+[  210.896732] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  210.900404] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  210.903134] ext4 filesystem being mounted at /syzkaller.KLrcfA/128/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  210.953984] EXT4-fs (loop0): Ignoring removed bh option
+[  210.954885] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  210.959195] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  210.962634] EXT4-fs (loop0): get root inode failed
+[  210.964306] EXT4-fs (loop0): mount failed
+executing program
+[  211.008605] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  211.031325] EXT4-fs (loop0): Ignoring removed bh option
+[  211.032332] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  211.041323] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  211.079160] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  211.106975] EXT4-fs (loop0): Ignoring removed bh option
+[  211.107867] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  211.112866] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  211.115362] ext4 filesystem being mounted at /syzkaller.KLrcfA/133/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  211.150179] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  211.184024] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  211.215528] EXT4-fs (loop0): Ignoring removed bh option
+[  211.216407] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  211.218216] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  211.221258] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  211.249739] EXT4-fs (loop0): Ignoring removed bh option
+[  211.250672] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  211.255530] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  211.258501] ext4 filesystem being mounted at /syzkaller.KLrcfA/137/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  211.320616] EXT4-fs (loop0): Ignoring removed bh option
+[  211.321583] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  211.326089] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  211.328659] ext4 filesystem being mounted at /syzkaller.KLrcfA/138/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  211.363755] EXT4-fs (loop0): Ignoring removed bh option
+[  211.364733] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  211.370648] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  211.373131] ext4 filesystem being mounted at /syzkaller.KLrcfA/139/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  211.406901] EXT4-fs (loop0): Ignoring removed bh option
+[  211.407728] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  211.410977] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  211.413471] ext4 filesystem being mounted at /syzkaller.KLrcfA/140/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  211.461958] EXT4-fs (loop0): Ignoring removed bh option
+[  211.462947] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  211.468722] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  211.471508] ext4 filesystem being mounted at /syzkaller.KLrcfA/141/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  211.511680] EXT4-fs (loop0): Ignoring removed bh option
+[  211.512600] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  211.518924] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  211.521500] ext4 filesystem being mounted at /syzkaller.KLrcfA/142/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  211.559098] EXT4-fs (loop0): Ignoring removed bh option
+[  211.560034] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  211.564001] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  211.566162] EXT4-fs (loop0): get root inode failed
+[  211.568378] EXT4-fs (loop0): mount failed
+executing program
+[  211.599301] EXT4-fs (loop0): Ignoring removed bh option
+[  211.600188] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  211.610542] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  211.612532] EXT4-fs (loop0): get root inode failed
+[  211.613317] EXT4-fs (loop0): mount failed
+executing program
+[  211.644400] EXT4-fs (loop0): Ignoring removed bh option
+[  211.645271] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  211.652498] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  211.654933] ext4 filesystem being mounted at /syzkaller.KLrcfA/145/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+executing program
+[  211.714609] EXT4-fs (loop0): Ignoring removed bh option
+[  211.715525] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  211.721238] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  211.723241] EXT4-fs (loop0): get root inode failed
+[  211.724181] EXT4-fs (loop0): mount failed
+executing program
+[  211.749565] EXT4-fs (loop0): Ignoring removed bh option
+[  211.750595] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  211.754589] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  211.758143] ext4 filesystem being mounted at /syzkaller.KLrcfA/148/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  211.790197] EXT4-fs (loop0): Ignoring removed bh option
+[  211.792226] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  211.796734] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  211.799329] ext4 filesystem being mounted at /syzkaller.KLrcfA/149/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+executing program
+[  211.848621] EXT4-fs (loop0): Ignoring removed bh option
+[  211.849695] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  211.853665] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  211.856246] ext4 filesystem being mounted at /syzkaller.KLrcfA/151/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  211.890453] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+executing program
+[  211.926506] EXT4-fs (loop0): Ignoring removed bh option
+[  211.927541] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  211.938239] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  211.940510] EXT4-fs (loop0): get root inode failed
+[  211.942160] EXT4-fs (loop0): mount failed
+executing program
+[  211.971598] EXT4-fs (loop0): Ignoring removed bh option
+[  211.972723] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  211.974452] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  211.975991] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  212.008241] EXT4-fs (loop0): Ignoring removed bh option
+[  212.009187] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  212.011677] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  212.016877] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  212.044102] EXT4-fs (loop0): Ignoring removed bh option
+[  212.045012] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  212.050440] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  212.052705] EXT4-fs (loop0): get root inode failed
+[  212.053552] EXT4-fs (loop0): mount failed
+executing program
+[  212.082502] EXT4-fs (loop0): Ignoring removed bh option
+[  212.083418] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  212.091742] EXT4-fs (loop0): mounted filesystem without journal. Opts: *jŠØ,Z¬ÌN"1Y1ºÉÎ‘ù|`vfvß›ßf¾o·6@kOr1I'Ét’^’bƒ{êåüîîòÔúÕd; quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  212.098210] ext4 filesystem being mounted at /syzkaller.KLrcfA/158/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  212.150217] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  212.186175] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  212.208790] EXT4-fs (loop0): Ignoring removed bh option
+[  212.209698] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  212.216034] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  212.219290] ext4 filesystem being mounted at /syzkaller.KLrcfA/161/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  212.275398] EXT4-fs (loop0): Ignoring removed bh option
+[  212.276359] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  212.279173] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  212.312683] EXT4-fs (loop0): Ignoring removed bh option
+[  212.313626] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  212.316922] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  212.322234] EXT4-fs (loop0): get root inode failed
+[  212.322988] EXT4-fs (loop0): mount failed
+executing program
+[  212.377479] EXT4-fs (loop0): Ignoring removed bh option
+[  212.378905] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  212.389253] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  212.391769] ext4 filesystem being mounted at /syzkaller.KLrcfA/164/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+executing program
+[  212.436721] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  212.463026] EXT4-fs (loop0): Ignoring removed bh option
+[  212.463949] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  212.469953] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  212.479591] ext4 filesystem being mounted at /syzkaller.KLrcfA/167/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  212.513096] EXT4-fs (loop0): Ignoring removed bh option
+[  212.513994] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  212.518150] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  212.520640] ext4 filesystem being mounted at /syzkaller.KLrcfA/168/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  212.549521] EXT4-fs (loop0): Ignoring removed bh option
+[  212.550570] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  212.554293] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  212.557178] ext4 filesystem being mounted at /syzkaller.KLrcfA/169/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  212.608148] EXT4-fs (loop0): Ignoring removed bh option
+[  212.609099] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  212.612467] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  212.616501] EXT4-fs (loop0): get root inode failed
+[  212.617656] EXT4-fs (loop0): mount failed
+executing program
+[  212.648130] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  212.676985] EXT4-fs (loop0): Ignoring removed bh option
+[  212.677868] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  212.681376] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  212.683138] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  212.712126] EXT4-fs (loop0): Ignoring removed bh option
+[  212.713059] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  212.720909] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  212.724255] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  212.754484] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  212.784693] EXT4-fs (loop0): Ignoring removed bh option
+[  212.785645] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  212.790171] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  212.792633] ext4 filesystem being mounted at /syzkaller.KLrcfA/175/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  212.830304] EXT4-fs (loop0): Ignoring removed bh option
+[  212.831268] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  212.837560] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  212.840069] ext4 filesystem being mounted at /syzkaller.KLrcfA/176/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  212.875696] EXT4-fs (loop0): Ignoring removed bh option
+[  212.876621] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  212.880216] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  212.882778] ext4 filesystem being mounted at /syzkaller.KLrcfA/177/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  212.926182] EXT4-fs (loop0): Ignoring removed bh option
+[  212.927998] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  212.932153] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  212.936916] ext4 filesystem being mounted at /syzkaller.KLrcfA/178/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  212.978645] EXT4-fs (loop0): Ignoring removed bh option
+[  212.979613] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  212.985187] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  212.987639] ext4 filesystem being mounted at /syzkaller.KLrcfA/179/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  213.026338] EXT4-fs (loop0): Ignoring removed bh option
+[  213.027215] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.032946] EXT4-fs (loop0): mounted filesystem without journal. Opts: quota,stripe=0x0000000000000005,min_batch_time=0x0000000000000005,bh,dioread_nolock,nombcache,,errors=continue
+[  213.035512] ext4 filesystem being mounted at /syzkaller.KLrcfA/180/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  213.073486] EXT4-fs (loop0): Ignoring removed bh option
+[  213.074542] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.078570] ext4 filesystem being mounted at /syzkaller.KLrcfA/181/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  213.120305] EXT4-fs (loop0): Ignoring removed bh option
+[  213.121348] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.128895] ext4 filesystem being mounted at /syzkaller.KLrcfA/182/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  213.169872] EXT4-fs (loop0): Ignoring removed bh option
+[  213.170712] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.176558] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  213.178491] EXT4-fs (loop0): get root inode failed
+[  213.179642] EXT4-fs (loop0): mount failed
+executing program
+[  213.204769] EXT4-fs (loop0): Ignoring removed bh option
+[  213.205891] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.212471] ext4 filesystem being mounted at /syzkaller.KLrcfA/184/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+executing program
+[  213.263059] EXT4-fs (loop0): Ignoring removed bh option
+[  213.264020] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.267334] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  213.270122] EXT4-fs (loop0): get root inode failed
+[  213.271749] EXT4-fs (loop0): mount failed
+executing program
+[  213.301453] EXT4-fs (loop0): Ignoring removed bh option
+[  213.302742] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.304486] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  213.312994] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  213.344718] EXT4-fs (loop0): Ignoring removed bh option
+[  213.345824] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.350735] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  213.352623] EXT4-fs (loop0): get root inode failed
+[  213.354121] EXT4-fs (loop0): mount failed
+executing program
+[  213.378500] EXT4-fs (loop0): Ignoring removed bh option
+[  213.379427] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.382884] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  213.384937] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  213.434867] EXT4-fs (loop0): Ignoring removed bh option
+[  213.435736] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.442167] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  213.444074] EXT4-fs (loop0): get root inode failed
+[  213.446100] EXT4-fs (loop0): mount failed
+executing program
+[  213.479262] EXT4-fs (loop0): Ignoring removed bh option
+[  213.480205] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.482592] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  213.488050] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  213.511749] EXT4-fs (loop0): Ignoring removed bh option
+[  213.512680] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.516305] ext4 filesystem being mounted at /syzkaller.KLrcfA/192/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  213.545232] EXT4-fs (loop0): Ignoring removed bh option
+[  213.546140] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.551703] ext4 filesystem being mounted at /syzkaller.KLrcfA/193/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+executing program
+[  213.605158] EXT4-fs (loop0): Ignoring removed bh option
+[  213.606185] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.610082] ext4 filesystem being mounted at /syzkaller.KLrcfA/195/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  213.668941] EXT4-fs (loop0): Ignoring removed bh option
+[  213.669847] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.673630] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  213.695502] EXT4-fs (loop0): Ignoring removed bh option
+[  213.696478] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.702067] ext4 filesystem being mounted at /syzkaller.KLrcfA/197/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  213.758926] EXT4-fs (loop0): Ignoring removed bh option
+[  213.759858] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.763571] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  213.796924] EXT4-fs (loop0): Ignoring removed bh option
+[  213.797901] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.802469] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  213.804740] EXT4-fs (loop0): get root inode failed
+[  213.807360] EXT4-fs (loop0): mount failed
+executing program
+[  213.838555] EXT4-fs (loop0): Ignoring removed bh option
+[  213.839476] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.842165] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  213.851381] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  213.879761] EXT4-fs (loop0): Ignoring removed bh option
+[  213.880833] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.884858] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  213.927037] EXT4-fs (loop0): Ignoring removed bh option
+[  213.927973] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.930138] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  213.931892] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  213.965057] EXT4-fs (loop0): Ignoring removed bh option
+[  213.966115] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  213.967932] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  214.026991] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  214.054345] EXT4-fs (loop0): Ignoring removed bh option
+[  214.055355] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  214.060600] ext4 filesystem being mounted at /syzkaller.KLrcfA/205/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  214.111569] EXT4-fs (loop0): Ignoring removed bh option
+[  214.112536] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  214.116708] ext4 filesystem being mounted at /syzkaller.KLrcfA/206/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  214.153447] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  214.187371] EXT4-fs (loop0): Ignoring removed bh option
+[  214.189907] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  214.192767] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  214.194776] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  214.220985] EXT4-fs (loop0): Ignoring removed bh option
+[  214.221948] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  214.223756] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  214.230055] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  214.270613] EXT4-fs (loop0): Ignoring removed bh option
+[  214.271680] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  214.277570] ext4 filesystem being mounted at /syzkaller.KLrcfA/210/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  214.327189] EXT4-fs (loop0): Ignoring removed bh option
+[  214.328186] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  214.333197] ext4 filesystem being mounted at /syzkaller.KLrcfA/211/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  214.391776] EXT4-fs (loop0): VFS: Can't find ext4 filesystem
+executing program
+[  214.424318] EXT4-fs (loop0): Ignoring removed bh option
+[  214.425305] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  214.430621] ext4 filesystem being mounted at /syzkaller.KLrcfA/213/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  214.486461] EXT4-fs (loop0): Ignoring removed bh option
+[  214.487434] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  214.492538] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  214.494491] EXT4-fs (loop0): get root inode failed
+[  214.495823] EXT4-fs (loop0): mount failed
+executing program
+[  214.540952] EXT4-fs (loop0): Ignoring removed bh option
+[  214.542067] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  214.548237] ext4 filesystem being mounted at /syzkaller.KLrcfA/215/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  214.594361] EXT4-fs (loop0): Ignoring removed bh option
+[  214.595469] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  214.599773] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  214.610889] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  214.643561] EXT4-fs (loop0): Ignoring removed bh option
+[  214.644696] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  214.648143] ext4 filesystem being mounted at /syzkaller.KLrcfA/217/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  214.683457] EXT4-fs (loop0): Ignoring removed bh option
+[  214.684320] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  214.686490] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  214.712034] EXT4-fs (loop0): Ignoring removed bh option
+[  214.712880] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  214.723426] ext4 filesystem being mounted at /syzkaller.KLrcfA/219/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  214.767837] EXT4-fs (loop0): Ignoring removed bh option
+[  214.768669] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  214.772253] ext4 filesystem being mounted at /syzkaller.KLrcfA/220/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+executing program
+[  214.828113] EXT4-fs (loop0): Ignoring removed bh option
+[  214.829052] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  214.833766] ext4 filesystem being mounted at /syzkaller.KLrcfA/222/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  214.880953] EXT4-fs (loop0): Ignoring removed bh option
+[  214.882904] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  214.885890] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  214.889976] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  214.917499] EXT4-fs (loop0): Ignoring removed bh option
+[  214.918612] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  214.926477] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  214.928556] EXT4-fs (loop0): get root inode failed
+[  214.930136] EXT4-fs (loop0): mount failed
+executing program
+[  214.965417] EXT4-fs (loop0): Ignoring removed bh option
+[  214.966416] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  214.974723] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  214.976684] EXT4-fs (loop0): get root inode failed
+[  214.978095] EXT4-fs (loop0): mount failed
+executing program
+[  215.009150] EXT4-fs (loop0): Ignoring removed bh option
+[  215.010002] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  215.011819] EXT4-fs (loop0): Invalid log block size: 808464432
+executing program
+[  215.030705] EXT4-fs (loop0): Ignoring removed bh option
+[  215.034851] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  215.038929] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  215.041897] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  215.064560] EXT4-fs (loop0): Ignoring removed bh option
+[  215.065583] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  215.073758] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  215.075695] EXT4-fs (loop0): get root inode failed
+[  215.078420] EXT4-fs (loop0): mount failed
+executing program
+[  215.121148] EXT4-fs (loop0): Ignoring removed bh option
+[  215.122015] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  215.129941] EXT4-fs error (device loop0): ext4_fill_super:4954: inode #2: comm syz-executor391: iget: root inode unallocated
+[  215.133925] EXT4-fs (loop0): get root inode failed
+[  215.134652] EXT4-fs (loop0): mount failed
+executing program
+[  215.166283] EXT4-fs (loop0): Ignoring removed bh option
+[  215.167117] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  215.176463] ext4 filesystem being mounted at /syzkaller.KLrcfA/230/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+[  215.219348] EXT4-fs (loop0): Ignoring removed bh option
+[  215.220320] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  215.222289] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  215.223976] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  215.257362] EXT4-fs (loop0): Ignoring removed bh option
+[  215.258266] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  215.260258] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  215.263612] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  215.285028] EXT4-fs (loop0): Ignoring removed bh option
+[  215.285912] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  215.289278] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  215.291468] EXT4-fs (loop0): group descriptors corrupted!
+executing program
+[  215.327049] EXT4-fs (loop0): Ignoring removed bh option
+[  215.327973] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  215.331722] ext4 filesystem being mounted at /syzkaller.KLrcfA/234/mnt supports timestamps until 2038 (0x7fffffff)
+executing program
+executing program
+[  215.386398] EXT4-fs (loop0): Ignoring removed bh option
+[  215.387308] EXT4-fs (loop0): Warning: mounting with an experimental mount option 'dioread_nolock' for blocksize < PAGE_SIZE
+[  215.389145] EXT4-fs (loop0): ext4_check_descriptors: Block bitmap for group 0 not in group (block 4294901760)!
+[  215.390761] EXT4-fs (loop0): group descriptors corrupted!
+
+VM DIAGNOSIS:
+13:19:35  Registers:
+info registers vcpu 0
+
+CPU#0
+RAX=dffffc0000000060 RBX=0000000000000005 RCX=0000000000000000 RDX=00000000000003fd
+RSI=ffffffff823c0aec RDI=ffffffff87a492e0 RBP=ffffffff87a492a0 RSP=ffff88800bc373d0
+R8 =0000000000000001 R9 =0000000000000003 R10=000000000000001f R11=0000000000000001
+R12=0000000000000000 R13=fffffbfff0f492a7 R14=fffffbfff0f4925e R15=dffffc0000000000
+RIP=ffffffff823c0b14 RFL=00000002 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 00007f905ef0d6c0 00000000 00000000
+GS =0000 ffff88806ce00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe0000003000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe0000001000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=00007f9f59631270 CR3=000000000b1ec000 CR4=00350ef0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM01=0000000000000000 0000000000000000 8c87b7232bef6b8f c64f4540ae509fb2
+YMM02=0000000000000000 0000000000000000 f3e88f777023e8a3 00000000000aea10
+YMM03=0000000000000000 0000000000000000 375afdebbf381c81 000000000011d888
+YMM04=0000000000000000 0000000000000000 78eb77be22374298 0000000000129d88
+YMM05=0000000000000000 0000000000000000 d3fdd5f48436fbd7 00000000000aeab8
+YMM06=0000000000000000 0000000000000000 7d9b15b4474e3592 00000000000ae970
+YMM07=0000000000000000 0000000000000000 a1fcdcf819d7e1e5 00000000000ae728
+YMM08=0000000000000000 0000000000000000 44495f474f4c5359 530069253d595449
+YMM09=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM10=0000000000000000 0000000000000000 2020000000002020 2020202020200000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+info registers vcpu 1
+
+CPU#1
+RAX=0000000000000000 RBX=ffffffff8117fae0 RCX=ffffffff811fe668 RDX=ffff888008280000
+RSI=ffffffff811fe682 RDI=0000000000000001 RBP=dffffc0000000000 RSP=ffff88800828fe70
+R8 =0000000000000000 R9 =ffff8880081b5c07 R10=0000000000000002 R11=0000000000000001
+R12=ffff888008127320 R13=ffffffff84f74ae0 R14=ffff888008280000 R15=0000000000000000
+RIP=ffffffff84203ec3 RFL=00000246 [---Z-P-] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 0000000000000000 00000000 00000000
+GS =0000 ffff88806cf00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe000003e000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe000003c000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=00000000200101bf CR3=000000000b1ec000 CR4=00350ee0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM01=0000000000000000 0000000000000000 000000696e656420 737365636341002f
+YMM02=0000000000000000 0000000000000000 ffffff0f0e0d0c0b 0a09080706050403
+YMM03=0000000000000000 0000000000000000 696e656420737365 636341002f737973
+YMM04=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM05=0000000000000000 0000000000000000 0302020100ff00ff 0000000100000007
+YMM06=0000000000000000 0000000000000000 0000000700000003 00005607d8aa0e40
+YMM07=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM08=0000000000000000 0000000000000000 2064616572206f74 2064656c69614600
+YMM09=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM10=0000000000000000 0000000000000000 0000002000000000 0000002000000000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000

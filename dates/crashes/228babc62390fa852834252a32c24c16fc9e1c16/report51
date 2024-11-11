@@ -1,0 +1,203 @@
+blk_update_request: I/O error, dev loop0, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Buffer I/O error on dev loop0p16, logical block 0, async page read
+Buffer I/O error on dev loop0p16, logical block 1, async page read
+======================================================
+WARNING: possible circular locking dependency detected
+5.10.0 #1 Not tainted
+------------------------------------------------------
+syz.2.438/8856 is trying to acquire lock:
+ffff88801b805ae8 (&dquot->dq_lock){+.+.}-{3:3}, at: dquot_commit+0x4d/0x380 fs/quota/dquot.c:476
+
+but task is already holding lock:
+ffff88801b856ec0 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_truncate+0x5f9/0x1390 fs/ext4/inode.c:4249
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&ei->i_data_sem/2){++++}-{3:3}:
+       down_read+0x96/0x450 kernel/locking/rwsem.c:1492
+       ext4_map_blocks+0x381/0x1740 fs/ext4/inode.c:551
+       ext4_getblk+0x144/0x6a0 fs/ext4/inode.c:838
+       ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+       ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+       write_blk+0x12f/0x220 fs/quota/quota_tree.c:73
+       get_free_dqblk+0xff/0x2d0 fs/quota/quota_tree.c:102
+       do_insert_tree+0x57b/0xf80 fs/quota/quota_tree.c:309
+       do_insert_tree+0xdb8/0xf80 fs/quota/quota_tree.c:340
+       do_insert_tree+0xdb8/0xf80 fs/quota/quota_tree.c:340
+       do_insert_tree+0xdb8/0xf80 fs/quota/quota_tree.c:340
+       dq_insert_tree fs/quota/quota_tree.c:366 [inline]
+       qtree_write_dquot+0x3bf/0x580 fs/quota/quota_tree.c:385
+       v2_write_dquot+0x11c/0x250 fs/quota/quota_v2.c:334
+       dquot_acquire+0x2cf/0x590 fs/quota/dquot.c:443
+       ext4_acquire_dquot+0x25e/0x3d0 fs/ext4/super.c:6186
+       dqget+0x681/0xfb0 fs/quota/dquot.c:901
+       __dquot_initialize+0x59d/0xd60 fs/quota/dquot.c:1479
+       ext4_orphan_cleanup fs/ext4/super.c:3095 [inline]
+       ext4_fill_super+0x91c3/0xd960 fs/ext4/super.c:5067
+       mount_bdev+0x350/0x410 fs/super.c:1419
+       legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+       vfs_get_tree+0x8e/0x360 fs/super.c:1549
+       do_new_mount fs/namespace.c:2875 [inline]
+       path_mount+0x1318/0x2060 fs/namespace.c:3205
+       do_mount fs/namespace.c:3218 [inline]
+       __do_sys_mount fs/namespace.c:3426 [inline]
+       __se_sys_mount fs/namespace.c:3403 [inline]
+       __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #1 (&s->s_dquot.dqio_sem){++++}-{3:3}:
+       down_read+0x96/0x450 kernel/locking/rwsem.c:1492
+       v2_read_dquot+0x49/0x120 fs/quota/quota_v2.c:308
+       dquot_acquire+0x133/0x590 fs/quota/dquot.c:434
+       ext4_acquire_dquot+0x25e/0x3d0 fs/ext4/super.c:6186
+       dqget+0x681/0xfb0 fs/quota/dquot.c:901
+       __dquot_initialize+0x59d/0xd60 fs/quota/dquot.c:1479
+       ext4_mkdir+0xc5/0xb10 fs/ext4/namei.c:2792
+       vfs_mkdir+0x45c/0x710 fs/namei.c:3650
+       do_mkdirat+0x145/0x2a0 fs/namei.c:3673
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #0 (&dquot->dq_lock){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:2868 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+       validate_chain kernel/locking/lockdep.c:3608 [inline]
+       __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+       lock_acquire kernel/locking/lockdep.c:5437 [inline]
+       lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+       __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+       __mutex_lock+0x13b/0x10d0 kernel/locking/mutex.c:1103
+       dquot_commit+0x4d/0x380 fs/quota/dquot.c:476
+       ext4_write_dquot+0x24e/0x310 fs/ext4/super.c:6170
+       ext4_mark_dquot_dirty+0x111/0x1a0 fs/ext4/super.c:6221
+       mark_dquot_dirty fs/quota/dquot.c:347 [inline]
+       mark_all_dquot_dirty fs/quota/dquot.c:385 [inline]
+       __dquot_free_space+0x6af/0xa20 fs/quota/dquot.c:1894
+       dquot_free_space_nodirty include/linux/quotaops.h:376 [inline]
+       dquot_free_space include/linux/quotaops.h:381 [inline]
+       dquot_free_block include/linux/quotaops.h:392 [inline]
+       ext4_free_blocks+0xfea/0x22a0 fs/ext4/mballoc.c:5493
+       ext4_remove_blocks fs/ext4/extents.c:2498 [inline]
+       ext4_ext_rm_leaf fs/ext4/extents.c:2664 [inline]
+       ext4_ext_remove_space+0x20ff/0x4470 fs/ext4/extents.c:2912
+       ext4_ext_truncate+0x1fb/0x260 fs/ext4/extents.c:4370
+       ext4_truncate+0xed8/0x1390 fs/ext4/inode.c:4254
+       ext4_evict_inode+0xb59/0x1890 fs/ext4/inode.c:280
+       evict+0x284/0x6d0 fs/inode.c:578
+       iput_final fs/inode.c:1654 [inline]
+       iput+0x4e5/0x840 fs/inode.c:1680
+       ext4_orphan_cleanup fs/ext4/super.c:3119 [inline]
+       ext4_fill_super+0x92ef/0xd960 fs/ext4/super.c:5067
+       mount_bdev+0x350/0x410 fs/super.c:1419
+       legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+       vfs_get_tree+0x8e/0x360 fs/super.c:1549
+       do_new_mount fs/namespace.c:2875 [inline]
+       path_mount+0x1318/0x2060 fs/namespace.c:3205
+       do_mount fs/namespace.c:3218 [inline]
+       __do_sys_mount fs/namespace.c:3426 [inline]
+       __se_sys_mount fs/namespace.c:3403 [inline]
+       __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+other info that might help us debug this:
+
+Chain exists of:
+  &dquot->dq_lock --> &s->s_dquot.dqio_sem --> &ei->i_data_sem/2
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ei->i_data_sem/2);
+                               lock(&s->s_dquot.dqio_sem);
+                               lock(&ei->i_data_sem/2);
+  lock(&dquot->dq_lock);
+
+ *** DEADLOCK ***
+
+4 locks held by syz.2.438/8856:
+ #0: ffff888016ae20e0 (&type->s_umount_key#21/1){+.+.}-{3:3}, at: alloc_super+0x1b4/0xac0 fs/super.c:229
+ #1: ffff888016ae2628 (sb_internal){.+.+}-{0:0}, at: evict+0x284/0x6d0 fs/inode.c:578
+ #2: ffff88801b856ec0 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_truncate+0x5f9/0x1390 fs/ext4/inode.c:4249
+ #3: ffffffff852c8500 (dquot_srcu){....}-{0:0}, at: i_dquot fs/quota/dquot.c:926 [inline]
+ #3: ffffffff852c8500 (dquot_srcu){....}-{0:0}, at: __dquot_free_space+0x1a4/0xa20 fs/quota/dquot.c:1867
+
+stack backtrace:
+CPU: 1 PID: 8856 Comm: syz.2.438 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
+ check_prev_add kernel/locking/lockdep.c:2868 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+ validate_chain kernel/locking/lockdep.c:3608 [inline]
+ __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+ __mutex_lock+0x13b/0x10d0 kernel/locking/mutex.c:1103
+ dquot_commit+0x4d/0x380 fs/quota/dquot.c:476
+ ext4_write_dquot+0x24e/0x310 fs/ext4/super.c:6170
+ ext4_mark_dquot_dirty+0x111/0x1a0 fs/ext4/super.c:6221
+ mark_dquot_dirty fs/quota/dquot.c:347 [inline]
+ mark_all_dquot_dirty fs/quota/dquot.c:385 [inline]
+ __dquot_free_space+0x6af/0xa20 fs/quota/dquot.c:1894
+ dquot_free_space_nodirty include/linux/quotaops.h:376 [inline]
+ dquot_free_space include/linux/quotaops.h:381 [inline]
+ dquot_free_block include/linux/quotaops.h:392 [inline]
+ ext4_free_blocks+0xfea/0x22a0 fs/ext4/mballoc.c:5493
+ ext4_remove_blocks fs/ext4/extents.c:2498 [inline]
+ ext4_ext_rm_leaf fs/ext4/extents.c:2664 [inline]
+ ext4_ext_remove_space+0x20ff/0x4470 fs/ext4/extents.c:2912
+ ext4_ext_truncate+0x1fb/0x260 fs/ext4/extents.c:4370
+ ext4_truncate+0xed8/0x1390 fs/ext4/inode.c:4254
+ ext4_evict_inode+0xb59/0x1890 fs/ext4/inode.c:280
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ ext4_orphan_cleanup fs/ext4/super.c:3119 [inline]
+ ext4_fill_super+0x92ef/0xd960 fs/ext4/super.c:5067
+ mount_bdev+0x350/0x410 fs/super.c:1419
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f9512fb169a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f9511c28e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f9511c28ef0 RCX: 00007f9512fb169a
+RDX: 0000000020000040 RSI: 0000000020000500 RDI: 00007f9511c28eb0
+RBP: 0000000020000040 R08: 00007f9511c28ef0 R09: 0000000000004500
+R10: 0000000000004500 R11: 0000000000000246 R12: 0000000020000500
+R13: 00007f9511c28eb0 R14: 00000000000004b4 R15: 000000000000002c
+EXT4-fs (loop2): 1 orphan inode deleted
+EXT4-fs (loop2): mounted filesystem without journal. Opts: errors=remount-ro,sysvgroups,dioread_lock,grpquota,noauto_da_alloc,resgid=0x0000000000000000,barrier,auto_da_alloc,usrquota,
+ext4 filesystem being mounted at /110/file1 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop0): Ignoring removed orlov option
+[EXT4 FS bs=4096, gc=1, bpg=71, ipg=32, mo=8816c028, mo2=0000]
+EXT4-fs (loop0): ext4_orphan_cleanup: deleting unreferenced inode 16
+EXT4-fs (loop0): 1 orphan inode deleted
+EXT4-fs (loop0): mounted filesystem without journal. Opts: errors=remount-ro,grpquota,dioread_lock,debug,noblock_validity,barrier,orlov,init_itable=0x0000000000000100,acl,
+ext4 filesystem being mounted at /49/file1 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs error (device loop0) in ext4_do_update_inode:5151: error 27
+EXT4-fs (loop0): Remounting filesystem read-only
+EXT4-fs error (device loop0): ext4_dirty_inode:5942: inode #18: comm syz.0.439: mark_inode_dirty error
+EXT4-fs error (device loop0) in ext4_do_update_inode:5151: error 27
+EXT4-fs error (device loop0): ext4_xattr_delete_inode:2927: inode #18: comm syz.0.439: mark_inode_dirty error
+EXT4-fs error (device loop0): ext4_xattr_delete_inode:2929: inode #18: comm syz.0.439: mark inode dirty (error -27)
+EXT4-fs warning (device loop0): ext4_evict_inode:293: xattr delete (err -27)
+kauditd_printk_skb: 9 callbacks suppressed
+audit: type=1400 audit(1731339402.149:203): avc:  denied  { execmem } for  pid=8880 comm="syz-executor" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=0
+audit: type=1400 audit(1731339402.158:204): avc:  denied  { open } for  pid=8881 comm="syz.2.441" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=perf_event permissive=0

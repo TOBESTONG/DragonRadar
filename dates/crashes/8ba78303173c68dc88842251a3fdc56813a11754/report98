@@ -1,0 +1,60 @@
+SELinux: ebitmap: map size 0 does not match my size 64 (high bit was 0)
+SELinux: ebitmap: map size 0 does not match my size 64 (high bit was 0)
+SELinux: ebitmap: map size 0 does not match my size 64 (high bit was 0)
+------------[ cut here ]------------
+kernel BUG at fs/buffer.c:3015!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 7681 Comm: syz.0.309 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:submit_bh_wbc+0x5f2/0x7c0 fs/buffer.c:3015
+Code: ff e8 12 e4 bf ff 41 81 cc 00 10 00 00 e9 15 ff ff ff e8 01 e4 bf ff 0f 0b 48 c7 c7 40 3a 29 85 e8 02 61 5a 02 e8 ee e3 bf ff <0f> 0b 48 c7 c7 00 3a 29 85 e8 ef 60 5a 02 e8 db e3 bf ff 0f 0b 48
+RSP: 0018:ffff8880204cf9a8 EFLAGS: 00010212
+RAX: 0000000000004a39 RBX: ffff888013e0bd98 RCX: ffffc9000183f000
+RDX: 0000000000040000 RSI: ffffffff81862ad2 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888013e0bd9f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000003000
+R13: 0000000000000000 R14: 0000000000000000 R15: 00000000723f6355
+FS:  00007fd219b146c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fbd605de000 CR3: 0000000022678000 CR4: 0000000000350ef0
+DR0: 8000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ __ext4_read_bh fs/ext4/super.c:157 [inline]
+ ext4_read_bh+0x14e/0x350 fs/ext4/super.c:181
+ read_mmp_block+0xf3/0x530 fs/ext4/mmp.c:89
+ ext4_multi_mount_protect+0x54f/0xb20 fs/ext4/mmp.c:357
+ ext4_fill_super+0xc27a/0xd960 fs/ext4/super.c:4780
+ mount_bdev+0x350/0x410 fs/super.c:1419
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fd21ae9c69a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fd219b13e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fd219b13ef0 RCX: 00007fd21ae9c69a
+RDX: 0000000020001140 RSI: 00000000200007c0 RDI: 00007fd219b13eb0
+RBP: 0000000020001140 R08: 00007fd219b13ef0 R09: 0000000002000480
+R10: 0000000002000480 R11: 0000000000000246 R12: 00000000200007c0
+R13: 00007fd219b13eb0 R14: 000000000000075b R15: 0000000020004080
+Modules linked in:
+PM: Image not found (code -22)
+---[ end trace 440e1f533f4410d6 ]---
+RIP: 0010:submit_bh_wbc+0x5f2/0x7c0 fs/buffer.c:3015
+Code: ff e8 12 e4 bf ff 41 81 cc 00 10 00 00 e9 15 ff ff ff e8 01 e4 bf ff 0f 0b 48 c7 c7 40 3a 29 85 e8 02 61 5a 02 e8 ee e3 bf ff <0f> 0b 48 c7 c7 00 3a 29 85 e8 ef 60 5a 02 e8 db e3 bf ff 0f 0b 48
+RSP: 0018:ffff8880204cf9a8 EFLAGS: 00010212
+RAX: 0000000000004a39 RBX: ffff888013e0bd98 RCX: ffffc9000183f000
+RDX: 0000000000040000 RSI: ffffffff81862ad2 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888013e0bd9f
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000003000
+R13: 0000000000000000 R14: 0000000000000000 R15: 00000000723f6355
+FS:  00007fd219b146c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000559cca071f40 CR3: 0000000022678000 CR4: 0000000000350ee0

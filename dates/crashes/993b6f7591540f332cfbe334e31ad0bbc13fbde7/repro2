@@ -1,0 +1,417 @@
+Extracting prog: 42m9.257107319s
+Minimizing prog: 0s
+Simplifying prog options: 0s
+Extracting C: 0s
+Simplifying C: 0s
+
+
+24 programs, timeouts [30s 1m40s 6m0s]
+extracting reproducer from 24 programs
+testing a last program of every proc
+single: executing 4 programs separately with timeout 30s
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$inet-ioctl$sock_SIOCGIFINDEX-sendmmsg$inet
+detailed listing:
+executing program 0:
+r0 = socket$inet(0x2, 0x3, 0xff)
+ioctl$sock_SIOCGIFINDEX(r0, 0x8933, &(0x7f0000000000)={'sit0\x00', <r1=>0x0})
+sendmmsg$inet(r0, &(0x7f0000002c40)=[{{&(0x7f0000000540)={0x2, 0x0, @multicast1}, 0x10, &(0x7f0000000400)=[{&(0x7f0000000600)="120700000000000000cdd1a7f63a0070ed44a458", 0x14}], 0x1, &(0x7f00000005c0)=[@ip_pktinfo={{0x1c, 0x0, 0x8, {r1, @remote, @empty}}}], 0x20}}], 0x1, 0x0)
+
+program did not crash
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-openat$procfs-sendfile
+detailed listing:
+executing program 0:
+r0 = openat$tcp_congestion(0xffffffffffffff9c, &(0x7f0000000080), 0x1, 0x0)
+r1 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000000)='/proc/key-users\x00', 0x0, 0x0)
+sendfile(r0, r1, &(0x7f0000000040)=0x29, 0x2)
+
+program did not crash
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): getrandom-madvise-mprotect
+detailed listing:
+executing program 0:
+getrandom(&(0x7f0000000080)=""/240, 0xfffffffffffffe77, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+mprotect(&(0x7f0000082000/0x9000)=nil, 0x9000, 0x0)
+
+program did not crash
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_genetlink_get_family_id$nl80211-sendmsg$NL80211_CMD_EXTERNAL_AUTH-io_uring_setup
+detailed listing:
+executing program 0:
+syz_genetlink_get_family_id$nl80211(0x0, 0xffffffffffffffff)
+sendmsg$NL80211_CMD_EXTERNAL_AUTH(0xffffffffffffffff, 0x0, 0x0)
+io_uring_setup(0x17fa, &(0x7f0000000100)={0x0, 0x405113, 0x1a})
+
+program did not crash
+single: failed to extract reproducer
+bisect: bisecting 24 programs with base timeout 30s
+testing program (duration=36s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): [2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+detailed listing:
+executing program 0:
+r0 = syz_io_uring_setup(0xf00, &(0x7f00000001c0)={0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, &(0x7f0000000100), &(0x7f0000000140))
+io_uring_enter(r0, 0x2, 0x0, 0x0, 0x0, 0x0)
+executing program 0:
+perf_event_open(&(0x7f00000004c0)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffff7ffffffffffb, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x8000, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}, 0x0, 0x0, 0x8, 0x0, 0x0, 0x0, 0x1}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+r0 = syz_open_dev$sg(&(0x7f0000000180), 0x0, 0x805)
+writev(r0, &(0x7f0000000040)=[{&(0x7f00000001c0)="ae0909000020000f0090f57f077030eff0f64ebbeed90cf41bdd2ac8bb8c43b460e46292d25133270b445393ec19", 0x2e}], 0x1)
+executing program 0:
+r0 = socket(0x200000000000011, 0x4000000000080002, 0x0)
+setsockopt$SO_TIMESTAMP(r0, 0x1, 0x23, &(0x7f0000000040)=0xfffffffe, 0x4)
+getsockopt$SO_TIMESTAMP(r0, 0x1, 0x3f, 0x0, &(0x7f00000000c0))
+executing program 0:
+mkdirat(0xffffffffffffff9c, &(0x7f0000000000)='./file0\x00', 0x0)
+mount$bind(&(0x7f00000002c0)='.\x00', &(0x7f0000000200)='./file0\x00', 0x0, 0x101091, 0x0)
+mount$tmpfs(0x0, &(0x7f00000024c0)='./file0/file0\x00', &(0x7f0000000280), 0x0, &(0x7f0000002480)={[{@huge_never}]})
+executing program 0:
+socket(0x10, 0x3, 0x0)
+socketpair$unix(0x1, 0x1, 0x0, &(0x7f0000000080)={0xffffffffffffffff, <r0=>0xffffffffffffffff})
+ioctl$sock_SIOCGIFINDEX(r0, 0x8933, &(0x7f0000000000)={'lo\x00'})
+executing program 0:
+syz_genetlink_get_family_id$nl80211(0x0, 0xffffffffffffffff)
+sendmsg$NL80211_CMD_EXTERNAL_AUTH(0xffffffffffffffff, 0x0, 0x0)
+io_uring_setup(0x17fa, &(0x7f0000000100)={0x0, 0x405113, 0x1a})
+executing program 3:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000080)='./file1\x00', 0x200450a, &(0x7f0000000440)={[{@errors_remount}, {@norecovery}, {@dioread_lock}, {@errors_remount}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@max_dir_size_kb={'max_dir_size_kb', 0x3d, 0x4e1}}]}, 0x11, 0x4d2, &(0x7f0000000a00)="$eJzs3U1vW1kZAOD33sSlHylxgUWpRKloUVpB7aShbcSiFAnRVSWg7EtInCiKE0ex0zZRhVLxA5AQokisWLFB4gcgof4EhFQJ9ggQCEHLLGYxMx7Zvu6kGTsfU8eeJs8jnd5zP3zf97jysc+9J3YAR9aFiLgdEUMRcSUiRrPtaVbuNFY2W8e9fPF4plGSqNfv/TeJJNvWPleSLU+1HhLHI+IHdyJ+nHw8bnV9Y3G6XC6tZuvF2tJKsbq+cXVhaXq+NF9anpycuDF1c+r61HhP2pmPiFvf+ecvf/bb797649cf/u3+vy//pJHWSLZ/azv2YWi3A1pNzzWfi7bhiFj9BME+jdpPQG7AeQAAsDeNz/ifi4ivND//j8ZQ89MpAAAAcJjUvzUS7yURdQAAAODQSptzYJO0kM0FGIk0LRRac3i/ECfTcqVa+9pcZW15tjVXNh+5dG6hXBrP5grnI5c01ieyObb5yB2LhXLp2kfrzf2TEXEmIn4xeqK5XpiplGcHffEDAAAAjohT28b/74y2xv8AAADAIZMfdAIAAADAgTP+BwAAgMPP+B8AAAAOte/dvdso9fbvX88+WF9brDy4OluqLhaW1mYKM5XVlcJ8pTLf/M6+pd3OV65UVr4Ry2uPirVStVasrm/cX6qsLdfuL7z2E9gAAABAH5358rO/JhGx+c0TzdJwbNBJAX2R7OfgfxxcHkD/DQ06AWBghgedADAwuZ12Pu1fHsDg7HYdoOvknT/1PhcAAOBgjH2x+/3/Ha8NAG+9dNAJAAB95/4/HF05MwDhyPvsLvvf/P5/vb6vhAAAgJ4baZYkLWT3AkciTQuFiNPNnwXIJXML5dJ4Nj74y2juM431ieYjk/397TAAAAAAAAAAAAAAAAAAAAAAAAAAHGH1ehJ1AAAA4FCLSP+VNL/NP2Js9NLI9usDx5J3R5vLiHj463tPH03XaqsTje3/e7W99qts+7VBXMEAAAAAtmuP09vjeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADopZcvHs+0Sz/j/ufbEZHvFH84jjeXxyMXESf/n8TwlsclETHUg/ibTyLibKf4SSOtyGdZdIp/YoDx04g41YP4cJQ9a/Q/tzu9/tK40Fx2fv0NZ+VNde//0lf931AWf2t/1+h/Tu8xxrnnvy92jf8k4txw5/6nHT/p0v9d3GP8H/1wY6PbvvpvIsY6vv8kr8Uq1pZWitX1jasLS9PzpfnS8uTkxI2pm1PXp8aLcwvlUvZvxxg//9IfPtip/Se7xM/v0v5Le2z/+88fvfh8q5rrFP/yxc7vv2e7xE+z976vZvXG/rF2fbNV3+r87/58fqf2z3Zp/27//5f32P4r3//p3/d4KADQB9X1jcXpcrm0+lZXhqJHJ+zVeVRU+lOpJwd05kH3TAAAQK9tGfoCAAAAAAAAAAAAAAAAAAAAA9KPLyrbHnNzME0FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANjRhwEAAP//HzvT7A==")
+r0 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0)
+preadv2(r0, &(0x7f0000000100)=[{&(0x7f0000000000)=""/76, 0xfdef}], 0x1, 0x0, 0x0, 0x1d)
+executing program 2:
+r0 = openat(0xffffffffffffff9c, &(0x7f0000000100)='./file1\x00', 0x141842, 0x0)
+write(r0, &(0x7f0000004200)="74efc4c419fdb8d66bbba728f371d056ad6f01e9762d70401d1c9d331b48b925e9e6a7759abb206b9b18bfc3f3f96adb2b37c2121ef21e91bac768dd33df29649da1d82e826a55c4d620b6f510daee26004b741c951d528d806efbe00c439f2df46d3adf8be24e280b948a49afd17d56437c6e752d84f99bf37a88f0c54488dd13b848f2381d7d2aecb68ed16762e4a3c1a847565364b9f1af92c9c89e06e89fe6179cb7078a742cb968a9f09cc690dc473df29d6ad9af5879e9a2618c63702117a3a63d3a4236baee86f5f452e9663a795306dabb97db884348ab437bdc13b7cfb03eff1cf216f09d21078e1852fc7c96413d9d65c52ce9baa6bc26de7f028738a17120de30a433c9c3c8e276f3ae5e18a1f95767fffe8e98b0c3f134f12263b01c36866d4e0e856cc14ecf50279adb9438c6219c49cae973d8e7faf33dcdeb96d7ef7e89ae828cb91df22939307bb1f7fb7392e1e24f6b63166b89937c00eb8fea0245cd93e4aa803160bd71c1a0bbb6b8285d8ab654485ab985f1dd2eb9abf53131a9680dcafe4000d3ea528dd52aba3e4ff6a3883ec614253d5627bd91522d881128328ed1e00907fa6cc48cec5268bbedd85ec02d8bac3183460dd1a27fbc06b5642473a41a6cbfb07f53deab2473b37c3d10a125d610f1b9ea5c83e7d462048f25fc1e79295eeff750a23faf5d542758c421bb0673504c9dbae2959f77", 0xffe00)
+creat(&(0x7f0000000240)='./file1\x00', 0x0)
+executing program 3:
+getrandom(&(0x7f0000000080)=""/240, 0xfffffffffffffe77, 0x0)
+mprotect(&(0x7f0000012000/0x4000)=nil, 0x4000, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+executing program 1:
+r0 = socket$inet_tcp(0x2, 0x1, 0x0)
+listen(r0, 0x0)
+listen(r0, 0x0)
+executing program 2:
+r0 = socket$netlink(0x10, 0x3, 0x0)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+sendmsg$netlink(r0, &(0x7f0000004180)={0x0, 0x0, &(0x7f0000000b40)=[{&(0x7f00000000c0)={0x28, 0x26, 0xac4a5f2303079e8b, 0x0, 0x0, "", [@nested={0x11, 0x0, 0x0, 0x1, [@generic="b762a1aa27e95c91dab5d220e1"]}, @nested={0x4, 0xa}]}, 0x28}], 0x1}, 0x0)
+executing program 3:
+r0 = socket$inet6(0xa, 0x2, 0x0)
+setsockopt$inet6_IPV6_HOPOPTS(r0, 0x29, 0x36, &(0x7f0000000100)={0x0, 0x17, '\x00', [@enc_lim, @generic={0x7, 0xb1, "8305c3432205386b4c1da99c6e7865a4c23bc86845a98efa01f5b96ea2967c7824b699b6dcd5ad9be4db5c5d5848bca5c7b11790ed1d8b51c71e2705058240bef68d9252685ef6d337b879e95384e24db9dead0da85e428b5d7ded7fe103b0e9e35cf456e88e025c9a2cb335668b18787a7f70b7d4335c845cb38e48d7bfd1efbd0687c448e3cf2c728b27f343b32160f86166b2fac772a5cfabcf32957012b956dca60ef155a5f24696c2f619f2b32130"}, @pad1]}, 0xc8)
+setsockopt$inet6_IPV6_HOPOPTS(r0, 0x29, 0x36, 0x0, 0x0)
+executing program 1:
+r0 = socket$inet6_tcp(0xa, 0x1, 0x0)
+setsockopt$inet6_tcp_TCP_REPAIR_WINDOW(0xffffffffffffffff, 0x6, 0x1d, &(0x7f00000000c0)={0x6, 0x1}, 0x14)
+setsockopt$inet6_tcp_int(r0, 0x6, 0x2000000000000020, &(0x7f0000000040)=0xa, 0x1959cc36)
+executing program 2:
+unshare(0x40000400)
+r0 = openat$cgroup_ro(0xffffffffffffff9c, &(0x7f0000000200)='cgroup.controllers\x00', 0x26e1, 0x0)
+fchmod(r0, 0x0)
+executing program 3:
+mmap(&(0x7f0000000000/0xff5000)=nil, 0xff5000, 0x1000000, 0x200000005c831, 0xffffffffffffffff, 0xffffc000)
+r0 = eventfd2(0x7, 0x0)
+write$eventfd(r0, &(0x7f0000000040)=0x6, 0x8)
+executing program 1:
+r0 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+writev(r0, &(0x7f0000009440)=[{&(0x7f0000007f80)="a7609ac58f762f52e2017272ee7e7fcae970d491df3c5587d9763c2c657555c44b5f965f8b940e45361a6cbaf3d3faeb922f1c286680f8a105abe15a455c5cc89f6608f0902453a76cb35a586e7844d22e369abe5bd766ee331b5d53e9292c353a3206587d5f9ec7c45123fc738991ea5a190f5fcd68e5162af716c39ef2eb1bf04e8e4ee4f057c4bc0d50f67b6c", 0x8e}, {&(0x7f0000008040)="7526f292dcd88fea960a822aeb120e93d07ff0b087fa2b2e673ea4a9d763d9dce8c95911a30ed999162eb75ab0f5e3b7f5a12bd5b877bba64972100202f7cd5f055cdcefac24b6461da34a4aef71dbbc5fb8643d1a8115ed3f35591e80b5ea1b1e7855560574739ae3473ee10e6d414c1e7447ef2bcac305dd47cb718afea777301727ea5533da28b48e8764f38d36967bb9ea5b45eb8bb9d11a3a8063f4c2eea23b54cf0d3075147a9f843f75bb08e97f4352ecced0ae6d917a09240344834b23f17bc9320ff2d4f4b266ae9f244360714f313efb06439be7e65c8e6bcf7b013172b34d3e69fa1bd9c177764d023a1d6ceb356a58620a78", 0xf8}, {&(0x7f0000008140)="718feda85399e1a7f588fdf629718dcc15c665a7bdece94da9872b67ce0d96335291c78c3e2951eb549c19d00bea2543a78bcbcc58c667c97de0154be5409f5c5d8e7e72f77672a192545d72c618474e7f11bac89ddd75dbd4e8c57540faa8625aff181f9de8185674b27ae2c42cababff6bf4", 0x73}, {&(0x7f00000081c0)="b4541991ef60645a966cc679fd978e4c8b823230714ff7d0bfee", 0x1a}, {&(0x7f0000008200)="74fe1096fe09f05562858c983a02cb11f8ee2877c17c96e397cb56ad25caa79a76beba4cd07abe2fdc495ef7b6198f0ef211c369fdea27d7c8f876e15a19ee92ebe4e5e981f2f884f2f34666a0e42e690eb435032f6d9382dfbad8134cd2e4301bda9791fe47", 0x66}, {&(0x7f0000008280)="158793b54a7038946a3a9551b662f967b6593392cfce578d0e5c8a71cc492f6aaa83cafc445a9894de58aa44240f755e822c60805c7ec701be4582cf4af263dd222fe799cc397526e66725353163f63f43fb043e4e48aa6fc086c55692e9191a7f160fc2bba2f1b33dc3d008b7ad78af0b4b7dd24d6c0dabef1dd9c8de6fdda84902d154836344d1924173c6f8276a88769211f11dbb5db58d3078613aa9eb", 0x9f}, {&(0x7f0000008340)="e1c1f1f068c67a5aec85ab2ea69b8028d6e32973a6cd57a78db4dbfdabd1d700b0cca67f91b595370fa3d6ef31c9bf909cd9c586d15b10860a5828b4ebdca6404253e51795091cfb0cd4d625d3ada682cecb93716400896d1f5f74591f3cb1d51394b0c7a61ebd16ec", 0x69}, {&(0x7f00000083c0)="d19819b40bd32b06782213ae8d8220871167f8306357961452a3b100d854a3db3b035e5cea789b699df9052d89e9402b5311456989efec2cfac83331f8d00eb3ed7eb6e4a75de6cf749392d19d8f8d946d6e18906f76cd3cf1fe09a12dbbde90df428b0ce32488204aaea027107a8fe21447bca27ecf6315f94cd541082e64f740e9936e4578df4e2f9d97fa0af1a60e7250c915ee6f7f9b2d552bffd20ab5981bb230dfb860d3abb805a4ef36c16e70a4e796288a30e2429344b670fe016755df6ffd82acaf379b2908cf498c2834c54f962455fd6253c21e5fa89b083d899a04e2ad662f3bee4b8c9319b2fa16c42b8859393fbcd196a46a5328012e9cf558f1ea935ffbdd3b4a3e64d909e6661e3b541bf6116b25623af88ae67dab77aaf74f09ddda8b7d46280036889a81ca4c27cd2f4ac5fccfa60477522e095cf77dc30a0eea58b55bd31c47d460c52f3f2c925302064999f1ce1f64decd282354f286fb23c84b233e4525ca005a9313f9040efa89c65508287e21b528064b6c3489054196731c22db4e2b17b89158115221c7d562197b0712b255741604bd303b549d4eb64bcd543db82a0beedbf05564f3cfb29bc93fa27403c45ff6c974f8ed6fe720af3213fad89df0ee83619038dc7144fe2972cfd62f137c6cbc49430f84509f4dc52936461b1db077ab8f20fc43e775b19c4c8e28202b571207ee0638a5456ac608810f22e6453d72c2fab5b60a99a129c8eb432ba15dcc00d39ce8adbc55500513ac92eb30ab34950910f1d6d32c95d4f6491f2d7095db311c32956e58f020d474b2199190410b0501c04e68d1519cffbce4fdec6623793b04eb4c253bb8fe2b6db7121cc5f84742788d5bab43db03eef4542ca2b95297c87c0032e7b6d5401259e6b0cea3921c1aba569034ac5fdd178600fc0b0f0748f34be98a281f060f468b46c0d8eee126e807e7a24dbdd0c20c6646bb44227aa928149008ac34f4d2113ea7ac632a944e73ff1ed9ee87d0832edc51b0e35eed963cc3c569bf9cd4b22e9298b847b67e421903b75435b593c3ef17db17a5c6b74b05a3aa612ab2dc0227e27c04effbcce45cb6f624c8a716e9515c300c400528d8822932f8b71d607911274a97f3633c87d5d01c2811e182a5e62a68a9f53ef3ca933ea4192e5f6d3077825c795b1bbc216f4acf2cab338378790eb46feb2835ab5f2d03efea5d2a4286921bdfdb28b061de150ed1b344770c19227f23377ffff0d128f538d2553b2b0dcbcedfa9e8e252ce511782fc34dea3705d1fe28075a80a6e49c3b388b16f6aeb01dfb658df2b4f1d531018ca54b15a114dd5e0b2a70e4605b6300af73f44cbe5d4b169f9894745a982a7a302b043ee5cd893afd4e24b4977794a8a0e788d111aa1f9748b3289054ece1bd6bce064a914470da0cafa0cf3591ec1e7908a52e1793be430555df0c23ae09400c61d818e9df0211e79f3bf2bdb252bee12378e369983702be4def5165ce3ba6ad529625fa283f621c706dfa8441f142cac6181d06b0f60afc512ee6b75235ea15d15d41fcdc41084998672ce295e5107d2f19d4a80fa1ed7563066a76d59e3b9f983ff540b71d5468038f5b1347afd", 0x47b}], 0x8)
+ftruncate(r0, 0x800)
+executing program 2:
+r0 = socket$inet_tcp(0x2, 0x1, 0x0)
+connect$inet(r0, &(0x7f0000000180)={0x2, 0x0, @local}, 0x10)
+setsockopt$SO_TIMESTAMPING(r0, 0x1, 0x25, &(0x7f0000000000)=0x2a0, 0x4)
+executing program 1:
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+socket$inet6(0xa, 0x2, 0x0)
+clock_gettime(0x6, &(0x7f0000000080))
+executing program 3:
+r0 = socket$igmp(0x2, 0x3, 0x2)
+setsockopt$MRT_ADD_VIF(r0, 0x0, 0xca, &(0x7f00000000c0)={0x4, 0x4, 0x0, 0x0, @vifc_lcl_ifindex, @multicast1}, 0x10)
+setsockopt$MRT_FLUSH(r0, 0x0, 0xd4, &(0x7f0000000500)=0x8, 0x4)
+executing program 2:
+r0 = socket$inet6_tcp(0xa, 0x1, 0x0)
+bind$inet6(r0, &(0x7f0000000040)={0xa, 0x4e22}, 0x1c)
+listen(r0, 0x0)
+executing program 1:
+unshare(0x40000000)
+mmap(&(0x7f0000000000/0xb36000)=nil, 0xb36000, 0x3, 0x8031, 0xffffffffffffffff, 0x0)
+openat$cgroup_ro(0xffffffffffffff9c, &(0x7f0000000140)='memory.events\x00', 0x7a05, 0x1700)
+executing program 1:
+getrandom(&(0x7f0000000080)=""/240, 0xfffffffffffffe77, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+mprotect(&(0x7f0000082000/0x9000)=nil, 0x9000, 0x0)
+executing program 2:
+r0 = openat$tcp_congestion(0xffffffffffffff9c, &(0x7f0000000080), 0x1, 0x0)
+r1 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000000)='/proc/key-users\x00', 0x0, 0x0)
+sendfile(r0, r1, &(0x7f0000000040)=0x29, 0x2)
+executing program 3:
+r0 = socket$inet(0x2, 0x3, 0xff)
+ioctl$sock_SIOCGIFINDEX(r0, 0x8933, &(0x7f0000000000)={'sit0\x00', <r1=>0x0})
+sendmmsg$inet(r0, &(0x7f0000002c40)=[{{&(0x7f0000000540)={0x2, 0x0, @multicast1}, 0x10, &(0x7f0000000400)=[{&(0x7f0000000600)="120700000000000000cdd1a7f63a0070ed44a458", 0x14}], 0x1, &(0x7f00000005c0)=[@ip_pktinfo={{0x1c, 0x0, 0x8, {r1, @remote, @empty}}}], 0x20}}], 0x1, 0x0)
+
+program did not crash
+replaying the whole log did not cause a kernel crash
+single: executing 4 programs separately with timeout 1m40s
+testing program (duration=1m40s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$inet-ioctl$sock_SIOCGIFINDEX-sendmmsg$inet
+detailed listing:
+executing program 0:
+r0 = socket$inet(0x2, 0x3, 0xff)
+ioctl$sock_SIOCGIFINDEX(r0, 0x8933, &(0x7f0000000000)={'sit0\x00', <r1=>0x0})
+sendmmsg$inet(r0, &(0x7f0000002c40)=[{{&(0x7f0000000540)={0x2, 0x0, @multicast1}, 0x10, &(0x7f0000000400)=[{&(0x7f0000000600)="120700000000000000cdd1a7f63a0070ed44a458", 0x14}], 0x1, &(0x7f00000005c0)=[@ip_pktinfo={{0x1c, 0x0, 0x8, {r1, @remote, @empty}}}], 0x20}}], 0x1, 0x0)
+
+program did not crash
+testing program (duration=1m40s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-openat$procfs-sendfile
+detailed listing:
+executing program 0:
+r0 = openat$tcp_congestion(0xffffffffffffff9c, &(0x7f0000000080), 0x1, 0x0)
+r1 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000000)='/proc/key-users\x00', 0x0, 0x0)
+sendfile(r0, r1, &(0x7f0000000040)=0x29, 0x2)
+
+program did not crash
+testing program (duration=1m40s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): getrandom-madvise-mprotect
+detailed listing:
+executing program 0:
+getrandom(&(0x7f0000000080)=""/240, 0xfffffffffffffe77, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+mprotect(&(0x7f0000082000/0x9000)=nil, 0x9000, 0x0)
+
+program did not crash
+testing program (duration=1m40s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_genetlink_get_family_id$nl80211-sendmsg$NL80211_CMD_EXTERNAL_AUTH-io_uring_setup
+detailed listing:
+executing program 0:
+syz_genetlink_get_family_id$nl80211(0x0, 0xffffffffffffffff)
+sendmsg$NL80211_CMD_EXTERNAL_AUTH(0xffffffffffffffff, 0x0, 0x0)
+io_uring_setup(0x17fa, &(0x7f0000000100)={0x0, 0x405113, 0x1a})
+
+program did not crash
+single: failed to extract reproducer
+bisect: bisecting 24 programs with base timeout 1m40s
+testing program (duration=1m46s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): [2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+detailed listing:
+executing program 0:
+r0 = syz_io_uring_setup(0xf00, &(0x7f00000001c0)={0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, &(0x7f0000000100), &(0x7f0000000140))
+io_uring_enter(r0, 0x2, 0x0, 0x0, 0x0, 0x0)
+executing program 0:
+perf_event_open(&(0x7f00000004c0)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffff7ffffffffffb, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x8000, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}, 0x0, 0x0, 0x8, 0x0, 0x0, 0x0, 0x1}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+r0 = syz_open_dev$sg(&(0x7f0000000180), 0x0, 0x805)
+writev(r0, &(0x7f0000000040)=[{&(0x7f00000001c0)="ae0909000020000f0090f57f077030eff0f64ebbeed90cf41bdd2ac8bb8c43b460e46292d25133270b445393ec19", 0x2e}], 0x1)
+executing program 0:
+r0 = socket(0x200000000000011, 0x4000000000080002, 0x0)
+setsockopt$SO_TIMESTAMP(r0, 0x1, 0x23, &(0x7f0000000040)=0xfffffffe, 0x4)
+getsockopt$SO_TIMESTAMP(r0, 0x1, 0x3f, 0x0, &(0x7f00000000c0))
+executing program 0:
+mkdirat(0xffffffffffffff9c, &(0x7f0000000000)='./file0\x00', 0x0)
+mount$bind(&(0x7f00000002c0)='.\x00', &(0x7f0000000200)='./file0\x00', 0x0, 0x101091, 0x0)
+mount$tmpfs(0x0, &(0x7f00000024c0)='./file0/file0\x00', &(0x7f0000000280), 0x0, &(0x7f0000002480)={[{@huge_never}]})
+executing program 0:
+socket(0x10, 0x3, 0x0)
+socketpair$unix(0x1, 0x1, 0x0, &(0x7f0000000080)={0xffffffffffffffff, <r0=>0xffffffffffffffff})
+ioctl$sock_SIOCGIFINDEX(r0, 0x8933, &(0x7f0000000000)={'lo\x00'})
+executing program 0:
+syz_genetlink_get_family_id$nl80211(0x0, 0xffffffffffffffff)
+sendmsg$NL80211_CMD_EXTERNAL_AUTH(0xffffffffffffffff, 0x0, 0x0)
+io_uring_setup(0x17fa, &(0x7f0000000100)={0x0, 0x405113, 0x1a})
+executing program 3:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000080)='./file1\x00', 0x200450a, &(0x7f0000000440)={[{@errors_remount}, {@norecovery}, {@dioread_lock}, {@errors_remount}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@max_dir_size_kb={'max_dir_size_kb', 0x3d, 0x4e1}}]}, 0x11, 0x4d2, &(0x7f0000000a00)="$eJzs3U1vW1kZAOD33sSlHylxgUWpRKloUVpB7aShbcSiFAnRVSWg7EtInCiKE0ex0zZRhVLxA5AQokisWLFB4gcgof4EhFQJ9ggQCEHLLGYxMx7Zvu6kGTsfU8eeJs8jnd5zP3zf97jysc+9J3YAR9aFiLgdEUMRcSUiRrPtaVbuNFY2W8e9fPF4plGSqNfv/TeJJNvWPleSLU+1HhLHI+IHdyJ+nHw8bnV9Y3G6XC6tZuvF2tJKsbq+cXVhaXq+NF9anpycuDF1c+r61HhP2pmPiFvf+ecvf/bb797649cf/u3+vy//pJHWSLZ/azv2YWi3A1pNzzWfi7bhiFj9BME+jdpPQG7AeQAAsDeNz/ifi4ivND//j8ZQ89MpAAAAcJjUvzUS7yURdQAAAODQSptzYJO0kM0FGIk0LRRac3i/ECfTcqVa+9pcZW15tjVXNh+5dG6hXBrP5grnI5c01ieyObb5yB2LhXLp2kfrzf2TEXEmIn4xeqK5XpiplGcHffEDAAAAjohT28b/74y2xv8AAADAIZMfdAIAAADAgTP+BwAAgMPP+B8AAAAOte/dvdso9fbvX88+WF9brDy4OluqLhaW1mYKM5XVlcJ8pTLf/M6+pd3OV65UVr4Ry2uPirVStVasrm/cX6qsLdfuL7z2E9gAAABAH5358rO/JhGx+c0TzdJwbNBJAX2R7OfgfxxcHkD/DQ06AWBghgedADAwuZ12Pu1fHsDg7HYdoOvknT/1PhcAAOBgjH2x+/3/Ha8NAG+9dNAJAAB95/4/HF05MwDhyPvsLvvf/P5/vb6vhAAAgJ4baZYkLWT3AkciTQuFiNPNnwXIJXML5dJ4Nj74y2juM431ieYjk/397TAAAAAAAAAAAAAAAAAAAAAAAAAAHGH1ehJ1AAAA4FCLSP+VNL/NP2Js9NLI9usDx5J3R5vLiHj463tPH03XaqsTje3/e7W99qts+7VBXMEAAAAAtmuP09vjeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADopZcvHs+0Sz/j/ufbEZHvFH84jjeXxyMXESf/n8TwlsclETHUg/ibTyLibKf4SSOtyGdZdIp/YoDx04g41YP4cJQ9a/Q/tzu9/tK40Fx2fv0NZ+VNde//0lf931AWf2t/1+h/Tu8xxrnnvy92jf8k4txw5/6nHT/p0v9d3GP8H/1wY6PbvvpvIsY6vv8kr8Uq1pZWitX1jasLS9PzpfnS8uTkxI2pm1PXp8aLcwvlUvZvxxg//9IfPtip/Se7xM/v0v5Le2z/+88fvfh8q5rrFP/yxc7vv2e7xE+z976vZvXG/rF2fbNV3+r87/58fqf2z3Zp/27//5f32P4r3//p3/d4KADQB9X1jcXpcrm0+lZXhqJHJ+zVeVRU+lOpJwd05kH3TAAAQK9tGfoCAAAAAAAAAAAAAAAAAAAAA9KPLyrbHnNzME0FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANjRhwEAAP//HzvT7A==")
+r0 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0)
+preadv2(r0, &(0x7f0000000100)=[{&(0x7f0000000000)=""/76, 0xfdef}], 0x1, 0x0, 0x0, 0x1d)
+executing program 2:
+r0 = openat(0xffffffffffffff9c, &(0x7f0000000100)='./file1\x00', 0x141842, 0x0)
+write(r0, &(0x7f0000004200)="74efc4c419fdb8d66bbba728f371d056ad6f01e9762d70401d1c9d331b48b925e9e6a7759abb206b9b18bfc3f3f96adb2b37c2121ef21e91bac768dd33df29649da1d82e826a55c4d620b6f510daee26004b741c951d528d806efbe00c439f2df46d3adf8be24e280b948a49afd17d56437c6e752d84f99bf37a88f0c54488dd13b848f2381d7d2aecb68ed16762e4a3c1a847565364b9f1af92c9c89e06e89fe6179cb7078a742cb968a9f09cc690dc473df29d6ad9af5879e9a2618c63702117a3a63d3a4236baee86f5f452e9663a795306dabb97db884348ab437bdc13b7cfb03eff1cf216f09d21078e1852fc7c96413d9d65c52ce9baa6bc26de7f028738a17120de30a433c9c3c8e276f3ae5e18a1f95767fffe8e98b0c3f134f12263b01c36866d4e0e856cc14ecf50279adb9438c6219c49cae973d8e7faf33dcdeb96d7ef7e89ae828cb91df22939307bb1f7fb7392e1e24f6b63166b89937c00eb8fea0245cd93e4aa803160bd71c1a0bbb6b8285d8ab654485ab985f1dd2eb9abf53131a9680dcafe4000d3ea528dd52aba3e4ff6a3883ec614253d5627bd91522d881128328ed1e00907fa6cc48cec5268bbedd85ec02d8bac3183460dd1a27fbc06b5642473a41a6cbfb07f53deab2473b37c3d10a125d610f1b9ea5c83e7d462048f25fc1e79295eeff750a23faf5d542758c421bb0673504c9dbae2959f77", 0xffe00)
+creat(&(0x7f0000000240)='./file1\x00', 0x0)
+executing program 3:
+getrandom(&(0x7f0000000080)=""/240, 0xfffffffffffffe77, 0x0)
+mprotect(&(0x7f0000012000/0x4000)=nil, 0x4000, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+executing program 1:
+r0 = socket$inet_tcp(0x2, 0x1, 0x0)
+listen(r0, 0x0)
+listen(r0, 0x0)
+executing program 2:
+r0 = socket$netlink(0x10, 0x3, 0x0)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+sendmsg$netlink(r0, &(0x7f0000004180)={0x0, 0x0, &(0x7f0000000b40)=[{&(0x7f00000000c0)={0x28, 0x26, 0xac4a5f2303079e8b, 0x0, 0x0, "", [@nested={0x11, 0x0, 0x0, 0x1, [@generic="b762a1aa27e95c91dab5d220e1"]}, @nested={0x4, 0xa}]}, 0x28}], 0x1}, 0x0)
+executing program 3:
+r0 = socket$inet6(0xa, 0x2, 0x0)
+setsockopt$inet6_IPV6_HOPOPTS(r0, 0x29, 0x36, &(0x7f0000000100)={0x0, 0x17, '\x00', [@enc_lim, @generic={0x7, 0xb1, "8305c3432205386b4c1da99c6e7865a4c23bc86845a98efa01f5b96ea2967c7824b699b6dcd5ad9be4db5c5d5848bca5c7b11790ed1d8b51c71e2705058240bef68d9252685ef6d337b879e95384e24db9dead0da85e428b5d7ded7fe103b0e9e35cf456e88e025c9a2cb335668b18787a7f70b7d4335c845cb38e48d7bfd1efbd0687c448e3cf2c728b27f343b32160f86166b2fac772a5cfabcf32957012b956dca60ef155a5f24696c2f619f2b32130"}, @pad1]}, 0xc8)
+setsockopt$inet6_IPV6_HOPOPTS(r0, 0x29, 0x36, 0x0, 0x0)
+executing program 1:
+r0 = socket$inet6_tcp(0xa, 0x1, 0x0)
+setsockopt$inet6_tcp_TCP_REPAIR_WINDOW(0xffffffffffffffff, 0x6, 0x1d, &(0x7f00000000c0)={0x6, 0x1}, 0x14)
+setsockopt$inet6_tcp_int(r0, 0x6, 0x2000000000000020, &(0x7f0000000040)=0xa, 0x1959cc36)
+executing program 2:
+unshare(0x40000400)
+r0 = openat$cgroup_ro(0xffffffffffffff9c, &(0x7f0000000200)='cgroup.controllers\x00', 0x26e1, 0x0)
+fchmod(r0, 0x0)
+executing program 3:
+mmap(&(0x7f0000000000/0xff5000)=nil, 0xff5000, 0x1000000, 0x200000005c831, 0xffffffffffffffff, 0xffffc000)
+r0 = eventfd2(0x7, 0x0)
+write$eventfd(r0, &(0x7f0000000040)=0x6, 0x8)
+executing program 1:
+r0 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+writev(r0, &(0x7f0000009440)=[{&(0x7f0000007f80)="a7609ac58f762f52e2017272ee7e7fcae970d491df3c5587d9763c2c657555c44b5f965f8b940e45361a6cbaf3d3faeb922f1c286680f8a105abe15a455c5cc89f6608f0902453a76cb35a586e7844d22e369abe5bd766ee331b5d53e9292c353a3206587d5f9ec7c45123fc738991ea5a190f5fcd68e5162af716c39ef2eb1bf04e8e4ee4f057c4bc0d50f67b6c", 0x8e}, {&(0x7f0000008040)="7526f292dcd88fea960a822aeb120e93d07ff0b087fa2b2e673ea4a9d763d9dce8c95911a30ed999162eb75ab0f5e3b7f5a12bd5b877bba64972100202f7cd5f055cdcefac24b6461da34a4aef71dbbc5fb8643d1a8115ed3f35591e80b5ea1b1e7855560574739ae3473ee10e6d414c1e7447ef2bcac305dd47cb718afea777301727ea5533da28b48e8764f38d36967bb9ea5b45eb8bb9d11a3a8063f4c2eea23b54cf0d3075147a9f843f75bb08e97f4352ecced0ae6d917a09240344834b23f17bc9320ff2d4f4b266ae9f244360714f313efb06439be7e65c8e6bcf7b013172b34d3e69fa1bd9c177764d023a1d6ceb356a58620a78", 0xf8}, {&(0x7f0000008140)="718feda85399e1a7f588fdf629718dcc15c665a7bdece94da9872b67ce0d96335291c78c3e2951eb549c19d00bea2543a78bcbcc58c667c97de0154be5409f5c5d8e7e72f77672a192545d72c618474e7f11bac89ddd75dbd4e8c57540faa8625aff181f9de8185674b27ae2c42cababff6bf4", 0x73}, {&(0x7f00000081c0)="b4541991ef60645a966cc679fd978e4c8b823230714ff7d0bfee", 0x1a}, {&(0x7f0000008200)="74fe1096fe09f05562858c983a02cb11f8ee2877c17c96e397cb56ad25caa79a76beba4cd07abe2fdc495ef7b6198f0ef211c369fdea27d7c8f876e15a19ee92ebe4e5e981f2f884f2f34666a0e42e690eb435032f6d9382dfbad8134cd2e4301bda9791fe47", 0x66}, {&(0x7f0000008280)="158793b54a7038946a3a9551b662f967b6593392cfce578d0e5c8a71cc492f6aaa83cafc445a9894de58aa44240f755e822c60805c7ec701be4582cf4af263dd222fe799cc397526e66725353163f63f43fb043e4e48aa6fc086c55692e9191a7f160fc2bba2f1b33dc3d008b7ad78af0b4b7dd24d6c0dabef1dd9c8de6fdda84902d154836344d1924173c6f8276a88769211f11dbb5db58d3078613aa9eb", 0x9f}, {&(0x7f0000008340)="e1c1f1f068c67a5aec85ab2ea69b8028d6e32973a6cd57a78db4dbfdabd1d700b0cca67f91b595370fa3d6ef31c9bf909cd9c586d15b10860a5828b4ebdca6404253e51795091cfb0cd4d625d3ada682cecb93716400896d1f5f74591f3cb1d51394b0c7a61ebd16ec", 0x69}, {&(0x7f00000083c0)="d19819b40bd32b06782213ae8d8220871167f8306357961452a3b100d854a3db3b035e5cea789b699df9052d89e9402b5311456989efec2cfac83331f8d00eb3ed7eb6e4a75de6cf749392d19d8f8d946d6e18906f76cd3cf1fe09a12dbbde90df428b0ce32488204aaea027107a8fe21447bca27ecf6315f94cd541082e64f740e9936e4578df4e2f9d97fa0af1a60e7250c915ee6f7f9b2d552bffd20ab5981bb230dfb860d3abb805a4ef36c16e70a4e796288a30e2429344b670fe016755df6ffd82acaf379b2908cf498c2834c54f962455fd6253c21e5fa89b083d899a04e2ad662f3bee4b8c9319b2fa16c42b8859393fbcd196a46a5328012e9cf558f1ea935ffbdd3b4a3e64d909e6661e3b541bf6116b25623af88ae67dab77aaf74f09ddda8b7d46280036889a81ca4c27cd2f4ac5fccfa60477522e095cf77dc30a0eea58b55bd31c47d460c52f3f2c925302064999f1ce1f64decd282354f286fb23c84b233e4525ca005a9313f9040efa89c65508287e21b528064b6c3489054196731c22db4e2b17b89158115221c7d562197b0712b255741604bd303b549d4eb64bcd543db82a0beedbf05564f3cfb29bc93fa27403c45ff6c974f8ed6fe720af3213fad89df0ee83619038dc7144fe2972cfd62f137c6cbc49430f84509f4dc52936461b1db077ab8f20fc43e775b19c4c8e28202b571207ee0638a5456ac608810f22e6453d72c2fab5b60a99a129c8eb432ba15dcc00d39ce8adbc55500513ac92eb30ab34950910f1d6d32c95d4f6491f2d7095db311c32956e58f020d474b2199190410b0501c04e68d1519cffbce4fdec6623793b04eb4c253bb8fe2b6db7121cc5f84742788d5bab43db03eef4542ca2b95297c87c0032e7b6d5401259e6b0cea3921c1aba569034ac5fdd178600fc0b0f0748f34be98a281f060f468b46c0d8eee126e807e7a24dbdd0c20c6646bb44227aa928149008ac34f4d2113ea7ac632a944e73ff1ed9ee87d0832edc51b0e35eed963cc3c569bf9cd4b22e9298b847b67e421903b75435b593c3ef17db17a5c6b74b05a3aa612ab2dc0227e27c04effbcce45cb6f624c8a716e9515c300c400528d8822932f8b71d607911274a97f3633c87d5d01c2811e182a5e62a68a9f53ef3ca933ea4192e5f6d3077825c795b1bbc216f4acf2cab338378790eb46feb2835ab5f2d03efea5d2a4286921bdfdb28b061de150ed1b344770c19227f23377ffff0d128f538d2553b2b0dcbcedfa9e8e252ce511782fc34dea3705d1fe28075a80a6e49c3b388b16f6aeb01dfb658df2b4f1d531018ca54b15a114dd5e0b2a70e4605b6300af73f44cbe5d4b169f9894745a982a7a302b043ee5cd893afd4e24b4977794a8a0e788d111aa1f9748b3289054ece1bd6bce064a914470da0cafa0cf3591ec1e7908a52e1793be430555df0c23ae09400c61d818e9df0211e79f3bf2bdb252bee12378e369983702be4def5165ce3ba6ad529625fa283f621c706dfa8441f142cac6181d06b0f60afc512ee6b75235ea15d15d41fcdc41084998672ce295e5107d2f19d4a80fa1ed7563066a76d59e3b9f983ff540b71d5468038f5b1347afd", 0x47b}], 0x8)
+ftruncate(r0, 0x800)
+executing program 2:
+r0 = socket$inet_tcp(0x2, 0x1, 0x0)
+connect$inet(r0, &(0x7f0000000180)={0x2, 0x0, @local}, 0x10)
+setsockopt$SO_TIMESTAMPING(r0, 0x1, 0x25, &(0x7f0000000000)=0x2a0, 0x4)
+executing program 1:
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+socket$inet6(0xa, 0x2, 0x0)
+clock_gettime(0x6, &(0x7f0000000080))
+executing program 3:
+r0 = socket$igmp(0x2, 0x3, 0x2)
+setsockopt$MRT_ADD_VIF(r0, 0x0, 0xca, &(0x7f00000000c0)={0x4, 0x4, 0x0, 0x0, @vifc_lcl_ifindex, @multicast1}, 0x10)
+setsockopt$MRT_FLUSH(r0, 0x0, 0xd4, &(0x7f0000000500)=0x8, 0x4)
+executing program 2:
+r0 = socket$inet6_tcp(0xa, 0x1, 0x0)
+bind$inet6(r0, &(0x7f0000000040)={0xa, 0x4e22}, 0x1c)
+listen(r0, 0x0)
+executing program 1:
+unshare(0x40000000)
+mmap(&(0x7f0000000000/0xb36000)=nil, 0xb36000, 0x3, 0x8031, 0xffffffffffffffff, 0x0)
+openat$cgroup_ro(0xffffffffffffff9c, &(0x7f0000000140)='memory.events\x00', 0x7a05, 0x1700)
+executing program 1:
+getrandom(&(0x7f0000000080)=""/240, 0xfffffffffffffe77, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+mprotect(&(0x7f0000082000/0x9000)=nil, 0x9000, 0x0)
+executing program 2:
+r0 = openat$tcp_congestion(0xffffffffffffff9c, &(0x7f0000000080), 0x1, 0x0)
+r1 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000000)='/proc/key-users\x00', 0x0, 0x0)
+sendfile(r0, r1, &(0x7f0000000040)=0x29, 0x2)
+executing program 3:
+r0 = socket$inet(0x2, 0x3, 0xff)
+ioctl$sock_SIOCGIFINDEX(r0, 0x8933, &(0x7f0000000000)={'sit0\x00', <r1=>0x0})
+sendmmsg$inet(r0, &(0x7f0000002c40)=[{{&(0x7f0000000540)={0x2, 0x0, @multicast1}, 0x10, &(0x7f0000000400)=[{&(0x7f0000000600)="120700000000000000cdd1a7f63a0070ed44a458", 0x14}], 0x1, &(0x7f00000005c0)=[@ip_pktinfo={{0x1c, 0x0, 0x8, {r1, @remote, @empty}}}], 0x20}}], 0x1, 0x0)
+
+program did not crash
+replaying the whole log did not cause a kernel crash
+single: executing 4 programs separately with timeout 6m0s
+testing program (duration=6m0s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): socket$inet-ioctl$sock_SIOCGIFINDEX-sendmmsg$inet
+detailed listing:
+executing program 0:
+r0 = socket$inet(0x2, 0x3, 0xff)
+ioctl$sock_SIOCGIFINDEX(r0, 0x8933, &(0x7f0000000000)={'sit0\x00', <r1=>0x0})
+sendmmsg$inet(r0, &(0x7f0000002c40)=[{{&(0x7f0000000540)={0x2, 0x0, @multicast1}, 0x10, &(0x7f0000000400)=[{&(0x7f0000000600)="120700000000000000cdd1a7f63a0070ed44a458", 0x14}], 0x1, &(0x7f00000005c0)=[@ip_pktinfo={{0x1c, 0x0, 0x8, {r1, @remote, @empty}}}], 0x20}}], 0x1, 0x0)
+
+program did not crash
+testing program (duration=6m0s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): openat$tcp_congestion-openat$procfs-sendfile
+detailed listing:
+executing program 0:
+r0 = openat$tcp_congestion(0xffffffffffffff9c, &(0x7f0000000080), 0x1, 0x0)
+r1 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000000)='/proc/key-users\x00', 0x0, 0x0)
+sendfile(r0, r1, &(0x7f0000000040)=0x29, 0x2)
+
+program did not crash
+testing program (duration=6m0s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): getrandom-madvise-mprotect
+detailed listing:
+executing program 0:
+getrandom(&(0x7f0000000080)=""/240, 0xfffffffffffffe77, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+mprotect(&(0x7f0000082000/0x9000)=nil, 0x9000, 0x0)
+
+program did not crash
+testing program (duration=6m0s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_genetlink_get_family_id$nl80211-sendmsg$NL80211_CMD_EXTERNAL_AUTH-io_uring_setup
+detailed listing:
+executing program 0:
+syz_genetlink_get_family_id$nl80211(0x0, 0xffffffffffffffff)
+sendmsg$NL80211_CMD_EXTERNAL_AUTH(0xffffffffffffffff, 0x0, 0x0)
+io_uring_setup(0x17fa, &(0x7f0000000100)={0x0, 0x405113, 0x1a})
+
+program did not crash
+single: failed to extract reproducer
+bisect: bisecting 24 programs with base timeout 6m0s
+testing program (duration=6m6s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): [2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+detailed listing:
+executing program 0:
+r0 = syz_io_uring_setup(0xf00, &(0x7f00000001c0)={0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, &(0x7f0000000100), &(0x7f0000000140))
+io_uring_enter(r0, 0x2, 0x0, 0x0, 0x0, 0x0)
+executing program 0:
+perf_event_open(&(0x7f00000004c0)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffff7ffffffffffb, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x8000, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}, 0x0, 0x0, 0x8, 0x0, 0x0, 0x0, 0x1}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+r0 = syz_open_dev$sg(&(0x7f0000000180), 0x0, 0x805)
+writev(r0, &(0x7f0000000040)=[{&(0x7f00000001c0)="ae0909000020000f0090f57f077030eff0f64ebbeed90cf41bdd2ac8bb8c43b460e46292d25133270b445393ec19", 0x2e}], 0x1)
+executing program 0:
+r0 = socket(0x200000000000011, 0x4000000000080002, 0x0)
+setsockopt$SO_TIMESTAMP(r0, 0x1, 0x23, &(0x7f0000000040)=0xfffffffe, 0x4)
+getsockopt$SO_TIMESTAMP(r0, 0x1, 0x3f, 0x0, &(0x7f00000000c0))
+executing program 0:
+mkdirat(0xffffffffffffff9c, &(0x7f0000000000)='./file0\x00', 0x0)
+mount$bind(&(0x7f00000002c0)='.\x00', &(0x7f0000000200)='./file0\x00', 0x0, 0x101091, 0x0)
+mount$tmpfs(0x0, &(0x7f00000024c0)='./file0/file0\x00', &(0x7f0000000280), 0x0, &(0x7f0000002480)={[{@huge_never}]})
+executing program 0:
+socket(0x10, 0x3, 0x0)
+socketpair$unix(0x1, 0x1, 0x0, &(0x7f0000000080)={0xffffffffffffffff, <r0=>0xffffffffffffffff})
+ioctl$sock_SIOCGIFINDEX(r0, 0x8933, &(0x7f0000000000)={'lo\x00'})
+executing program 0:
+syz_genetlink_get_family_id$nl80211(0x0, 0xffffffffffffffff)
+sendmsg$NL80211_CMD_EXTERNAL_AUTH(0xffffffffffffffff, 0x0, 0x0)
+io_uring_setup(0x17fa, &(0x7f0000000100)={0x0, 0x405113, 0x1a})
+executing program 3:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000080)='./file1\x00', 0x200450a, &(0x7f0000000440)={[{@errors_remount}, {@norecovery}, {@dioread_lock}, {@errors_remount}, {@noauto_da_alloc}, {@resgid}, {@barrier}, {@auto_da_alloc}, {@max_dir_size_kb={'max_dir_size_kb', 0x3d, 0x4e1}}]}, 0x11, 0x4d2, &(0x7f0000000a00)="$eJzs3U1vW1kZAOD33sSlHylxgUWpRKloUVpB7aShbcSiFAnRVSWg7EtInCiKE0ex0zZRhVLxA5AQokisWLFB4gcgof4EhFQJ9ggQCEHLLGYxMx7Zvu6kGTsfU8eeJs8jnd5zP3zf97jysc+9J3YAR9aFiLgdEUMRcSUiRrPtaVbuNFY2W8e9fPF4plGSqNfv/TeJJNvWPleSLU+1HhLHI+IHdyJ+nHw8bnV9Y3G6XC6tZuvF2tJKsbq+cXVhaXq+NF9anpycuDF1c+r61HhP2pmPiFvf+ecvf/bb797649cf/u3+vy//pJHWSLZ/azv2YWi3A1pNzzWfi7bhiFj9BME+jdpPQG7AeQAAsDeNz/ifi4ivND//j8ZQ89MpAAAAcJjUvzUS7yURdQAAAODQSptzYJO0kM0FGIk0LRRac3i/ECfTcqVa+9pcZW15tjVXNh+5dG6hXBrP5grnI5c01ieyObb5yB2LhXLp2kfrzf2TEXEmIn4xeqK5XpiplGcHffEDAAAAjohT28b/74y2xv8AAADAIZMfdAIAAADAgTP+BwAAgMPP+B8AAAAOte/dvdso9fbvX88+WF9brDy4OluqLhaW1mYKM5XVlcJ8pTLf/M6+pd3OV65UVr4Ry2uPirVStVasrm/cX6qsLdfuL7z2E9gAAABAH5358rO/JhGx+c0TzdJwbNBJAX2R7OfgfxxcHkD/DQ06AWBghgedADAwuZ12Pu1fHsDg7HYdoOvknT/1PhcAAOBgjH2x+/3/Ha8NAG+9dNAJAAB95/4/HF05MwDhyPvsLvvf/P5/vb6vhAAAgJ4baZYkLWT3AkciTQuFiNPNnwXIJXML5dJ4Nj74y2juM431ieYjk/397TAAAAAAAAAAAAAAAAAAAAAAAAAAHGH1ehJ1AAAA4FCLSP+VNL/NP2Js9NLI9usDx5J3R5vLiHj463tPH03XaqsTje3/e7W99qts+7VBXMEAAAAAtmuP09vjeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADopZcvHs+0Sz/j/ufbEZHvFH84jjeXxyMXESf/n8TwlsclETHUg/ibTyLibKf4SSOtyGdZdIp/YoDx04g41YP4cJQ9a/Q/tzu9/tK40Fx2fv0NZ+VNde//0lf931AWf2t/1+h/Tu8xxrnnvy92jf8k4txw5/6nHT/p0v9d3GP8H/1wY6PbvvpvIsY6vv8kr8Uq1pZWitX1jasLS9PzpfnS8uTkxI2pm1PXp8aLcwvlUvZvxxg//9IfPtip/Se7xM/v0v5Le2z/+88fvfh8q5rrFP/yxc7vv2e7xE+z976vZvXG/rF2fbNV3+r87/58fqf2z3Zp/27//5f32P4r3//p3/d4KADQB9X1jcXpcrm0+lZXhqJHJ+zVeVRU+lOpJwd05kH3TAAAQK9tGfoCAAAAAAAAAAAAAAAAAAAAA9KPLyrbHnNzME0FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANjRhwEAAP//HzvT7A==")
+r0 = open(&(0x7f0000000180)='./bus\x00', 0x14d27e, 0x0)
+preadv2(r0, &(0x7f0000000100)=[{&(0x7f0000000000)=""/76, 0xfdef}], 0x1, 0x0, 0x0, 0x1d)
+executing program 2:
+r0 = openat(0xffffffffffffff9c, &(0x7f0000000100)='./file1\x00', 0x141842, 0x0)
+write(r0, &(0x7f0000004200)="74efc4c419fdb8d66bbba728f371d056ad6f01e9762d70401d1c9d331b48b925e9e6a7759abb206b9b18bfc3f3f96adb2b37c2121ef21e91bac768dd33df29649da1d82e826a55c4d620b6f510daee26004b741c951d528d806efbe00c439f2df46d3adf8be24e280b948a49afd17d56437c6e752d84f99bf37a88f0c54488dd13b848f2381d7d2aecb68ed16762e4a3c1a847565364b9f1af92c9c89e06e89fe6179cb7078a742cb968a9f09cc690dc473df29d6ad9af5879e9a2618c63702117a3a63d3a4236baee86f5f452e9663a795306dabb97db884348ab437bdc13b7cfb03eff1cf216f09d21078e1852fc7c96413d9d65c52ce9baa6bc26de7f028738a17120de30a433c9c3c8e276f3ae5e18a1f95767fffe8e98b0c3f134f12263b01c36866d4e0e856cc14ecf50279adb9438c6219c49cae973d8e7faf33dcdeb96d7ef7e89ae828cb91df22939307bb1f7fb7392e1e24f6b63166b89937c00eb8fea0245cd93e4aa803160bd71c1a0bbb6b8285d8ab654485ab985f1dd2eb9abf53131a9680dcafe4000d3ea528dd52aba3e4ff6a3883ec614253d5627bd91522d881128328ed1e00907fa6cc48cec5268bbedd85ec02d8bac3183460dd1a27fbc06b5642473a41a6cbfb07f53deab2473b37c3d10a125d610f1b9ea5c83e7d462048f25fc1e79295eeff750a23faf5d542758c421bb0673504c9dbae2959f77", 0xffe00)
+creat(&(0x7f0000000240)='./file1\x00', 0x0)
+executing program 3:
+getrandom(&(0x7f0000000080)=""/240, 0xfffffffffffffe77, 0x0)
+mprotect(&(0x7f0000012000/0x4000)=nil, 0x4000, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+executing program 1:
+r0 = socket$inet_tcp(0x2, 0x1, 0x0)
+listen(r0, 0x0)
+listen(r0, 0x0)
+executing program 2:
+r0 = socket$netlink(0x10, 0x3, 0x0)
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+sendmsg$netlink(r0, &(0x7f0000004180)={0x0, 0x0, &(0x7f0000000b40)=[{&(0x7f00000000c0)={0x28, 0x26, 0xac4a5f2303079e8b, 0x0, 0x0, "", [@nested={0x11, 0x0, 0x0, 0x1, [@generic="b762a1aa27e95c91dab5d220e1"]}, @nested={0x4, 0xa}]}, 0x28}], 0x1}, 0x0)
+executing program 3:
+r0 = socket$inet6(0xa, 0x2, 0x0)
+setsockopt$inet6_IPV6_HOPOPTS(r0, 0x29, 0x36, &(0x7f0000000100)={0x0, 0x17, '\x00', [@enc_lim, @generic={0x7, 0xb1, "8305c3432205386b4c1da99c6e7865a4c23bc86845a98efa01f5b96ea2967c7824b699b6dcd5ad9be4db5c5d5848bca5c7b11790ed1d8b51c71e2705058240bef68d9252685ef6d337b879e95384e24db9dead0da85e428b5d7ded7fe103b0e9e35cf456e88e025c9a2cb335668b18787a7f70b7d4335c845cb38e48d7bfd1efbd0687c448e3cf2c728b27f343b32160f86166b2fac772a5cfabcf32957012b956dca60ef155a5f24696c2f619f2b32130"}, @pad1]}, 0xc8)
+setsockopt$inet6_IPV6_HOPOPTS(r0, 0x29, 0x36, 0x0, 0x0)
+executing program 1:
+r0 = socket$inet6_tcp(0xa, 0x1, 0x0)
+setsockopt$inet6_tcp_TCP_REPAIR_WINDOW(0xffffffffffffffff, 0x6, 0x1d, &(0x7f00000000c0)={0x6, 0x1}, 0x14)
+setsockopt$inet6_tcp_int(r0, 0x6, 0x2000000000000020, &(0x7f0000000040)=0xa, 0x1959cc36)
+executing program 2:
+unshare(0x40000400)
+r0 = openat$cgroup_ro(0xffffffffffffff9c, &(0x7f0000000200)='cgroup.controllers\x00', 0x26e1, 0x0)
+fchmod(r0, 0x0)
+executing program 3:
+mmap(&(0x7f0000000000/0xff5000)=nil, 0xff5000, 0x1000000, 0x200000005c831, 0xffffffffffffffff, 0xffffc000)
+r0 = eventfd2(0x7, 0x0)
+write$eventfd(r0, &(0x7f0000000040)=0x6, 0x8)
+executing program 1:
+r0 = creat(&(0x7f0000000040)='./bus\x00', 0x0)
+writev(r0, &(0x7f0000009440)=[{&(0x7f0000007f80)="a7609ac58f762f52e2017272ee7e7fcae970d491df3c5587d9763c2c657555c44b5f965f8b940e45361a6cbaf3d3faeb922f1c286680f8a105abe15a455c5cc89f6608f0902453a76cb35a586e7844d22e369abe5bd766ee331b5d53e9292c353a3206587d5f9ec7c45123fc738991ea5a190f5fcd68e5162af716c39ef2eb1bf04e8e4ee4f057c4bc0d50f67b6c", 0x8e}, {&(0x7f0000008040)="7526f292dcd88fea960a822aeb120e93d07ff0b087fa2b2e673ea4a9d763d9dce8c95911a30ed999162eb75ab0f5e3b7f5a12bd5b877bba64972100202f7cd5f055cdcefac24b6461da34a4aef71dbbc5fb8643d1a8115ed3f35591e80b5ea1b1e7855560574739ae3473ee10e6d414c1e7447ef2bcac305dd47cb718afea777301727ea5533da28b48e8764f38d36967bb9ea5b45eb8bb9d11a3a8063f4c2eea23b54cf0d3075147a9f843f75bb08e97f4352ecced0ae6d917a09240344834b23f17bc9320ff2d4f4b266ae9f244360714f313efb06439be7e65c8e6bcf7b013172b34d3e69fa1bd9c177764d023a1d6ceb356a58620a78", 0xf8}, {&(0x7f0000008140)="718feda85399e1a7f588fdf629718dcc15c665a7bdece94da9872b67ce0d96335291c78c3e2951eb549c19d00bea2543a78bcbcc58c667c97de0154be5409f5c5d8e7e72f77672a192545d72c618474e7f11bac89ddd75dbd4e8c57540faa8625aff181f9de8185674b27ae2c42cababff6bf4", 0x73}, {&(0x7f00000081c0)="b4541991ef60645a966cc679fd978e4c8b823230714ff7d0bfee", 0x1a}, {&(0x7f0000008200)="74fe1096fe09f05562858c983a02cb11f8ee2877c17c96e397cb56ad25caa79a76beba4cd07abe2fdc495ef7b6198f0ef211c369fdea27d7c8f876e15a19ee92ebe4e5e981f2f884f2f34666a0e42e690eb435032f6d9382dfbad8134cd2e4301bda9791fe47", 0x66}, {&(0x7f0000008280)="158793b54a7038946a3a9551b662f967b6593392cfce578d0e5c8a71cc492f6aaa83cafc445a9894de58aa44240f755e822c60805c7ec701be4582cf4af263dd222fe799cc397526e66725353163f63f43fb043e4e48aa6fc086c55692e9191a7f160fc2bba2f1b33dc3d008b7ad78af0b4b7dd24d6c0dabef1dd9c8de6fdda84902d154836344d1924173c6f8276a88769211f11dbb5db58d3078613aa9eb", 0x9f}, {&(0x7f0000008340)="e1c1f1f068c67a5aec85ab2ea69b8028d6e32973a6cd57a78db4dbfdabd1d700b0cca67f91b595370fa3d6ef31c9bf909cd9c586d15b10860a5828b4ebdca6404253e51795091cfb0cd4d625d3ada682cecb93716400896d1f5f74591f3cb1d51394b0c7a61ebd16ec", 0x69}, {&(0x7f00000083c0)="d19819b40bd32b06782213ae8d8220871167f8306357961452a3b100d854a3db3b035e5cea789b699df9052d89e9402b5311456989efec2cfac83331f8d00eb3ed7eb6e4a75de6cf749392d19d8f8d946d6e18906f76cd3cf1fe09a12dbbde90df428b0ce32488204aaea027107a8fe21447bca27ecf6315f94cd541082e64f740e9936e4578df4e2f9d97fa0af1a60e7250c915ee6f7f9b2d552bffd20ab5981bb230dfb860d3abb805a4ef36c16e70a4e796288a30e2429344b670fe016755df6ffd82acaf379b2908cf498c2834c54f962455fd6253c21e5fa89b083d899a04e2ad662f3bee4b8c9319b2fa16c42b8859393fbcd196a46a5328012e9cf558f1ea935ffbdd3b4a3e64d909e6661e3b541bf6116b25623af88ae67dab77aaf74f09ddda8b7d46280036889a81ca4c27cd2f4ac5fccfa60477522e095cf77dc30a0eea58b55bd31c47d460c52f3f2c925302064999f1ce1f64decd282354f286fb23c84b233e4525ca005a9313f9040efa89c65508287e21b528064b6c3489054196731c22db4e2b17b89158115221c7d562197b0712b255741604bd303b549d4eb64bcd543db82a0beedbf05564f3cfb29bc93fa27403c45ff6c974f8ed6fe720af3213fad89df0ee83619038dc7144fe2972cfd62f137c6cbc49430f84509f4dc52936461b1db077ab8f20fc43e775b19c4c8e28202b571207ee0638a5456ac608810f22e6453d72c2fab5b60a99a129c8eb432ba15dcc00d39ce8adbc55500513ac92eb30ab34950910f1d6d32c95d4f6491f2d7095db311c32956e58f020d474b2199190410b0501c04e68d1519cffbce4fdec6623793b04eb4c253bb8fe2b6db7121cc5f84742788d5bab43db03eef4542ca2b95297c87c0032e7b6d5401259e6b0cea3921c1aba569034ac5fdd178600fc0b0f0748f34be98a281f060f468b46c0d8eee126e807e7a24dbdd0c20c6646bb44227aa928149008ac34f4d2113ea7ac632a944e73ff1ed9ee87d0832edc51b0e35eed963cc3c569bf9cd4b22e9298b847b67e421903b75435b593c3ef17db17a5c6b74b05a3aa612ab2dc0227e27c04effbcce45cb6f624c8a716e9515c300c400528d8822932f8b71d607911274a97f3633c87d5d01c2811e182a5e62a68a9f53ef3ca933ea4192e5f6d3077825c795b1bbc216f4acf2cab338378790eb46feb2835ab5f2d03efea5d2a4286921bdfdb28b061de150ed1b344770c19227f23377ffff0d128f538d2553b2b0dcbcedfa9e8e252ce511782fc34dea3705d1fe28075a80a6e49c3b388b16f6aeb01dfb658df2b4f1d531018ca54b15a114dd5e0b2a70e4605b6300af73f44cbe5d4b169f9894745a982a7a302b043ee5cd893afd4e24b4977794a8a0e788d111aa1f9748b3289054ece1bd6bce064a914470da0cafa0cf3591ec1e7908a52e1793be430555df0c23ae09400c61d818e9df0211e79f3bf2bdb252bee12378e369983702be4def5165ce3ba6ad529625fa283f621c706dfa8441f142cac6181d06b0f60afc512ee6b75235ea15d15d41fcdc41084998672ce295e5107d2f19d4a80fa1ed7563066a76d59e3b9f983ff540b71d5468038f5b1347afd", 0x47b}], 0x8)
+ftruncate(r0, 0x800)
+executing program 2:
+r0 = socket$inet_tcp(0x2, 0x1, 0x0)
+connect$inet(r0, &(0x7f0000000180)={0x2, 0x0, @local}, 0x10)
+setsockopt$SO_TIMESTAMPING(r0, 0x1, 0x25, &(0x7f0000000000)=0x2a0, 0x4)
+executing program 1:
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
+socket$inet6(0xa, 0x2, 0x0)
+clock_gettime(0x6, &(0x7f0000000080))
+executing program 3:
+r0 = socket$igmp(0x2, 0x3, 0x2)
+setsockopt$MRT_ADD_VIF(r0, 0x0, 0xca, &(0x7f00000000c0)={0x4, 0x4, 0x0, 0x0, @vifc_lcl_ifindex, @multicast1}, 0x10)
+setsockopt$MRT_FLUSH(r0, 0x0, 0xd4, &(0x7f0000000500)=0x8, 0x4)
+executing program 2:
+r0 = socket$inet6_tcp(0xa, 0x1, 0x0)
+bind$inet6(r0, &(0x7f0000000040)={0xa, 0x4e22}, 0x1c)
+listen(r0, 0x0)
+executing program 1:
+unshare(0x40000000)
+mmap(&(0x7f0000000000/0xb36000)=nil, 0xb36000, 0x3, 0x8031, 0xffffffffffffffff, 0x0)
+openat$cgroup_ro(0xffffffffffffff9c, &(0x7f0000000140)='memory.events\x00', 0x7a05, 0x1700)
+executing program 1:
+getrandom(&(0x7f0000000080)=""/240, 0xfffffffffffffe77, 0x0)
+madvise(&(0x7f0000000000/0x600000)=nil, 0x600003, 0x15)
+mprotect(&(0x7f0000082000/0x9000)=nil, 0x9000, 0x0)
+executing program 2:
+r0 = openat$tcp_congestion(0xffffffffffffff9c, &(0x7f0000000080), 0x1, 0x0)
+r1 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000000)='/proc/key-users\x00', 0x0, 0x0)
+sendfile(r0, r1, &(0x7f0000000040)=0x29, 0x2)
+executing program 3:
+r0 = socket$inet(0x2, 0x3, 0xff)
+ioctl$sock_SIOCGIFINDEX(r0, 0x8933, &(0x7f0000000000)={'sit0\x00', <r1=>0x0})
+sendmmsg$inet(r0, &(0x7f0000002c40)=[{{&(0x7f0000000540)={0x2, 0x0, @multicast1}, 0x10, &(0x7f0000000400)=[{&(0x7f0000000600)="120700000000000000cdd1a7f63a0070ed44a458", 0x14}], 0x1, &(0x7f00000005c0)=[@ip_pktinfo={{0x1c, 0x0, 0x8, {r1, @remote, @empty}}}], 0x20}}], 0x1, 0x0)
+
+program did not crash
+replaying the whole log did not cause a kernel crash
+failed to extract reproducer
+reproducing took 42m9.257110719s

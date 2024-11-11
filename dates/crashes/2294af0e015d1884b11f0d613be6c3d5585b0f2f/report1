@@ -1,0 +1,99 @@
+EXT4-fs error (device loop1): __ext4_ext_dirty:169: inode #18: comm kworker/u4:4: mark_inode_dirty error
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop1): __ext4_ext_dirty:169: inode #18: comm kworker/u4:4: mark_inode_dirty error
+INFO: task syz-executor:3175 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor    state:D stack:24256 pid: 3175 ppid:     1 flags:0x00004002
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ wb_wait_for_completion+0x17c/0x230 fs/fs-writeback.c:209
+ sync_inodes_sb+0x1ad/0x9a0 fs/fs-writeback.c:2559
+ __sync_filesystem fs/sync.c:34 [inline]
+ sync_filesystem fs/sync.c:67 [inline]
+ sync_filesystem+0x15f/0x270 fs/sync.c:48
+ generic_shutdown_super+0x70/0x370 fs/super.c:448
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f549b994ef9
+RSP: 002b:00007fff28e2c968 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00007f549ba07a86 RCX: 00007f549b994ef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000001
+RBP: 0000000000000010 R08: 00007fff28e2a706 R09: 00007fff28e2dc20
+R10: 000000000000000a R11: 0000000000000246 R12: 00007fff28e2dc20
+R13: 00007f549ba07a14 R14: 00005555563d24a8 R15: 00007fff28e2ece0
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/23:
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x28c kernel/locking/lockdep.c:6254
+1 lock held by in:imklog/155:
+ #0: ffff88800fdc85f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+2 locks held by agetty/195:
+ #0: ffff888008fd0098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc900007962e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x223/0x1960 drivers/tty/n_tty.c:2156
+2 locks held by kworker/u4:4/250:
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88801887fda8 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+1 lock held by syz-executor/3175:
+ #0: ffff88800bc900e0 (&type->s_umount_key#42){++++}-{3:3}, at: deactivate_super+0xa5/0xd0 fs/super.c:365
+1 lock held by syz.0.334/6280:
+ #0: ffff88800bc900e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.2.355/6413:
+ #0: ffff88800bc900e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.3.379/6974:
+ #0: ffff88800bc900e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.1.606/10548:
+ #0: ffff88800bc900e0 (&type->s_umount_key#42){++++}-{3:3}, at: __get_super.part.0+0x1b8/0x270 fs/super.c:759
+1 lock held by syz.2.697/12401:
+ #0: ffff88800bc900e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.3.737/13550:
+ #0: ffff88800bc900e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.3.737/13551:
+ #0: ffff88800bc900e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.1.767/13673:
+ #0: ffff88800bc900e0 (&type->s_umount_key#42){++++}-{3:3}, at: __get_super.part.0+0x1b8/0x270 fs/super.c:759
+1 lock held by syz.1.976/16135:
+ #0: ffff88800bc900e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+
+=============================================
+
+EXT4-fs error: 450 callbacks suppressed
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop1): __ext4_ext_dirty:169: inode #18: comm kworker/u4:4: mark_inode_dirty error
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop1): __ext4_ext_dirty:169: inode #18: comm kworker/u4:4: mark_inode_dirty error
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop1): __ext4_ext_dirty:169: inode #18: comm kworker/u4:4: mark_inode_dirty error
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop1): __ext4_ext_dirty:169: inode #18: comm kworker/u4:4: mark_inode_dirty error
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop1): __ext4_ext_dirty:169: inode #18: comm kworker/u4:4: mark_inode_dirty error
+EXT4-fs error: 448 callbacks suppressed
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop1): __ext4_ext_dirty:169: inode #18: comm kworker/u4:4: mark_inode_dirty error
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop1): __ext4_ext_dirty:169: inode #18: comm kworker/u4:4: mark_inode_dirty error
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop1): __ext4_ext_dirty:169: inode #18: comm kworker/u4:4: mark_inode_dirty error
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop1): __ext4_ext_dirty:169: inode #18: comm kworker/u4:4: mark_inode_dirty error
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop1): __ext4_ext_dirty:169: inode #18: comm kworker/u4:4: mark_inode_dirty error

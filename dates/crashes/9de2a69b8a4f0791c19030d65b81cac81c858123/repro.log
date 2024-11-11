@@ -1,0 +1,299 @@
+Warning: Permanently added '[localhost]:45764' (ED25519) to the list of known hosts.
+syzkaller login: [   37.171709] audit: type=1400 audit(1730956180.858:6): avc:  denied  { execmem } for  pid=238 comm="syz-executor319" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+Setting up swapspace version 1, size = 122.1 MiB (127995904 bytes)
+no label, UUID=32343d63-83c2-4feb-bfcf-844b05d2dfce
+[   37.217282] Adding 124996k swap on ./swap-file.  Priority:0 extents:1 across:124996k 
+executing program
+[   40.404187] FAULT_INJECTION: forcing a failure.
+[   40.404187] name failslab, interval 1, probability 0, space 0, times 1
+[   40.406066] CPU: 0 PID: 241 Comm: syz-executor319 Not tainted 5.10.0 #1
+[   40.407059] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[   40.408476] Call Trace:
+[   40.408865]  dump_stack+0x107/0x163
+[   40.409383]  should_fail.cold+0x5/0x1f
+[   40.409950]  ? __kernfs_new_node+0xd4/0x930
+[   40.410574]  should_failslab+0x5/0x10
+[   40.411119]  kmem_cache_alloc+0x5b/0x330
+[   40.411714]  __kernfs_new_node+0xd4/0x930
+[   40.412318]  ? kernfs_find_ns+0x370/0x370
+[   40.412910]  ? lockdep_hardirqs_on_prepare+0x420/0x420
+[   40.413660]  ? lockdep_hardirqs_on_prepare+0x420/0x420
+[   40.414437]  kernfs_create_dir_ns+0x9c/0x220
+[   40.415081]  sysfs_create_dir_ns+0x127/0x290
+[   40.415716]  ? sysfs_create_mount_point+0xb0/0xb0
+[   40.416392]  ? rwlock_bug.part.0+0x90/0x90
+[   40.417007]  ? do_raw_spin_unlock+0x4f/0x210
+[   40.417655]  kobject_add_internal+0x25a/0xb20
+[   40.418309]  kobject_init_and_add+0x101/0x160
+[   40.418963]  ? kobject_create_and_add+0xb0/0xb0
+[   40.419633]  ? wait_for_completion+0x260/0x260
+[   40.420285]  ? kernfs_name_hash+0xe7/0x110
+[   40.420926]  ? kernfs_find_ns+0x256/0x370
+[   40.421520]  sysfs_slab_add+0x64/0x1e0
+[   40.422110]  __kmem_cache_create+0x411/0x590
+[   40.422748]  kmem_cache_create_usercopy+0x1d9/0x2e0
+[   40.423471]  p9_client_create+0xc27/0x1090
+[   40.424121]  ? p9_client_remove+0x1c0/0x1c0
+[   40.424753]  ? lockdep_init_map_waits+0x26a/0x720
+[   40.425448]  ? __raw_spin_lock_init+0x34/0x100
+[   40.426112]  v9fs_session_init+0x1dd/0x1730
+[   40.426751]  ? v9fs_show_options+0x6f0/0x6f0
+[   40.427402]  ? kasan_unpoison_shadow+0x33/0x40
+[   40.428075]  ? __kasan_kmalloc.constprop.0+0xc2/0xd0
+[   40.428902]  v9fs_mount+0x79/0x900
+[   40.429404]  ? v9fs_write_inode_dotl+0x90/0x90
+[   40.430076]  legacy_get_tree+0x105/0x220
+[   40.430688]  ? ns_capable_common+0x117/0x140
+[   40.431317]  vfs_get_tree+0x8e/0x360
+[   40.431864]  path_mount+0x1318/0x2060
+[   40.432421]  ? strncpy_from_user+0x9e/0x490
+[   40.433039]  ? finish_automount+0xa90/0xa90
+[   40.433667]  ? getname_flags.part.0+0x1dd/0x4f0
+[   40.434326]  ? _copy_from_user+0x160/0x1b0
+[   40.434946]  __x64_sys_mount+0x27e/0x300
+[   40.435518]  ? path_mount+0x2060/0x2060
+[   40.436106]  ? syscall_enter_from_user_mode+0x27/0x80
+[   40.436845]  do_syscall_64+0x33/0x40
+[   40.437365]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   40.438094] RIP: 0033:0x7f5c81dbfebd
+[   40.438624] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+[   40.441262] RSP: 002b:00007fffbdf7aed8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+[   40.442342] RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f5c81dbfebd
+[   40.443376] RDX: 0000000020000b80 RSI: 0000000020000040 RDI: 0000000000000000
+[   40.444384] RBP: 00007fffbdf7aee0 R08: 0000000020000580 R09: 00007fffbd003832
+[   40.445406] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000006
+[   40.446419] R13: 00007fffbdf7afd0 R14: 00007fffbdf7aff0 R15: 0000000000000001
+[   40.448053] kobject_add_internal failed for 9p-fcall-cache (error: -12 parent: slab)
+[   40.449619] ==================================================================
+[   40.450745] BUG: KASAN: double-free or invalid-free in kmem_cache_free+0x97/0x340
+[   40.451814] 
+[   40.452049] CPU: 0 PID: 241 Comm: syz-executor319 Not tainted 5.10.0 #1
+[   40.453008] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[   40.454927] Call Trace:
+[   40.455315]  dump_stack+0x107/0x163
+[   40.456649]  print_address_description.constprop.0+0x1c/0x210
+[   40.457492]  ? _raw_spin_lock_irqsave+0x4e/0x50
+[   40.458417]  ? vprintk_func+0x95/0x250
+[   40.459331]  ? kmem_cache_free+0x97/0x340
+[   40.459937]  kasan_report_invalid_free+0x51/0x80
+[   40.460618]  ? kmem_cache_free+0x97/0x340
+[   40.461206]  __kasan_slab_free+0x13f/0x150
+[   40.461836]  slab_free_freelist_hook+0x53/0x130
+[   40.462497]  ? kmem_cache_create_usercopy+0x2bf/0x2e0
+[   40.463227]  kmem_cache_free+0x97/0x340
+[   40.463805]  kmem_cache_create_usercopy+0x2bf/0x2e0
+[   40.464524]  p9_client_create+0xc27/0x1090
+[   40.465151]  ? p9_client_remove+0x1c0/0x1c0
+[   40.465804]  ? lockdep_init_map_waits+0x26a/0x720
+[   40.466478]  ? __raw_spin_lock_init+0x34/0x100
+[   40.467135]  v9fs_session_init+0x1dd/0x1730
+[   40.467763]  ? v9fs_show_options+0x6f0/0x6f0
+[   40.468392]  ? kasan_unpoison_shadow+0x33/0x40
+[   40.469044]  ? __kasan_kmalloc.constprop.0+0xc2/0xd0
+[   40.469779]  v9fs_mount+0x79/0x900
+[   40.470282]  ? v9fs_write_inode_dotl+0x90/0x90
+[   40.470936]  legacy_get_tree+0x105/0x220
+[   40.471506]  ? ns_capable_common+0x117/0x140
+[   40.472133]  vfs_get_tree+0x8e/0x360
+[   40.472669]  path_mount+0x1318/0x2060
+[   40.473207]  ? strncpy_from_user+0x9e/0x490
+[   40.473840]  ? finish_automount+0xa90/0xa90
+[   40.474445]  ? getname_flags.part.0+0x1dd/0x4f0
+[   40.475117]  ? _copy_from_user+0x160/0x1b0
+[   40.475729]  __x64_sys_mount+0x27e/0x300
+[   40.476298]  ? path_mount+0x2060/0x2060
+[   40.476871]  ? syscall_enter_from_user_mode+0x27/0x80
+[   40.477612]  do_syscall_64+0x33/0x40
+[   40.478126]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   40.478865] RIP: 0033:0x7f5c81dbfebd
+[   40.479406] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+[   40.482048] RSP: 002b:00007fffbdf7aed8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+[   40.483141] RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f5c81dbfebd
+[   40.484169] RDX: 0000000020000b80 RSI: 0000000020000040 RDI: 0000000000000000
+[   40.485203] RBP: 00007fffbdf7aee0 R08: 0000000020000580 R09: 00007fffbd003832
+[   40.486210] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000006
+[   40.487230] R13: 00007fffbdf7afd0 R14: 00007fffbdf7aff0 R15: 0000000000000001
+[   40.488266] 
+[   40.488497] Allocated by task 241:
+[   40.489020]  kasan_save_stack+0x1b/0x40
+[   40.489593]  __kasan_kmalloc.constprop.0+0xc2/0xd0
+[   40.490301]  kmem_cache_alloc+0x145/0x330
+[   40.490908]  kmem_cache_create_usercopy+0x18e/0x2e0
+[   40.491650]  p9_client_create+0xc27/0x1090
+[   40.492248]  v9fs_session_init+0x1dd/0x1730
+[   40.492902]  v9fs_mount+0x79/0x900
+[   40.493419]  legacy_get_tree+0x105/0x220
+[   40.494010]  vfs_get_tree+0x8e/0x360
+[   40.494527]  path_mount+0x1318/0x2060
+[   40.495079]  __x64_sys_mount+0x27e/0x300
+[   40.495668]  do_syscall_64+0x33/0x40
+[   40.496189]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   40.496912] 
+[   40.497145] Freed by task 241:
+[   40.497602]  kasan_save_stack+0x1b/0x40
+[   40.498157]  kasan_set_track+0x1c/0x30
+[   40.498711]  kasan_set_free_info+0x1b/0x30
+[   40.499305]  __kasan_slab_free+0x110/0x150
+[   40.499902]  slab_free_freelist_hook+0x53/0x130
+[   40.500565]  kmem_cache_free+0x97/0x340
+[   40.501122]  kobject_put+0x19d/0x300
+[   40.501648]  sysfs_slab_add+0x170/0x1e0
+[   40.502194]  __kmem_cache_create+0x411/0x590
+[   40.502824]  kmem_cache_create_usercopy+0x1d9/0x2e0
+[   40.503515]  p9_client_create+0xc27/0x1090
+[   40.504124]  v9fs_session_init+0x1dd/0x1730
+[   40.504762]  v9fs_mount+0x79/0x900
+[   40.505256]  legacy_get_tree+0x105/0x220
+[   40.505834]  vfs_get_tree+0x8e/0x360
+[   40.506352]  path_mount+0x1318/0x2060
+[   40.506908]  __x64_sys_mount+0x27e/0x300
+[   40.507485]  do_syscall_64+0x33/0x40
+[   40.508012]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   40.508747] 
+[   40.508984] The buggy address belongs to the object at ffff88800bf7e780
+[   40.508984]  which belongs to the cache kmem_cache of size 216
+[   40.510747] The buggy address is located 0 bytes inside of
+[   40.510747]  216-byte region [ffff88800bf7e780, ffff88800bf7e858)
+[   40.512371] The buggy address belongs to the page:
+[   40.513083] page:000000009e83a106 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xbf7e
+[   40.514429] flags: 0x100000000000200(slab)
+[   40.515046] raw: 0100000000000200 dead000000000100 dead000000000122 ffff888008041000
+[   40.516180] raw: 0000000000000000 00000000800c000c 00000001ffffffff 0000000000000000
+[   40.517281] page dumped because: kasan: bad access detected
+[   40.518077] 
+[   40.518312] Memory state around the buggy address:
+[   40.519010]  ffff88800bf7e680: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[   40.520034]  ffff88800bf7e700: 00 00 00 fc fc fc fc fc fc fc fc fc fc fc fc fc
+[   40.521066] >ffff88800bf7e780: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[   40.522108]                    ^
+[   40.522593]  ffff88800bf7e800: fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc fc
+[   40.523624]  ffff88800bf7e880: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[   40.524661] ==================================================================
+[   40.525697] Disabling lock debugging due to kernel taint
+[   40.526577] kmem_cache_create(9p-fcall-cache) failed with error -12
+[   40.527490] CPU: 0 PID: 241 Comm: syz-executor319 Tainted: G    B             5.10.0 #1
+[   40.528760] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[   40.530215] Call Trace:
+[   40.530629]  dump_stack+0x107/0x163
+[   40.531140]  kmem_cache_create_usercopy.cold+0x17/0x65
+[   40.531902]  p9_client_create+0xc27/0x1090
+[   40.532508]  ? p9_client_remove+0x1c0/0x1c0
+[   40.533146]  ? lockdep_init_map_waits+0x26a/0x720
+[   40.533858]  ? __raw_spin_lock_init+0x34/0x100
+[   40.534518]  v9fs_session_init+0x1dd/0x1730
+[   40.535144]  ? v9fs_show_options+0x6f0/0x6f0
+[   40.535791]  ? kasan_unpoison_shadow+0x33/0x40
+[   40.536443]  ? __kasan_kmalloc.constprop.0+0xc2/0xd0
+[   40.537174]  v9fs_mount+0x79/0x900
+[   40.537698]  ? v9fs_write_inode_dotl+0x90/0x90
+[   40.538347]  legacy_get_tree+0x105/0x220
+[   40.538952]  ? ns_capable_common+0x117/0x140
+[   40.539591]  vfs_get_tree+0x8e/0x360
+[   40.540133]  path_mount+0x1318/0x2060
+[   40.540690]  ? strncpy_from_user+0x9e/0x490
+[   40.541298]  ? finish_automount+0xa90/0xa90
+[   40.541924]  ? getname_flags.part.0+0x1dd/0x4f0
+[   40.542599]  ? _copy_from_user+0x160/0x1b0
+[   40.543206]  __x64_sys_mount+0x27e/0x300
+[   40.543798]  ? path_mount+0x2060/0x2060
+[   40.544363]  ? syscall_enter_from_user_mode+0x27/0x80
+[   40.545114]  do_syscall_64+0x33/0x40
+[   40.545661]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   40.546395] RIP: 0033:0x7f5c81dbfebd
+[   40.546942] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+[   40.549639] RSP: 002b:00007fffbdf7aed8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+[   40.550743] RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f5c81dbfebd
+[   40.551786] RDX: 0000000020000b80 RSI: 0000000020000040 RDI: 0000000000000000
+[   40.552814] RBP: 00007fffbdf7aee0 R08: 0000000020000580 R09: 00007fffbd003832
+[   40.553853] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000006
+[   40.554902] R13: 00007fffbdf7afd0 R14: 00007fffbdf7aff0 R15: 0000000000000001
+[   40.564008] syz-executor319 (241) used greatest stack depth: 23496 bytes left
+
+VM DIAGNOSIS:
+13:09:44  Registers:
+info registers vcpu 0
+
+CPU#0
+RAX=dffffc0000000060 RBX=0000000000000005 RCX=0000000000000000 RDX=00000000000003fd
+RSI=ffffffff823c0aec RDI=ffffffff87a492e0 RBP=ffffffff87a492a0 RSP=ffff88800ac5f2c8
+R8 =0000000000000001 R9 =0000000000000003 R10=000000000000001f R11=0000000000000001
+R12=0000000000000000 R13=fffffbfff0f492a7 R14=fffffbfff0f4925e R15=dffffc0000000000
+RIP=ffffffff823c0b14 RFL=00000002 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 00005555557d8480 00000000 00000000
+GS =0000 ffff88806ce00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe0000003000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe0000001000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=0000000020001000 CR3=000000000faee000 CR4=00350ef0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM01=0000000000000000 0000000000000000 ffff000000000000 ffff000000ff0000
+YMM02=0000000000000000 0000000000000000 000000000000ff00 00000000000000ff
+YMM03=0000000000000000 0000000000000000 000000000000ff00 00000000000000ff
+YMM04=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM05=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM06=0000000000000000 0000000000000000 00000000ff000000 00ff0000ff000000
+YMM07=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM08=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM09=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM10=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+info registers vcpu 1
+
+CPU#1
+RAX=dffffc0000000000 RBX=ffff88806cf274e0 RCX=0000000000000000 RDX=0000000000000000
+RSI=0000000000000000 RDI=ffff88806cf26b58 RBP=ffff88806cf26b40 RSP=ffff88806cf09e08
+R8 =0000000000000001 R9 =0000000000000000 R10=0000000000000000 R11=0000000000000001
+R12=0000000000000000 R13=0000000000000001 R14=ffff88806cf26c08 R15=ffff88806cf26b40
+RIP=ffffffff812ad78a RFL=00000046 [---Z-P-] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 00007fc7fa5d6900 00000000 00000000
+GS =0000 ffff88806cf00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe000003e000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe000003c000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=00007fc7f9a216c0 CR3=000000000bfc2000 CR4=00350ee0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM01=0000000000000000 0000000000000000 2e003f0139884792 b34cf7921dabd4e6
+YMM02=0000000000000000 0000000000000000 f3e88f777023e8a3 00000000000aea10
+YMM03=0000000000000000 0000000000000000 ac8bc31478ec8511 00000000000aef78
+YMM04=0000000000000000 0000000000000000 47b23b2301877f48 0000000000127930
+YMM05=0000000000000000 0000000000000000 d3fdd5f48436fbd7 00000000000aeab8
+YMM06=0000000000000000 0000000000000000 fce12c5adfc1de56 00000000000ae970
+YMM07=0000000000000000 0000000000000000 a1fcdcf819d7e1e5 00000000000ae728
+YMM08=0000000000000000 0000000000000000 44495f474f4c5359 530069253d595449
+YMM09=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM10=0000000000000000 0000000000000000 0000000000000000 0000000000200000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000

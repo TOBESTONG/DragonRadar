@@ -1,0 +1,131 @@
+audit: type=1326 audit(1731305398.910:499): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=18240 comm="syz.3.1053" exe="/syz-executor" sig=0 arch=c000003e syscall=202 compat=0 ip=0x7ff6c7ebeef9 code=0x7fc00000
+fuse: Unknown parameter '›Ï¹0x0000000000000004'
+TCP: TCP_TX_DELAY enabled
+netlink: 8 bytes leftover after parsing attributes in process `syz.2.1076'.
+INFO: task syz.1.227:3903 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.1.227       state:D stack:25576 pid: 3903 ppid:   232 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ bit_wait_io+0x12/0xa0 kernel/sched/wait_bit.c:209
+ __wait_on_bit_lock+0x131/0x1c0 kernel/sched/wait_bit.c:90
+ out_of_line_wait_on_bit_lock+0xd5/0x110 kernel/sched/wait_bit.c:117
+ wait_on_bit_lock_io include/linux/wait_bit.h:208 [inline]
+ __lock_buffer fs/buffer.c:69 [inline]
+ lock_buffer include/linux/buffer_head.h:366 [inline]
+ __sync_dirty_buffer+0x34f/0x3e0 fs/buffer.c:3142
+ __ext4_handle_dirty_metadata+0x28b/0x9b0 fs/ext4/ext4_jbd2.c:364
+ ext4_convert_inline_data_nolock+0x5fd/0xd60 fs/ext4/inline.c:1237
+ ext4_convert_inline_data+0x37c/0x490 fs/ext4/inline.c:1986
+ ext4_fallocate+0x19d/0x3e70 fs/ext4/extents.c:4659
+ vfs_fallocate+0x494/0xdd0 fs/open.c:309
+ ksys_fallocate fs/open.c:332 [inline]
+ __do_sys_fallocate fs/open.c:340 [inline]
+ __se_sys_fallocate fs/open.c:338 [inline]
+ __x64_sys_fallocate+0xcf/0x140 fs/open.c:338
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f8060ad4ef9
+RSP: 002b:00007f805f74e038 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
+RAX: ffffffffffffffda RBX: 00007f8060c8cf80 RCX: 00007f8060ad4ef9
+RDX: 0000000000007fff RSI: 0000000000000000 RDI: 0000000000000008
+RBP: 00007f8060b47b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f8060c8cf80 R15: 00007ffea699f868
+INFO: task syz.1.227:3947 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.1.227       state:D stack:28120 pid: 3947 ppid:   232 flags:0x00000004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ rwsem_down_read_slowpath+0x2ad/0xb90 kernel/locking/rwsem.c:1099
+ __down_read kernel/locking/rwsem.c:1341 [inline]
+ down_read+0x1ec/0x450 kernel/locking/rwsem.c:1494
+ ext4_xattr_get+0x14e/0xa40 fs/ext4/xattr.c:650
+ __vfs_getxattr+0xdb/0x140 fs/xattr.c:375
+ cap_inode_need_killpriv+0x3c/0x60 security/commoncap.c:300
+ security_inode_need_killpriv+0x46/0xa0 security/security.c:1352
+ dentry_needs_remove_privs fs/inode.c:1899 [inline]
+ dentry_needs_remove_privs+0x9b/0x100 fs/inode.c:1889
+ do_truncate+0xc4/0x1f0 fs/open.c:56
+ do_sys_ftruncate+0x596/0x8b0 fs/open.c:195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f8060ad4ef9
+RSP: 002b:00007f805f72d038 EFLAGS: 00000246 ORIG_RAX: 000000000000004d
+RAX: ffffffffffffffda RBX: 00007f8060c8d058 RCX: 00007f8060ad4ef9
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000008
+RBP: 00007f8060b47b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f8060c8d058 R15: 00007ffea699f868
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/23:
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x28c kernel/locking/lockdep.c:6254
+3 locks held by kworker/u4:1/59:
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88800aa27da8 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+ #2: ffff8880081360e0 (&type->s_umount_key#30){.+.+}-{3:3}, at: trylock_super+0x1d/0x100 fs/super.c:418
+2 locks held by kworker/0:2/68:
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008056538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88800bfd7da8 ((work_completion)(&rew.rew_work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+1 lock held by in:imklog/155:
+2 locks held by agetty/195:
+ #0: ffff88800b237098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc900007922e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x223/0x1960 drivers/tty/n_tty.c:2156
+5 locks held by kworker/u4:6/3548:
+ #0: ffff888008322138 ((wq_completion)netns){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008322138 ((wq_completion)netns){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008322138 ((wq_completion)netns){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008322138 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008322138 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008322138 ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88800b477da8 (net_cleanup_work){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+ #2: ffffffff85a883d0 (pernet_ops_rwsem){++++}-{3:3}, at: cleanup_net+0x9b/0x8e0 net/core/net_namespace.c:566
+ #3: ffffffff85aa76a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock_unregistering net/core/dev.c:11076 [inline]
+ #3: ffffffff85aa76a8 (rtnl_mutex){+.+.}-{3:3}, at: default_device_exit_batch+0xe8/0x3c0 net/core/dev.c:11114
+ #4: ffffffff850fde68 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:290 [inline]
+ #4: ffffffff850fde68 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0xa53/0xbb0 kernel/rcu/tree_exp.h:836
+2 locks held by agetty/3623:
+ #0: ffff88800b4c7098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc900006f02e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x223/0x1960 drivers/tty/n_tty.c:2156
+2 locks held by syz.1.227/3903:
+ #0: ffff888016316438 (sb_writers#3){.+.+}-{0:0}, at: ksys_fallocate fs/open.c:332 [inline]
+ #0: ffff888016316438 (sb_writers#3){.+.+}-{0:0}, at: __do_sys_fallocate fs/open.c:340 [inline]
+ #0: ffff888016316438 (sb_writers#3){.+.+}-{0:0}, at: __se_sys_fallocate fs/open.c:338 [inline]
+ #0: ffff888016316438 (sb_writers#3){.+.+}-{0:0}, at: __x64_sys_fallocate+0xcf/0x140 fs/open.c:338
+ #1: ffff88801ac7e338 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ #1: ffff88801ac7e338 (&ei->xattr_sem){++++}-{3:3}, at: ext4_convert_inline_data+0x280/0x490 fs/ext4/inline.c:1984
+2 locks held by syz.1.227/3947:
+ #0: ffff888016316438 (sb_writers#3){.+.+}-{0:0}, at: do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ #1: ffff88801ac7e338 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_get+0x14e/0xa40 fs/ext4/xattr.c:650
+1 lock held by syz.1.569/11154:
+ #0: ffff8880163160e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+3 locks held by syz.3.810/15521:
+ #0: ffff88800e19a438 (sb_writers#3){.+.+}-{0:0}, at: filename_create+0x104/0x490 fs/namei.c:3462
+ #1: ffff88801ac4e6f8 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+ #1: ffff88801ac4e6f8 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: filename_create+0x15a/0x490 fs/namei.c:3467
+ #2: ffff88801ac4e338 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ #2: ffff88801ac4e338 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_add_inline_entry+0x108/0x650 fs/ext4/inline.c:1271
+1 lock held by syz-executor/16311:
+ #0: ffff88800ce00308 (&xt[i].mutex){+.+.}-{3:3}, at: xt_find_table_lock+0x43/0x580 net/netfilter/x_tables.c:1206
+1 lock held by syz.0.1066/18288:
+
+=============================================
+

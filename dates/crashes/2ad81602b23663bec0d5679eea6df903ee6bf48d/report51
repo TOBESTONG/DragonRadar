@@ -1,0 +1,63 @@
+EXT4-fs error (device loop0) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop0): ext4_dirty_inode:5942: inode #18: comm syz.0.29: mark_inode_dirty error
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4.h:3196!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 2199 Comm: syz.0.29 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff88800b526f40 EFLAGS: 00010212
+RAX: 00000000000098fc RBX: 0000000000000001 RCX: ffffc90000fa4000
+RDX: 0000000000040000 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff888019cb8000 R08: 0000000000000000 R09: ffff88802306f677
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800c4de000
+R13: ffff88800c4de650 R14: 0000000000000001 R15: 0000000000000001
+FS:  00007fb8dbacc6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f43b55bc040 CR3: 0000000010f80000 CR4: 0000000000350ef0
+Call Trace:
+ ext4_mb_find_by_goal+0xf4/0x1030 fs/ext4/mballoc.c:1884
+ ext4_mb_regular_allocator+0x235/0x1ee0 fs/ext4/mballoc.c:2320
+ ext4_mb_new_blocks+0x2322/0x4b60 fs/ext4/mballoc.c:4997
+ ext4_ext_map_blocks+0x1f8e/0x5d50 fs/ext4/extents.c:4238
+ ext4_map_blocks+0x700/0x1740 fs/ext4/inode.c:628
+ ext4_iomap_alloc fs/ext4/inode.c:3418 [inline]
+ ext4_iomap_begin+0x3ec/0x760 fs/ext4/inode.c:3468
+ iomap_apply+0x164/0xb10 fs/iomap/apply.c:46
+ __iomap_dio_rw+0x6cd/0x1200 fs/iomap/direct-io.c:517
+ iomap_dio_rw+0x31/0x90 fs/iomap/direct-io.c:605
+ ext4_dio_write_iter fs/ext4/file.c:552 [inline]
+ ext4_file_write_iter+0xc55/0x1b20 fs/ext4/file.c:662
+ call_write_iter include/linux/fs.h:1903 [inline]
+ new_sync_write+0x42c/0x670 fs/read_write.c:518
+ vfs_write+0x81b/0xac0 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fb8dce73ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb8dbacc038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fb8dd02c058 RCX: 00007fb8dce73ef9
+RDX: 0000000000000010 RSI: 00000000200002c0 RDI: 0000000000000007
+RBP: 00007fb8dcee6b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fb8dd02c058 R15: 00007ffd2970b2c8
+Modules linked in:
+EXT4-fs warning (device loop0): ext4_read_inode_bitmap:147: Cannot read inode bitmap - block_group = 0, inode_bitmap = 1812360018
+---[ end trace 8f164f7f8af8b944 ]---
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff88800b526f40 EFLAGS: 00010212
+RAX: 00000000000098fc RBX: 0000000000000001 RCX: ffffc90000fa4000
+RDX: 0000000000040000 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff888019cb8000 R08: 0000000000000000 R09: ffff88802306f677
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800c4de000
+R13: ffff88800c4de650 R14: 0000000000000001 R15: 0000000000000001
+FS:  00007fb8dbacc6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f43b55bc040 CR3: 0000000010f80000 CR4: 0000000000350ef0
+syz.0.29 (2199) used greatest stack depth: 24168 bytes left
+EXT4-fs error (device loop0): htree_dirblock_to_tree:1027: inode #2: block 3: comm syz-executor: bad entry in directory: rec_len is smaller than minimal - offset=0, inode=0, rec_len=0, name_len=0, size=2048

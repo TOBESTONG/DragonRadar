@@ -1,0 +1,57 @@
+EXT4-fs (loop2): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs error (device loop2): ext4_xattr_ibody_get:593: inode #18: comm syz.2.33: corrupted in-inode xattr
+==================================================================
+BUG: KASAN: use-after-free in get_max_inline_xattr_value_size+0x49c/0x510 fs/ext4/inline.c:57
+Read of size 4 at addr ffff888013196084 by task syz.2.33/2187
+
+CPU: 1 PID: 2187 Comm: syz.2.33 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ get_max_inline_xattr_value_size+0x49c/0x510 fs/ext4/inline.c:57
+ ext4_get_max_inline_size.part.0+0xa8/0x180 fs/ext4/inline.c:108
+ ext4_get_max_inline_size fs/ext4/inline.c:96 [inline]
+ ext4_da_write_inline_data_begin+0x1d6/0xdb0 fs/ext4/inline.c:882
+ ext4_da_write_begin+0x8fc/0xe60 fs/ext4/inode.c:2959
+ generic_perform_write+0x1fe/0x4d0 mm/filemap.c:3329
+ ext4_buffered_write_iter+0x244/0x4d0 fs/ext4/file.c:270
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ call_write_iter include/linux/fs.h:1903 [inline]
+ new_sync_write+0x42c/0x670 fs/read_write.c:518
+ vfs_write+0x81b/0xac0 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fe234b52ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe2337cc038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fe234d0af80 RCX: 00007fe234b52ef9
+RDX: 000000000208e24b RSI: 0000000020000180 RDI: 0000000000000004
+RBP: 00007fe234bc5b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fe234d0af80 R15: 00007ffface7a0e8
+
+The buggy address belongs to the page:
+page:00000000187d180b refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x13196
+flags: 0x100000000000000()
+raw: 0100000000000000 ffffea00004c65c8 ffffea00004b2648 0000000000000000
+raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888013195f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888013196000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>ffff888013196080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                   ^
+ ffff888013196100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff888013196180: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
+EXT4-fs error (device loop2): ext4_map_blocks:584: inode #2: block 16: comm syz-executor: lblock 0 mapped to illegal pblock 16 (length 1)
+EXT4-fs warning (device loop2): htree_dirblock_to_tree:1003: inode #2: lblock 0: comm syz-executor: error -117 reading directory block
+EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs error (device loop0): ext4_find_inline_data_nolock:148: inode #12: comm syz.0.29: inline data xattr refers to an external xattr inode

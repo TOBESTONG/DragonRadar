@@ -1,0 +1,206 @@
+syz.0.160: vmalloc: allocation failure: 0 bytes, mode:0xcc0(GFP_KERNEL), nodemask=(null),cpuset=syz0,mems_allowed=0
+================================
+CPU: 1 PID: 5980 Comm: syz.0.160 Not tainted 5.10.0 #1
+WARNING: inconsistent lock state
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+5.10.0 #1 Not tainted
+Call Trace:
+--------------------------------
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+ warn_alloc.cold+0x87/0x18d mm/page_alloc.c:3975
+syz.1.154/5984 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff8880190624a8
+ (&file_data->lock
+){+.?.}-{2:2}
+, at: spin_lock include/linux/spinlock.h:354 [inline]
+, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ __vmalloc_node_range+0x55b/0x9b0 mm/vmalloc.c:2574
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ __vmalloc_node+0xb5/0x100 mm/vmalloc.c:2601
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 898
+ sel_write_load+0x2ea/0x1e50 security/selinux/selinuxfs.c:637
+hardirqs last  enabled at (898): [<ffffffff84000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+hardirqs last disabled at (897): [<ffffffff83eb135c>] sysvec_apic_timer_interrupt+0xc/0xf0 arch/x86/kernel/apic/apic.c:1091
+softirqs last  enabled at (682): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (859): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+ do_loop_readv_writev fs/read_write.c:764 [inline]
+ do_loop_readv_writev fs/read_write.c:748 [inline]
+ do_iter_write+0x47e/0x670 fs/read_write.c:868
+       ----
+ vfs_writev+0x1aa/0x660 fs/read_write.c:939
+  lock(
+&file_data->lock
+);
+  <Interrupt>
+    lock(
+&file_data->lock
+ do_writev+0x139/0x300 fs/read_write.c:982
+);
+
+ *** DEADLOCK ***
+
+2 locks held by syz.1.154/5984:
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ #0: 
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ffffffff850e7de0
+RIP: 0033:0x7f38b5ffdef9
+ (
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+rcu_callback
+RSP: 002b:00007f38b4c77038 EFLAGS: 00000246
+){....}-{0:0}
+ ORIG_RAX: 0000000000000014
+, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+RAX: ffffffffffffffda RBX: 00007f38b61b5f80 RCX: 00007f38b5ffdef9
+ #1: 
+RDX: 0000000000000002 RSI: 0000000020000040 RDI: 0000000000000003
+ffffffff850e7f00
+RBP: 00007f38b6070b76 R08: 0000000000000000 R09: 0000000000000000
+ (
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+rcu_read_lock
+R13: 0000000000000000 R14: 00007f38b61b5f80 R15: 00007ffd40cfc068
+){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 0 PID: 5984 Comm: syz.1.154 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:lock_sock_nested+0x2/0x110 net/core/sock.c:3034
+Code: c4 dc 4c fe e9 be fe ff ff 48 c7 c7 bc 7b d6 85 e8 b3 dc 4c fe e9 66 ff ff ff e8 59 b9 c4 00 66 0f 1f 84 00 00 00 00 00 41 56 <41> 55 41 54 55 89 f5 53 48 89 fb 4c 8d ab 88 00 00 00 4c 8d a3 c8
+RSP: 0018:ffff88801974fc70 EFLAGS: 00000246
+RAX: 00000000000001ce RBX: 1ffff110032e9f9b RCX: ffffc90007fc5000
+RDX: 0000000000040000 RSI: 0000000000000000 RDI: ffff88800ae9e000
+RBP: ffff88801974fe40 R08: 0000000000000001 R09: 0000000000000003
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: 00000000200001c0 R14: ffff88800ae9e000 R15: 000000000000000f
+ lock_sock include/net/sock.h:1581 [inline]
+ packet_setsockopt+0xc20/0x3820 net/packet/af_packet.c:3845
+ __sys_setsockopt+0x180/0x2a0 net/socket.c:2132
+ __do_sys_setsockopt net/socket.c:2143 [inline]
+ __se_sys_setsockopt net/socket.c:2140 [inline]
+ __x64_sys_setsockopt+0xba/0x150 net/socket.c:2140
+Mem-Info:
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+active_anon:44 inactive_anon:8554 isolated_anon:0
+ active_file:17970 inactive_file:7617 isolated_file:0
+ unevictable:0 dirty:324 writeback:0
+ slab_reclaimable:7192 slab_unreclaimable:23432
+ mapped:21329 shmem:58 pagetables:435 bounce:0
+ free:329475 free_pcp:523 free_cma:0
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f7d395e3ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f7d3825d038 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 00007f7d3979bf80 RCX: 00007f7d395e3ef9
+RDX: 000000000000000f RSI: 0000000000000107 RDI: 0000000000000004
+RBP: 00007f7d39656b76 R08: 0000000000000004 R09: 0000000000000000
+Node 0 active_anon:176kB inactive_anon:35308kB active_file:71880kB inactive_file:30468kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:85316kB dirty:1296kB writeback:0kB shmem:1240kB writeback_tmp:0kB kernel_stack:3168kB all_unreclaimable? no
+R10: 00000000200001c0 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f7d3979bf80 R15: 00007fffaa7b3cc8
+Node 0 DMA free:15892kB min:48kB low:60kB high:72kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15908kB mlocked:0kB pagetables:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+lowmem_reserve[]: 0 1616 1616 1616
+Node 0 DMA32 free:1306364kB min:5116kB low:6768kB high:8420kB reserved_highatomic:0KB active_anon:176kB inactive_anon:32368kB active_file:72132kB inactive_file:30132kB unevictable:0kB writepending:1460kB present:2082688kB managed:1660364kB mlocked:0kB pagetables:1368kB bounce:0kB free_pcp:1984kB local_pcp:708kB free_cma:0kB
+netlink: 24 bytes leftover after parsing attributes in process `syz.1.154'.
+lowmem_reserve[]: 0 0 0 0
+Node 0 DMA: 1*4kB (U) 0*8kB 1*16kB (U) 0*32kB 2*64kB (U) 1*128kB (U) 1*256kB (U) 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15892kB
+Node 0 DMA32: 2016*4kB (UME) 1039*8kB (UME) 424*16kB (UME) 522*32kB (UM) 185*64kB (UME) 111*128kB (UM) 41*256kB (UM) 21*512kB (UME) 10*1024kB (ME) 2*2048kB (UE) 305*4096kB (UM) = 1350776kB
+Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=2048kB
+21675 total pagecache pages
+0 pages in swap cache
+Swap cache stats: add 699, delete 699, find 5/5
+Free swap  = 124632kB
+Total swap = 124996kB
+524670 pages RAM
+0 pages HighMem/MovableOnly
+105602 pages reserved
+print_req_error: 116 callbacks suppressed
+blk_update_request: I/O error, dev loop0, sector 0 op 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
+blk_update_request: I/O error, dev loop0, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+buffer_io_error: 110 callbacks suppressed
+Buffer I/O error on dev loop0p16, logical block 0, async page read
+blk_update_request: I/O error, dev loop0, sector 1 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Buffer I/O error on dev loop0p16, logical block 1, async page read
+blk_update_request: I/O error, dev loop0, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Buffer I/O error on dev loop0p16, logical block 0, async page read
+blk_update_request: I/O error, dev loop0, sector 1 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Buffer I/O error on dev loop0p16, logical block 1, async page read
+blk_update_request: I/O error, dev loop0, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Buffer I/O error on dev loop0p16, logical block 0, async page read
+blk_update_request: I/O error, dev loop0, sector 1 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Buffer I/O error on dev loop0p16, logical block 1, async page read
+blk_update_request: I/O error, dev loop0, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Buffer I/O error on dev loop0p16, logical block 0, async page read
+blk_update_request: I/O error, dev loop0, sector 1 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Buffer I/O error on dev loop0p16, logical block 1, async page read
+blk_update_request: I/O error, dev loop0, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Buffer I/O error on dev loop0p16, logical block 0, async page read
+Buffer I/O error on dev loop0p16, logical block 1, async page read
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0:	ff c3                	inc    %ebx
+   2:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
+   9:	00 00 00
+   c:	0f 1f 40 00          	nopl   0x0(%rax)
+  10:	48 89 f8             	mov    %rdi,%rax
+  13:	48 89 f7             	mov    %rsi,%rdi
+  16:	48 89 d6             	mov    %rdx,%rsi
+  19:	48 89 ca             	mov    %rcx,%rdx
+  1c:	4d 89 c2             	mov    %r8,%r10
+  1f:	4d 89 c8             	mov    %r9,%r8
+  22:	4c 8b 4c 24 08       	mov    0x8(%rsp),%r9
+  27:	0f 05                	syscall
+* 29:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax <-- trapping instruction
+  2f:	73 01                	jae    0x32
+  31:	c3                   	ret
+  32:	48 c7 c1 a8 ff ff ff 	mov    $0xffffffffffffffa8,%rcx
+  39:	f7 d8                	neg    %eax
+  3b:	64 89 01             	mov    %eax,%fs:(%rcx)
+  3e:	48                   	rex.W

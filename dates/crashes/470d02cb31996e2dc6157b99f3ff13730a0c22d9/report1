@@ -1,0 +1,169 @@
+EXT4-fs (loop3): mounted filesystem without journal. Opts: orlov,quota,dioread_lock,noload,auto_da_alloc=0xffffffffffffffff,bsddf,jqfmt=vfsold,noload,grpid,grpquota,,errors=continue
+==================================================================
+BUG: KASAN: use-after-free in ext4_xattr_set_entry+0x3228/0x37c0 fs/ext4/xattr.c:1583
+Read of size 4 at addr ffff88800c277000 by task syz.3.12/2109
+
+CPU: 1 PID: 2109 Comm: syz.3.12 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ ext4_xattr_set_entry+0x3228/0x37c0 fs/ext4/xattr.c:1583
+ ext4_xattr_ibody_inline_set+0x78/0x2b0 fs/ext4/xattr.c:2198
+ ext4_xattr_set_handle+0x939/0x12b0 fs/ext4/xattr.c:2378
+ ext4_initxattrs+0xb5/0x120 fs/ext4/xattr_security.c:43
+ security_inode_init_security+0x1a7/0x350 security/security.c:1053
+ __ext4_new_inode+0x38ec/0x55b0 fs/ext4/ialloc.c:1317
+ ext4_tmpfile+0x216/0x490 fs/ext4/namei.c:2685
+ vfs_tmpfile+0x132/0x280 fs/namei.c:3284
+ do_tmpfile fs/namei.c:3317 [inline]
+ path_openat+0x166e/0x26f0 fs/namei.c:3360
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fd45e7b8ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fd45d432038 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00007fd45e970f80 RCX: 00007fd45e7b8ef9
+RDX: 0000000000490003 RSI: 0000000020000000 RDI: ffffffffffffff9c
+RBP: 00007fd45e82bb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fd45e970f80 R15: 00007ffdfa3c1a98
+
+Allocated by task 1964:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ vm_area_dup+0x78/0x290 kernel/fork.c:356
+ __split_vma+0xa8/0x560 mm/mmap.c:2740
+ __do_munmap+0xf2e/0x11e0 mm/mmap.c:2865
+ do_munmap mm/mmap.c:2919 [inline]
+ munmap_vma_range mm/mmap.c:600 [inline]
+ mmap_region+0x330/0x1450 mm/mmap.c:1752
+ do_mmap+0x807/0x11e0 mm/mmap.c:1583
+ vm_mmap_pgoff+0x194/0x1f0 mm/util.c:507
+ ksys_mmap_pgoff+0x483/0x5f0 mm/mmap.c:1634
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 1964:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ remove_vma+0x135/0x170 mm/mmap.c:184
+ remove_vma_list mm/mmap.c:2655 [inline]
+ __do_munmap+0x775/0x11e0 mm/mmap.c:2911
+ do_munmap mm/mmap.c:2919 [inline]
+ munmap_vma_range mm/mmap.c:600 [inline]
+ mmap_region+0x330/0x1450 mm/mmap.c:1752
+ do_mmap+0x807/0x11e0 mm/mmap.c:1583
+ vm_mmap_pgoff+0x194/0x1f0 mm/util.c:507
+ ksys_mmap_pgoff+0x483/0x5f0 mm/mmap.c:1634
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff88800c277000
+ which belongs to the cache vm_area_struct of size 192
+The buggy address is located 0 bytes inside of
+ 192-byte region [ffff88800c277000, ffff88800c2770c0)
+The buggy address belongs to the page:
+page:00000000cda6cad0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xc277
+flags: 0x100000000000200(slab)
+raw: 0100000000000200 dead000000000100 dead000000000122 ffff888008141640
+raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88800c276f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88800c276f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff88800c277000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff88800c277080: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff88800c277100: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+EXT4-fs error (device loop3): ext4_xattr_set_entry:1586: inode #28: comm syz.3.12: corrupted xattr entries
+EXT4-fs error (device loop3): ext4_xattr_set_entry:1586: inode #28: comm syz.3.12: corrupted xattr entries
+EXT4-fs error (device loop3): ext4_xattr_set_entry:1586: inode #28: comm syz.3.12: corrupted xattr entries
+EXT4-fs error (device loop3): ext4_xattr_set_entry:1586: inode #28: comm syz.3.12: corrupted xattr entries
+EXT4-fs error (device loop3): ext4_xattr_set_entry:1586: inode #28: comm syz.3.12: corrupted xattr entries
+EXT4-fs error (device loop3): ext4_xattr_set_entry:1586: inode #28: comm syz.3.12: corrupted xattr entries
+EXT4-fs error (device loop3): ext4_xattr_set_entry:1586: inode #28: comm syz.3.12: corrupted xattr entries
+EXT4-fs error (device loop3): ext4_xattr_set_entry:1586: inode #28: comm syz.3.12: corrupted xattr entries
+EXT4-fs error (device loop3): ext4_xattr_set_entry:1586: inode #28: comm syz.3.12: corrupted xattr entries
+EXT4-fs error (device loop3): ext4_xattr_set_entry:1586: inode #28: comm syz.3.12: corrupted xattr entries
+EXT4-fs (loop0): 1 truncate cleaned up
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+audit: type=1400 audit(1731294941.805:9): avc:  denied  { write } for  pid=2081 comm="syz.0.8" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=perf_event permissive=1
+Unable to read rock-ridge attributes
+iso9660: Corrupted directory entry in block 4 of inode 1792
+Unable to read rock-ridge attributes
+Unable to read rock-ridge attributes
+Unable to read rock-ridge attributes
+Unable to read rock-ridge attributes
+Unable to read rock-ridge attributes
+Unable to read rock-ridge attributes
+iso9660: Corrupted directory entry in block 4 of inode 1792
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 2109 at fs/ext4/xattr.c:1640 ext4_xattr_set_entry+0x2917/0x37c0 fs/ext4/xattr.c:1640
+Modules linked in:
+CPU: 1 PID: 2109 Comm: syz.3.12 Tainted: G    B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_xattr_set_entry+0x2917/0x37c0 fs/ext4/xattr.c:1640
+Code: 00 e9 98 db ff ff e8 c8 f8 8f ff 48 8b 7c 24 08 45 31 ed e8 4b c3 df ff 48 8b ac 24 18 01 00 00 e9 79 db ff ff e8 a9 f8 8f ff <0f> 0b e9 71 e1 ff ff e8 9d f8 8f ff 48 8b 54 24 38 31 f6 4c 89 e7
+RSP: 0018:ffff888008a7f3a8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88800ccd0820 RCX: ffffffff81b5f786
+RDX: ffff88800cc5b400 RSI: ffffffff81b61617 RDI: 0000000000000007
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffffffff85d66c0f
+R10: 0000000000000000 R11: 0000000000000001 R12: 00000000000003dc
+R13: 00000000ffffffc3 R14: ffff888008a7f6f0 R15: ffff888008a7f818
+FS:  00007fd45d4326c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f1a7a84dab8 CR3: 0000000013d94000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_xattr_block_set+0x834/0x2f50 fs/ext4/xattr.c:1942
+ ext4_xattr_set_handle+0xd01/0x12b0 fs/ext4/xattr.c:2390
+ ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2491
+ __vfs_setxattr+0x10f/0x170 fs/xattr.c:177
+ __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+ __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+ vfs_setxattr+0xe8/0x270 fs/xattr.c:283
+ setxattr+0x23d/0x330 fs/xattr.c:548
+ path_setxattr+0x170/0x190 fs/xattr.c:567
+ __do_sys_setxattr fs/xattr.c:582 [inline]
+ __se_sys_setxattr fs/xattr.c:578 [inline]
+ __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:578
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fd45e7b8ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fd45d432038 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
+RAX: ffffffffffffffda RBX: 00007fd45e970f80 RCX: 00007fd45e7b8ef9
+RDX: 0000000000000000 RSI: 00000000200003c0 RDI: 0000000020000200
+RBP: 00007fd45e82bb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fd45e970f80 R15: 00007ffdfa3c1a98
+irq event stamp: 3158
+hardirqs last  enabled at (3157): [<ffffffff81864465>] lookup_bh_lru fs/buffer.c:1312 [inline]
+hardirqs last  enabled at (3157): [<ffffffff81864465>] __find_get_block+0x225/0xcd0 fs/buffer.c:1324
+hardirqs last disabled at (3158): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (3158): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (2906): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (2889): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace 00aab51614252511 ]---

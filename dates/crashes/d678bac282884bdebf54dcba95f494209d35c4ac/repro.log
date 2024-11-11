@@ -1,0 +1,282 @@
+Warning: Permanently added '[localhost]:63972' (ED25519) to the list of known hosts.
+syzkaller login: [   41.690223] audit: type=1400 audit(1730912128.614:6): avc:  denied  { execmem } for  pid=237 comm="syz-executor954" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+executing program
+[   41.699612] FAULT_INJECTION: forcing a failure.
+[   41.699612] name failslab, interval 1, probability 0, space 0, times 1
+[   41.704249] CPU: 1 PID: 237 Comm: syz-executor954 Not tainted 5.10.0 #1
+[   41.706166] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[   41.709036] Call Trace:
+[   41.709781]  dump_stack+0x107/0x163
+[   41.710859]  should_fail.cold+0x5/0x1f
+[   41.711984]  ? tty_buffer_alloc+0x23f/0x2a0
+[   41.713255]  should_failslab+0x5/0x10
+[   41.714346]  __kmalloc+0x72/0x2e0
+[   41.715316]  tty_buffer_alloc+0x23f/0x2a0
+[   41.716471]  __tty_buffer_request_room+0x156/0x2a0
+[   41.717368]  tty_insert_flip_string_fixed_flag+0x91/0x250
+[   41.718231]  pty_write+0x126/0x1f0
+[   41.718974]  n_tty_write+0xa44/0xf80
+[   41.719623]  ? n_tty_receive_char_lnext+0x650/0x650
+[   41.720511]  ? __wake_up_locked_sync_key+0x20/0x20
+[   41.721381]  tty_write+0x4f0/0x910
+[   41.721994]  ? n_tty_receive_char_lnext+0x650/0x650
+[   41.722856]  ? show_cons_active+0x8b0/0x8b0
+[   41.723620]  vfs_write+0x29a/0xac0
+[   41.724249]  ksys_write+0x12d/0x250
+[   41.724891]  ? __ia32_sys_read+0xb0/0xb0
+[   41.725642]  ? syscall_enter_from_user_mode+0x27/0x80
+[   41.726615]  do_syscall_64+0x33/0x40
+[   41.727260]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   41.728191] RIP: 0033:0x7f1675c4cd2d
+[   41.728833] Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+[   41.731995] RSP: 002b:00007ffd4d125f48 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+[   41.733316] RAX: ffffffffffffffda RBX: 00007ffd4d125f58 RCX: 00007f1675c4cd2d
+[   41.734568] RDX: 000000000000ff2e RSI: 0000000020000080 RDI: 0000000000000003
+[   41.735776] RBP: 0000000000000001 R08: 0000000000000000 R09: 00007f1675c33f40
+[   41.736949] R10: 0000000000000064 R11: 0000000000000246 R12: 00007ffd4d1260d0
+[   41.738093] R13: 00007ffd4d126248 R14: 00007f1675cdbc50 R15: 0000000000000001
+[   41.739242] 
+[   41.739246] ======================================================
+[   41.739249] WARNING: possible circular locking dependency detected
+[   41.739251] 5.10.0 #1 Not tainted
+[   41.739254] ------------------------------------------------------
+[   41.739257] syz-executor954/237 is trying to acquire lock:
+[   41.739260] ffffffff84ff1ec0 (console_owner){-.-.}-{0:0}, at: console_unlock+0x334/0xba0
+[   41.739270] 
+[   41.739273] but task is already holding lock:
+[   41.739275] ffff88800f95a958 (&port->lock){-.-.}-{2:2}, at: pty_write+0xf4/0x1f0
+[   41.739284] 
+[   41.739287] which lock already depends on the new lock.
+[   41.739288] 
+[   41.739289] 
+[   41.739292] the existing dependency chain (in reverse order) is:
+[   41.739293] 
+[   41.739295] -> #2 (&port->lock){-.-.}-{2:2}:
+[   41.739304]        _raw_spin_lock_irqsave+0x39/0x50
+[   41.739306]        tty_port_tty_get+0x1f/0x100
+[   41.739309]        tty_port_default_wakeup+0x11/0x40
+[   41.739311]        serial8250_tx_chars+0x53f/0xa20
+[   41.739314]        serial8250_handle_irq.part.0+0x3f1/0x4c0
+[   41.739316]        serial8250_default_handle_irq+0xb8/0x230
+[   41.739319]        serial8250_interrupt+0xf4/0x1a0
+[   41.739321]        __handle_irq_event_percpu+0x2ef/0x940
+[   41.739324]        handle_irq_event_percpu+0x76/0x170
+[   41.739326]        handle_irq_event+0xa1/0x130
+[   41.739328]        handle_edge_irq+0x267/0xd20
+[   41.739331]        asm_call_irq_on_stack+0x12/0x20
+[   41.739333]        common_interrupt+0x12c/0x220
+[   41.739335]        asm_common_interrupt+0x1e/0x40
+[   41.739338]        _raw_spin_unlock_irqrestore+0x25/0x50
+[   41.739340]        uart_write+0x2e8/0x570
+[   41.739342]        do_output_char+0x5e4/0x860
+[   41.739344]        n_tty_write+0x487/0xf80
+[   41.739346]        tty_write+0x4f0/0x910
+[   41.739349]        redirected_tty_write+0xaa/0xb0
+[   41.739351]        do_iter_write+0x47e/0x670
+[   41.739353]        vfs_writev+0x1aa/0x660
+[   41.739355]        do_writev+0x139/0x300
+[   41.739357]        do_syscall_64+0x33/0x40
+[   41.739360]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   41.739361] 
+[   41.739363] -> #1 (&port_lock_key){-.-.}-{2:2}:
+[   41.739372]        _raw_spin_lock_irqsave+0x39/0x50
+[   41.739374]        serial8250_console_write+0x87a/0xa90
+[   41.739377]        console_unlock+0x870/0xba0
+[   41.739379]        register_console+0x5c9/0x8d0
+[   41.739381]        univ8250_console_init+0x3a/0x46
+[   41.739384]        console_init+0x428/0x623
+[   41.739386]        start_kernel+0x32c/0x4d4
+[   41.739388]        secondary_startup_64_no_verify+0xc2/0xcb
+[   41.739389] 
+[   41.739391] -> #0 (console_owner){-.-.}-{0:0}:
+[   41.739400]        __lock_acquire+0x2ac4/0x5ca0
+[   41.739402]        lock_acquire+0x293/0x9b0
+[   41.739404]        console_unlock+0x3b1/0xba0
+[   41.739407]        vprintk_emit+0x1cb/0x430
+[   41.739409]        vprintk_func+0x8d/0x250
+[   41.739411]        printk+0xba/0xed
+[   41.739413]        should_fail+0x48d/0x5b0
+[   41.739415]        should_failslab+0x5/0x10
+[   41.739417]        __kmalloc+0x72/0x2e0
+[   41.739419]        tty_buffer_alloc+0x23f/0x2a0
+[   41.739422]        __tty_buffer_request_room+0x156/0x2a0
+[   41.739425]        tty_insert_flip_string_fixed_flag+0x91/0x250
+[   41.739427]        pty_write+0x126/0x1f0
+[   41.739429]        n_tty_write+0xa44/0xf80
+[   41.739431]        tty_write+0x4f0/0x910
+[   41.739433]        vfs_write+0x29a/0xac0
+[   41.739435]        ksys_write+0x12d/0x250
+[   41.739437]        do_syscall_64+0x33/0x40
+[   41.739440]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   41.739441] 
+[   41.739444] other info that might help us debug this:
+[   41.739445] 
+[   41.739447] Chain exists of:
+[   41.739448]   console_owner --> &port_lock_key --> &port->lock
+[   41.739460] 
+[   41.739462]  Possible unsafe locking scenario:
+[   41.739463] 
+[   41.739466]        CPU0                    CPU1
+[   41.739468]        ----                    ----
+[   41.739469]   lock(&port->lock);
+[   41.739475]                                lock(&port_lock_key);
+[   41.739481]                                lock(&port->lock);
+[   41.739486]   lock(console_owner);
+[   41.739490] 
+[   41.739492]  *** DEADLOCK ***
+[   41.739493] 
+[   41.739496] 6 locks held by syz-executor954/237:
+[   41.739497]  #0: ffff88800ad49098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80
+[   41.739509]  #1: ffff88800ad49130 (&tty->atomic_write_lock){+.+.}-{3:3}, at: tty_write+0x283/0x910
+[   41.739520]  #2: ffff88800ad492e8 (&tty->termios_rwsem){++++}-{3:3}, at: n_tty_write+0x1bf/0xf80
+[   41.739531]  #3: ffffc900006cc378 (&ldata->output_lock){+.+.}-{3:3}, at: n_tty_write+0xa0b/0xf80
+[   41.739542]  #4: ffff88800f95a958 (&port->lock){-.-.}-{2:2}, at: pty_write+0xf4/0x1f0
+[   41.739553]  #5: ffffffff850d2240 (console_lock){+.+.}-{0:0}, at: vprintk_func+0x8d/0x250
+[   41.739564] 
+[   41.739566] stack backtrace:
+[   41.739569] CPU: 1 PID: 237 Comm: syz-executor954 Not tainted 5.10.0 #1
+[   41.739573] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[   41.739575] Call Trace:
+[   41.739577]  dump_stack+0x107/0x163
+[   41.739579]  check_noncircular+0x25f/0x2e0
+[   41.739581]  ? create_prof_cpu_mask+0x20/0x20
+[   41.739583]  ? print_circular_bug+0x450/0x450
+[   41.739585]  ? memcpy+0x39/0x60
+[   41.739587]  ? alloc_chain_hlocks+0x4bf/0xc80
+[   41.739590]  ? add_lock_to_list.constprop.0+0x68/0x500
+[   41.739592]  __lock_acquire+0x2ac4/0x5ca0
+[   41.739594]  ? lockdep_hardirqs_on_prepare+0x420/0x420
+[   41.739596]  lock_acquire+0x293/0x9b0
+[   41.739598]  ? console_unlock+0x334/0xba0
+[   41.739600]  ? lock_release+0x6f0/0x6f0
+[   41.739603]  ? lock_downgrade+0x6d0/0x6d0
+[   41.739605]  ? do_raw_spin_lock+0x121/0x260
+[   41.739607]  ? rwlock_bug.part.0+0x90/0x90
+[   41.739609]  console_unlock+0x3b1/0xba0
+[   41.739611]  ? console_unlock+0x334/0xba0
+[   41.739613]  ? devkmsg_read+0x740/0x740
+[   41.739615]  ? lock_release+0x6f0/0x6f0
+[   41.739617]  ? do_raw_spin_unlock+0x4f/0x210
+[   41.739620]  ? vprintk_func+0x8d/0x250
+[   41.739622]  vprintk_emit+0x1cb/0x430
+[   41.739624]  vprintk_func+0x8d/0x250
+[   41.739625]  printk+0xba/0xed
+[   41.739628]  ? record_print_text.cold+0x16/0x16
+[   41.739630]  ? ___ratelimit+0x21c/0x4b0
+[   41.739632]  should_fail+0x48d/0x5b0
+[   41.739634]  ? tty_buffer_alloc+0x23f/0x2a0
+[   41.739636]  should_failslab+0x5/0x10
+[   41.739638]  __kmalloc+0x72/0x2e0
+[   41.739640]  tty_buffer_alloc+0x23f/0x2a0
+[   41.739642]  __tty_buffer_request_room+0x156/0x2a0
+[   41.739645]  tty_insert_flip_string_fixed_flag+0x91/0x250
+[   41.739647]  pty_write+0x126/0x1f0
+[   41.739649]  n_tty_write+0xa44/0xf80
+[   41.739651]  ? n_tty_receive_char_lnext+0x650/0x650
+[   41.739654]  ? __wake_up_locked_sync_key+0x20/0x20
+[   41.739655]  tty_write+0x4f0/0x910
+[   41.739658]  ? n_tty_receive_char_lnext+0x650/0x650
+[   41.739660]  ? show_cons_active+0x8b0/0x8b0
+[   41.739662]  vfs_write+0x29a/0xac0
+[   41.739664]  ksys_write+0x12d/0x250
+[   41.739666]  ? __ia32_sys_read+0xb0/0xb0
+[   41.739668]  ? syscall_enter_from_user_mode+0x27/0x80
+[   41.739670]  do_syscall_64+0x33/0x40
+[   41.739673]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   41.739675] RIP: 0033:0x7f1675c4cd2d
+[   41.739682] Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+[   41.739684] RSP: 002b:00007ffd4d125f48 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+[   41.739690] RAX: ffffffffffffffda RBX: 00007ffd4d125f58 RCX: 00007f1675c4cd2d
+[   41.739693] RDX: 000000000000ff2e RSI: 0000000020000080 RDI: 0000000000000003
+[   41.739696] RBP: 0000000000000001 R08: 0000000000000000 R09: 00007f1675c33f40
+[   41.739699] R10: 0000000000000064 R11: 0000000000000246 R12: 00007ffd4d1260d0
+[   41.739702] R13: 00007ffd4d126248 R14: 00007f1675cdbc50 R15: 0000000000000001
+
+VM DIAGNOSIS:
+00:55:28  Registers:
+info registers vcpu 0
+
+CPU#0
+RAX=ffffffff83eca430 RBX=ffffffff84e389c0 RCX=ffffffff83eb246c RDX=ffffffff84e389c0
+RSI=0000000000000001 RDI=ffffffff83eca83f RBP=0000000000000000 RSP=ffffffff84e07e40
+R8 =0000000000000000 R9 =ffff88806ce3416b R10=ffffed100d9c682d R11=0000000000000001
+R12=fffffbfff09c7138 R13=ffffffff85d66c08 R14=0000000000000000 R15=dffffc0000000000
+RIP=ffffffff83eca43e RFL=00000246 [---Z-P-] CPL=0 II=0 A20=1 SMM=0 HLT=1
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 0000000000000000 00000000 00000000
+GS =0000 ffff88806ce00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe0000003000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe0000001000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=00007f8338b5b3c0 CR3=000000000bce0000 CR4=00350ef0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM01=0000000000000000 0000000000000000 bffa633c488e8b92 e04a8131b0e73ecf
+YMM02=0000000000000000 0000000000000000 83dac7c2884e3f42 00000000000ae970
+YMM03=0000000000000000 0000000000000000 d3fdd5f48436fbd7 00000000000aeab8
+YMM04=0000000000000000 0000000000000000 dba4d1eab6bc0ba7 0000000000127b90
+YMM05=0000000000000000 0000000000000000 f3e88f777023e8a3 00000000000aea10
+YMM06=0000000000000000 0000000000000000 8ca0b852b1c7c8e1 00000000000ae7b8
+YMM07=0000000000000000 0000000000000000 15c32259ea588043 00000000000ae6a8
+YMM08=0000000000000000 0000000000000000 44495f474f4c5359 530069253d595449
+YMM09=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM10=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+info registers vcpu 1
+
+CPU#1
+RAX=dffffc0000000060 RBX=0000000000000005 RCX=0000000000000000 RDX=00000000000003fd
+RSI=ffffffff823c0aec RDI=ffffffff87a492e0 RBP=ffffffff87a492a0 RSP=ffff88806cf09c30
+R8 =0000000000000001 R9 =0000000000000003 R10=000000000000001f R11=0000000000000001
+R12=0000000000000000 R13=fffffbfff0f492a7 R14=fffffbfff0f4925e R15=dffffc0000000000
+RIP=ffffffff823c0b14 RFL=00000002 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 000055555646d480 00000000 00000000
+GS =0000 ffff88806cf00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe000003e000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe000003c000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=00007f1675ce0010 CR3=000000000d058000 CR4=00350ee0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM01=0000000000000000 0000000000000000 ffff000000000000 ffff00000000ff00
+YMM02=0000000000000000 0000000000000000 0000000000ff0000 00000000000000ff
+YMM03=0000000000000000 0000000000000000 0000000000ff0000 00000000000000ff
+YMM04=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM05=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM06=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM07=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM08=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM09=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM10=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000

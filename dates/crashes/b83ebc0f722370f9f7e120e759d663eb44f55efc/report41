@@ -1,0 +1,144 @@
+fuse: Bad value for 'fd'
+EXT4-fs (loop3): Unrecognized mount option "appraise" or missing value
+FAT-fs (loop3): Unrecognized mount option "./file0" or missing value
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+syz.0.540/11764 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff8880165408a8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff8880165408a8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 150
+hardirqs last  enabled at (150): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (150): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (149): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (149): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (0): [<ffffffff8115f59c>] copy_process+0x185c/0x69f0 kernel/fork.c:2044
+softirqs last disabled at (81): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+3 locks held by syz.0.540/11764:
+ #0: ffff888015123a98 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ #0: ffff888015123a98 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: zap_pte_range mm/memory.c:1211 [inline]
+ #0: ffff888015123a98 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: zap_pmd_range mm/memory.c:1357 [inline]
+ #0: ffff888015123a98 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: zap_pud_range mm/memory.c:1386 [inline]
+ #0: ffff888015123a98 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: zap_p4d_range mm/memory.c:1407 [inline]
+ #0: ffff888015123a98 (ptlock_ptr(page)#2){+.+.}-{2:2}, at: unmap_page_range+0x978/0x2070 mm/memory.c:1428
+ #1: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #2: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 0 PID: 11764 Comm: syz.0.540 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:__tlb_remove_page_size+0x2/0x430 mm/mmu_gather.c:67
+Code: e8 03 09 0a 00 48 8b 54 24 08 e9 ed fe ff ff 48 8b 3c 24 e8 f0 08 0a 00 e9 c0 fe ff ff 66 66 2e 0f 1f 84 00 00 00 00 00 41 57 <41> 56 41 55 49 89 f5 41 54 55 53 48 89 fb e8 7b d8 dc ff 48 8d 7b
+RSP: 0018:ffff888013ccf760 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 0000000000000003 RCX: ffffffff816639fa
+RDX: 0000000000001000 RSI: ffffea00006c1900 RDI: ffff888013ccfa50
+RBP: ffffea00006c1900 R08: 0000000000000000 R09: ffffea00006c1933
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffea00006c1930
+R13: ffff88800eefbd40 R14: dffffc0000000000 R15: 00007f05645a9000
+ __tlb_remove_page include/asm-generic/tlb.h:438 [inline]
+ zap_pte_range mm/memory.c:1256 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0xea9/0x2070 mm/memory.c:1428
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2f0 mm/memory.c:1505
+ exit_mmap+0x27f/0x4e0 mm/mmap.c:3220
+ __mmput kernel/fork.c:1079 [inline]
+ mmput+0xc5/0x350 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa5e/0x28e0 kernel/exit.c:796
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ ret_from_fork+0x15/0x30 arch/x86/entry/entry_64.S:289
+RIP: 0033:0x7f0564faef29
+Code: Unable to access opcode bytes at RIP 0x7f0564faeeff.
+RSP: 002b:00007f0563b911c0 EFLAGS: 00000202 ORIG_RAX: 00000000000001b3
+RAX: 0000000000000000 RBX: 00007f0564f31870 RCX: 00007f0564faef29
+RDX: 00007f0564f31870 RSI: 0000000000000058 RDI: 00007ffef82eebe0
+RBP: 00007f0563b916c0 R08: 00007f0563b916c0 R09: 00007ffef82eecc7
+R10: 0000000000000008 R11: 0000000000000202 R12: ffffffffffffffa8
+R13: 0000000000000002 R14: 00007ffef82eebe0 R15: 00007ffef82eecc8
+EXT4-fs (loop3): 1 truncate cleaned up
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+----------------
+Code disassembly (best guess):
+   0:	e8 03 09 0a 00       	call   0xa0908
+   5:	48 8b 54 24 08       	mov    0x8(%rsp),%rdx
+   a:	e9 ed fe ff ff       	jmp    0xfffffefc
+   f:	48 8b 3c 24          	mov    (%rsp),%rdi
+  13:	e8 f0 08 0a 00       	call   0xa0908
+  18:	e9 c0 fe ff ff       	jmp    0xfffffedd
+  1d:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
+  24:	00 00 00 00
+  28:	41 57                	push   %r15
+* 2a:	41 56                	push   %r14 <-- trapping instruction
+  2c:	41 55                	push   %r13
+  2e:	49 89 f5             	mov    %rsi,%r13
+  31:	41 54                	push   %r12
+  33:	55                   	push   %rbp
+  34:	53                   	push   %rbx
+  35:	48 89 fb             	mov    %rdi,%rbx
+  38:	e8 7b d8 dc ff       	call   0xffdcd8b8
+  3d:	48                   	rex.W
+  3e:	8d                   	.byte 0x8d
+  3f:	7b                   	.byte 0x7b

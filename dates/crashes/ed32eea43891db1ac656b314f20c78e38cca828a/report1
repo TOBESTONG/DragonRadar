@@ -1,0 +1,114 @@
+EXT4-fs error (device loop3): __ext4_iget:4839: inode #13: block 127754: comm syz-executor: invalid block
+EXT4-fs error (device loop3): __ext4_iget:4839: inode #13: block 127754: comm syz-executor: invalid block
+==================================================================
+BUG: KASAN: use-after-free in ext4_search_dir+0x25d/0x2a0 fs/ext4/namei.c:1394
+Read of size 1 at addr ffff88801cbd9fa6 by task syz.1.306/7981
+
+CPU: 0 PID: 7981 Comm: syz.1.306 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ ext4_search_dir+0x25d/0x2a0 fs/ext4/namei.c:1394
+ ext4_find_inline_entry+0x2ba/0x4a0 fs/ext4/inline.c:1659
+ __ext4_find_entry+0xb7c/0x10d0 fs/ext4/namei.c:1467
+ ext4_lookup_entry fs/ext4/namei.c:1622 [inline]
+ ext4_lookup fs/ext4/namei.c:1690 [inline]
+ ext4_lookup+0x16b/0x650 fs/ext4/namei.c:1681
+ lookup_open+0x846/0x1330 fs/namei.c:3083
+ open_last_lookups fs/namei.c:3178 [inline]
+ path_openat+0x93f/0x26f0 fs/namei.c:3366
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_open fs/open.c:1192 [inline]
+ __se_sys_open fs/open.c:1188 [inline]
+ __x64_sys_open+0x119/0x1c0 fs/open.c:1188
+EXT4-fs (loop3): Delayed block allocation failed for inode 18 at logical offset 0 with max blocks 3 with error 28
+EXT4-fs (loop3): Delayed block allocation failed for inode 19 at logical offset 0 with max blocks 3 with error 28
+EXT4-fs (loop3): This should not happen!! Data will be lost
+
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f3a7ac75ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f3a798ef038 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+EXT4-fs (loop3): Delayed block allocation failed for inode 20 at logical offset 0 with max blocks 3 with error 28
+RAX: ffffffffffffffda RBX: 00007f3a7ae2df80 RCX: 00007f3a7ac75ef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000200000c0
+EXT4-fs (loop3): This should not happen!! Data will be lost
+
+RBP: 00007f3a7ace8b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f3a7ae2df80 R15: 00007fffbfbc4e28
+
+EXT4-fs (loop3): This should not happen!! Data will be lost
+
+Allocated by task 116:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
+EXT4-fs (loop3): Total free blocks count 0
+ getname_flags include/linux/audit.h:320 [inline]
+ getname+0x8e/0xd0 fs/namei.c:209
+ do_sys_openat2+0xf5/0x420 fs/open.c:1162
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+EXT4-fs (loop3): Total free blocks count 0
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+EXT4-fs (loop3): Free/Dirty block details
+Freed by task 116:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+EXT4-fs (loop3): Total free blocks count 0
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ putname+0xe1/0x130 fs/namei.c:259
+ do_sys_openat2+0x153/0x420 fs/open.c:1177
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff88801cbd9100
+ which belongs to the cache names_cache of size 4096
+The buggy address is located 3750 bytes inside of
+ 4096-byte region [ffff88801cbd9100, ffff88801cbda100)
+The buggy address belongs to the page:
+page:0000000056f38df0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1cbd8
+head:0000000056f38df0 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x100000000010200(slab|head)
+raw: 0100000000010200 dead000000000100 dead000000000122 ffff888008143b40
+raw: 0000000000000000 0000000000070007 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88801cbd9e80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88801cbd9f00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88801cbd9f80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                               ^
+ ffff88801cbda000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88801cbda080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+EXT4-fs error (device loop1): ext4_xattr_ibody_get:593: inode #15: comm syz.1.306: corrupted in-inode xattr
+EXT4-fs error (device loop1): ext4_read_block_bitmap_nowait:436: comm syz.1.306: Invalid block bitmap block 0 in block_group 0
+EXT4-fs error (device loop1) in ext4_reserve_inode_write:5740: Out of memory
+EXT4-fs error (device loop1): ext4_readdir:243: inode #2: block 13: comm syz-executor: path /35/file0: bad entry in directory: rec_len is smaller than minimal - offset=0, inode=0, rec_len=0, name_len=0, size=1024

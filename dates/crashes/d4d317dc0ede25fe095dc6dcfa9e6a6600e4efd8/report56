@@ -1,0 +1,77 @@
+EXT4-fs error (device loop1): ext4_evict_inode:282: comm syz.1.289: couldn't truncate inode 16 (err -27)
+Quota error (device loop1): dqput: Can't write quota structure (error -30). Quota may get out of sync!
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:833!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 7239 Comm: syz.1.289 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff888014127190 EFLAGS: 00010212
+RAX: 000000000003e938 RBX: 1ffff11002824e34 RCX: ffffc90000ad1000
+RDX: 0000000000040000 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff88801b8b6fa8 R08: 0000000000001400 R09: ffff888008a4f0a0
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801b8b6f80
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  00007f560c5316c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2aef6179c0 CR3: 000000001699c000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+ ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+ write_blk+0x12f/0x220 fs/quota/quota_tree.c:73
+ free_dqentry fs/quota/quota_tree.c:459 [inline]
+ remove_tree+0x882/0x1100 fs/quota/quota_tree.c:492
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+ remove_tree+0x1eb/0x1100 fs/quota/quota_tree.c:495
+ qtree_delete_dquot fs/quota/quota_tree.c:528 [inline]
+ qtree_release_dquot fs/quota/quota_tree.c:674 [inline]
+ qtree_release_dquot+0x1a2/0x1e0 fs/quota/quota_tree.c:670
+ v2_release_dquot+0xce/0x120 fs/quota/quota_v2.c:350
+ dquot_release+0x1d5/0x450 fs/quota/dquot.c:504
+ ext4_release_dquot+0x2a9/0x340 fs/ext4/super.c:6202
+ dqput.part.0+0x1d2/0x7e0 fs/quota/dquot.c:799
+ dqput fs/quota/dquot.c:757 [inline]
+ dqput_all fs/quota/dquot.c:397 [inline]
+ __dquot_drop+0x1cc/0x2a0 fs/quota/dquot.c:1577
+ dquot_drop+0x151/0x1a0 fs/quota/dquot.c:1602
+ ext4_clear_inode+0x52/0x1e0 fs/ext4/super.c:1405
+ ext4_evict_inode+0x1cb/0x1890 fs/ext4/inode.c:332
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ ext4_orphan_cleanup fs/ext4/super.c:3119 [inline]
+ ext4_fill_super+0x92ef/0xd960 fs/ext4/super.c:5067
+ mount_bdev+0x350/0x410 fs/super.c:1419
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f560d8da69a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f560c530e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f560c530ef0 RCX: 00007f560d8da69a
+RDX: 0000000020000040 RSI: 00000000200002c0 RDI: 00007f560c530eb0
+RBP: 0000000020000040 R08: 00007f560c530ef0 R09: 0000000000000840
+R10: 0000000000000840 R11: 0000000000000246 R12: 00000000200002c0
+R13: 00007f560c530eb0 R14: 00000000000004e5 R15: 000000000000002c
+Modules linked in:
+---[ end trace d7d659599a95b883 ]---
+RIP: 0010:ext4_getblk+0x5db/0x6a0 fs/ext4/inode.c:833
+Code: 02 e8 69 7a a0 ff 4c 89 ef e8 b1 8b e0 ff e9 33 fd ff ff e8 57 7a a0 ff 4c 89 ef e8 ff 70 e0 ff e9 85 fe ff ff e8 45 7a a0 ff <0f> 0b 48 c7 c7 a0 e1 2f 85 e8 46 f7 3a 02 48 89 ef e8 7f aa cd ff
+RSP: 0018:ffff888014127190 EFLAGS: 00010212
+RAX: 000000000003e938 RBX: 1ffff11002824e34 RCX: ffffc90000ad1000
+RDX: 0000000000040000 RSI: ffffffff81a5947b RDI: 0000000000000005
+RBP: ffff88801b8b6fa8 R08: 0000000000001400 R09: ffff888008a4f0a0
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801b8b6f80
+R13: 0000000000000021 R14: 0000000000000000 R15: 0000000000000001
+FS:  00007f560c5316c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f950b1106f4 CR3: 000000001699c000 CR4: 0000000000350ee0

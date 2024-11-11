@@ -1,0 +1,61 @@
+EXT4-fs error (device loop0): ext4_map_blocks:584: inode #18: block 36: comm syz.0.311: lblock 0 mapped to illegal pblock 36 (length 12)
+EXT4-fs error (device loop0): ext4_map_blocks:584: inode #18: block 36: comm syz.0.311: lblock 0 mapped to illegal pblock 36 (length 4)
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4.h:3196!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 7489 Comm: syz.0.311 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff88800c4bfb00 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 00000000ffff4bab RCX: ffffffff81a81b22
+RDX: ffff888021879a00 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff888010eac000 R08: 0000000000000000 R09: ffff88801a4d8783
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff888010eae000
+R13: ffff888010eae650 R14: 0000000000000001 R15: 00000000ffff4bab
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffe20594c88 CR3: 00000000135ca000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ ext4_mb_load_buddy_gfp+0xe3/0x13d0 fs/ext4/mballoc.c:1174
+ ext4_discard_preallocations+0x86a/0xe70 fs/ext4/mballoc.c:4422
+ ext4_release_file+0x2f0/0x370 fs/ext4/file.c:150
+ __fput+0x280/0x980 fs/file_table.c:281
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fd19fddfef9
+Code: Unable to access opcode bytes at RIP 0x7fd19fddfecf.
+RSP: 002b:00007ffeb671d608 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd19fddfef9
+RDX: 0000000000000064 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007ffeb671d65c R08: 00007ffeb671d6ef R09: 0000000000012f3e
+R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000000032
+R13: 0000000000012f3e R14: 0000000000012f3e R15: 00007ffeb671d6b0
+Modules linked in:
+hpet: Lost 2 RTC interrupts
+---[ end trace 32e6b121a78b25ad ]---
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff88800c4bfb00 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 00000000ffff4bab RCX: ffffffff81a81b22
+RDX: ffff888021879a00 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff888010eac000 R08: 0000000000000000 R09: ffff88801a4d8783
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff888010eae000
+R13: ffff888010eae650 R14: 0000000000000001 R15: 00000000ffff4bab
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffe20594c88 CR3: 00000000135ca000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Fixing recursive fault but reboot is needed!

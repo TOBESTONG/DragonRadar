@@ -1,0 +1,85 @@
+EXT4-fs (loop3): 1 truncate cleaned up
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs (loop3): mounted filesystem without journal. Opts: ,errors=continue
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 3499 at mm/filemap.c:223 unaccount_page_cache_page+0x41b/0x900 mm/filemap.c:223
+Modules linked in:
+CPU: 0 PID: 3499 Comm: syz.3.133 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:unaccount_page_cache_page+0x41b/0x900 mm/filemap.c:223
+Code: 02 00 0f 85 19 04 00 00 48 8b 1b 31 ff 48 c1 eb 03 83 e3 01 48 89 de e8 23 b6 ec ff 48 85 db 0f 84 6a fd ff ff e8 35 be ec ff <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48 c1 ea 03 80 3c 02
+RSP: 0018:ffff8880111d78f8 EFLAGS: 00010016
+RAX: 00000000000080dc RBX: 0000000000000001 RCX: ffffc900019b1000
+RDX: 0000000000040000 RSI: ffffffff8159508b RDI: 0000000000000007
+RBP: ffffea00002b2680 R08: 0000000000000000 R09: ffffea00002b2687
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff888009db9070 R14: ffffea0000416d08 R15: ffffea0000416d08
+FS:  00007ff43c08b6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005555563d84a8 CR3: 000000000ad56000 CR4: 0000000000350ef0
+Call Trace:
+ delete_from_page_cache_batch+0x183/0xb20 mm/filemap.c:356
+ truncate_inode_pages_range+0x5da/0x15a0 mm/truncate.c:366
+ kill_bdev fs/block_dev.c:86 [inline]
+ set_blocksize+0x37e/0x410 fs/block_dev.c:154
+ swsusp_check+0x85/0x240 kernel/power/swap.c:1528
+ software_resume.part.0+0x102/0x1f0 kernel/power/hibernate.c:974
+ software_resume kernel/power/hibernate.c:84 [inline]
+ resume_store+0x147/0x170 kernel/power/hibernate.c:1176
+ kobj_attr_store+0x53/0x80 lib/kobject.c:856
+ sysfs_kf_write+0x113/0x170 fs/sysfs/file.c:139
+ kernfs_fop_write+0x26a/0x490 fs/kernfs/file.c:315
+ vfs_write+0x29a/0xac0 fs/read_write.c:603
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ff43d411ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ff43c08b038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007ff43d5c9f80 RCX: 00007ff43d411ef9
+RDX: 0000000000000012 RSI: 0000000020000040 RDI: 0000000000000006
+RBP: 00007ff43d484b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007ff43d5c9f80 R15: 00007ffd674e7778
+irq event stamp: 880
+hardirqs last  enabled at (879): [<ffffffff817344eb>] quarantine_put+0xab/0x1c0 mm/kasan/quarantine.c:217
+hardirqs last disabled at (880): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (880): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (870): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (835): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace a448af7261608f29 ]---
+------------[ cut here ]------------
+kernel BUG at fs/buffer.c:3015!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 3450 Comm: kmmpd-loop0 Tainted: G        W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:submit_bh_wbc+0x5f2/0x7c0 fs/buffer.c:3015
+Code: ff e8 12 e4 bf ff 41 81 cc 00 10 00 00 e9 15 ff ff ff e8 01 e4 bf ff 0f 0b 48 c7 c7 40 3a 29 85 e8 02 61 5a 02 e8 ee e3 bf ff <0f> 0b 48 c7 c7 00 3a 29 85 e8 ef 60 5a 02 e8 db e3 bf ff 0f 0b 48
+RSP: 0018:ffff88800a027d70 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888013f19570 RCX: ffffffff81862583
+RDX: ffff8880179c0000 RSI: ffffffff81862ad2 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888013f19577
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000003800
+R13: 0000000000000001 R14: 0000000000000000 R15: ffff88801a1ba000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd6dfbffd60 CR3: 0000000019528000 CR4: 0000000000350ef0
+Call Trace:
+ write_mmp_block+0x333/0x6e0 fs/ext4/mmp.c:55
+ kmmpd+0x734/0xab0 fs/ext4/mmp.c:245
+PM: Image not found (code -22)
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+---[ end trace a448af7261608f2a ]---
+RIP: 0010:submit_bh_wbc+0x5f2/0x7c0 fs/buffer.c:3015
+Code: ff e8 12 e4 bf ff 41 81 cc 00 10 00 00 e9 15 ff ff ff e8 01 e4 bf ff 0f 0b 48 c7 c7 40 3a 29 85 e8 02 61 5a 02 e8 ee e3 bf ff <0f> 0b 48 c7 c7 00 3a 29 85 e8 ef 60 5a 02 e8 db e3 bf ff 0f 0b 48
+RSP: 0018:ffff88800a027d70 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888013f19570 RCX: ffffffff81862583
+RDX: ffff8880179c0000 RSI: ffffffff81862ad2 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888013f19577
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000003800
+R13: 0000000000000001 R14: 0000000000000000 R15: ffff88801a1ba000
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd6dfbffd60 CR3: 000000000c660000 CR4: 0000000000350ef0

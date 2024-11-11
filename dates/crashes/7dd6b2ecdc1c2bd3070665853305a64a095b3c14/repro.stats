@@ -1,0 +1,284 @@
+Extracting prog: 24.900022365s
+Minimizing prog: 6m54.273332291s
+Simplifying prog options: 0s
+Extracting C: 19.722928351s
+Simplifying C: 1m35.062364283s
+
+
+4 programs, timeouts [30s 1m40s 6m0s]
+extracting reproducer from 4 programs
+first checking the prog from the crash report
+single: executing 1 programs separately with timeout 30s
+testing program (duration=30s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-openat$procfs-read$ptp-open-fcntl$setlease-open$dir-creat-link
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000140)='./file0\x00', 0xe, &(0x7f00000001c0)={[{@noload}, {@resuid={'resuid', 0x3d, 0xee01}}, {@debug_want_extra_isize={'debug_want_extra_isize', 0x3d, 0x2a}}, {@sb={'sb', 0x3d, 0x16f}}, {@i_version}, {@quota}]}, 0x3, 0x431, &(0x7f0000000500)="$eJzs289PHFUcAPDvzAKV/hCs9UdpVbQaiT+g0Ko9eNFo4kETEz3UIwJtsNtiCia2IYrG1KNp4t14NPEv8KQXo55MvOrdNGkMl1ZPa2Z3BpZllwJdWO1+Psm07828zXvfffN235vHBtC1hrN/koj9EfF7RAzUsmsLDNf+u7m8OPX38uJUEpXKW38l1XI3lheniqLF6/blmZE0Iv0siSNN6p2/dPncZLk8czHPjy2cf39s/tLlZ2fPT56dOTtzYeLUqZMnxl94fuK5tsSZxXVj6KO5o4dfe+fqG1Onr77787dJEX9DHG0yvNHFJyqVNlfXWQfq0klPBxvClpQiIuuu3ur4H4hSrHbeQLz6aUcbB+yoSq7F5aUKcAdLotMtADqj+KLP1r/FsXuzj867/lJtAZTFfTM/ald6Is3L9Dasb9tpOCJOL/3zVXbEzjyHAABY4/ts/vNMs/lfGvfXlbs730MZjIh7IuJgRNwbEYci4r6IatkHIuLBLdbfuEmyfv6TXttWYJuUzf9ezPe21s7/itlfDJby3IFq/L3JmdnyzPH8PRmJ3j1ZfnyDOn545bcvWl2rn/9lR1Z/MRfM23GtZ8/a10xPLkzeTsz1rn8SMdTTLP5kZScgiYjDETG0zTpmn/rmaKtrt45/A23YZ6p8HfFkrf+XoiH+QrLx/uTYXVGeOT5W3BXr/fLrlTdb1X9b8bdB1v97m97/K/EPJvX7tfNbr+PKH5+3XNNs9/7vS96upvvycx9OLixcHI/oS16vNbr+/MTqa4t8UT6Lf+RY8/F/MFbfiSMRkd3ED0XEwxHxSN72RyPisYg4tkH8P738+Hvbj39nZfFPb6n/VxN90XimeaJ07sfv1lQ6uJX4s/4/WU2N5Gc28/m3mXZt724GAACA/580IvZHko6upNN0dLT2N/yHYm9anptfePrM3AcXpmu/ERiM3rR40jVQ9zx0PF/WF/mJhvyJ/Lnxl6X+an50aq483engocvtazH+M3+WOt06YMf5vRZ0L+MfupfxD93L+Ifu1WT893eiHcDua/b9/3EH2gHsvobxb9sPuoj1P3Qv4x+6l/EPXWm+P279I3kJiXWJSP8TzZDYoUSnP5kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADa498AAAD//wgz6sQ=")
+chdir(&(0x7f0000000240)='./file0\x00')
+r0 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000080)='/proc/locks\x00', 0x0, 0x0)
+read$ptp(r0, &(0x7f0000001080)=""/4091, 0xffb)
+r1 = open(&(0x7f00009e1000)='./file0\x00', 0x102440, 0x0)
+fcntl$setlease(r1, 0x400, 0x0)
+open$dir(&(0x7f0000000000)='./file0\x00', 0x440, 0x0)
+creat(&(0x7f0000000080)='./file3\x00', 0x0)
+link(&(0x7f00000000c0)='./file3\x00', &(0x7f0000000100)='./bus\x00')
+
+program crashed: WARNING in ext4_update_inline_data
+single: successfully extracted reproducer
+found reproducer with 9 syscalls
+minimizing guilty program
+testing program (duration=33.196264896s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-openat$procfs-read$ptp-open-fcntl$setlease-open$dir-creat
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000140)='./file0\x00', 0xe, &(0x7f00000001c0)={[{@noload}, {@resuid={'resuid', 0x3d, 0xee01}}, {@debug_want_extra_isize={'debug_want_extra_isize', 0x3d, 0x2a}}, {@sb={'sb', 0x3d, 0x16f}}, {@i_version}, {@quota}]}, 0x3, 0x431, &(0x7f0000000500)="$eJzs289PHFUcAPDvzAKV/hCs9UdpVbQaiT+g0Ko9eNFo4kETEz3UIwJtsNtiCia2IYrG1KNp4t14NPEv8KQXo55MvOrdNGkMl1ZPa2Z3BpZllwJdWO1+Psm07828zXvfffN235vHBtC1hrN/koj9EfF7RAzUsmsLDNf+u7m8OPX38uJUEpXKW38l1XI3lheniqLF6/blmZE0Iv0siSNN6p2/dPncZLk8czHPjy2cf39s/tLlZ2fPT56dOTtzYeLUqZMnxl94fuK5tsSZxXVj6KO5o4dfe+fqG1Onr77787dJEX9DHG0yvNHFJyqVNlfXWQfq0klPBxvClpQiIuuu3ur4H4hSrHbeQLz6aUcbB+yoSq7F5aUKcAdLotMtADqj+KLP1r/FsXuzj867/lJtAZTFfTM/ald6Is3L9Dasb9tpOCJOL/3zVXbEzjyHAABY4/ts/vNMs/lfGvfXlbs730MZjIh7IuJgRNwbEYci4r6IatkHIuLBLdbfuEmyfv6TXttWYJuUzf9ezPe21s7/itlfDJby3IFq/L3JmdnyzPH8PRmJ3j1ZfnyDOn545bcvWl2rn/9lR1Z/MRfM23GtZ8/a10xPLkzeTsz1rn8SMdTTLP5kZScgiYjDETG0zTpmn/rmaKtrt45/A23YZ6p8HfFkrf+XoiH+QrLx/uTYXVGeOT5W3BXr/fLrlTdb1X9b8bdB1v97m97/K/EPJvX7tfNbr+PKH5+3XNNs9/7vS96upvvycx9OLixcHI/oS16vNbr+/MTqa4t8UT6Lf+RY8/F/MFbfiSMRkd3ED0XEwxHxSN72RyPisYg4tkH8P738+Hvbj39nZfFPb6n/VxN90XimeaJ07sfv1lQ6uJX4s/4/WU2N5Gc28/m3mXZt724GAACA/580IvZHko6upNN0dLT2N/yHYm9anptfePrM3AcXpmu/ERiM3rR40jVQ9zx0PF/WF/mJhvyJ/Lnxl6X+an50aq483engocvtazH+M3+WOt06YMf5vRZ0L+MfupfxD93L+Ifu1WT893eiHcDua/b9/3EH2gHsvobxb9sPuoj1P3Qv4x+6l/EPXWm+P279I3kJiXWJSP8TzZDYoUSnP5kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADa498AAAD//wgz6sQ=")
+chdir(&(0x7f0000000240)='./file0\x00')
+r0 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000080)='/proc/locks\x00', 0x0, 0x0)
+read$ptp(r0, &(0x7f0000001080)=""/4091, 0xffb)
+r1 = open(&(0x7f00009e1000)='./file0\x00', 0x102440, 0x0)
+fcntl$setlease(r1, 0x400, 0x0)
+open$dir(&(0x7f0000000000)='./file0\x00', 0x440, 0x0)
+creat(&(0x7f0000000080)='./file3\x00', 0x0)
+
+program did not crash
+testing program (duration=33.196264896s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-openat$procfs-read$ptp-open-fcntl$setlease-open$dir-link
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000140)='./file0\x00', 0xe, &(0x7f00000001c0)={[{@noload}, {@resuid={'resuid', 0x3d, 0xee01}}, {@debug_want_extra_isize={'debug_want_extra_isize', 0x3d, 0x2a}}, {@sb={'sb', 0x3d, 0x16f}}, {@i_version}, {@quota}]}, 0x3, 0x431, &(0x7f0000000500)="$eJzs289PHFUcAPDvzAKV/hCs9UdpVbQaiT+g0Ko9eNFo4kETEz3UIwJtsNtiCia2IYrG1KNp4t14NPEv8KQXo55MvOrdNGkMl1ZPa2Z3BpZllwJdWO1+Psm07828zXvfffN235vHBtC1hrN/koj9EfF7RAzUsmsLDNf+u7m8OPX38uJUEpXKW38l1XI3lheniqLF6/blmZE0Iv0siSNN6p2/dPncZLk8czHPjy2cf39s/tLlZ2fPT56dOTtzYeLUqZMnxl94fuK5tsSZxXVj6KO5o4dfe+fqG1Onr77787dJEX9DHG0yvNHFJyqVNlfXWQfq0klPBxvClpQiIuuu3ur4H4hSrHbeQLz6aUcbB+yoSq7F5aUKcAdLotMtADqj+KLP1r/FsXuzj867/lJtAZTFfTM/ald6Is3L9Dasb9tpOCJOL/3zVXbEzjyHAABY4/ts/vNMs/lfGvfXlbs730MZjIh7IuJgRNwbEYci4r6IatkHIuLBLdbfuEmyfv6TXttWYJuUzf9ezPe21s7/itlfDJby3IFq/L3JmdnyzPH8PRmJ3j1ZfnyDOn545bcvWl2rn/9lR1Z/MRfM23GtZ8/a10xPLkzeTsz1rn8SMdTTLP5kZScgiYjDETG0zTpmn/rmaKtrt45/A23YZ6p8HfFkrf+XoiH+QrLx/uTYXVGeOT5W3BXr/fLrlTdb1X9b8bdB1v97m97/K/EPJvX7tfNbr+PKH5+3XNNs9/7vS96upvvycx9OLixcHI/oS16vNbr+/MTqa4t8UT6Lf+RY8/F/MFbfiSMRkd3ED0XEwxHxSN72RyPisYg4tkH8P738+Hvbj39nZfFPb6n/VxN90XimeaJ07sfv1lQ6uJX4s/4/WU2N5Gc28/m3mXZt724GAACA/580IvZHko6upNN0dLT2N/yHYm9anptfePrM3AcXpmu/ERiM3rR40jVQ9zx0PF/WF/mJhvyJ/Lnxl6X+an50aq483engocvtazH+M3+WOt06YMf5vRZ0L+MfupfxD93L+Ifu1WT893eiHcDua/b9/3EH2gHsvobxb9sPuoj1P3Qv4x+6l/EPXWm+P279I3kJiXWJSP8TzZDYoUSnP5kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADa498AAAD//wgz6sQ=")
+chdir(&(0x7f0000000240)='./file0\x00')
+r0 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000080)='/proc/locks\x00', 0x0, 0x0)
+read$ptp(r0, &(0x7f0000001080)=""/4091, 0xffb)
+r1 = open(&(0x7f00009e1000)='./file0\x00', 0x102440, 0x0)
+fcntl$setlease(r1, 0x400, 0x0)
+open$dir(&(0x7f0000000000)='./file0\x00', 0x440, 0x0)
+link(&(0x7f00000000c0)='./file3\x00', &(0x7f0000000100)='./bus\x00')
+
+program did not crash
+testing program (duration=33.196264896s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-openat$procfs-read$ptp-open-fcntl$setlease-creat-link
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000140)='./file0\x00', 0xe, &(0x7f00000001c0)={[{@noload}, {@resuid={'resuid', 0x3d, 0xee01}}, {@debug_want_extra_isize={'debug_want_extra_isize', 0x3d, 0x2a}}, {@sb={'sb', 0x3d, 0x16f}}, {@i_version}, {@quota}]}, 0x3, 0x431, &(0x7f0000000500)="$eJzs289PHFUcAPDvzAKV/hCs9UdpVbQaiT+g0Ko9eNFo4kETEz3UIwJtsNtiCia2IYrG1KNp4t14NPEv8KQXo55MvOrdNGkMl1ZPa2Z3BpZllwJdWO1+Psm07828zXvfffN235vHBtC1hrN/koj9EfF7RAzUsmsLDNf+u7m8OPX38uJUEpXKW38l1XI3lheniqLF6/blmZE0Iv0siSNN6p2/dPncZLk8czHPjy2cf39s/tLlZ2fPT56dOTtzYeLUqZMnxl94fuK5tsSZxXVj6KO5o4dfe+fqG1Onr77787dJEX9DHG0yvNHFJyqVNlfXWQfq0klPBxvClpQiIuuu3ur4H4hSrHbeQLz6aUcbB+yoSq7F5aUKcAdLotMtADqj+KLP1r/FsXuzj867/lJtAZTFfTM/ald6Is3L9Dasb9tpOCJOL/3zVXbEzjyHAABY4/ts/vNMs/lfGvfXlbs730MZjIh7IuJgRNwbEYci4r6IatkHIuLBLdbfuEmyfv6TXttWYJuUzf9ezPe21s7/itlfDJby3IFq/L3JmdnyzPH8PRmJ3j1ZfnyDOn545bcvWl2rn/9lR1Z/MRfM23GtZ8/a10xPLkzeTsz1rn8SMdTTLP5kZScgiYjDETG0zTpmn/rmaKtrt45/A23YZ6p8HfFkrf+XoiH+QrLx/uTYXVGeOT5W3BXr/fLrlTdb1X9b8bdB1v97m97/K/EPJvX7tfNbr+PKH5+3XNNs9/7vS96upvvycx9OLixcHI/oS16vNbr+/MTqa4t8UT6Lf+RY8/F/MFbfiSMRkd3ED0XEwxHxSN72RyPisYg4tkH8P738+Hvbj39nZfFPb6n/VxN90XimeaJ07sfv1lQ6uJX4s/4/WU2N5Gc28/m3mXZt724GAACA/580IvZHko6upNN0dLT2N/yHYm9anptfePrM3AcXpmu/ERiM3rR40jVQ9zx0PF/WF/mJhvyJ/Lnxl6X+an50aq483engocvtazH+M3+WOt06YMf5vRZ0L+MfupfxD93L+Ifu1WT893eiHcDua/b9/3EH2gHsvobxb9sPuoj1P3Qv4x+6l/EPXWm+P279I3kJiXWJSP8TzZDYoUSnP5kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADa498AAAD//wgz6sQ=")
+chdir(&(0x7f0000000240)='./file0\x00')
+r0 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000080)='/proc/locks\x00', 0x0, 0x0)
+read$ptp(r0, &(0x7f0000001080)=""/4091, 0xffb)
+r1 = open(&(0x7f00009e1000)='./file0\x00', 0x102440, 0x0)
+fcntl$setlease(r1, 0x400, 0x0)
+creat(&(0x7f0000000080)='./file3\x00', 0x0)
+link(&(0x7f00000000c0)='./file3\x00', &(0x7f0000000100)='./bus\x00')
+
+program crashed: WARNING in ext4_update_inline_data
+testing program (duration=33.196264896s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-openat$procfs-read$ptp-open-creat-link
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000140)='./file0\x00', 0xe, &(0x7f00000001c0)={[{@noload}, {@resuid={'resuid', 0x3d, 0xee01}}, {@debug_want_extra_isize={'debug_want_extra_isize', 0x3d, 0x2a}}, {@sb={'sb', 0x3d, 0x16f}}, {@i_version}, {@quota}]}, 0x3, 0x431, &(0x7f0000000500)="$eJzs289PHFUcAPDvzAKV/hCs9UdpVbQaiT+g0Ko9eNFo4kETEz3UIwJtsNtiCia2IYrG1KNp4t14NPEv8KQXo55MvOrdNGkMl1ZPa2Z3BpZllwJdWO1+Psm07828zXvfffN235vHBtC1hrN/koj9EfF7RAzUsmsLDNf+u7m8OPX38uJUEpXKW38l1XI3lheniqLF6/blmZE0Iv0siSNN6p2/dPncZLk8czHPjy2cf39s/tLlZ2fPT56dOTtzYeLUqZMnxl94fuK5tsSZxXVj6KO5o4dfe+fqG1Onr77787dJEX9DHG0yvNHFJyqVNlfXWQfq0klPBxvClpQiIuuu3ur4H4hSrHbeQLz6aUcbB+yoSq7F5aUKcAdLotMtADqj+KLP1r/FsXuzj867/lJtAZTFfTM/ald6Is3L9Dasb9tpOCJOL/3zVXbEzjyHAABY4/ts/vNMs/lfGvfXlbs730MZjIh7IuJgRNwbEYci4r6IatkHIuLBLdbfuEmyfv6TXttWYJuUzf9ezPe21s7/itlfDJby3IFq/L3JmdnyzPH8PRmJ3j1ZfnyDOn545bcvWl2rn/9lR1Z/MRfM23GtZ8/a10xPLkzeTsz1rn8SMdTTLP5kZScgiYjDETG0zTpmn/rmaKtrt45/A23YZ6p8HfFkrf+XoiH+QrLx/uTYXVGeOT5W3BXr/fLrlTdb1X9b8bdB1v97m97/K/EPJvX7tfNbr+PKH5+3XNNs9/7vS96upvvycx9OLixcHI/oS16vNbr+/MTqa4t8UT6Lf+RY8/F/MFbfiSMRkd3ED0XEwxHxSN72RyPisYg4tkH8P738+Hvbj39nZfFPb6n/VxN90XimeaJ07sfv1lQ6uJX4s/4/WU2N5Gc28/m3mXZt724GAACA/580IvZHko6upNN0dLT2N/yHYm9anptfePrM3AcXpmu/ERiM3rR40jVQ9zx0PF/WF/mJhvyJ/Lnxl6X+an50aq483engocvtazH+M3+WOt06YMf5vRZ0L+MfupfxD93L+Ifu1WT893eiHcDua/b9/3EH2gHsvobxb9sPuoj1P3Qv4x+6l/EPXWm+P279I3kJiXWJSP8TzZDYoUSnP5kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADa498AAAD//wgz6sQ=")
+chdir(&(0x7f0000000240)='./file0\x00')
+r0 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000080)='/proc/locks\x00', 0x0, 0x0)
+read$ptp(r0, &(0x7f0000001080)=""/4091, 0xffb)
+open(&(0x7f00009e1000)='./file0\x00', 0x102440, 0x0)
+creat(&(0x7f0000000080)='./file3\x00', 0x0)
+link(&(0x7f00000000c0)='./file3\x00', &(0x7f0000000100)='./bus\x00')
+
+program crashed: WARNING in ext4_update_inline_data
+testing program (duration=33.196264896s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-openat$procfs-read$ptp-creat-link
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000140)='./file0\x00', 0xe, &(0x7f00000001c0)={[{@noload}, {@resuid={'resuid', 0x3d, 0xee01}}, {@debug_want_extra_isize={'debug_want_extra_isize', 0x3d, 0x2a}}, {@sb={'sb', 0x3d, 0x16f}}, {@i_version}, {@quota}]}, 0x3, 0x431, &(0x7f0000000500)="$eJzs289PHFUcAPDvzAKV/hCs9UdpVbQaiT+g0Ko9eNFo4kETEz3UIwJtsNtiCia2IYrG1KNp4t14NPEv8KQXo55MvOrdNGkMl1ZPa2Z3BpZllwJdWO1+Psm07828zXvfffN235vHBtC1hrN/koj9EfF7RAzUsmsLDNf+u7m8OPX38uJUEpXKW38l1XI3lheniqLF6/blmZE0Iv0siSNN6p2/dPncZLk8czHPjy2cf39s/tLlZ2fPT56dOTtzYeLUqZMnxl94fuK5tsSZxXVj6KO5o4dfe+fqG1Onr77787dJEX9DHG0yvNHFJyqVNlfXWQfq0klPBxvClpQiIuuu3ur4H4hSrHbeQLz6aUcbB+yoSq7F5aUKcAdLotMtADqj+KLP1r/FsXuzj867/lJtAZTFfTM/ald6Is3L9Dasb9tpOCJOL/3zVXbEzjyHAABY4/ts/vNMs/lfGvfXlbs730MZjIh7IuJgRNwbEYci4r6IatkHIuLBLdbfuEmyfv6TXttWYJuUzf9ezPe21s7/itlfDJby3IFq/L3JmdnyzPH8PRmJ3j1ZfnyDOn545bcvWl2rn/9lR1Z/MRfM23GtZ8/a10xPLkzeTsz1rn8SMdTTLP5kZScgiYjDETG0zTpmn/rmaKtrt45/A23YZ6p8HfFkrf+XoiH+QrLx/uTYXVGeOT5W3BXr/fLrlTdb1X9b8bdB1v97m97/K/EPJvX7tfNbr+PKH5+3XNNs9/7vS96upvvycx9OLixcHI/oS16vNbr+/MTqa4t8UT6Lf+RY8/F/MFbfiSMRkd3ED0XEwxHxSN72RyPisYg4tkH8P738+Hvbj39nZfFPb6n/VxN90XimeaJ07sfv1lQ6uJX4s/4/WU2N5Gc28/m3mXZt724GAACA/580IvZHko6upNN0dLT2N/yHYm9anptfePrM3AcXpmu/ERiM3rR40jVQ9zx0PF/WF/mJhvyJ/Lnxl6X+an50aq483engocvtazH+M3+WOt06YMf5vRZ0L+MfupfxD93L+Ifu1WT893eiHcDua/b9/3EH2gHsvobxb9sPuoj1P3Qv4x+6l/EPXWm+P279I3kJiXWJSP8TzZDYoUSnP5kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADa498AAAD//wgz6sQ=")
+chdir(&(0x7f0000000240)='./file0\x00')
+r0 = openat$procfs(0xffffffffffffff9c, &(0x7f0000000080)='/proc/locks\x00', 0x0, 0x0)
+read$ptp(r0, &(0x7f0000001080)=""/4091, 0xffb)
+creat(&(0x7f0000000080)='./file3\x00', 0x0)
+link(&(0x7f00000000c0)='./file3\x00', &(0x7f0000000100)='./bus\x00')
+
+program crashed: WARNING in ext4_update_inline_data
+testing program (duration=33.196264896s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-openat$procfs-creat-link
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000140)='./file0\x00', 0xe, &(0x7f00000001c0)={[{@noload}, {@resuid={'resuid', 0x3d, 0xee01}}, {@debug_want_extra_isize={'debug_want_extra_isize', 0x3d, 0x2a}}, {@sb={'sb', 0x3d, 0x16f}}, {@i_version}, {@quota}]}, 0x3, 0x431, &(0x7f0000000500)="$eJzs289PHFUcAPDvzAKV/hCs9UdpVbQaiT+g0Ko9eNFo4kETEz3UIwJtsNtiCia2IYrG1KNp4t14NPEv8KQXo55MvOrdNGkMl1ZPa2Z3BpZllwJdWO1+Psm07828zXvfffN235vHBtC1hrN/koj9EfF7RAzUsmsLDNf+u7m8OPX38uJUEpXKW38l1XI3lheniqLF6/blmZE0Iv0siSNN6p2/dPncZLk8czHPjy2cf39s/tLlZ2fPT56dOTtzYeLUqZMnxl94fuK5tsSZxXVj6KO5o4dfe+fqG1Onr77787dJEX9DHG0yvNHFJyqVNlfXWQfq0klPBxvClpQiIuuu3ur4H4hSrHbeQLz6aUcbB+yoSq7F5aUKcAdLotMtADqj+KLP1r/FsXuzj867/lJtAZTFfTM/ald6Is3L9Dasb9tpOCJOL/3zVXbEzjyHAABY4/ts/vNMs/lfGvfXlbs730MZjIh7IuJgRNwbEYci4r6IatkHIuLBLdbfuEmyfv6TXttWYJuUzf9ezPe21s7/itlfDJby3IFq/L3JmdnyzPH8PRmJ3j1ZfnyDOn545bcvWl2rn/9lR1Z/MRfM23GtZ8/a10xPLkzeTsz1rn8SMdTTLP5kZScgiYjDETG0zTpmn/rmaKtrt45/A23YZ6p8HfFkrf+XoiH+QrLx/uTYXVGeOT5W3BXr/fLrlTdb1X9b8bdB1v97m97/K/EPJvX7tfNbr+PKH5+3XNNs9/7vS96upvvycx9OLixcHI/oS16vNbr+/MTqa4t8UT6Lf+RY8/F/MFbfiSMRkd3ED0XEwxHxSN72RyPisYg4tkH8P738+Hvbj39nZfFPb6n/VxN90XimeaJ07sfv1lQ6uJX4s/4/WU2N5Gc28/m3mXZt724GAACA/580IvZHko6upNN0dLT2N/yHYm9anptfePrM3AcXpmu/ERiM3rR40jVQ9zx0PF/WF/mJhvyJ/Lnxl6X+an50aq483engocvtazH+M3+WOt06YMf5vRZ0L+MfupfxD93L+Ifu1WT893eiHcDua/b9/3EH2gHsvobxb9sPuoj1P3Qv4x+6l/EPXWm+P279I3kJiXWJSP8TzZDYoUSnP5kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADa498AAAD//wgz6sQ=")
+chdir(&(0x7f0000000240)='./file0\x00')
+openat$procfs(0xffffffffffffff9c, &(0x7f0000000080)='/proc/locks\x00', 0x0, 0x0)
+creat(&(0x7f0000000080)='./file3\x00', 0x0)
+link(&(0x7f00000000c0)='./file3\x00', &(0x7f0000000100)='./bus\x00')
+
+program crashed: WARNING in ext4_update_inline_data
+testing program (duration=33.196264896s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-creat-link
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000140)='./file0\x00', 0xe, &(0x7f00000001c0)={[{@noload}, {@resuid={'resuid', 0x3d, 0xee01}}, {@debug_want_extra_isize={'debug_want_extra_isize', 0x3d, 0x2a}}, {@sb={'sb', 0x3d, 0x16f}}, {@i_version}, {@quota}]}, 0x3, 0x431, &(0x7f0000000500)="$eJzs289PHFUcAPDvzAKV/hCs9UdpVbQaiT+g0Ko9eNFo4kETEz3UIwJtsNtiCia2IYrG1KNp4t14NPEv8KQXo55MvOrdNGkMl1ZPa2Z3BpZllwJdWO1+Psm07828zXvfffN235vHBtC1hrN/koj9EfF7RAzUsmsLDNf+u7m8OPX38uJUEpXKW38l1XI3lheniqLF6/blmZE0Iv0siSNN6p2/dPncZLk8czHPjy2cf39s/tLlZ2fPT56dOTtzYeLUqZMnxl94fuK5tsSZxXVj6KO5o4dfe+fqG1Onr77787dJEX9DHG0yvNHFJyqVNlfXWQfq0klPBxvClpQiIuuu3ur4H4hSrHbeQLz6aUcbB+yoSq7F5aUKcAdLotMtADqj+KLP1r/FsXuzj867/lJtAZTFfTM/ald6Is3L9Dasb9tpOCJOL/3zVXbEzjyHAABY4/ts/vNMs/lfGvfXlbs730MZjIh7IuJgRNwbEYci4r6IatkHIuLBLdbfuEmyfv6TXttWYJuUzf9ezPe21s7/itlfDJby3IFq/L3JmdnyzPH8PRmJ3j1ZfnyDOn545bcvWl2rn/9lR1Z/MRfM23GtZ8/a10xPLkzeTsz1rn8SMdTTLP5kZScgiYjDETG0zTpmn/rmaKtrt45/A23YZ6p8HfFkrf+XoiH+QrLx/uTYXVGeOT5W3BXr/fLrlTdb1X9b8bdB1v97m97/K/EPJvX7tfNbr+PKH5+3XNNs9/7vS96upvvycx9OLixcHI/oS16vNbr+/MTqa4t8UT6Lf+RY8/F/MFbfiSMRkd3ED0XEwxHxSN72RyPisYg4tkH8P738+Hvbj39nZfFPb6n/VxN90XimeaJ07sfv1lQ6uJX4s/4/WU2N5Gc28/m3mXZt724GAACA/580IvZHko6upNN0dLT2N/yHYm9anptfePrM3AcXpmu/ERiM3rR40jVQ9zx0PF/WF/mJhvyJ/Lnxl6X+an50aq483engocvtazH+M3+WOt06YMf5vRZ0L+MfupfxD93L+Ifu1WT893eiHcDua/b9/3EH2gHsvobxb9sPuoj1P3Qv4x+6l/EPXWm+P279I3kJiXWJSP8TzZDYoUSnP5kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADa498AAAD//wgz6sQ=")
+chdir(&(0x7f0000000240)='./file0\x00')
+creat(&(0x7f0000000080)='./file3\x00', 0x0)
+link(&(0x7f00000000c0)='./file3\x00', &(0x7f0000000100)='./bus\x00')
+
+program crashed: WARNING in ext4_update_inline_data
+testing program (duration=33.196264896s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-creat-link
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000140)='./file0\x00', 0xe, &(0x7f00000001c0)={[{@noload}, {@resuid={'resuid', 0x3d, 0xee01}}, {@debug_want_extra_isize={'debug_want_extra_isize', 0x3d, 0x2a}}, {@sb={'sb', 0x3d, 0x16f}}, {@i_version}, {@quota}]}, 0x3, 0x431, &(0x7f0000000500)="$eJzs289PHFUcAPDvzAKV/hCs9UdpVbQaiT+g0Ko9eNFo4kETEz3UIwJtsNtiCia2IYrG1KNp4t14NPEv8KQXo55MvOrdNGkMl1ZPa2Z3BpZllwJdWO1+Psm07828zXvfffN235vHBtC1hrN/koj9EfF7RAzUsmsLDNf+u7m8OPX38uJUEpXKW38l1XI3lheniqLF6/blmZE0Iv0siSNN6p2/dPncZLk8czHPjy2cf39s/tLlZ2fPT56dOTtzYeLUqZMnxl94fuK5tsSZxXVj6KO5o4dfe+fqG1Onr77787dJEX9DHG0yvNHFJyqVNlfXWQfq0klPBxvClpQiIuuu3ur4H4hSrHbeQLz6aUcbB+yoSq7F5aUKcAdLotMtADqj+KLP1r/FsXuzj867/lJtAZTFfTM/ald6Is3L9Dasb9tpOCJOL/3zVXbEzjyHAABY4/ts/vNMs/lfGvfXlbs730MZjIh7IuJgRNwbEYci4r6IatkHIuLBLdbfuEmyfv6TXttWYJuUzf9ezPe21s7/itlfDJby3IFq/L3JmdnyzPH8PRmJ3j1ZfnyDOn545bcvWl2rn/9lR1Z/MRfM23GtZ8/a10xPLkzeTsz1rn8SMdTTLP5kZScgiYjDETG0zTpmn/rmaKtrt45/A23YZ6p8HfFkrf+XoiH+QrLx/uTYXVGeOT5W3BXr/fLrlTdb1X9b8bdB1v97m97/K/EPJvX7tfNbr+PKH5+3XNNs9/7vS96upvvycx9OLixcHI/oS16vNbr+/MTqa4t8UT6Lf+RY8/F/MFbfiSMRkd3ED0XEwxHxSN72RyPisYg4tkH8P738+Hvbj39nZfFPb6n/VxN90XimeaJ07sfv1lQ6uJX4s/4/WU2N5Gc28/m3mXZt724GAACA/580IvZHko6upNN0dLT2N/yHYm9anptfePrM3AcXpmu/ERiM3rR40jVQ9zx0PF/WF/mJhvyJ/Lnxl6X+an50aq483engocvtazH+M3+WOt06YMf5vRZ0L+MfupfxD93L+Ifu1WT893eiHcDua/b9/3EH2gHsvobxb9sPuoj1P3Qv4x+6l/EPXWm+P279I3kJiXWJSP8TzZDYoUSnP5kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADa498AAAD//wgz6sQ=")
+creat(&(0x7f0000000080)='./file3\x00', 0x0)
+link(&(0x7f00000000c0)='./file3\x00', &(0x7f0000000100)='./bus\x00')
+
+program did not crash
+testing program (duration=33.196264896s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): chdir-creat-link
+detailed listing:
+executing program 0:
+chdir(&(0x7f0000000240)='./file0\x00')
+creat(&(0x7f0000000080)='./file3\x00', 0x0)
+link(&(0x7f00000000c0)='./file3\x00', &(0x7f0000000100)='./bus\x00')
+
+program did not crash
+testing program (duration=33.196264896s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-creat-link
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000140)='./file0\x00', 0xe, &(0x7f00000001c0)={[{@noload}, {@resuid={'resuid', 0x3d, 0xee01}}, {@debug_want_extra_isize={'debug_want_extra_isize', 0x3d, 0x2a}}, {@sb={'sb', 0x3d, 0x16f}}, {@i_version}, {@quota}]}, 0x3, 0x431, &(0x7f0000000500)="$eJzs289PHFUcAPDvzAKV/hCs9UdpVbQaiT+g0Ko9eNFo4kETEz3UIwJtsNtiCia2IYrG1KNp4t14NPEv8KQXo55MvOrdNGkMl1ZPa2Z3BpZllwJdWO1+Psm07828zXvfffN235vHBtC1hrN/koj9EfF7RAzUsmsLDNf+u7m8OPX38uJUEpXKW38l1XI3lheniqLF6/blmZE0Iv0siSNN6p2/dPncZLk8czHPjy2cf39s/tLlZ2fPT56dOTtzYeLUqZMnxl94fuK5tsSZxXVj6KO5o4dfe+fqG1Onr77787dJEX9DHG0yvNHFJyqVNlfXWQfq0klPBxvClpQiIuuu3ur4H4hSrHbeQLz6aUcbB+yoSq7F5aUKcAdLotMtADqj+KLP1r/FsXuzj867/lJtAZTFfTM/ald6Is3L9Dasb9tpOCJOL/3zVXbEzjyHAABY4/ts/vNMs/lfGvfXlbs730MZjIh7IuJgRNwbEYci4r6IatkHIuLBLdbfuEmyfv6TXttWYJuUzf9ezPe21s7/itlfDJby3IFq/L3JmdnyzPH8PRmJ3j1ZfnyDOn545bcvWl2rn/9lR1Z/MRfM23GtZ8/a10xPLkzeTsz1rn8SMdTTLP5kZScgiYjDETG0zTpmn/rmaKtrt45/A23YZ6p8HfFkrf+XoiH+QrLx/uTYXVGeOT5W3BXr/fLrlTdb1X9b8bdB1v97m97/K/EPJvX7tfNbr+PKH5+3XNNs9/7vS96upvvycx9OLixcHI/oS16vNbr+/MTqa4t8UT6Lf+RY8/F/MFbfiSMRkd3ED0XEwxHxSN72RyPisYg4tkH8P738+Hvbj39nZfFPb6n/VxN90XimeaJ07sfv1lQ6uJX4s/4/WU2N5Gc28/m3mXZt724GAACA/580IvZHko6upNN0dLT2N/yHYm9anptfePrM3AcXpmu/ERiM3rR40jVQ9zx0PF/WF/mJhvyJ/Lnxl6X+an50aq483engocvtazH+M3+WOt06YMf5vRZ0L+MfupfxD93L+Ifu1WT893eiHcDua/b9/3EH2gHsvobxb9sPuoj1P3Qv4x+6l/EPXWm+P279I3kJiXWJSP8TzZDYoUSnP5kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADa498AAAD//wgz6sQ=")
+chdir(0x0)
+creat(&(0x7f0000000080)='./file3\x00', 0x0)
+link(&(0x7f00000000c0)='./file3\x00', &(0x7f0000000100)='./bus\x00')
+
+program did not crash
+testing program (duration=33.196264896s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-creat-link
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000140)='./file0\x00', 0xe, &(0x7f00000001c0)={[{@noload}, {@resuid={'resuid', 0x3d, 0xee01}}, {@debug_want_extra_isize={'debug_want_extra_isize', 0x3d, 0x2a}}, {@sb={'sb', 0x3d, 0x16f}}, {@i_version}, {@quota}]}, 0x3, 0x431, &(0x7f0000000500)="$eJzs289PHFUcAPDvzAKV/hCs9UdpVbQaiT+g0Ko9eNFo4kETEz3UIwJtsNtiCia2IYrG1KNp4t14NPEv8KQXo55MvOrdNGkMl1ZPa2Z3BpZllwJdWO1+Psm07828zXvfffN235vHBtC1hrN/koj9EfF7RAzUsmsLDNf+u7m8OPX38uJUEpXKW38l1XI3lheniqLF6/blmZE0Iv0siSNN6p2/dPncZLk8czHPjy2cf39s/tLlZ2fPT56dOTtzYeLUqZMnxl94fuK5tsSZxXVj6KO5o4dfe+fqG1Onr77787dJEX9DHG0yvNHFJyqVNlfXWQfq0klPBxvClpQiIuuu3ur4H4hSrHbeQLz6aUcbB+yoSq7F5aUKcAdLotMtADqj+KLP1r/FsXuzj867/lJtAZTFfTM/ald6Is3L9Dasb9tpOCJOL/3zVXbEzjyHAABY4/ts/vNMs/lfGvfXlbs730MZjIh7IuJgRNwbEYci4r6IatkHIuLBLdbfuEmyfv6TXttWYJuUzf9ezPe21s7/itlfDJby3IFq/L3JmdnyzPH8PRmJ3j1ZfnyDOn545bcvWl2rn/9lR1Z/MRfM23GtZ8/a10xPLkzeTsz1rn8SMdTTLP5kZScgiYjDETG0zTpmn/rmaKtrt45/A23YZ6p8HfFkrf+XoiH+QrLx/uTYXVGeOT5W3BXr/fLrlTdb1X9b8bdB1v97m97/K/EPJvX7tfNbr+PKH5+3XNNs9/7vS96upvvycx9OLixcHI/oS16vNbr+/MTqa4t8UT6Lf+RY8/F/MFbfiSMRkd3ED0XEwxHxSN72RyPisYg4tkH8P738+Hvbj39nZfFPb6n/VxN90XimeaJ07sfv1lQ6uJX4s/4/WU2N5Gc28/m3mXZt724GAACA/580IvZHko6upNN0dLT2N/yHYm9anptfePrM3AcXpmu/ERiM3rR40jVQ9zx0PF/WF/mJhvyJ/Lnxl6X+an50aq483engocvtazH+M3+WOt06YMf5vRZ0L+MfupfxD93L+Ifu1WT893eiHcDua/b9/3EH2gHsvobxb9sPuoj1P3Qv4x+6l/EPXWm+P279I3kJiXWJSP8TzZDYoUSnP5kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADa498AAAD//wgz6sQ=")
+chdir(&(0x7f0000000240)='./file0\x00')
+creat(0x0, 0x0)
+link(&(0x7f00000000c0)='./file3\x00', &(0x7f0000000100)='./bus\x00')
+
+program did not crash
+testing program (duration=33.196264896s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-creat-link
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000140)='./file0\x00', 0xe, &(0x7f00000001c0)={[{@noload}, {@resuid={'resuid', 0x3d, 0xee01}}, {@debug_want_extra_isize={'debug_want_extra_isize', 0x3d, 0x2a}}, {@sb={'sb', 0x3d, 0x16f}}, {@i_version}, {@quota}]}, 0x3, 0x431, &(0x7f0000000500)="$eJzs289PHFUcAPDvzAKV/hCs9UdpVbQaiT+g0Ko9eNFo4kETEz3UIwJtsNtiCia2IYrG1KNp4t14NPEv8KQXo55MvOrdNGkMl1ZPa2Z3BpZllwJdWO1+Psm07828zXvfffN235vHBtC1hrN/koj9EfF7RAzUsmsLDNf+u7m8OPX38uJUEpXKW38l1XI3lheniqLF6/blmZE0Iv0siSNN6p2/dPncZLk8czHPjy2cf39s/tLlZ2fPT56dOTtzYeLUqZMnxl94fuK5tsSZxXVj6KO5o4dfe+fqG1Onr77787dJEX9DHG0yvNHFJyqVNlfXWQfq0klPBxvClpQiIuuu3ur4H4hSrHbeQLz6aUcbB+yoSq7F5aUKcAdLotMtADqj+KLP1r/FsXuzj867/lJtAZTFfTM/ald6Is3L9Dasb9tpOCJOL/3zVXbEzjyHAABY4/ts/vNMs/lfGvfXlbs730MZjIh7IuJgRNwbEYci4r6IatkHIuLBLdbfuEmyfv6TXttWYJuUzf9ezPe21s7/itlfDJby3IFq/L3JmdnyzPH8PRmJ3j1ZfnyDOn545bcvWl2rn/9lR1Z/MRfM23GtZ8/a10xPLkzeTsz1rn8SMdTTLP5kZScgiYjDETG0zTpmn/rmaKtrt45/A23YZ6p8HfFkrf+XoiH+QrLx/uTYXVGeOT5W3BXr/fLrlTdb1X9b8bdB1v97m97/K/EPJvX7tfNbr+PKH5+3XNNs9/7vS96upvvycx9OLixcHI/oS16vNbr+/MTqa4t8UT6Lf+RY8/F/MFbfiSMRkd3ED0XEwxHxSN72RyPisYg4tkH8P738+Hvbj39nZfFPb6n/VxN90XimeaJ07sfv1lQ6uJX4s/4/WU2N5Gc28/m3mXZt724GAACA/580IvZHko6upNN0dLT2N/yHYm9anptfePrM3AcXpmu/ERiM3rR40jVQ9zx0PF/WF/mJhvyJ/Lnxl6X+an50aq483engocvtazH+M3+WOt06YMf5vRZ0L+MfupfxD93L+Ifu1WT893eiHcDua/b9/3EH2gHsvobxb9sPuoj1P3Qv4x+6l/EPXWm+P279I3kJiXWJSP8TzZDYoUSnP5kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADa498AAAD//wgz6sQ=")
+chdir(&(0x7f0000000240)='./file0\x00')
+creat(&(0x7f0000000080)='./file3\x00', 0x0)
+link(0x0, &(0x7f0000000100)='./bus\x00')
+
+program did not crash
+testing program (duration=33.196264896s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-creat-link
+detailed listing:
+executing program 0:
+syz_mount_image$ext4(&(0x7f0000000040)='ext4\x00', &(0x7f0000000140)='./file0\x00', 0xe, &(0x7f00000001c0)={[{@noload}, {@resuid={'resuid', 0x3d, 0xee01}}, {@debug_want_extra_isize={'debug_want_extra_isize', 0x3d, 0x2a}}, {@sb={'sb', 0x3d, 0x16f}}, {@i_version}, {@quota}]}, 0x3, 0x431, &(0x7f0000000500)="$eJzs289PHFUcAPDvzAKV/hCs9UdpVbQaiT+g0Ko9eNFo4kETEz3UIwJtsNtiCia2IYrG1KNp4t14NPEv8KQXo55MvOrdNGkMl1ZPa2Z3BpZllwJdWO1+Psm07828zXvfffN235vHBtC1hrN/koj9EfF7RAzUsmsLDNf+u7m8OPX38uJUEpXKW38l1XI3lheniqLF6/blmZE0Iv0siSNN6p2/dPncZLk8czHPjy2cf39s/tLlZ2fPT56dOTtzYeLUqZMnxl94fuK5tsSZxXVj6KO5o4dfe+fqG1Onr77787dJEX9DHG0yvNHFJyqVNlfXWQfq0klPBxvClpQiIuuu3ur4H4hSrHbeQLz6aUcbB+yoSq7F5aUKcAdLotMtADqj+KLP1r/FsXuzj867/lJtAZTFfTM/ald6Is3L9Dasb9tpOCJOL/3zVXbEzjyHAABY4/ts/vNMs/lfGvfXlbs730MZjIh7IuJgRNwbEYci4r6IatkHIuLBLdbfuEmyfv6TXttWYJuUzf9ezPe21s7/itlfDJby3IFq/L3JmdnyzPH8PRmJ3j1ZfnyDOn545bcvWl2rn/9lR1Z/MRfM23GtZ8/a10xPLkzeTsz1rn8SMdTTLP5kZScgiYjDETG0zTpmn/rmaKtrt45/A23YZ6p8HfFkrf+XoiH+QrLx/uTYXVGeOT5W3BXr/fLrlTdb1X9b8bdB1v97m97/K/EPJvX7tfNbr+PKH5+3XNNs9/7vS96upvvycx9OLixcHI/oS16vNbr+/MTqa4t8UT6Lf+RY8/F/MFbfiSMRkd3ED0XEwxHxSN72RyPisYg4tkH8P738+Hvbj39nZfFPb6n/VxN90XimeaJ07sfv1lQ6uJX4s/4/WU2N5Gc28/m3mXZt724GAACA/580IvZHko6upNN0dLT2N/yHYm9anptfePrM3AcXpmu/ERiM3rR40jVQ9zx0PF/WF/mJhvyJ/Lnxl6X+an50aq483engocvtazH+M3+WOt06YMf5vRZ0L+MfupfxD93L+Ifu1WT893eiHcDua/b9/3EH2gHsvobxb9sPuoj1P3Qv4x+6l/EPXWm+P279I3kJiXWJSP8TzZDYoUSnP5kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADa498AAAD//wgz6sQ=")
+chdir(&(0x7f0000000240)='./file0\x00')
+creat(&(0x7f0000000080)='./file3\x00', 0x0)
+link(&(0x7f00000000c0)='./file3\x00', 0x0)
+
+program did not crash
+extracting C reproducer
+testing compiled C program (duration=33.196264896s, {Threaded:true Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-creat-link
+program crashed: WARNING in ext4_update_inline_data
+simplifying C reproducer
+testing compiled C program (duration=33.196264896s, {Threaded:false Repeat:true RepeatTimes:0 Procs:4 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-creat-link
+program crashed: WARNING in ext4_update_inline_data
+testing compiled C program (duration=33.196264896s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true NetReset:false Cgroups:false BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:true UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-creat-link
+program crashed: WARNING in ext4_update_inline_data
+testing compiled C program (duration=33.196264896s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox: SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:false UseTmpDir:true HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-creat-link
+program crashed: WARNING in ext4_update_inline_data
+testing compiled C program (duration=33.196264896s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox: SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:false UseTmpDir:false HandleSegv:true Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-creat-link
+program crashed: WARNING in ext4_update_inline_data
+testing compiled C program (duration=33.196264896s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox: SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:true Swap:false UseTmpDir:false HandleSegv:false Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-creat-link
+program crashed: WARNING in ext4_update_inline_data
+testing compiled C program (duration=33.196264896s, {Threaded:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox: SandboxArg:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:false Swap:false UseTmpDir:false HandleSegv:false Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0 FaultNth:0}}): syz_mount_image$ext4-chdir-creat-link
+program crashed: WARNING in ext4_update_inline_data
+reproducing took 9m13.958671892s
+repro crashed as (corrupted=false):
+EXT4-fs (loop0): mounted filesystem without journal. Opts: noload,resuid=0x000000000000ee01,debug_want_extra_isize=0x000000000000002a,sb=0x000000000000016f,i_version,quota,,errors=continue
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 239 at mm/page_alloc.c:4930 __alloc_pages_nodemask+0x58a/0x6a0 mm/page_alloc.c:4965
+Modules linked in:
+CPU: 1 PID: 239 Comm: syz-executor300 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:__alloc_pages_nodemask+0x58a/0x6a0 mm/page_alloc.c:4930
+Code: 00 00 0c 00 0f 85 86 00 00 00 4c 89 c2 44 89 e6 44 89 ff c6 44 24 70 00 4c 89 6c 24 58 e8 de d6 ff ff 49 89 c6 e9 17 fd ff ff <0f> 0b e9 d6 fd ff ff 4c 89 44 24 18 4c 89 44 24 10 89 74 24 0c 4c
+RSP: 0018:ffff888010f57810 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 1ffff110021eaf06 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000040d40
+RBP: 0000000000000000 R08: ffffffff84529240 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: 000000000000000f
+R13: 000000000000000f R14: 0000000000000000 R15: ffff888010f57a38
+FS:  0000555555fda380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000056428e4c7fe8 CR3: 0000000010cde000 CR4: 0000000000350ef0
+Call Trace:
+ alloc_pages_current+0x191/0x2a0 mm/mempolicy.c:2271
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x32/0xa0 mm/slab_common.c:836
+ kmalloc_order_trace+0x14/0x110 mm/slab_common.c:852
+ kmalloc include/linux/slab.h:557 [inline]
+ kzalloc include/linux/slab.h:664 [inline]
+ ext4_update_inline_data+0x1f3/0x480 fs/ext4/inline.c:341
+ ext4_update_inline_dir fs/ext4/inline.c:1106 [inline]
+ ext4_try_add_inline_entry+0x41b/0x650 fs/ext4/inline.c:1289
+ ext4_add_entry+0x34e/0xc60 fs/ext4/namei.c:2209
+ __ext4_link+0x45e/0x5c0 fs/ext4/namei.c:3443
+ ext4_link+0x207/0x280 fs/ext4/namei.c:3484
+ vfs_link+0x83e/0xc20 fs/namei.c:4074
+ do_linkat+0x3c5/0x560 fs/namei.c:4142
+ __do_sys_link fs/namei.c:4171 [inline]
+ __se_sys_link fs/namei.c:4169 [inline]
+ __x64_sys_link+0x5d/0x80 fs/namei.c:4169
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ff5d315bd8d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffefe68a7e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000056
+RAX: ffffffffffffffda RBX: 0033656c69662f2e RCX: 00007ff5d315bd8d
+RDX: 00007ff5d315bd8d RSI: 0000000020000100 RDI: 00000000200000c0
+RBP: 00007ffefe68a8a0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffefe68a918
+R13: 00007ffefe68a928 R14: 00007ff5d31e9d10 R15: 0000000000000001
+irq event stamp: 15377
+hardirqs last  enabled at (15387): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (15396): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (15092): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (15087): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace aed92efdba8fd72c ]---
+
+final repro crashed as (corrupted=false):
+EXT4-fs (loop0): mounted filesystem without journal. Opts: noload,resuid=0x000000000000ee01,debug_want_extra_isize=0x000000000000002a,sb=0x000000000000016f,i_version,quota,,errors=continue
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 239 at mm/page_alloc.c:4930 __alloc_pages_nodemask+0x58a/0x6a0 mm/page_alloc.c:4965
+Modules linked in:
+CPU: 1 PID: 239 Comm: syz-executor300 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:__alloc_pages_nodemask+0x58a/0x6a0 mm/page_alloc.c:4930
+Code: 00 00 0c 00 0f 85 86 00 00 00 4c 89 c2 44 89 e6 44 89 ff c6 44 24 70 00 4c 89 6c 24 58 e8 de d6 ff ff 49 89 c6 e9 17 fd ff ff <0f> 0b e9 d6 fd ff ff 4c 89 44 24 18 4c 89 44 24 10 89 74 24 0c 4c
+RSP: 0018:ffff888010f57810 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 1ffff110021eaf06 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000040d40
+RBP: 0000000000000000 R08: ffffffff84529240 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: 000000000000000f
+R13: 000000000000000f R14: 0000000000000000 R15: ffff888010f57a38
+FS:  0000555555fda380(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000056428e4c7fe8 CR3: 0000000010cde000 CR4: 0000000000350ef0
+Call Trace:
+ alloc_pages_current+0x191/0x2a0 mm/mempolicy.c:2271
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x32/0xa0 mm/slab_common.c:836
+ kmalloc_order_trace+0x14/0x110 mm/slab_common.c:852
+ kmalloc include/linux/slab.h:557 [inline]
+ kzalloc include/linux/slab.h:664 [inline]
+ ext4_update_inline_data+0x1f3/0x480 fs/ext4/inline.c:341
+ ext4_update_inline_dir fs/ext4/inline.c:1106 [inline]
+ ext4_try_add_inline_entry+0x41b/0x650 fs/ext4/inline.c:1289
+ ext4_add_entry+0x34e/0xc60 fs/ext4/namei.c:2209
+ __ext4_link+0x45e/0x5c0 fs/ext4/namei.c:3443
+ ext4_link+0x207/0x280 fs/ext4/namei.c:3484
+ vfs_link+0x83e/0xc20 fs/namei.c:4074
+ do_linkat+0x3c5/0x560 fs/namei.c:4142
+ __do_sys_link fs/namei.c:4171 [inline]
+ __se_sys_link fs/namei.c:4169 [inline]
+ __x64_sys_link+0x5d/0x80 fs/namei.c:4169
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ff5d315bd8d
+Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffefe68a7e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000056
+RAX: ffffffffffffffda RBX: 0033656c69662f2e RCX: 00007ff5d315bd8d
+RDX: 00007ff5d315bd8d RSI: 0000000020000100 RDI: 00000000200000c0
+RBP: 00007ffefe68a8a0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffefe68a918
+R13: 00007ffefe68a928 R14: 00007ff5d31e9d10 R15: 0000000000000001
+irq event stamp: 15377
+hardirqs last  enabled at (15387): [<ffffffff812d54e1>] console_unlock+0x991/0xba0 kernel/printk/printk.c:2528
+hardirqs last disabled at (15396): [<ffffffff812d53cf>] console_unlock+0x87f/0xba0 kernel/printk/printk.c:2443
+softirqs last  enabled at (15092): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (15087): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+---[ end trace aed92efdba8fd72c ]---
+

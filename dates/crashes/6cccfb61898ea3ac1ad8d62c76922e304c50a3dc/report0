@@ -1,0 +1,104 @@
+ext4 filesystem being mounted at /0/file0 supports timestamps until 2038 (0x7fffffff)
+kernel profiling enabled (shift: -2147483647)
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:110:31
+shift exponent 18446744071562067969 is too large for 64-bit type 'long int'
+CPU: 0 PID: 2079 Comm: syz.1.9 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ profile_init+0xfc/0x110 kernel/profile.c:110
+ profiling_store+0x5e/0xd0 kernel/ksysfs.c:80
+ kobj_attr_store+0x53/0x80 lib/kobject.c:856
+ sysfs_kf_write+0x113/0x170 fs/sysfs/file.c:139
+ kernfs_fop_write+0x26a/0x490 fs/kernfs/file.c:315
+ vfs_write+0x29a/0xac0 fs/read_write.c:603
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fe0fe4e1ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe0fd15b038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fe0fe699f80 RCX: 00007fe0fe4e1ef9
+RDX: 0000000000000012 RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 00007fe0fe554b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fe0fe699f80 R15: 00007ffe69476b78
+================================================================================
+EXT4-fs (loop1): mounted filesystem without journal. Opts: dioread_lock,nodiscard,nogrpid,block_validity,debug_want_extra_isize=0x0000000000000006,init_itable=0x0000000000000000,usrquota,usrquota,,errors=continue
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:291:7
+shift exponent 18446744071562067969 is too large for 64-bit type 'long unsigned int'
+CPU: 1 PID: 2067 Comm: syz.0.1 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ do_profile_hits.constprop.0.cold+0x17/0x1c kernel/profile.c:291
+ profile_hits kernel/profile.c:398 [inline]
+ profile_hit include/linux/profile.h:64 [inline]
+ profile_tick+0xe7/0x100 kernel/profile.c:408
+ tick_sched_timer+0x10f/0x150 kernel/time/tick-sched.c:1328
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x1c1/0xba0 kernel/time/hrtimer.c:1583
+ hrtimer_interrupt+0x357/0x9b0 kernel/time/hrtimer.c:1645
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+ __sysvec_apic_timer_interrupt+0x170/0x560 arch/x86/kernel/apic/apic.c:1097
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
+ run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
+ sysvec_apic_timer_interrupt+0xb8/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:__sanitizer_cov_trace_pc+0x0/0x60 kernel/kcov.c:193
+Code: c7 c7 80 e2 16 85 48 89 4c 24 08 48 89 04 24 e8 26 e8 c4 00 48 8b 4c 24 08 48 8b 04 24 e9 ef fd ff ff 0f 1f 84 00 00 00 00 00 <48> 8b 34 24 65 48 8b 14 25 40 ef 01 00 65 8b 05 2c e0 bb 7e a9 00
+RSP: 0018:ffff888019be79a8 EFLAGS: 00000246
+RAX: 0000000000000000 RBX: 00000000000000a4 RCX: ffff888019be7840
+RDX: 1ffff1100169e7a8 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffff8880197c9918 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
+R13: dffffc0000000000 R14: ffff88800892a880 R15: ffff8880197c9700
+ find_lock_entry+0x180/0x510 mm/filemap.c:1752
+ shmem_getpage_gfp.constprop.0+0x1ca/0x19a0 mm/shmem.c:1822
+ shmem_getpage mm/shmem.c:155 [inline]
+ shmem_write_begin+0xf7/0x1d0 mm/shmem.c:2533
+ generic_perform_write+0x1fe/0x4d0 mm/filemap.c:3329
+ __generic_file_write_iter+0x399/0x5d0 mm/filemap.c:3458
+ generic_file_write_iter+0xd7/0x220 mm/filemap.c:3490
+ call_write_iter include/linux/fs.h:1903 [inline]
+ new_sync_write+0x42c/0x670 fs/read_write.c:518
+ vfs_write+0x81b/0xac0 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f17fd02e9df
+Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 c9 8d 02 00 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 1c 8e 02 00 48
+RSP: 002b:00007f17fbca8df0 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000100000 RCX: 00007f17fd02e9df
+RDX: 0000000000100000 RSI: 00007f17f3889000 RDI: 0000000000000007
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000764
+R10: 00000000000003c4 R11: 0000000000000293 R12: 0000000000000007
+R13: 00007f17fbca8ef0 R14: 00007f17fbca8eb0 R15: 00007f17f3889000
+================================================================================
+----------------
+Code disassembly (best guess):
+   0:	c7 c7 80 e2 16 85    	mov    $0x8516e280,%edi
+   6:	48 89 4c 24 08       	mov    %rcx,0x8(%rsp)
+   b:	48 89 04 24          	mov    %rax,(%rsp)
+   f:	e8 26 e8 c4 00       	call   0xc4e83a
+  14:	48 8b 4c 24 08       	mov    0x8(%rsp),%rcx
+  19:	48 8b 04 24          	mov    (%rsp),%rax
+  1d:	e9 ef fd ff ff       	jmp    0xfffffe11
+  22:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+  29:	00
+* 2a:	48 8b 34 24          	mov    (%rsp),%rsi <-- trapping instruction
+  2e:	65 48 8b 14 25 40 ef 	mov    %gs:0x1ef40,%rdx
+  35:	01 00
+  37:	65 8b 05 2c e0 bb 7e 	mov    %gs:0x7ebbe02c(%rip),%eax        # 0x7ebbe06a
+  3e:	a9                   	.byte 0xa9

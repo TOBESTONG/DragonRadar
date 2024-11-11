@@ -1,0 +1,159 @@
+EXT4-fs error (device loop3): ext4_ext_truncate:4353: inode #18: comm syz.3.588: mark_inode_dirty error
+EXT4-fs error (device loop3) in ext4_reserve_inode_write:5740: Corrupt filesystem
+==================================================================
+BUG: KASAN: use-after-free in ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+BUG: KASAN: use-after-free in ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+Read of size 4 at addr ffff8880232f1b20 by task syz.0.592/13601
+
+CPU: 1 PID: 13601 Comm: syz.0.592 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ ext4_ext_binsearch fs/ext4/extents.c:784 [inline]
+ ext4_find_extent+0xcaf/0xd10 fs/ext4/extents.c:903
+ ext4_ext_remove_space+0x1445/0x4470 fs/ext4/extents.c:2806
+ ext4_punch_hole+0x678/0x1130 fs/ext4/inode.c:4105
+ ext4_fallocate+0x10e7/0x3e70 fs/ext4/extents.c:4655
+ vfs_fallocate+0x494/0xdd0 fs/open.c:309
+ ioctl_preallocate+0x18e/0x200 fs/ioctl.c:494
+ file_ioctl fs/ioctl.c:537 [inline]
+ do_vfs_ioctl+0xe3c/0x1140 fs/ioctl.c:732
+ __do_sys_ioctl fs/ioctl.c:751 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x108/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f8bd6594ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f8bd520e038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f8bd674cf80 RCX: 00007f8bd6594ef9
+RDX: 0000000020000080 RSI: 0000000040305829 RDI: 0000000000000004
+RBP: 00007f8bd6607b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f8bd674cf80 R15: 00007fff8200f658
+
+The buggy address belongs to the page:
+page:00000000b20ee9eb refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x232f1
+flags: 0x100000000000000()
+raw: 0100000000000000 ffffea00008cbc88 ffffea00008cbc08 0000000000000000
+raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880232f1a00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff8880232f1a80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>ffff8880232f1b00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                               ^
+ ffff8880232f1b80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff8880232f1c00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
+EXT4-fs error (device loop0): ext4_free_blocks:5297: comm syz.0.592: Freeing blocks not in datazone - block = 141940079198207, count = 24810
+Quota error (device loop3): qtree_write_dquot: dquota write failed
+EXT4-fs (loop0): Remounting filesystem read-only
+Quota error (device loop3): dqput: Can't write quota structure (error -117). Quota may get out of sync!
+EXT4-fs error (device loop2): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 191 vs 220 free clusters
+EXT4-fs (loop2): 1 truncate cleaned up
+EXT4-fs (loop2): mounted filesystem without journal. Opts: noload,resuid=0x000000000000ee01,debug_want_extra_isize=0x000000000000002e,lazytime,i_version,quota,,errors=continue
+BUG: unable to handle page fault for address: ffffebde03758008
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 0 P4D 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 13572 Comm: syz.1.587 Tainted: G    B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:compound_head include/linux/page-flags.h:185 [inline]
+RIP: 0010:virt_to_head_page include/linux/mm.h:860 [inline]
+RIP: 0010:qlink_to_cache mm/kasan/quarantine.c:130 [inline]
+RIP: 0010:qlist_free_all+0x8d/0xd0 mm/kasan/quarantine.c:167
+Code: df 48 85 db 75 cc 48 89 f0 4c 01 e8 72 56 4c 89 f2 48 2b 15 25 65 57 03 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 03 65 57 03 <48> 8b 50 08 48 8d 4a ff 83 e2 01 48 0f 45 c1 48 8b 78 18 eb 93 49
+RSP: 0018:ffff888016897700 EFLAGS: 00010286
+RAX: ffffebde03758000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000777f80000000 RSI: 00000000dd600086 RDI: 0000000000000000
+RBP: dffffc0000000000 R08: 0000000000000006 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888016897738
+R13: 0000000080000000 R14: ffffffff80000000 R15: 00000000dd600086
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffebde03758008 CR3: 0000000004e26000 CR4: 0000000000350ee0
+Call Trace:
+ quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:267
+ __kasan_kmalloc.constprop.0+0x9e/0xd0 mm/kasan/common.c:442
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ kmem_cache_zalloc include/linux/slab.h:654 [inline]
+ jbd2_alloc_handle include/linux/jbd2.h:1554 [inline]
+ new_handle fs/jbd2/transaction.c:459 [inline]
+ jbd2__journal_start+0x1ef/0x960 fs/jbd2/transaction.c:486
+ __ext4_journal_start_sb+0x210/0x490 fs/ext4/ext4_jbd2.c:105
+ __ext4_journal_start fs/ext4/ext4_jbd2.h:328 [inline]
+ ext4_evict_inode+0x96c/0x1890 fs/ext4/inode.c:246
+ evict+0x284/0x6d0 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ dentry_unlink_inode+0x2b4/0x3e0 fs/dcache.c:374
+ __dentry_kill+0x36f/0x5b0 fs/dcache.c:579
+ dentry_kill fs/dcache.c:717 [inline]
+ dput+0x6ad/0xc70 fs/dcache.c:878
+ __fput+0x3a5/0x980 fs/file_table.c:294
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f83817e2fe5
+Code: Unable to access opcode bytes at RIP 0x7f83817e2fbb.
+RSP: 002b:00007ffe0fe27b90 EFLAGS: 00000293 ORIG_RAX: 00000000000000e6
+RAX: 0000000000000000 RBX: 00007f8381968f80 RCX: 00007f83817e2fe5
+RDX: 00007ffe0fe27bd0 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007f838196aa80 R08: 0000000000000000 R09: 00007ffe0ff4b090
+R10: 0000000000000000 R11: 0000000000000293 R12: 000000000001cad6
+R13: 00007ffe0fe27d00 R14: 0000000000000032 R15: ffffffffffffffff
+Modules linked in:
+CR2: ffffebde03758008
+---[ end trace ddcfb50d1a590ed2 ]---
+RIP: 0010:compound_head include/linux/page-flags.h:185 [inline]
+RIP: 0010:virt_to_head_page include/linux/mm.h:860 [inline]
+RIP: 0010:qlink_to_cache mm/kasan/quarantine.c:130 [inline]
+RIP: 0010:qlist_free_all+0x8d/0xd0 mm/kasan/quarantine.c:167
+Code: df 48 85 db 75 cc 48 89 f0 4c 01 e8 72 56 4c 89 f2 48 2b 15 25 65 57 03 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 03 65 57 03 <48> 8b 50 08 48 8d 4a ff 83 e2 01 48 0f 45 c1 48 8b 78 18 eb 93 49
+RSP: 0018:ffff888016897700 EFLAGS: 00010286
+RAX: ffffebde03758000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000777f80000000 RSI: 00000000dd600086 RDI: 0000000000000000
+RBP: dffffc0000000000 R08: 0000000000000006 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888016897738
+R13: 0000000080000000 R14: ffffffff80000000 R15: 00000000dd600086
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffebde03758008 CR3: 0000000004e26000 CR4: 0000000000350ee0
+Fixing recursive fault but reboot is needed!
+----------------
+Code disassembly (best guess):
+   0:	df 48 85             	fisttps -0x7b(%rax)
+   3:	db 75 cc             	(bad)  -0x34(%rbp)
+   6:	48 89 f0             	mov    %rsi,%rax
+   9:	4c 01 e8             	add    %r13,%rax
+   c:	72 56                	jb     0x64
+   e:	4c 89 f2             	mov    %r14,%rdx
+  11:	48 2b 15 25 65 57 03 	sub    0x3576525(%rip),%rdx        # 0x357653d
+  18:	48 01 d0             	add    %rdx,%rax
+  1b:	48 c1 e8 0c          	shr    $0xc,%rax
+  1f:	48 c1 e0 06          	shl    $0x6,%rax
+  23:	48 03 05 03 65 57 03 	add    0x3576503(%rip),%rax        # 0x357652d
+* 2a:	48 8b 50 08          	mov    0x8(%rax),%rdx <-- trapping instruction
+  2e:	48 8d 4a ff          	lea    -0x1(%rdx),%rcx
+  32:	83 e2 01             	and    $0x1,%edx
+  35:	48 0f 45 c1          	cmovne %rcx,%rax
+  39:	48 8b 78 18          	mov    0x18(%rax),%rdi
+  3d:	eb 93                	jmp    0xffffffd2
+  3f:	49                   	rex.WB

@@ -1,0 +1,50 @@
+EXT4-fs error (device loop3): __ext4_ext_dirty:169: inode #2: comm syz.3.570: mark_inode_dirty error
+EXT4-fs warning (device loop1): ext4_dirblock_csum_set:398: inode #2: comm syz-executor: No space for directory leaf checksum. Please run e2fsck -D.
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:5121!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 7334 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_do_update_inode fs/ext4/inode.c:5121 [inline]
+RIP: 0010:ext4_mark_iloc_dirty+0x276e/0x3710 fs/ext4/inode.c:5712
+Code: fd ff ff e9 49 e8 ff ff e8 4f da 9f ff 44 8b 74 24 48 31 ff 44 89 f6 e8 00 d2 9f ff 45 85 f6 0f 84 04 f1 ff ff e8 32 da 9f ff <0f> 0b 48 c7 c7 60 de 2f 85 e8 33 57 3a 02 e8 1f da 9f ff 48 8d 85
+RSP: 0018:ffff88801795fa68 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88801a87be48 RCX: ffffffff81a63480
+RDX: ffff8880185d1a00 RSI: ffffffff81a6348e RDI: 0000000000000005
+RBP: ffff888016a0e200 R08: 0000000000000000 R09: ffff88801a87c037
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff8880113b2000
+R13: 0000000000000000 R14: 0000000000000808 R15: ffff88801795fb98
+FS:  000055555571d500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fffd28abff8 CR3: 0000000016ae0000 CR4: 0000000000350ee0
+Call Trace:
+ __ext4_mark_inode_dirty+0x201/0x860 fs/ext4/inode.c:5906
+ __ext4_unlink+0x49f/0xa40 fs/ext4/namei.c:3240
+ ext4_unlink+0x323/0x8f0 fs/ext4/namei.c:3274
+ vfs_unlink+0x2d0/0x610 fs/namei.c:3833
+ do_unlinkat+0x39b/0x650 fs/namei.c:3897
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f01653da4a7
+Code: 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 57 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffd28ac1c8 EFLAGS: 00000206 ORIG_RAX: 0000000000000057
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f01653da4a7
+RDX: 00007fffd28ac1f0 RSI: 00007fffd28ac280 RDI: 00007fffd28ac280
+RBP: 00007fffd28ac280 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000100 R11: 0000000000000206 R12: 00007fffd28ad370
+R13: 00007f016544da14 R14: 00000000000151d8 R15: 00007fffd28ae430
+Modules linked in:
+---[ end trace cebff460430be9b5 ]---
+RIP: 0010:ext4_do_update_inode fs/ext4/inode.c:5121 [inline]
+RIP: 0010:ext4_mark_iloc_dirty+0x276e/0x3710 fs/ext4/inode.c:5712
+Code: fd ff ff e9 49 e8 ff ff e8 4f da 9f ff 44 8b 74 24 48 31 ff 44 89 f6 e8 00 d2 9f ff 45 85 f6 0f 84 04 f1 ff ff e8 32 da 9f ff <0f> 0b 48 c7 c7 60 de 2f 85 e8 33 57 3a 02 e8 1f da 9f ff 48 8d 85
+RSP: 0018:ffff88801795fa68 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88801a87be48 RCX: ffffffff81a63480
+RDX: ffff8880185d1a00 RSI: ffffffff81a6348e RDI: 0000000000000005
+RBP: ffff888016a0e200 R08: 0000000000000000 R09: ffff88801a87c037
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff8880113b2000
+R13: 0000000000000000 R14: 0000000000000808 R15: ffff88801795fb98
+FS:  000055555571d500(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fffd28abff8 CR3: 0000000016ae0000 CR4: 0000000000350ee0
+note: syz-executor[7334] exited with preempt_count 1

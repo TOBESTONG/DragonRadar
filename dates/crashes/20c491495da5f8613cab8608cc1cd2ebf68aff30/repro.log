@@ -1,0 +1,983 @@
+Warning: Permanently added '[localhost]:34857' (ED25519) to the list of known hosts.
+syzkaller login: [   20.463487] audit: type=1400 audit(1731120105.268:6): avc:  denied  { execmem } for  pid=236 comm="syz-executor328" scontext=system_u:system_r:kernel_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
+executing program
+executing program
+executing program
+executing program
+[   20.544433] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   20.641092] md: md1 stopped.
+[   20.659903] md: md1 stopped.
+[   20.672958] md: md1 stopped.
+[   20.675966] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   20.752507] md: md1 stopped.
+executing program
+[   20.784662] md: md1 stopped.
+[   20.786209] md: md1 stopped.
+[   20.788422] md: md1 stopped.
+executing program
+executing program
+executing program
+[   20.837393] md: md1 stopped.
+executing program
+[   20.880593] md: md1 stopped.
+[   20.899027] md: md1 stopped.
+executing program
+executing program
+[   20.926306] md: md1 stopped.
+executing program
+executing program
+[   20.982293] md: md1 stopped.
+[   21.004963] md: md1 stopped.
+executing program
+[   21.020130] md: md1 stopped.
+executing program
+executing program
+executing program
+[   21.098484] md: md1 stopped.
+[   21.098814] ------------[ cut here ]------------
+[   21.100401] WARNING: CPU: 0 PID: 310 at drivers/md/md.c:7593 md_ioctl+0x37b6/0x50f0
+[   21.101671] Modules linked in:
+[   21.102432] CPU: 0 PID: 310 Comm: syz-executor328 Not tainted 5.10.0 #1
+[   21.103709] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[   21.107627] RIP: 0010:md_ioctl+0x37b6/0x50f0
+[   21.108972] Code: fd 30 09 0c 40 0f 84 0b 02 00 00 41 81 fd 21 09 14 40 0f 85 ad f9 ff ff 4c 8d bc 24 88 00 00 00 e9 17 e4 ff ff e8 5a 51 40 fe <0f> 0b e9 ce d6 ff ff 41 bf f3 ff ff ff e9 3b c9 ff ff e8 43 51 40
+[   21.114052] RSP: 0018:ffff888013fb7c20 EFLAGS: 00010293
+[   21.115621] RAX: 0000000000000000 RBX: ffff888013f62028 RCX: ffffffff83059432
+[   21.125772] RDX: ffff888015c84e00 RSI: ffffffff8305bd66 RDI: 0000000000000007
+[   21.127833] RBP: ffff888013f62000 R08: 0000000000000000 R09: ffff888013f6202f
+[   21.130117] R10: 0000000000000000 R11: 0000000000000001 R12: ffff888008415dc0
+executing program
+[   21.133326] R13: 0000000000000932 R14: 0000000000000932 R15: 0000000000000001
+[   21.137482] FS:  00007f3cef6f86c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+[   21.140662] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   21.143059] CR2: 00007f4e4ea0ff30 CR3: 000000000c226000 CR4: 0000000000350ee0
+[   21.145539] Call Trace:
+[   21.146471]  ? md_add_new_disk+0x1a80/0x1a80
+[   21.147839]  ? lockdep_hardirqs_on_prepare+0x420/0x420
+[   21.149394]  ? find_held_lock+0x2c/0x110
+[   21.150580]  ? __sanitizer_cov_trace_switch+0x45/0x70
+[   21.152087]  ? blkdev_common_ioctl+0xfa/0x17a0
+[   21.153477]  ? blk_ioctl_discard+0x2e0/0x2e0
+[   21.154842]  ? __sanitizer_cov_trace_switch+0x45/0x70
+[   21.156397]  ? do_vfs_ioctl+0x283/0x1140
+[   21.157593]  ? generic_block_fiemap+0x60/0x60
+[   21.158881]  ? selinux_bprm_creds_for_exec+0xac0/0xac0
+[   21.160437]  ? md_add_new_disk+0x1a80/0x1a80
+[   21.161751]  blkdev_ioctl+0x2a8/0x720
+[   21.162901]  ? blkdev_common_ioctl+0x17a0/0x17a0
+[   21.164377]  ? __fget_files+0x2ee/0x460
+[   21.165946]  block_ioctl+0xf9/0x140
+[   21.167750]  ? blkdev_read_iter+0x180/0x180
+[   21.168659]  __x64_sys_ioctl+0x196/0x210
+[   21.169620]  do_syscall_64+0x33/0x40
+[   21.170214]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   21.171426] RIP: 0033:0x7f3cef71955d
+[   21.172030] Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+[   21.175369] RSP: 002b:00007f3cef6f8208 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+[   21.176871] RAX: ffffffffffffffda RBX: 00007f3cef7cfa60 RCX: 00007f3cef71955d
+[   21.178296] RDX: 0000000000000000 RSI: 0000000000000932 RDI: 0000000000000004
+[   21.179742] RBP: 00007f3cef79f4d4 R08: 0000000000000000 R09: 0000000000000000
+[   21.181184] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
+[   21.182505] R13: 00007f3cef79f4f4 R14: 2f30656c69662f2e R15: 00007f3cef7cfa68
+[   21.183915] irq event stamp: 2039
+[   21.184792] hardirqs last  enabled at (2111): [<ffffffff83ecb0ef>] _raw_spin_unlock_irq+0x1f/0x40
+[   21.186693] hardirqs last disabled at (2122): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030
+[   21.188270] softirqs last  enabled at (2140): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+[   21.189935] softirqs last disabled at (2131): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+[   21.191587] ---[ end trace 5492fa14886463b9 ]---
+[   21.192765] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   21.266397] md: md1 stopped.
+[   21.288815] md: md1 stopped.
+executing program
+[   21.306096] md: md1 stopped.
+[   21.308359] md: md1 stopped.
+executing program
+executing program
+executing program
+[   21.364433] md: md1 stopped.
+[   21.368710] md: md1 stopped.
+[   21.390795] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   21.472806] md: md1 stopped.
+executing program
+[   21.509126] md: md1 stopped.
+[   21.509738] md: md1 stopped.
+executing program
+executing program
+executing program
+[   21.565037] md: md1 stopped.
+[   21.587996] md: md1 stopped.
+executing program
+executing program
+[   21.611384] md: md1 stopped.
+[   21.612330] md: md1 stopped.
+executing program
+executing program
+[   21.671267] md: md1 stopped.
+[   21.697629] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   21.774365] md: md1 stopped.
+[   21.777932] md: md1 stopped.
+executing program
+executing program
+[   21.824023] md: md1 stopped.
+[   21.824591] md: md1 stopped.
+executing program
+executing program
+[   21.865478] md: md1 stopped.
+[   21.882407] md: md1 stopped.
+executing program
+executing program
+[   21.902379] md: md1 stopped.
+executing program
+executing program
+[   21.956475] md: md1 stopped.
+[   21.979056] md: md1 stopped.
+[   21.980067] md: md1 stopped.
+[   21.981036] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   22.069710] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   22.155399] md: md1 stopped.
+[   22.160893] md: md1 stopped.
+executing program
+[   22.193262] md: md1 stopped.
+executing program
+executing program
+executing program
+[   22.268710] md: md1 stopped.
+[   22.272757] md: md1 stopped.
+[   22.276926] md: md1 stopped.
+[   22.307995] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   22.382783] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   22.492943] md: md1 stopped.
+[   22.520126] md: md1 stopped.
+[   22.521697] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   22.603017] md: md1 stopped.
+executing program
+[   22.639404] md: md1 stopped.
+[   22.640339] md: md1 stopped.
+[   22.641602] md: md1 stopped.
+executing program
+executing program
+executing program
+[   22.694979] md: md1 stopped.
+executing program
+[   22.726438] md: md1 stopped.
+[   22.728147] md: md1 stopped.
+[   22.730354] md: md1 stopped.
+executing program
+executing program
+executing program
+[   22.793428] md: md1 stopped.
+[   22.819582] md: md1 stopped.
+[   22.821779] md: md1 stopped.
+executing program
+[   22.838563] md: md1 stopped.
+executing program
+executing program
+executing program
+[   22.901530] md: md1 stopped.
+executing program
+[   22.933102] md: md1 stopped.
+[   22.934060] md: md1 stopped.
+[   22.936455] md: md1 stopped.
+executing program
+executing program
+executing program
+[   22.988145] md: md1 stopped.
+executing program
+[   23.028028] md: md1 stopped.
+[   23.030693] md: md1 stopped.
+executing program
+executing program
+executing program
+[   23.080637] md: md1 stopped.
+executing program
+[   23.118745] md: md1 stopped.
+[   23.119693] md: md1 stopped.
+[   23.120599] md: md1 stopped.
+executing program
+executing program
+executing program
+[   23.172024] md: md1 stopped.
+executing program
+[   23.207500] md: md1 stopped.
+[   23.208522] md: md1 stopped.
+executing program
+executing program
+executing program
+[   23.254672] md: md1 stopped.
+executing program
+[   23.278658] md: md1 stopped.
+[   23.283926] md: md1 stopped.
+executing program
+executing program
+[   23.306593] md: md1 stopped.
+executing program
+[   23.329546] md: md1 stopped.
+executing program
+[   23.363758] md: md1 stopped.
+[   23.366339] md: md1 stopped.
+executing program
+executing program
+[   23.390330] md: md1 stopped.
+[   23.402371] md: md1 stopped.
+executing program
+executing program
+[   23.443252] md: md1 stopped.
+[   23.455674] md: md1 stopped.
+executing program
+executing program
+[   23.481693] md: md1 stopped.
+executing program
+executing program
+[   23.520341] md: md1 stopped.
+[   23.537736] md: md1 stopped.
+executing program
+executing program
+[   23.559655] md: md1 stopped.
+executing program
+executing program
+[   23.601983] md: md1 stopped.
+executing program
+[   23.619604] md: md1 stopped.
+executing program
+[   23.643440] md: md1 stopped.
+[   23.644900] md: md1 stopped.
+executing program
+executing program
+[   23.671812] md: md1 stopped.
+executing program
+[   23.690019] md: md1 stopped.
+executing program
+[   23.718418] md: md1 stopped.
+executing program
+executing program
+[   23.747853] md: md1 stopped.
+executing program
+[   23.763289] md: md1 stopped.
+executing program
+[   23.794579] md: md1 stopped.
+executing program
+[   23.814806] md: md1 stopped.
+[   23.827545] md: md1 stopped.
+executing program
+[   23.849440] md: md1 stopped.
+executing program
+executing program
+[   23.872775] md: md1 stopped.
+executing program
+[   23.895354] md: md1 stopped.
+executing program
+[   23.919585] md: md1 stopped.
+executing program
+executing program
+[   23.951345] md: md1 stopped.
+executing program
+[   23.980823] md: md1 stopped.
+executing program
+[   23.998267] md: md1 stopped.
+[   24.000430] md: md1 stopped.
+executing program
+executing program
+[   24.026721] md: md1 stopped.
+executing program
+[   24.052345] md: md1 stopped.
+executing program
+[   24.075168] md: md1 stopped.
+executing program
+[   24.100771] md: md1 stopped.
+[   24.101364] md: md1 stopped.
+executing program
+executing program
+[   24.128647] md: md1 stopped.
+executing program
+[   24.152719] md: md1 stopped.
+executing program
+[   24.187684] md: md1 stopped.
+[   24.188679] md: md1 stopped.
+executing program
+executing program
+[   24.213943] md: md1 stopped.
+executing program
+[   24.231665] md: md1 stopped.
+executing program
+[   24.262299] md: md1 stopped.
+[   24.271978] md: md1 stopped.
+executing program
+[   24.290960] md: md1 stopped.
+executing program
+[   24.307099] md: md1 stopped.
+executing program
+executing program
+[   24.360486] md: md1 stopped.
+[   24.382690] md: md1 stopped.
+[   24.383296] md: md1 stopped.
+executing program
+[   24.401275] md: md1 stopped.
+executing program
+executing program
+executing program
+[   24.452401] md: md1 stopped.
+[   24.475975] md: md1 stopped.
+executing program
+executing program
+[   24.498453] md: md1 stopped.
+executing program
+executing program
+[   24.547743] md: md1 stopped.
+[   24.565557] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   24.645177] md: md1 stopped.
+[   24.661134] md: md1 stopped.
+executing program
+[   24.688093] md: md1 stopped.
+executing program
+executing program
+executing program
+[   24.759603] md: md1 stopped.
+[   24.779387] md: md1 stopped.
+[   24.781618] md: md1 stopped.
+executing program
+executing program
+[   24.812690] md: md1 stopped.
+executing program
+executing program
+[   24.869075] md: md1 stopped.
+[   24.870167] md: md1 stopped.
+[   24.873886] md: md1 stopped.
+executing program
+executing program
+executing program
+[   24.909197] md: md1 stopped.
+executing program
+[   24.973341] md: md1 stopped.
+[   24.977210] md: md1 stopped.
+executing program
+[   25.021094] md: md1 stopped.
+[   25.022066] md: md1 stopped.
+executing program
+executing program
+executing program
+[   25.094771] md: md1 stopped.
+[   25.098849] md: md1 stopped.
+[   25.101822] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   25.181648] md: md1 stopped.
+executing program
+[   25.210751] md: md1 stopped.
+executing program
+[   25.231198] md: md1 stopped.
+executing program
+executing program
+[   25.257402] md: md1 stopped.
+executing program
+[   25.296323] md: md1 stopped.
+[   25.299368] md: md1 stopped.
+[   25.302781] md: md1 stopped.
+executing program
+executing program
+executing program
+[   25.337142] md: md1 stopped.
+executing program
+[   25.379132] md: md1 stopped.
+executing program
+executing program
+[   25.409079] md: md1 stopped.
+executing program
+executing program
+[   25.456783] md: md1 stopped.
+[   25.458364] md: md1 stopped.
+executing program
+executing program
+[   25.490394] md: md1 stopped.
+executing program
+[   25.517655] md: md1 stopped.
+executing program
+[   25.538576] md: md1 stopped.
+executing program
+[   25.563999] md: md1 stopped.
+[   25.565206] md: md1 stopped.
+executing program
+executing program
+[   25.597731] md: md1 stopped.
+executing program
+[   25.615356] md: md1 stopped.
+executing program
+[   25.641138] md: md1 stopped.
+[   25.642034] md: md1 stopped.
+executing program
+executing program
+[   25.672506] md: md1 stopped.
+executing program
+[   25.698695] md: md1 stopped.
+executing program
+[   25.719908] md: md1 stopped.
+[   25.721545] md: md1 stopped.
+executing program
+executing program
+[   25.752410] md: md1 stopped.
+executing program
+[   25.766733] md: md1 stopped.
+executing program
+[   25.797765] md: md1 stopped.
+executing program
+[   25.810557] md: md1 stopped.
+executing program
+[   25.833665] md: md1 stopped.
+[   25.843504] md: md1 stopped.
+executing program
+executing program
+[   25.870303] md: md1 stopped.
+executing program
+[   25.893689] md: md1 stopped.
+executing program
+[   25.917310] md: md1 stopped.
+executing program
+executing program
+[   25.948354] md: md1 stopped.
+executing program
+[   25.975619] md: md1 stopped.
+[   25.987579] md: md1 stopped.
+executing program
+[   26.005297] md: md1 stopped.
+executing program
+executing program
+[   26.033174] md: md1 stopped.
+executing program
+[   26.077837] md: md1 stopped.
+[   26.079770] md: md1 stopped.
+[   26.082853] md: md1 stopped.
+executing program
+[   26.105151] md: md1 stopped.
+executing program
+executing program
+executing program
+[   26.149604] md: md1 stopped.
+executing program
+[   26.182135] md: md1 stopped.
+[   26.182782] md: md1 stopped.
+[   26.184940] md: md1 stopped.
+executing program
+executing program
+executing program
+[   26.226496] md: md1 stopped.
+executing program
+[   26.271297] md: md1 stopped.
+executing program
+[   26.293822] md: md1 stopped.
+executing program
+[   26.316538] md: md1 stopped.
+executing program
+executing program
+[   26.359064] md: md1 stopped.
+executing program
+executing program
+[   26.392285] md: md1 stopped.
+[   26.409735] md: md1 stopped.
+executing program
+executing program
+[   26.453166] md: md1 stopped.
+[   26.456595] md: md1 stopped.
+executing program
+executing program
+[   26.497497] md: md1 stopped.
+executing program
+executing program
+[   26.545139] md: md1 stopped.
+executing program
+[   26.567082] md: md1 stopped.
+executing program
+[   26.595818] md: md1 stopped.
+[   26.597059] md: md1 stopped.
+executing program
+executing program
+[   26.628240] md: md1 stopped.
+executing program
+[   26.651377] md: md1 stopped.
+executing program
+[   26.666072] md: md1 stopped.
+executing program
+[   26.693729] md: md1 stopped.
+[   26.704747] md: md1 stopped.
+executing program
+[   26.729931] md: md1 stopped.
+executing program
+executing program
+[   26.751158] md: md1 stopped.
+executing program
+[   26.776738] md: md1 stopped.
+executing program
+[   26.795797] md: md1 stopped.
+[   26.798976] md: md1 stopped.
+executing program
+executing program
+[   26.829141] md: md1 stopped.
+executing program
+[   26.857193] md: md1 stopped.
+executing program
+[   26.881474] md: md1 stopped.
+[   26.895571] md: md1 stopped.
+executing program
+[   26.911705] md: md1 stopped.
+executing program
+executing program
+[   26.941560] md: md1 stopped.
+executing program
+[   26.960532] md: md1 stopped.
+executing program
+[   26.980626] md: md1 stopped.
+executing program
+[   27.000134] md: md1 stopped.
+executing program
+[   27.021400] md: md1 stopped.
+[   27.035754] md: md1 stopped.
+executing program
+executing program
+[   27.068239] md: md1 stopped.
+[   27.076702] md: md1 stopped.
+executing program
+executing program
+[   27.108322] md: md1 stopped.
+[   27.110512] md: md1 stopped.
+executing program
+executing program
+[   27.148031] md: md1 stopped.
+[   27.163278] md: md1 stopped.
+executing program
+executing program
+[   27.187918] md: md1 stopped.
+[   27.188494] md: md1 stopped.
+executing program
+executing program
+[   27.227008] md: md1 stopped.
+executing program
+[   27.247276] md: md1 stopped.
+[   27.263481] md: md1 stopped.
+[   27.264983] md: md1 stopped.
+executing program
+executing program
+executing program
+[   27.298706] md: md1 stopped.
+executing program
+[   27.334590] md: md1 stopped.
+[   27.336336] md: md1 stopped.
+[   27.348634] md: md1 stopped.
+executing program
+executing program
+executing program
+[   27.380884] md: md1 stopped.
+executing program
+[   27.430146] md: md1 stopped.
+[   27.431386] md: md1 stopped.
+executing program
+executing program
+executing program
+[   27.456181] md: md1 stopped.
+executing program
+[   27.521199] md: md1 stopped.
+[   27.538073] md: md1 stopped.
+[   27.540499] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   27.644311] md: md1 stopped.
+[   27.647916] md: md1 stopped.
+[   27.649064] md: md1 stopped.
+[   27.652710] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   27.731798] md: md1 stopped.
+executing program
+[   27.764340] md: md1 stopped.
+[   27.786360] md: md1 stopped.
+[   27.786928] md: md1 stopped.
+executing program
+executing program
+executing program
+[   27.817565] md: md1 stopped.
+executing program
+[   27.873823] md: md1 stopped.
+executing program
+executing program
+[   27.912815] md: md1 stopped.
+executing program
+executing program
+[   27.965522] md: md1 stopped.
+[   27.969610] md: md1 stopped.
+executing program
+executing program
+[   28.008091] md: md1 stopped.
+[   28.008660] md: md1 stopped.
+executing program
+executing program
+[   28.063382] md: md1 stopped.
+[   28.066580] md: md1 stopped.
+executing program
+[   28.095131] md: md1 stopped.
+[   28.095700] md: md1 stopped.
+executing program
+executing program
+executing program
+[   28.158930] md: md1 stopped.
+[   28.162100] md: md1 stopped.
+executing program
+[   28.193884] md: md1 stopped.
+[   28.195698] md: md1 stopped.
+executing program
+executing program
+executing program
+[   28.260925] md: md1 stopped.
+executing program
+[   28.283488] md: md1 stopped.
+[   28.304918] md: md1 stopped.
+executing program
+executing program
+executing program
+[   28.375655] md: md1 stopped.
+[   28.402776] md: md1 stopped.
+[   28.405002] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   28.495324] md: md1 stopped.
+[   28.511588] md: md1 stopped.
+executing program
+[   28.542525] md: md1 stopped.
+executing program
+executing program
+executing program
+[   28.609351] md: md1 stopped.
+[   28.637741] md: md1 stopped.
+[   28.638836] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   28.711860] md: md1 stopped.
+[   28.734733] md: md1 stopped.
+executing program
+[   28.749914] md: md1 stopped.
+executing program
+executing program
+executing program
+[   28.824846] md: md1 stopped.
+executing program
+[   28.855729] md: md1 stopped.
+[   28.856997] md: md1 stopped.
+executing program
+executing program
+executing program
+[   28.930709] md: md1 stopped.
+[   28.952315] md: md1 stopped.
+[   28.953155] md: md1 stopped.
+[   28.955831] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   29.044757] md: md1 stopped.
+[   29.062413] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   29.156586] md: md1 stopped.
+[   29.170794] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   29.273623] md: md1 stopped.
+[   29.277437] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   29.379992] md: md1 stopped.
+[   29.386559] md: md1 stopped.
+executing program
+executing program
+executing program
+executing program
+[   29.501975] md: md1 stopped.
+executing program
+[   29.542732] md: md1 stopped.
+[   29.553006] md: md1 stopped.
+[   29.556405] md: md1 stopped.
+executing program
+[   29.580717] md: md1 stopped.
+executing program
+executing program
+executing program
+[   29.646833] md: md1 stopped.
+executing program
+[   29.671866] md: md1 stopped.
+[   29.672775] md: md1 stopped.
+[   29.677167] md: md1 stopped.
+executing program
+executing program
+executing program
+[   29.730283] md: md1 stopped.
+executing program
+[   29.767643] md: md1 stopped.
+[   29.768912] md: md1 stopped.
+[   29.793959] md: md1 stopped.
+executing program
+executing program
+executing program
+[   29.843773] md: md1 stopped.
+executing program
+[   29.875869] md: md1 stopped.
+executing program
+[   29.897721] md: md1 stopped.
+[   29.898712] md: md1 stopped.
+executing program
+executing program
+[   29.928537] md: md1 stopped.
+executing program
+[   29.951134] md: md1 stopped.
+executing program
+[   29.981996] md: md1 stopped.
+[   29.982535] md: md1 stopped.
+executing program
+executing program
+[   30.001564] md: md1 stopped.
+executing program
+[   30.032445] md: md1 stopped.
+executing program
+[   30.063517] md: md1 stopped.
+executing program
+executing program
+[   30.088711] md: md1 stopped.
+executing program
+[   30.105564] md: md1 stopped.
+executing program
+[   30.138159] md: md1 stopped.
+[   30.138749] md: md1 stopped.
+executing program
+executing program
+[   30.164554] md: md1 stopped.
+executing program
+[   30.186301] md: md1 stopped.
+executing program
+[   30.208804] md: md1 stopped.
+[   30.226952] md: md1 stopped.
+executing program
+executing program
+[   30.245899] md: md1 stopped.
+executing program
+[   30.264981] md: md1 stopped.
+executing program
+[   30.284963] md: md1 stopped.
+executing program
+[   30.305130] md: md1 stopped.
+executing program
+[   30.328172] md: md1 stopped.
+executing program
+[   30.352170] md: md1 stopped.
+[   30.352738] md: md1 stopped.
+executing program
+executing program
+[   30.382361] md: md1 stopped.
+executing program
+[   30.414615] md: md1 stopped.
+[   30.433674] md: md1 stopped.
+executing program
+[   30.434847] md: md1 stopped.
+executing program
+executing program
+[   30.463489] md: md1 stopped.
+executing program
+[   30.501532] md: md1 stopped.
+executing program
+[   30.524960] md: md1 stopped.
+executing program
+[   30.541569] md: md1 stopped.
+executing program
+executing program
+[   30.582876] md: md1 stopped.
+executing program
+executing program
+[   30.610090] md: md1 stopped.
+[   30.625593] md: md1 stopped.
+executing program
+executing program
+[   30.659558] md: md1 stopped.
+[   30.661981] md: md1 stopped.
+executing program
+executing program
+[   30.688075] md: md1 stopped.
+[   30.702036] md: md1 stopped.
+executing program
+executing program
+[   30.729805] md: md1 stopped.
+[   30.743348] md: md1 stopped.
+executing program
+executing program
+[   30.775573] md: md1 stopped.
+executing program
+executing program
+[   30.818992] md: md1 stopped.
+[   30.835423] md: md1 stopped.
+executing program
+executing program
+[   30.851616] md: md1 stopped.
+[   30.861447] md: md1 stopped.
+executing program
+executing program
+[   30.898177] md: md1 stopped.
+executing program
+[   30.919890] md: md1 stopped.
+[   30.931706] md: md1 stopped.
+executing program
+executing program
+[   30.950544] md: md1 stopped.
+[   30.972471] md: md1 stopped.
+executing program
+executing program
+[   31.014760] md: md1 stopped.
+executing program
+executing program
+[   31.047700] md: md1 stopped.
+[   31.048355] md: md1 stopped.
+executing program
+executing program
+[   31.092785] md: md1 stopped.
+[   31.101549] md: md1 stopped.
+
+VM DIAGNOSIS:
+10:41:46  Registers:
+info registers vcpu 0
+
+CPU#0
+RAX=000000000000006e RBX=0000000000000000 RCX=0000000000000000 RDX=00000000000003f8
+RSI=ffffffff823c0a41 RDI=ffffffff87a492e0 RBP=ffffffff87a492a0 RSP=ffff888013fb7650
+R8 =0000000000000001 R9 =0000000000000003 R10=000000000000001f R11=0000000000000001
+R12=000000000000006e R13=0000000000000000 R14=ffffffff87a492a0 R15=dffffc0000000000
+RIP=ffffffff823c0a6c RFL=00000002 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 00007f3cef6f86c0 00000000 00000000
+GS =0000 ffff88806ce00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe0000003000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe0000001000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=00007f3cef6d7d58 CR3=000000000c226000 CR4=00350ef0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM01=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM02=0000000000000000 0000000000000000 0000000000000006 00007f3cef7d5400
+YMM03=0000000000000000 0000000000000000 0000555557231d50 00007f3cef7187fb
+YMM04=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM05=0000000000000000 0000000000000000 0000000000000000 55e05a6fc1d7c900
+YMM06=0000000000000000 0000000000000000 00007ffcbf6fc114 0000000000005163
+YMM07=0000000000000000 0000000000000000 0000000000000018 00007ffcbf6fc1b0
+YMM08=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM09=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM10=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+info registers vcpu 1
+
+CPU#1
+RAX=0000000080000001 RBX=dffffc0000000000 RCX=ffffffff8152ae3d RDX=ffff888008c69a00
+RSI=ffffffff81527171 RDI=ffffc900006b006a RBP=ffff88801064fcc8 RSP=ffff88801064fbf0
+R8 =0000000000000001 R9 =0000000000000001 R10=00000000c000003e R11=0000000000000001
+R12=000000007b356448 R13=0000000000000015 R14=ffffc900006b0070 R15=ffff88801064fcc8
+RIP=ffffffff81460ed4 RFL=00000292 [--S-A--] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ES =0000 0000000000000000 00000000 00000000
+CS =0010 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+SS =0018 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =0000 0000000000000000 00000000 00000000
+FS =0000 00007f2a659c08c0 00000000 00000000
+GS =0000 ffff88806cf00000 00000000 00000000
+LDT=0000 fffffe0000000000 00000000 00000000
+TR =0040 fffffe000003e000 00004087 00008b00 DPL=0 TSS64-busy
+GDT=     fffffe000003c000 0000007f
+IDT=     fffffe0000000000 00000fff
+CR0=80050033 CR2=00007f4e4eace000 CR3=000000000fd2a000 CR4=00350ee0
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+DR6=00000000ffff0ff0 DR7=0000000000000400
+EFER=0000000000000d01
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+YMM00=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM01=0000000000000000 0000000000000000 ffffffff00000000 0000000000000000
+YMM02=0000000000000000 0000000000000000 000055af97643010 0000000000000000
+YMM03=0000000000000000 0000000000000000 0000000073656369 7665642f7379732f
+YMM04=0000000000000000 0000000000000000 2f2f2f2f2f2f2f2f 2f2f2f2f2f2f2f2f
+YMM05=0000000000000000 0000000000000000 000055af97eb1ed0 000055af97eb4d80
+YMM06=0000000000000000 0000000000000000 000055af97e85890 0000000000000000
+YMM07=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM08=0000000000000000 0000000000000000 2f003a7372657669 72642b0075256e00
+YMM09=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM10=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM11=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM12=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM13=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM14=0000000000000000 0000000000000000 0000000000000000 0000000000000000
+YMM15=0000000000000000 0000000000000000 0000000000000000 0000000000000000

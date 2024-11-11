@@ -1,0 +1,55 @@
+EXT4-fs error (device loop0): ext4_readdir:243: inode #2: block 36: comm syz-executor302: path /syzkaller.c7OMu5/0/file0: bad entry in directory: rec_len is smaller than minimal - offset=0, inode=0, rec_len=0, name_len=0, size=1024
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:5121!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 236 Comm: syz-executor302 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_do_update_inode fs/ext4/inode.c:5121 [inline]
+RIP: 0010:ext4_mark_iloc_dirty+0x276e/0x3710 fs/ext4/inode.c:5712
+Code: fd ff ff e9 49 e8 ff ff e8 4f da 9f ff 44 8b 74 24 48 31 ff 44 89 f6 e8 00 d2 9f ff 45 85 f6 0f 84 04 f1 ff ff e8 32 da 9f ff <0f> 0b 48 c7 c7 60 de 2f 85 e8 33 57 3a 02 e8 1f da 9f ff 48 8d 85
+RSP: 0018:ffff8880107cfae0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888013ed65a8 RCX: ffffffff81a63480
+RDX: ffff88800fdd9a00 RSI: ffffffff81a6348e RDI: 0000000000000005
+RBP: ffff88801133b100 R08: 0000000000000000 R09: ffff888013ed6797
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800af16000
+R13: 0000000000000000 R14: 00000000ffffffff R15: ffff8880107cfc10
+FS:  0000555556bd1380(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000555556be2758 CR3: 000000000f9de000 CR4: 0000000000350ee0
+Call Trace:
+ __ext4_mark_inode_dirty+0x201/0x860 fs/ext4/inode.c:5906
+ ext4_dirty_inode+0xf3/0x130 fs/ext4/inode.c:5942
+ __mark_inode_dirty+0x893/0x11a0 fs/fs-writeback.c:2260
+ generic_update_time fs/inode.c:1764 [inline]
+ update_time fs/inode.c:1777 [inline]
+ touch_atime+0x63f/0x740 fs/inode.c:1848
+ file_accessed include/linux/fs.h:2220 [inline]
+ iterate_dir+0x3e3/0x670 fs/readdir.c:70
+ __do_sys_getdents64 fs/readdir.c:366 [inline]
+ __se_sys_getdents64 fs/readdir.c:351 [inline]
+ __x64_sys_getdents64+0x13a/0x2c0 fs/readdir.c:351
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fc475371ef7
+Code: 35 7d 4d 04 00 48 8d 3d 3f 89 04 00 e8 e2 5e fc ff 66 90 f3 0f 1e fa b8 ff ff ff 7f 48 39 c2 48 0f 47 d0 b8 d9 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 c0 ff ff ff f7 d8 64 89 02 48
+RSP: 002b:00007fff9619e618 EFLAGS: 00000293 ORIG_RAX: 00000000000000d9
+RAX: ffffffffffffffda RBX: 0000555556bda720 RCX: 00007fc475371ef7
+RDX: 0000000000008000 RSI: 0000555556bda750 RDI: 0000000000000004
+RBP: 00007fff9619e650 R08: 00007fc4753e5180 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000293 R12: 0000555556bda724
+R13: 0000555556bda750 R14: ffffffffffffffc0 R15: 0000000000000010
+Modules linked in:
+---[ end trace 01d38b8f974b1d89 ]---
+RIP: 0010:ext4_do_update_inode fs/ext4/inode.c:5121 [inline]
+RIP: 0010:ext4_mark_iloc_dirty+0x276e/0x3710 fs/ext4/inode.c:5712
+Code: fd ff ff e9 49 e8 ff ff e8 4f da 9f ff 44 8b 74 24 48 31 ff 44 89 f6 e8 00 d2 9f ff 45 85 f6 0f 84 04 f1 ff ff e8 32 da 9f ff <0f> 0b 48 c7 c7 60 de 2f 85 e8 33 57 3a 02 e8 1f da 9f ff 48 8d 85
+RSP: 0018:ffff8880107cfae0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888013ed65a8 RCX: ffffffff81a63480
+RDX: ffff88800fdd9a00 RSI: ffffffff81a6348e RDI: 0000000000000005
+RBP: ffff88801133b100 R08: 0000000000000000 R09: ffff888013ed6797
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800af16000
+R13: 0000000000000000 R14: 00000000ffffffff R15: ffff8880107cfc10
+FS:  0000555556bd1380(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000555556be2758 CR3: 000000000f9de000 CR4: 0000000000350ee0
+note: syz-executor302[236] exited with preempt_count 1

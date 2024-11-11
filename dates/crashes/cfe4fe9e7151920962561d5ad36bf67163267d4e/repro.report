@@ -1,0 +1,560 @@
+EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+ext4 filesystem being mounted at /124/file0 supports timestamps until 2038 (0x7fffffff)
+==================================================================
+BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+BUG: KASAN: use-after-free in atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+BUG: KASAN: use-after-free in __refcount_add include/linux/refcount.h:193 [inline]
+BUG: KASAN: use-after-free in __refcount_inc include/linux/refcount.h:250 [inline]
+BUG: KASAN: use-after-free in refcount_inc include/linux/refcount.h:267 [inline]
+BUG: KASAN: use-after-free in get_task_struct include/linux/sched/task.h:104 [inline]
+BUG: KASAN: use-after-free in kthread_stop+0x76/0x6c0 kernel/kthread.c:591
+Write of size 4 at addr ffff88800c113420 by task syz-executor/841
+
+CPU: 1 PID: 841 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0xf9/0x1e0 mm/kasan/generic.c:192
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+ __refcount_add include/linux/refcount.h:193 [inline]
+ __refcount_inc include/linux/refcount.h:250 [inline]
+ refcount_inc include/linux/refcount.h:267 [inline]
+ get_task_struct include/linux/sched/task.h:104 [inline]
+ kthread_stop+0x76/0x6c0 kernel/kthread.c:591
+ ext4_put_super+0x9ad/0x11b0 fs/ext4/super.c:1265
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fa77fefd227
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007fffad58f848 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007fa77ff6ea14 RCX: 00007fa77fefd227
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007fffad58f900
+RBP: 00007fffad58f900 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fffad590980
+R13: 00007fa77ff6ea14 R14: 00000000000158ab R15: 00007fffad5909c0
+
+Allocated by task 2:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ kmem_cache_alloc_node+0x155/0x340 mm/slub.c:2927
+ alloc_task_struct_node kernel/fork.c:170 [inline]
+ dup_task_struct kernel/fork.c:860 [inline]
+ copy_process+0x45fe/0x69f0 kernel/fork.c:1938
+ kernel_clone+0xe7/0xa80 kernel/fork.c:2456
+ kernel_thread+0xb5/0xf0 kernel/fork.c:2508
+ create_kthread kernel/kthread.c:315 [inline]
+ kthreadd+0x4bb/0x710 kernel/kthread.c:633
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+
+Freed by task 5975:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ __put_task_struct+0x25a/0x3e0 kernel/fork.c:741
+ put_task_struct include/linux/sched/task.h:113 [inline]
+ delayed_put_task_struct+0x1c2/0x310 kernel/exit.c:172
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+
+Last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:178
+ finish_task_switch+0x582/0x830 kernel/sched/core.c:3652
+ context_switch kernel/sched/core.c:3782 [inline]
+ __schedule+0x888/0x2030 kernel/sched/core.c:4528
+ preempt_schedule_common+0x45/0xc0 kernel/sched/core.c:4687
+ preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:40
+ unwind_next_frame+0xc2e/0x2640 arch/x86/kernel/unwind_orc.c:608
+ arch_stack_walk+0x83/0xf0 arch/x86/kernel/stacktrace.c:25
+ stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:121
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kfree+0xc7/0x370 mm/slub.c:4124
+ get_free_dqblk+0x1af/0x2d0 fs/quota/quota_tree.c:110
+ do_insert_tree+0x57b/0xf80 fs/quota/quota_tree.c:309
+ do_insert_tree+0xdb8/0xf80 fs/quota/quota_tree.c:340
+ do_insert_tree+0x677/0xf80 fs/quota/quota_tree.c:340
+ dq_insert_tree fs/quota/quota_tree.c:366 [inline]
+ qtree_write_dquot+0x3bf/0x580 fs/quota/quota_tree.c:385
+ v2_write_dquot+0x11c/0x250 fs/quota/quota_v2.c:334
+ dquot_acquire+0x2cf/0x590 fs/quota/dquot.c:443
+ ext4_acquire_dquot+0x25e/0x3d0 fs/ext4/super.c:6186
+ dqget+0x681/0xfb0 fs/quota/dquot.c:901
+ __dquot_initialize+0x59d/0xd60 fs/quota/dquot.c:1479
+ ext4_orphan_cleanup fs/ext4/super.c:3095 [inline]
+ ext4_fill_super+0x91c3/0xd960 fs/ext4/super.c:5067
+ mount_bdev+0x350/0x410 fs/super.c:1419
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Second to last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:178
+ finish_task_switch+0x582/0x830 kernel/sched/core.c:3652
+ schedule_tail+0xf/0x1e0 kernel/sched/core.c:3714
+ ret_from_fork+0x8/0x30 arch/x86/entry/entry_64.S:281
+
+The buggy address belongs to the object at ffff88800c113400
+ which belongs to the cache task_struct of size 6400
+The buggy address is located 32 bytes inside of
+ 6400-byte region [ffff88800c113400, ffff88800c114d00)
+The buggy address belongs to the page:
+page:000000004c2cc964 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88800c111a00 pfn:0xc110
+head:000000004c2cc964 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x100000000010200(slab|head)
+raw: 0100000000010200 ffffea000020fc08 ffffea00007b3c08 ffff888008138dc0
+raw: ffff88800c111a00 0000000000040002 00000001ffffffff ffff88801041cb41
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff88801041cb41
+
+Memory state around the buggy address:
+ ffff88800c113300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88800c113380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff88800c113400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                               ^
+ ffff88800c113480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88800c113500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+EXT4-fs (loop1): Ignoring removed oldalloc option
+------------[ cut here ]------------
+refcount_t: addition on 0; use-after-free.
+WARNING: CPU: 0 PID: 841 at lib/refcount.c:25 refcount_warn_saturate+0x20d/0x2a0 lib/refcount.c:25
+Modules linked in:
+CPU: 0 PID: 841 Comm: syz-executor Tainted: G    B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:refcount_warn_saturate+0x20d/0x2a0 lib/refcount.c:25
+Code: 01 31 ff 89 de e8 a3 62 46 ff 84 db 0f 85 14 ff ff ff e8 16 6b 46 ff 48 c7 c7 40 e8 5c 84 c6 05 23 94 d4 03 01 e8 2f 00 dc 01 <0f> 0b e9 f5 fe ff ff e8 f7 6a 46 ff 0f b6 1d 0a 94 d4 03 bf 01 00
+EXT4-fs (loop0): re-mounted. Opts: (null)
+RSP: 0018:ffff8880132bfd58 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88800bf1b400 RSI: ffffffff812d93c5 RDI: ffffed1002657f9d
+RBP: ffff88800c113420 R08: 0000000000000001 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800c113420
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+R13: ffff88800c113400 R14: 0000000000000000 R15: ffff88800bea23d0
+EXT4-fs (loop3): Ignoring removed oldalloc option
+FS:  000055555697a500(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+EXT4-fs error (device loop1): ext4_mb_mark_diskspace_used:3233: comm syz.1.514: Allocating blocks 41-42 which overlap fs metadata
+CR2: 00007fff7e828c38 CR3: 000000000c528000 CR4: 0000000000350ef0
+Call Trace:
+ __refcount_add include/linux/refcount.h:199 [inline]
+ __refcount_inc include/linux/refcount.h:250 [inline]
+ refcount_inc include/linux/refcount.h:267 [inline]
+ get_task_struct include/linux/sched/task.h:104 [inline]
+ kthread_stop+0x5b2/0x6c0 kernel/kthread.c:591
+ ext4_put_super+0x9ad/0x11b0 fs/ext4/super.c:1265
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+EXT4-fs (loop1): 1 truncate cleaned up
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+EXT4-fs (loop1): mounting with "discard" option, but the device does not support discard
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ext4 filesystem being mounted at /128/file0 supports timestamps until 2038 (0x7fffffff)
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fa77fefd227
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007fffad58f848 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs (loop0): Ignoring removed oldalloc option
+EXT4-fs error (device loop3): ext4_mb_mark_diskspace_used:3233: comm syz.3.515: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs (loop3): 1 truncate cleaned up
+EXT4-fs (loop3): mounting with "discard" option, but the device does not support discard
+RAX: 0000000000000000 RBX: 00007fa77ff6ea14 RCX: 00007fa77fefd227
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007fffad58f900
+EXT4-fs (loop1): re-mounted. Opts: (null)
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+RBP: 00007fffad58f900 R08: 0000000000000000 R09: 0000000000000000
+EXT4-fs error (device loop0): ext4_mb_mark_diskspace_used:3233: comm syz.0.517: Allocating blocks 41-42 which overlap fs metadata
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fffad590980
+R13: 00007fa77ff6ea14 R14: 00000000000158ab R15: 00007fffad5909c0
+ext4 filesystem being mounted at /123/file0 supports timestamps until 2038 (0x7fffffff)
+irq event stamp: 448464
+hardirqs last  enabled at (448463): [<ffffffff817344eb>] quarantine_put+0xab/0x1c0 mm/kasan/quarantine.c:217
+hardirqs last disabled at (448464): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (448464): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (448400): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (448317): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+EXT4-fs (loop0): 1 truncate cleaned up
+---[ end trace abd7dca71f004e2b ]---
+EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+EXT4-fs (loop3): re-mounted. Opts: (null)
+ext4 filesystem being mounted at /125/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop0): re-mounted. Opts: (null)
+EXT4-fs (loop0): Ignoring removed oldalloc option
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs error (device loop0): ext4_mb_mark_diskspace_used:3233: comm syz.0.521: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs (loop0): 1 truncate cleaned up
+EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+ext4 filesystem being mounted at /126/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop1): Ignoring removed oldalloc option
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs error (device loop1): ext4_mb_mark_diskspace_used:3233: comm syz.1.524: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs (loop1): 1 truncate cleaned up
+EXT4-fs (loop1): mounting with "discard" option, but the device does not support discard
+ext4 filesystem being mounted at /132/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop3): Ignoring removed oldalloc option
+EXT4-fs (loop0): re-mounted. Opts: (null)
+EXT4-fs (loop1): re-mounted. Opts: (null)
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs (loop0): Ignoring removed oldalloc option
+EXT4-fs error (device loop3): ext4_mb_mark_diskspace_used:3233: comm syz.3.525: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs (loop3): 1 truncate cleaned up
+EXT4-fs (loop3): mounting with "discard" option, but the device does not support discard
+ext4 filesystem being mounted at /126/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop3): re-mounted. Opts: (null)
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs (loop1): Ignoring removed oldalloc option
+EXT4-fs error (device loop0): ext4_mb_mark_diskspace_used:3233: comm syz.0.526: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs (loop0): 1 truncate cleaned up
+EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+ext4 filesystem being mounted at /127/file0 supports timestamps until 2038 (0x7fffffff)
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs error (device loop1): ext4_mb_mark_diskspace_used:3233: comm syz.1.527: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs (loop1): 1 truncate cleaned up
+EXT4-fs (loop1): mounting with "discard" option, but the device does not support discard
+EXT4-fs (loop0): re-mounted. Opts: (null)
+ext4 filesystem being mounted at /133/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop1): re-mounted. Opts: (null)
+EXT4-fs (loop3): Ignoring removed oldalloc option
+EXT4-fs (loop0): Ignoring removed oldalloc option
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs error (device loop0): ext4_mb_mark_diskspace_used:3233: comm syz.0.529: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs error (device loop3): ext4_mb_mark_diskspace_used:3233: comm syz.3.533: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs (loop1): Ignoring removed oldalloc option
+EXT4-fs (loop0): 1 truncate cleaned up
+EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+ext4 filesystem being mounted at /128/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop3): 1 truncate cleaned up
+EXT4-fs (loop0): re-mounted. Opts: (null)
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs (loop3): mounting with "discard" option, but the device does not support discard
+EXT4-fs error (device loop1): ext4_mb_mark_diskspace_used:3233: comm syz.1.531: Allocating blocks 41-42 which overlap fs metadata
+ext4 filesystem being mounted at /130/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop1): 1 truncate cleaned up
+EXT4-fs (loop1): mounting with "discard" option, but the device does not support discard
+ext4 filesystem being mounted at /134/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop3): re-mounted. Opts: (null)
+EXT4-fs (loop1): re-mounted. Opts: (null)
+EXT4-fs (loop0): Ignoring removed oldalloc option
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs error (device loop0): ext4_mb_mark_diskspace_used:3233: comm syz.0.536: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs (loop3): Ignoring removed oldalloc option
+EXT4-fs (loop0): 1 truncate cleaned up
+EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+ext4 filesystem being mounted at /130/file0 supports timestamps until 2038 (0x7fffffff)
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs error (device loop3): ext4_mb_mark_diskspace_used:3233: comm syz.3.537: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs (loop3): 1 truncate cleaned up
+EXT4-fs (loop3): mounting with "discard" option, but the device does not support discard
+ext4 filesystem being mounted at /132/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop0): re-mounted. Opts: (null)
+EXT4-fs (loop1): Ignoring removed oldalloc option
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs error (device loop1): ext4_mb_mark_diskspace_used:3233: comm syz.1.540: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs (loop1): 1 truncate cleaned up
+EXT4-fs (loop1): mounting with "discard" option, but the device does not support discard
+ext4 filesystem being mounted at /137/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop3): re-mounted. Opts: (null)
+EXT4-fs (loop1): re-mounted. Opts: (null)
+EXT4-fs (loop3): Ignoring removed oldalloc option
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs error (device loop3): ext4_mb_mark_diskspace_used:3233: comm syz.3.542: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs (loop3): 1 truncate cleaned up
+EXT4-fs (loop3): mounting with "discard" option, but the device does not support discard
+ext4 filesystem being mounted at /133/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop3): re-mounted. Opts: (null)
+EXT4-fs (loop1): Ignoring removed oldalloc option
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs error (device loop1): ext4_mb_mark_diskspace_used:3233: comm syz.1.551: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs (loop1): 1 truncate cleaned up
+EXT4-fs (loop0): Ignoring removed oldalloc option
+EXT4-fs (loop1): mounting with "discard" option, but the device does not support discard
+ext4 filesystem being mounted at /141/file0 supports timestamps until 2038 (0x7fffffff)
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs error (device loop0): ext4_mb_mark_diskspace_used:3233: comm syz.0.549: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs (loop3): Ignoring removed oldalloc option
+EXT4-fs (loop1): re-mounted. Opts: (null)
+EXT4-fs (loop0): 1 truncate cleaned up
+EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+ext4 filesystem being mounted at /135/file0 supports timestamps until 2038 (0x7fffffff)
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs error (device loop3): ext4_mb_mark_diskspace_used:3233: comm syz.3.550: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs (loop3): 1 truncate cleaned up
+EXT4-fs (loop3): mounting with "discard" option, but the device does not support discard
+ext4 filesystem being mounted at /134/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop0): re-mounted. Opts: (null)
+EXT4-fs (loop3): re-mounted. Opts: (null)
+EXT4-fs (loop1): Ignoring removed oldalloc option
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs error (device loop1): ext4_mb_mark_diskspace_used:3233: comm syz.1.552: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs (loop1): 1 truncate cleaned up
+EXT4-fs (loop1): mounting with "discard" option, but the device does not support discard
+ext4 filesystem being mounted at /142/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop0): Ignoring removed oldalloc option
+EXT4-fs (loop1): re-mounted. Opts: (null)
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+EXT4-fs error (device loop0): ext4_mb_mark_diskspace_used:3233: comm syz.0.553: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs (loop3): Ignoring removed oldalloc option
+EXT4-fs (loop0): 1 truncate cleaned up
+EXT4-fs (loop0): mounting with "discard" option, but the device does not support discard
+ext4 filesystem being mounted at /136/file0 supports timestamps until 2038 (0x7fffffff)
+general protection fault, probably for non-canonical address 0x5d4bddfe220040: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 115 Comm: systemd-udevd Tainted: G    B   W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:compound_head include/linux/page-flags.h:185 [inline]
+RIP: 0010:virt_to_head_page include/linux/mm.h:860 [inline]
+RIP: 0010:qlink_to_cache mm/kasan/quarantine.c:130 [inline]
+RIP: 0010:qlist_free_all+0x8d/0xd0 mm/kasan/quarantine.c:167
+Code: df 48 85 db 75 cc 48 89 f0 4c 01 e8 72 56 4c 89 f2 48 2b 15 25 65 57 03 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 03 65 57 03 <48> 8b 50 08 48 8d 4a ff 83 e2 01 48 0f 45 c1 48 8b 78 18 eb 93 49
+RSP: 0018:ffff88801116f9b0 EFLAGS: 00010203
+RAX: 005d4bddfe220040 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000777f80000000 RSI: 1757ffff88801701 RDI: 0000000000000000
+RBP: dffffc0000000000 R08: 0000000000000003 R09: 0000000000040003
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801116f9e8
+R13: 0000000080000000 R14: ffffffff80000000 R15: 1757ffff88801701
+FS:  00007fa9d5f328c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0ea2cc0000 CR3: 000000000fb3e000 CR4: 0000000000350ef0
+Call Trace:
+ quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:267
+ __kasan_kmalloc.constprop.0+0x9e/0xd0 mm/kasan/common.c:442
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ kmem_cache_zalloc include/linux/slab.h:654 [inline]
+ __alloc_file+0x21/0x310 fs/file_table.c:101
+ alloc_empty_file+0x6d/0x170 fs/file_table.c:151
+ path_openat+0x125/0x26f0 fs/namei.c:3355
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fa9d63de342
+Code: c0 f6 c2 40 75 52 89 d0 45 31 d2 25 00 00 41 00 3d 00 00 41 00 74 41 64 8b 04 25 18 00 00 00 85 c0 75 65 b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 a2 00 00 00 48 8b 4c 24 38 64 48 2b 0c 25
+RSP: 002b:00007fffae03d800 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007fa9d63de342
+RDX: 00000000002a0000 RSI: 0000563e3c424271 RDI: 0000000000000010
+RBP: 0000563e3c424270 R08: 0000563e3a52b950 R09: 00007fa9d64c1be0
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000563e3c423864
+R13: 0000000000000010 R14: 0000000000000004 R15: 0000563e3c424271
+Modules linked in:
+EXT4-fs (loop0): re-mounted. Opts: (null)
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=c842c018, mo2=0002]
+---[ end trace abd7dca71f004e2c ]---
+RIP: 0010:compound_head include/linux/page-flags.h:185 [inline]
+RIP: 0010:virt_to_head_page include/linux/mm.h:860 [inline]
+RIP: 0010:qlink_to_cache mm/kasan/quarantine.c:130 [inline]
+RIP: 0010:qlist_free_all+0x8d/0xd0 mm/kasan/quarantine.c:167
+EXT4-fs error (device loop3): ext4_mb_mark_diskspace_used:3233: comm syz.3.554: Allocating blocks 41-42 which overlap fs metadata
+Code: df 48 85 db 75 cc 48 89 f0 4c 01 e8 72 56 4c 89 f2 48 2b 15 25 65 57 03 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 03 65 57 03 <48> 8b 50 08 48 8d 4a ff 83 e2 01 48 0f 45 c1 48 8b 78 18 eb 93 49
+EXT4-fs (loop3): ext4_orphan_cleanup: truncating inode 16 to 9000 bytes
+RSP: 0018:ffff88801116f9b0 EFLAGS: 00010203
+EXT4-fs (loop3): 1 truncate cleaned up
+EXT4-fs (loop3): mounting with "discard" option, but the device does not support discard
+ext4 filesystem being mounted at /135/file0 supports timestamps until 2038 (0x7fffffff)
+
+RAX: 005d4bddfe220040 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000777f80000000 RSI: 1757ffff88801701 RDI: 0000000000000000
+general protection fault, probably for non-canonical address 0xdffffc0000002007: 0000 [#2] PREEMPT SMP KASAN NOPTI
+KASAN: probably user-memory-access in range [0x0000000000010038-0x000000000001003f]
+CPU: 1 PID: 6179 Comm: syz.3.554 Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:pick_next_task_fair+0x3eb/0xb40 kernel/sched/fair.c:7024
+Code: 85 3a 07 00 00 4c 29 e5 48 01 ab 50 0a 00 00 e9 1b ff ff ff 49 be 00 00 00 00 00 fc ff df 49 8d 7c 24 40 48 89 f8 48 c1 e8 03 <42> 80 3c 30 00 0f 85 cb 05 00 00 49 8b 74 24 40 48 85 f6 74 27 48
+RSP: 0018:ffff888011447638 EFLAGS: 00010013
+RAX: 0000000000002007 RBX: ffff88806cf33300 RCX: 0000000000000002
+RDX: 1ffff1100d9e6683 RSI: ffff88800c113480 RDI: 000000000001003f
+RBP: ffff88800c113480 R08: 0000000000000000 R09: ffffffff85d66c0f
+R10: fffffbfff0bacd81 R11: 0000000000000001 R12: 000000000000ffff
+R13: ffff88801ecf0000 R14: dffffc0000000000 R15: ffffffff84caa480
+FS:  00007f86940d46c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa3c01d3000 CR3: 000000000fe24000 CR4: 0000000000350ee0
+Call Trace:
+ pick_next_task kernel/sched/core.c:4345 [inline]
+ __schedule+0x368/0x2030 kernel/sched/core.c:4496
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4665
+ __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
+ __mutex_lock+0x3e2/0x10d0 kernel/locking/mutex.c:1103
+ lo_open+0x19/0xd0 drivers/block/loop.c:1894
+ __blkdev_get+0x540/0x1900 fs/block_dev.c:1542
+ blkdev_get fs/block_dev.c:1634 [inline]
+ blkdev_open+0x227/0x300 fs/block_dev.c:1751
+ do_dentry_open+0x650/0x1090 fs/open.c:817
+ do_open fs/namei.c:3252 [inline]
+ path_openat+0x196a/0x26f0 fs/namei.c:3369
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f8694651890
+Code: 48 89 44 24 20 75 93 44 89 54 24 0c e8 19 8f 02 00 44 8b 54 24 0c 89 da 48 89 ee 41 89 c0 bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 38 44 89 c7 89 44 24 0c e8 6c 8f 02 00 8b 44
+RSP: 002b:00007f86940d3df0 EFLAGS: 00000293 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f8694651890
+RDX: 0000000000000002 RSI: 00007f86940d3eb0 RDI: 00000000ffffff9c
+RBP: 00007f86940d3eb0 R08: 0000000000000000 R09: 0000000000000004
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+R13: 00007f86940d3eb0 R14: 00000000000004c9 R15: 00000000200000c0
+Modules linked in:
+---[ end trace abd7dca71f004e2d ]---
+RIP: 0010:compound_head include/linux/page-flags.h:185 [inline]
+RIP: 0010:virt_to_head_page include/linux/mm.h:860 [inline]
+RIP: 0010:qlink_to_cache mm/kasan/quarantine.c:130 [inline]
+RIP: 0010:qlist_free_all+0x8d/0xd0 mm/kasan/quarantine.c:167
+Code: df 48 85 db 75 cc 48 89 f0 4c 01 e8 72 56 4c 89 f2 48 2b 15 25 65 57 03 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 03 65 57 03 <48> 8b 50 08 48 8d 4a ff 83 e2 01 48 0f 45 c1 48 8b 78 18 eb 93 49
+RSP: 0018:ffff88801116f9b0 EFLAGS: 00010203
+RAX: 005d4bddfe220040 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000777f80000000 RSI: 1757ffff88801701 RDI: 0000000000000000
+RBP: dffffc0000000000 R08: 0000000000000003 R09: 0000000000040003
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801116f9e8
+R13: 0000000080000000 R14: ffffffff80000000 R15: 1757ffff88801701
+FS:  00007f86940d46c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa3c01d3000 CR3: 000000000fe24000 CR4: 0000000000350ee0
+note: syz.3.554[6179] exited with preempt_count 2
+------------[ cut here ]------------
+do not call blocking ops when !TASK_RUNNING; state=102 set at [<000000003413d493>] __mutex_lock_common kernel/locking/mutex.c:1041 [inline]
+do not call blocking ops when !TASK_RUNNING; state=102 set at [<000000003413d493>] __mutex_lock+0x40b/0x10d0 kernel/locking/mutex.c:1103
+WARNING: CPU: 1 PID: 6179 at kernel/sched/core.c:7251 __might_sleep+0x141/0x1a0 kernel/sched/core.c:7251
+Modules linked in:
+CPU: 1 PID: 6179 Comm: syz.3.554 Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:__might_sleep+0x141/0x1a0 kernel/sched/core.c:7251
+Code: 65 48 8b 1c 25 40 ef 01 00 48 8d 7b 10 48 89 fe 48 c1 ee 03 80 3c 06 00 75 2b 48 8b 73 10 48 c7 c7 c0 74 46 84 e8 db cc ba 02 <0f> 0b e9 46 ff ff ff e8 f3 67 52 00 e9 1d ff ff ff e8 e9 67 52 00
+RSP: 0018:ffff888011447d60 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: ffff88801ecf0000 RCX: 0000000000000000
+RDX: ffff88801ecf0000 RSI: ffffffff812d93c5 RDI: ffffed1002288f9e
+RBP: ffffffff8445f460 R08: 0000000000000001 R09: ffff88806cf1ff9b
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000031
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+FS:  00007f86940d46c0(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa3c01d3000 CR3: 000000000fe24000 CR4: 0000000000350ee0
+Call Trace:
+ percpu_down_read include/linux/percpu-rwsem.h:49 [inline]
+ cgroup_threadgroup_change_begin include/linux/cgroup-defs.h:733 [inline]
+ exit_signals+0x74/0x9e0 kernel/signal.c:2843
+ do_exit+0x237/0x28e0 kernel/exit.c:765
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7f8694651890
+Code: 48 89 44 24 20 75 93 44 89 54 24 0c e8 19 8f 02 00 44 8b 54 24 0c 89 da 48 89 ee 41 89 c0 bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 38 44 89 c7 89 44 24 0c e8 6c 8f 02 00 8b 44
+RSP: 002b:00007f86940d3df0 EFLAGS: 00000293 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f8694651890
+RDX: 0000000000000002 RSI: 00007f86940d3eb0 RDI: 00000000ffffff9c
+RBP: 00007f86940d3eb0 R08: 0000000000000000 R09: 0000000000000004
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+R13: 00007f86940d3eb0 R14: 00000000000004c9 R15: 00000000200000c0
+irq event stamp: 0
+hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+hardirqs last disabled at (0): [<ffffffff8115f55b>] copy_process+0x181b/0x69f0 kernel/fork.c:2040
+softirqs last  enabled at (0): [<ffffffff8115f59c>] copy_process+0x185c/0x69f0 kernel/fork.c:2044
+softirqs last disabled at (0): [<0000000000000000>] 0x0
+---[ end trace abd7dca71f004e2e ]---
+BUG: sleeping function called from invalid context at include/linux/percpu-rwsem.h:49
+in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 6179, name: syz.3.554
+INFO: lockdep is turned off.
+irq event stamp: 0
+hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+hardirqs last disabled at (0): [<ffffffff8115f55b>] copy_process+0x181b/0x69f0 kernel/fork.c:2040
+softirqs last  enabled at (0): [<ffffffff8115f59c>] copy_process+0x185c/0x69f0 kernel/fork.c:2044
+softirqs last disabled at (0): [<0000000000000000>] 0x0
+CPU: 1 PID: 6179 Comm: syz.3.554 Tainted: G    B D W         5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep.cold+0x65/0x79 kernel/sched/core.c:7304
+ percpu_down_read include/linux/percpu-rwsem.h:49 [inline]
+ cgroup_threadgroup_change_begin include/linux/cgroup-defs.h:733 [inline]
+ exit_signals+0x74/0x9e0 kernel/signal.c:2843
+ do_exit+0x237/0x28e0 kernel/exit.c:765
+ rewind_stack_do_exit+0x17/0x17 arch/x86/entry/entry_64.S:1483
+RIP: 0033:0x7f8694651890
+Code: 48 89 44 24 20 75 93 44 89 54 24 0c e8 19 8f 02 00 44 8b 54 24 0c 89 da 48 89 ee 41 89 c0 bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 38 44 89 c7 89 44 24 0c e8 6c 8f 02 00 8b 44
+RSP: 002b:00007f86940d3df0 EFLAGS: 00000293 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f8694651890
+RDX: 0000000000000002 RSI: 00007f86940d3eb0 RDI: 00000000ffffff9c
+RBP: 00007f86940d3eb0 R08: 0000000000000000 R09: 0000000000000004
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+R13: 00007f86940d3eb0 R14: 00000000000004c9 R15: 00000000200000c0
+----------------
+Code disassembly (best guess):
+   0:	df 48 85             	fisttps -0x7b(%rax)
+   3:	db 75 cc             	(bad)  -0x34(%rbp)
+   6:	48 89 f0             	mov    %rsi,%rax
+   9:	4c 01 e8             	add    %r13,%rax
+   c:	72 56                	jb     0x64
+   e:	4c 89 f2             	mov    %r14,%rdx
+  11:	48 2b 15 25 65 57 03 	sub    0x3576525(%rip),%rdx        # 0x357653d
+  18:	48 01 d0             	add    %rdx,%rax
+  1b:	48 c1 e8 0c          	shr    $0xc,%rax
+  1f:	48 c1 e0 06          	shl    $0x6,%rax
+  23:	48 03 05 03 65 57 03 	add    0x3576503(%rip),%rax        # 0x357652d
+* 2a:	48 8b 50 08          	mov    0x8(%rax),%rdx <-- trapping instruction
+  2e:	48 8d 4a ff          	lea    -0x1(%rdx),%rcx
+  32:	83 e2 01             	and    $0x1,%edx
+  35:	48 0f 45 c1          	cmovne %rcx,%rax
+  39:	48 8b 78 18          	mov    0x18(%rax),%rdi
+  3d:	eb 93                	jmp    0xffffffd2
+  3f:	49                   	rex.WB

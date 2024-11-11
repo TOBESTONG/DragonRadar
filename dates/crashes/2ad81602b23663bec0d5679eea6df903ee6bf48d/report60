@@ -1,0 +1,66 @@
+audit: type=1326 audit(1731308816.621:37): auid=0 uid=0 gid=0 ses=3 subj=system_u:system_r:kernel_t:s0 pid=4310 comm="syz.3.158" exe="/syz-executor" sig=31 arch=c000003e syscall=202 compat=0 ip=0x7fd594a56ef9 code=0x0
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4.h:3196!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 4331 Comm: syz.3.158 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff8880192964e0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a81b22
+RDX: ffff88801fb4b400 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff88800ce52000 R08: 0000000000000000 R09: ffff88801dc727b7
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880175ba000
+R13: ffff8880175ba650 R14: 0000000000000001 R15: 0000000000000001
+FS:  00007fd5936af6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f15df499ef8 CR3: 000000001f6e0000 CR4: 0000000000350ef0
+Call Trace:
+ ext4_mb_find_by_goal+0xf4/0x1030 fs/ext4/mballoc.c:1884
+ ext4_mb_regular_allocator+0x235/0x1ee0 fs/ext4/mballoc.c:2320
+ ext4_mb_new_blocks+0x2322/0x4b60 fs/ext4/mballoc.c:4997
+ ext4_ext_map_blocks+0x1f8e/0x5d50 fs/ext4/extents.c:4238
+ ext4_map_blocks+0x700/0x1740 fs/ext4/inode.c:628
+ _ext4_get_block+0x241/0x590 fs/ext4/inode.c:784
+ __block_write_begin_int+0x3f2/0x1b40 fs/buffer.c:2011
+ ext4_write_begin+0x649/0x1170 fs/ext4/inode.c:1200
+ ext4_da_write_begin+0x61e/0xe60 fs/ext4/inode.c:2952
+ generic_perform_write+0x1fe/0x4d0 mm/filemap.c:3329
+ ext4_buffered_write_iter+0x244/0x4d0 fs/ext4/file.c:270
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ __kernel_write+0x593/0xb00 fs/read_write.c:550
+ dump_emit+0x1db/0x2e0 fs/coredump.c:848
+ elf_core_dump+0x230e/0x3540 fs/binfmt_elf.c:2226
+ do_coredump+0x2246/0x3380 fs/coredump.c:810
+ get_signal+0x20ac/0x2480 kernel/signal.c:2752
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ irqentry_exit_to_user_mode+0x5/0x40 kernel/entry/common.c:279
+ exc_page_fault+0xca/0x1a0 arch/x86/mm/fault.c:1488
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0xf5d1ff06
+Code: Unable to access opcode bytes at RIP 0xf5d1fedc.
+RSP: 002b:0000000020000138 EFLAGS: 00010217
+RAX: 0000000000000000 RBX: 00007fd594c0f058 RCX: 00007fd594a56ef9
+RDX: 0000000020000280 RSI: 0000000020000130 RDI: 000000002a420480
+RBP: 00007fd594ac9b76 R08: 00000000200001c0 R09: 00000000200001c0
+R10: 0000000020000180 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fd594c0f058 R15: 00007ffe41821228
+Modules linked in:
+---[ end trace 1ccd78b078f494ef ]---
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff8880192964e0 EFLAGS: 00010293
+PM: hibernation: Basic memory bitmaps freed
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a81b22
+RDX: ffff88801fb4b400 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff88800ce52000 R08: 0000000000000000 R09: ffff88801dc727b7
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880175ba000
+R13: ffff8880175ba650 R14: 0000000000000001 R15: 0000000000000001
+FS:  00007fd5936af6c0(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe1c8b0b6f4 CR3: 000000001f6e0000 CR4: 0000000000350ef0
+EXT4-fs warning (device loop3): kmmpd:182: kmmpd being stopped since MMP feature has been disabled.

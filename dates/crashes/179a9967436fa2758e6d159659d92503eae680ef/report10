@@ -1,0 +1,65 @@
+syz.0.68 (2691): attempted to duplicate a private mapping with mremap.  This is not supported.
+EXT4-fs error (device loop1): ext4_get_group_desc:276: comm syz.1.64: block_group >= groups_count - block_group = 521481763, groups_count = 1
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4.h:3196!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 2693 Comm: syz.1.64 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff88801297ec08 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 000000001f152e23 RCX: ffffffff81a81b22
+RDX: ffff88801924ce00 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff88800cf76000 R08: 0000000000000000 R09: ffff888013fb7da3
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800c7c8000
+R13: ffff88800c7c8650 R14: 0000000000000001 R15: 000000001f152e23
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8c020355f0 CR3: 0000000019d62000 CR4: 0000000000350ee0
+Call Trace:
+ ext4_mb_load_buddy_gfp+0xe3/0x13d0 fs/ext4/mballoc.c:1174
+ ext4_discard_preallocations+0x86a/0xe70 fs/ext4/mballoc.c:4422
+ ext4_truncate+0x603/0x1390 fs/ext4/inode.c:4251
+ ext4_truncate_failed_write fs/ext4/truncate.h:20 [inline]
+ ext4_write_begin+0x3ba/0x1170 fs/ext4/inode.c:1226
+ ext4_da_write_begin+0x61e/0xe60 fs/ext4/inode.c:2952
+ generic_perform_write+0x1fe/0x4d0 mm/filemap.c:3329
+ ext4_buffered_write_iter+0x244/0x4d0 fs/ext4/file.c:270
+ ext4_file_write_iter+0x431/0x1b20 fs/ext4/file.c:664
+ __kernel_write+0x593/0xb00 fs/read_write.c:550
+ dump_emit+0x1db/0x2e0 fs/coredump.c:848
+ dump_user_range+0xbb/0x2a0 fs/coredump.c:901
+ elf_core_dump+0x290a/0x3540 fs/binfmt_elf.c:2274
+ do_coredump+0x2246/0x3380 fs/coredump.c:810
+ get_signal+0x20ac/0x2480 kernel/signal.c:2752
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ irqentry_exit_to_user_mode+0x5/0x40 kernel/entry/common.c:279
+ exc_page_fault+0xca/0x1a0 arch/x86/mm/fault.c:1488
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0x7ff62573c397
+Code: 88 15 5a 53 e2 00 88 05 57 53 e2 00 c3 50 48 8d 35 ee 07 1b 00 48 8d 3d f4 07 1b 00 31 c0 e8 a0 f9 ff ff 53 89 fb 48 83 ec 10 <64> 8b 04 25 94 ff ff ff 85 c0 74 2a 89 fe 31 c0 bf 3c 00 00 00 e8
+RSP: 002b:00007ff6244b3060 EFLAGS: 00010206
+RAX: 0000000000000000 RBX: 000000000000000b RCX: 00007ff625879ef9
+RDX: 00007ff6244b3080 RSI: 00007ff6244b31b0 RDI: 000000000000000b
+RBP: 00007ff6258ecb76 R08: 0000000000000000 R09: 0000000000000058
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007ff625a32058 R15: 00007ffc3e82bc48
+Modules linked in:
+EXT4-fs: failed to create workqueue
+EXT4-fs (loop0): mount failed
+---[ end trace 56fe42a747b45d73 ]---
+RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3196 [inline]
+RIP: 0010:ext4_get_group_info+0x3cb/0x440 fs/ext4/ext4.h:3191
+Code: ff 48 c7 c2 80 c5 52 84 be b3 02 00 00 48 c7 c7 e0 c4 52 84 c6 05 2d 0a 2c 04 01 e8 88 03 34 02 e9 9b fe ff ff e8 45 f0 9d ff <0f> 0b 48 c7 c7 60 75 30 85 e8 46 6d 38 02 e8 72 20 cb ff e9 81 fc
+RSP: 0018:ffff88801297ec08 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 000000001f152e23 RCX: ffffffff81a81b22
+RDX: ffff88801924ce00 RSI: ffffffff81a81e7b RDI: 0000000000000004
+RBP: ffff88800cf76000 R08: 0000000000000000 R09: ffff888013fb7da3
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800c7c8000
+R13: ffff88800c7c8650 R14: 0000000000000001 R15: 000000001f152e23
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ff6244f3990 CR3: 0000000019d62000 CR4: 0000000000350ef0

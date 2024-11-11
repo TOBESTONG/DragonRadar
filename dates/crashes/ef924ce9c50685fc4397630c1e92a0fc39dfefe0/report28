@@ -1,0 +1,131 @@
+EXT4-fs (loop2): mounted filesystem without journal. Opts: grpquota,debug_want_extra_isize=0x0000000000000082,resuid=0x0000000000000000,max_batch_time=0x0000000000000003,data=ordered,init_itable=0x0000000000000003,usrquota,max_dir_size_kb=0x00000000000040d2,barrier,nolazytime,,errors=continue
+ loop0: p1 p3 < p5 p6 >
+================================
+WARNING: inconsistent lock state
+5.10.0 #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+syz-executor/6589 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff888010ee14a8 (&file_data->lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff888010ee14a8 (&file_data->lock){+.?.}-{2:2}, at: io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5437 [inline]
+  lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_sqe_files_register fs/io_uring.c:7496 [inline]
+  __io_uring_register fs/io_uring.c:9665 [inline]
+  __do_sys_io_uring_register+0x3447/0x40a0 fs/io_uring.c:9755
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 129258
+hardirqs last  enabled at (129258): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (129258): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (129257): [<ffffffff83ecaf1e>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (129257): [<ffffffff83ecaf1e>] _raw_spin_lock_irqsave+0x4e/0x50 kernel/locking/spinlock.c:159
+softirqs last  enabled at (129210): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+softirqs last disabled at (129221): [<ffffffff84000f92>] asm_call_irq_on_stack+0x12/0x20
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&file_data->lock);
+  <Interrupt>
+    lock(&file_data->lock);
+
+ *** DEADLOCK ***
+
+4 locks held by syz-executor/6589:
+ #0: ffff888019854438 (sb_writers#8){.+.+}-{0:0}, at: filename_create+0x104/0x490 fs/namei.c:3462
+ #1: ffff88800b179850 (&type->i_mutex_dir_key#5/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+ #1: ffff88800b179850 (&type->i_mutex_dir_key#5/1){+.+.}-{3:3}, at: filename_create+0x15a/0x490 fs/namei.c:3467
+ #2: ffffffff850e7de0 (rcu_callback){....}-{0:0}, at: rcu_do_batch+0x415/0x1440 kernel/rcu/tree.c:2466
+ #3: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x2a0
+
+stack backtrace:
+CPU: 0 PID: 6589 Comm: syz-executor Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4413 [inline]
+ valid_state kernel/locking/lockdep.c:3751 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3954 [inline]
+ mark_lock.cold+0x65/0x90 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4306 [inline]
+ __lock_acquire+0x11c2/0x5ca0 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_file_data_ref_zero+0x75/0x450 fs/io_uring.c:7361
+ percpu_ref_put_many.constprop.0+0x262/0x2a0 include/linux/percpu-refcount.h:322
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu+0x1e5/0x220 kernel/softirq.c:423
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x48/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:security_d_instantiate+0x4b/0xe0 security/security.c:1973
+Code: 05 48 85 db 74 44 48 bd 00 00 00 00 00 fc ff df e8 2a 59 63 ff 48 8d 7b 18 48 89 f8 48 c1 e8 03 80 3c 28 00 75 7d 48 8b 43 18 <4c> 89 e6 4c 89 ef e8 ea 88 3d 02 48 89 d8 48 c1 e8 03 80 3c 28 00
+RSP: 0018:ffff888013a5fdb0 EFLAGS: 00000246
+RAX: ffffffff81e53820 RBX: ffffffff8542fe48 RCX: ffffffff81e2b61a
+RDX: ffff88800ff14e00 RSI: ffffffff81e2b596 RDI: ffffffff8542fe60
+RBP: dffffc0000000000 R08: 0000000000000001 R09: ffffffff86e5f707
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800b178698
+R13: ffff8880136378f8 R14: ffff8880136378f8 R15: 0000000000000000
+ d_instantiate+0x5a/0xa0 fs/dcache.c:1973
+ shmem_mknod+0x189/0x1f0 mm/shmem.c:2944
+ shmem_mkdir+0x24/0x50 mm/shmem.c:2981
+ vfs_mkdir+0x45c/0x710 fs/namei.c:3650
+ do_mkdirat+0x145/0x2a0 fs/namei.c:3673
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ff0db354797
+Code: 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 02 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe15cc8b38 EFLAGS: 00000202 ORIG_RAX: 0000000000000102
+RAX: ffffffffffffffda RBX: 00007ffe15cc8b80 RCX: 00007ff0db354797
+RDX: 00000000000001ff RSI: 00007ffe15cc8b80 RDI: 00000000ffffff9c
+RBP: 00007ffe15cc8b6c R08: 0000000000000004 R09: 00007ffe15cc88d6
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000032
+R13: 0000000000012e76 R14: 0000000000012e5b R15: 00007ffe15cc8bc0
+EXT4-fs (loop2): revision level too high, forcing read-only mode
+EXT4-fs (loop2): orphan cleanup on readonly fs
+Quota error (device loop2): v2_read_header: Failed header read: expected=8 got=0
+EXT4-fs warning (device loop2): ext4_enable_quotas:6403: Failed to enable quota tracking (type=1, err=-22). Please run e2fsck to fix.
+EXT4-fs (loop2): Cannot turn on quotas: error -22
+EXT4-fs error (device loop2): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 13120 vs 41 free clusters
+EXT4-fs (loop2): 1 truncate cleaned up
+EXT4-fs (loop2): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs error (device loop2): ext4_ext_check_inode:459: inode #13: comm syz.2.375: pblk 0 bad header/extent: invalid magic - magic f300, entries 1, max 4(0), depth 0(0)
+----------------
+Code disassembly (best guess):
+   0:	05 48 85 db 74       	add    $0x74db8548,%eax
+   5:	44                   	rex.R
+   6:	48 bd 00 00 00 00 00 	movabs $0xdffffc0000000000,%rbp
+   d:	fc ff df
+  10:	e8 2a 59 63 ff       	call   0xff63593f
+  15:	48 8d 7b 18          	lea    0x18(%rbx),%rdi
+  19:	48 89 f8             	mov    %rdi,%rax
+  1c:	48 c1 e8 03          	shr    $0x3,%rax
+  20:	80 3c 28 00          	cmpb   $0x0,(%rax,%rbp,1)
+  24:	75 7d                	jne    0xa3
+  26:	48 8b 43 18          	mov    0x18(%rbx),%rax
+* 2a:	4c 89 e6             	mov    %r12,%rsi <-- trapping instruction
+  2d:	4c 89 ef             	mov    %r13,%rdi
+  30:	e8 ea 88 3d 02       	call   0x23d891f
+  35:	48 89 d8             	mov    %rbx,%rax
+  38:	48 c1 e8 03          	shr    $0x3,%rax
+  3c:	80 3c 28 00          	cmpb   $0x0,(%rax,%rbp,1)

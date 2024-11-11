@@ -1,0 +1,108 @@
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+INFO: task syz-executor:233 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor    state:D stack:24256 pid:  233 ppid:     1 flags:0x00004002
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ wb_wait_for_completion+0x17c/0x230 fs/fs-writeback.c:209
+ sync_inodes_sb+0x1ad/0x9a0 fs/fs-writeback.c:2559
+ __sync_filesystem fs/sync.c:34 [inline]
+ sync_filesystem fs/sync.c:67 [inline]
+ sync_filesystem+0x15f/0x270 fs/sync.c:48
+ generic_shutdown_super+0x70/0x370 fs/super.c:448
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f77d5ed9ef9
+RSP: 002b:00007ffc9ca19638 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00007f77d5f4ca86 RCX: 00007f77d5ed9ef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000001
+RBP: 0000000000000010 R08: 00007ffc9ca173d6 R09: 00007ffc9ca1a8f0
+R10: 000000000000000a R11: 0000000000000246 R12: 00007ffc9ca1a8f0
+R13: 00007f77d5f4ca14 R14: 0000555555cd94a8 R15: 00007ffc9ca1b9b0
+INFO: task syz.3.112:4496 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.3.112       state:D stack:29144 pid: 4496 ppid:  3270 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ rwsem_down_read_slowpath+0x2ad/0xb90 kernel/locking/rwsem.c:1099
+ __down_read kernel/locking/rwsem.c:1341 [inline]
+ down_read+0x1ec/0x450 kernel/locking/rwsem.c:1494
+ iterate_supers+0xe8/0x1f0 fs/super.c:692
+ ksys_sync+0x86/0x150 fs/sync.c:114
+ __do_sys_sync+0xa/0x10 fs/sync.c:125
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f1161111ef9
+RSP: 002b:00007f115fd6a038 EFLAGS: 00000246 ORIG_RAX: 00000000000000a2
+RAX: ffffffffffffffda RBX: 00007f11612ca058 RCX: 00007f1161111ef9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007f1161184b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f11612ca058 R15: 00007ffc2d91a068
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/23:
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x28c kernel/locking/lockdep.c:6254
+2 locks held by kworker/u4:2/64:
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888008bca138 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x6c0/0x16c0 kernel/workqueue.c:2243
+ #1: ffff88800bc97da8 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x6f4/0x16c0 kernel/workqueue.c:2247
+1 lock held by in:imklog/154:
+ #0: ffff88800c783770 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+1 lock held by syz-executor/233:
+ #0: ffff88800c9a80e0 (&type->s_umount_key#42){++++}-{3:3}, at: deactivate_super+0xa5/0xd0 fs/super.c:365
+1 lock held by syz.3.112/4496:
+ #0: ffff88800c9a80e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.1.151/6462:
+ #0: ffff88800c9a80e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.1.235/9165:
+ #0: ffff88800c9a80e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+1 lock held by syz.2.311/10549:
+ #0: ffff88800c9a80e0 (&type->s_umount_key#42){++++}-{3:3}, at: iterate_supers+0xe8/0x1f0 fs/super.c:692
+
+=============================================
+
+EXT4-fs warning: 460 callbacks suppressed
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning: 460 callbacks suppressed
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994
+EXT4-fs warning (device loop1): ext4_read_block_bitmap_nowait:444: Cannot get buffer for block bitmap - block_group = 0, block_bitmap = 6279061766697431994

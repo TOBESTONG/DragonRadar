@@ -1,0 +1,54 @@
+EXT4-fs error (device loop0): ext4_orphan_get:1385: inode #13: comm syz.0.1239: iget: bad extra_isize 288 (inode size 256)
+EXT4-fs error (device loop0): ext4_orphan_get:1388: comm syz.0.1239: couldn't read orphan inode 13 (err -117)
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+INFO: task syz.2.1177:23330 blocked for more than 143 seconds.
+      Not tainted 5.10.0 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.2.1177      state:D stack:27784 pid:23330 ppid: 21774 flags:0x00000004
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x880/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ io_schedule+0xb6/0x130 kernel/sched/core.c:6301
+ bit_wait_io+0x12/0xa0 kernel/sched/wait_bit.c:209
+ __wait_on_bit_lock+0x131/0x1c0 kernel/sched/wait_bit.c:90
+ out_of_line_wait_on_bit_lock+0xd5/0x110 kernel/sched/wait_bit.c:117
+ wait_on_bit_lock_io include/linux/wait_bit.h:208 [inline]
+ __lock_buffer fs/buffer.c:69 [inline]
+ lock_buffer include/linux/buffer_head.h:366 [inline]
+ __sync_dirty_buffer+0x34f/0x3e0 fs/buffer.c:3142
+ __ext4_handle_dirty_metadata+0x28b/0x9b0 fs/ext4/ext4_jbd2.c:364
+ ext4_convert_inline_data_nolock+0x5fd/0xd60 fs/ext4/inline.c:1237
+ ext4_convert_inline_data+0x37c/0x490 fs/ext4/inline.c:1986
+ ext4_page_mkwrite+0x348/0x18d0 fs/ext4/inode.c:6066
+ do_page_mkwrite+0x1ac/0x480 mm/memory.c:2703
+ do_shared_fault mm/memory.c:4070 [inline]
+ do_fault mm/memory.c:4138 [inline]
+ handle_pte_fault mm/memory.c:4374 [inline]
+ __handle_mm_fault mm/memory.c:4509 [inline]
+ handle_mm_fault+0x1df2/0x37e0 mm/memory.c:4607
+ do_user_addr_fault+0x645/0xc40 arch/x86/mm/fault.c:1372
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa2/0x1a0 arch/x86/mm/fault.c:1485
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+RIP: 0033:0x7f884a3611db
+RSP: 002b:00007fff222c9d68 EFLAGS: 00010202
+RAX: 0000000020000180 RBX: 0000000000000004 RCX: 0000000000737562
+RDX: 0000000000000006 RSI: 0000000075622f2e RDI: 0000000020000180
+RBP: 00007f884a553a80 R08: 00007f884a21c000 R09: 0000000000000001
+R10: 0000000000000001 R11: 0000000000000009 R12: 000000000003a587
+R13: 00007fff222c9e70 R14: 0000000000000032 R15: fffffffffffffffe
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/23:
+ #0: ffffffff850e7f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x28c kernel/locking/lockdep.c:6254
+4 locks held by syz.2.1177/23330:
+ #0: ffff888018f08128 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_read_lock include/linux/mmap_lock.h:46 [inline]
+ #0: ffff888018f08128 (&mm->mmap_lock#2){++++}-{3:3}, at: do_user_addr_fault+0x991/0xc40 arch/x86/mm/fault.c:1323
+ #1: ffff88800ce0e530 (sb_pagefaults){.+.+}-{0:0}, at: do_page_mkwrite+0x1ac/0x480 mm/memory.c:2703
+ #2: ffff888013bfef58 (&ei->i_mmap_sem){++++}-{3:3}, at: ext4_page_mkwrite+0x340/0x18d0 fs/ext4/inode.c:6064
+ #3: ffff888013bfed10 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ #3: ffff888013bfed10 (&ei->xattr_sem){++++}-{3:3}, at: ext4_convert_inline_data+0x280/0x490 fs/ext4/inline.c:1984
+
+=============================================
+

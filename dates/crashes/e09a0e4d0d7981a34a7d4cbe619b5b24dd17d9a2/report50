@@ -1,0 +1,364 @@
+EXT4-fs (loop1): mounted filesystem without journal. Opts: max_dir_size_kb=0x0000000000010001,block_validity,nogrpid,block_validity,debug_want_extra_isize=0x0000000000000006,init_itable=0x0000000000000000,usrquota,usrquota,,errors=continue
+======================================================
+WARNING: possible circular locking dependency detected
+5.10.0 #1 Not tainted
+------------------------------------------------------
+syz.1.265/7186 is trying to acquire lock:
+ffff88801cccf898 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_map_blocks+0x381/0x1740 fs/ext4/inode.c:551
+
+but task is already holding lock:
+ffff88800caf61e0 (&s->s_dquot.dqio_sem){++++}-{3:3}, at: v2_write_dquot+0x8b/0x250 fs/quota/quota_v2.c:330
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&s->s_dquot.dqio_sem){++++}-{3:3}:
+       down_read+0x96/0x450 kernel/locking/rwsem.c:1492
+       v2_read_dquot+0x49/0x120 fs/quota/quota_v2.c:308
+       dquot_acquire+0x133/0x590 fs/quota/dquot.c:434
+       ext4_acquire_dquot+0x25e/0x3d0 fs/ext4/super.c:6186
+       dqget+0x681/0xfb0 fs/quota/dquot.c:901
+       __dquot_initialize+0x59d/0xd60 fs/quota/dquot.c:1479
+       ext4_orphan_cleanup fs/ext4/super.c:3095 [inline]
+       ext4_fill_super+0x91c3/0xd960 fs/ext4/super.c:5067
+       mount_bdev+0x350/0x410 fs/super.c:1419
+       legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+       vfs_get_tree+0x8e/0x360 fs/super.c:1549
+       do_new_mount fs/namespace.c:2875 [inline]
+       path_mount+0x1318/0x2060 fs/namespace.c:3205
+       do_mount fs/namespace.c:3218 [inline]
+       __do_sys_mount fs/namespace.c:3426 [inline]
+       __se_sys_mount fs/namespace.c:3403 [inline]
+       __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #1 (&dquot->dq_lock){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+       __mutex_lock+0x13b/0x10d0 kernel/locking/mutex.c:1103
+       dquot_commit+0x4d/0x380 fs/quota/dquot.c:476
+       ext4_write_dquot+0x24e/0x310 fs/ext4/super.c:6170
+       ext4_mark_dquot_dirty+0x111/0x1a0 fs/ext4/super.c:6221
+       mark_dquot_dirty fs/quota/dquot.c:347 [inline]
+       mark_all_dquot_dirty fs/quota/dquot.c:385 [inline]
+       __dquot_free_space+0x6af/0xa20 fs/quota/dquot.c:1894
+       dquot_free_space_nodirty include/linux/quotaops.h:376 [inline]
+       dquot_free_space include/linux/quotaops.h:381 [inline]
+       dquot_free_block include/linux/quotaops.h:392 [inline]
+       ext4_free_blocks+0xfea/0x22a0 fs/ext4/mballoc.c:5493
+       ext4_remove_blocks fs/ext4/extents.c:2498 [inline]
+       ext4_ext_rm_leaf fs/ext4/extents.c:2664 [inline]
+       ext4_ext_remove_space+0x20ff/0x4470 fs/ext4/extents.c:2912
+       ext4_ext_truncate+0x1fb/0x260 fs/ext4/extents.c:4370
+       ext4_truncate+0xed8/0x1390 fs/ext4/inode.c:4254
+       ext4_evict_inode+0xb59/0x1890 fs/ext4/inode.c:280
+       evict+0x284/0x6d0 fs/inode.c:578
+       iput_final fs/inode.c:1654 [inline]
+       iput+0x4e5/0x840 fs/inode.c:1680
+       do_unlinkat+0x3ee/0x650 fs/namei.c:3903
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #0 (&ei->i_data_sem/2){++++}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:2868 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+       validate_chain kernel/locking/lockdep.c:3608 [inline]
+       __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+       lock_acquire kernel/locking/lockdep.c:5437 [inline]
+       lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+       down_read+0x96/0x450 kernel/locking/rwsem.c:1492
+       ext4_map_blocks+0x381/0x1740 fs/ext4/inode.c:551
+       ext4_getblk+0x144/0x6a0 fs/ext4/inode.c:838
+       ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+       ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+       write_blk+0x12f/0x220 fs/quota/quota_tree.c:73
+       get_free_dqblk+0xff/0x2d0 fs/quota/quota_tree.c:102
+       do_insert_tree+0x57b/0xf80 fs/quota/quota_tree.c:309
+       do_insert_tree+0xdb8/0xf80 fs/quota/quota_tree.c:340
+       do_insert_tree+0x677/0xf80 fs/quota/quota_tree.c:340
+       do_insert_tree+0x677/0xf80 fs/quota/quota_tree.c:340
+       dq_insert_tree fs/quota/quota_tree.c:366 [inline]
+       qtree_write_dquot+0x3bf/0x580 fs/quota/quota_tree.c:385
+       v2_write_dquot+0x11c/0x250 fs/quota/quota_v2.c:334
+EXT4-fs warning (device loop0): ext4_multi_mount_protect:324: MMP startup interrupted, failing mount
+
+       dquot_acquire+0x2cf/0x590 fs/quota/dquot.c:443
+       ext4_acquire_dquot+0x25e/0x3d0 fs/ext4/super.c:6186
+       dqget+0x681/0xfb0 fs/quota/dquot.c:901
+       dquot_transfer+0x29b/0x4e0 fs/quota/dquot.c:2097
+       ext4_setattr+0x603/0x20c0 fs/ext4/inode.c:5363
+       notify_change+0xb9e/0x1090 fs/attr.c:336
+       chown_common+0x37e/0x570 fs/open.c:674
+       do_fchownat+0x126/0x1e0 fs/open.c:704
+       __do_sys_lchown fs/open.c:729 [inline]
+       __se_sys_lchown fs/open.c:727 [inline]
+       __x64_sys_lchown+0x7a/0xc0 fs/open.c:727
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+other info that might help us debug this:
+
+Chain exists of:
+  &ei->i_data_sem/2 --> &dquot->dq_lock --> &s->s_dquot.dqio_sem
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&s->s_dquot.dqio_sem);
+                               lock(&dquot->dq_lock);
+                               lock(&s->s_dquot.dqio_sem);
+  lock(&ei->i_data_sem/2);
+
+ *** DEADLOCK ***
+
+5 locks held by syz.1.265/7186:
+ #0: ffff88800caf6438 (sb_writers#3){.+.+}-{0:0}, at: do_fchownat+0x101/0x1e0 fs/open.c:701
+ #1: ffff88801ccc8488 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ #1: ffff88801ccc8488 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: chown_common+0x349/0x570 fs/open.c:671
+ #2: ffff88801ccc80c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_setattr+0x5f8/0x20c0 fs/ext4/inode.c:5362
+ #3: ffff888013bbf3e8 (&dquot->dq_lock){+.+.}-{3:3}, at: dquot_acquire+0x54/0x590 fs/quota/dquot.c:432
+ #4: ffff88800caf61e0 (&s->s_dquot.dqio_sem){++++}-{3:3}, at: v2_write_dquot+0x8b/0x250 fs/quota/quota_v2.c:330
+
+stack backtrace:
+CPU: 1 PID: 7186 Comm: syz.1.265 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
+ check_prev_add kernel/locking/lockdep.c:2868 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+ validate_chain kernel/locking/lockdep.c:3608 [inline]
+ __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ down_read+0x96/0x450 kernel/locking/rwsem.c:1492
+ ext4_map_blocks+0x381/0x1740 fs/ext4/inode.c:551
+ ext4_getblk+0x144/0x6a0 fs/ext4/inode.c:838
+ ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+ ext4_quota_write+0x26b/0x680 fs/ext4/super.c:6530
+ write_blk+0x12f/0x220 fs/quota/quota_tree.c:73
+ get_free_dqblk+0xff/0x2d0 fs/quota/quota_tree.c:102
+ do_insert_tree+0x57b/0xf80 fs/quota/quota_tree.c:309
+ do_insert_tree+0xdb8/0xf80 fs/quota/quota_tree.c:340
+ do_insert_tree+0x677/0xf80 fs/quota/quota_tree.c:340
+ do_insert_tree+0x677/0xf80 fs/quota/quota_tree.c:340
+ dq_insert_tree fs/quota/quota_tree.c:366 [inline]
+ qtree_write_dquot+0x3bf/0x580 fs/quota/quota_tree.c:385
+ v2_write_dquot+0x11c/0x250 fs/quota/quota_v2.c:334
+ dquot_acquire+0x2cf/0x590 fs/quota/dquot.c:443
+ ext4_acquire_dquot+0x25e/0x3d0 fs/ext4/super.c:6186
+ dqget+0x681/0xfb0 fs/quota/dquot.c:901
+ dquot_transfer+0x29b/0x4e0 fs/quota/dquot.c:2097
+ ext4_setattr+0x603/0x20c0 fs/ext4/inode.c:5363
+ notify_change+0xb9e/0x1090 fs/attr.c:336
+ chown_common+0x37e/0x570 fs/open.c:674
+ do_fchownat+0x126/0x1e0 fs/open.c:704
+ __do_sys_lchown fs/open.c:729 [inline]
+ __se_sys_lchown fs/open.c:727 [inline]
+ __x64_sys_lchown+0x7a/0xc0 fs/open.c:727
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f735bcbbef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f735a935038 EFLAGS: 00000246 ORIG_RAX: 000000000000005e
+RAX: ffffffffffffffda RBX: 00007f735be73f80 RCX: 00007f735bcbbef9
+RDX: 000000000000ee01 RSI: ffffffffffffffff RDI: 00000000200000c0
+RBP: 00007f735bd2eb76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f735be73f80 R15: 00007fffd3e98a28
+==================================================================
+BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+BUG: KASAN: use-after-free in atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+BUG: KASAN: use-after-free in __refcount_add include/linux/refcount.h:193 [inline]
+BUG: KASAN: use-after-free in __refcount_inc include/linux/refcount.h:250 [inline]
+BUG: KASAN: use-after-free in refcount_inc include/linux/refcount.h:267 [inline]
+BUG: KASAN: use-after-free in get_task_struct include/linux/sched/task.h:104 [inline]
+BUG: KASAN: use-after-free in kthread_stop+0x76/0x6c0 kernel/kthread.c:591
+Write of size 4 at addr ffff88801128b420 by task syz.0.263/7176
+
+CPU: 1 PID: 7176 Comm: syz.0.263 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0xf9/0x1e0 mm/kasan/generic.c:192
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+ __refcount_add include/linux/refcount.h:193 [inline]
+ __refcount_inc include/linux/refcount.h:250 [inline]
+ refcount_inc include/linux/refcount.h:267 [inline]
+ get_task_struct include/linux/sched/task.h:104 [inline]
+ kthread_stop+0x76/0x6c0 kernel/kthread.c:591
+ ext4_put_super+0x9ad/0x11b0 fs/ext4/super.c:1265
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f098ed72ef9
+Code: Unable to access opcode bytes at RIP 0x7f098ed72ecf.
+RSP: 002b:00007f098d9ec038 EFLAGS: 00000246 ORIG_RAX: 00000000000001af
+RAX: ffffffffffffffe2 RBX: 00007f098ef2af80 RCX: 00007f098ed72ef9
+RDX: 0000000000000000 RSI: 0000000000000007 RDI: 0000000000000008
+RBP: 00007f098ede5b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f098ef2af80 R15: 00007ffc53222428
+
+Allocated by task 2:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ kmem_cache_alloc_node+0x155/0x340 mm/slub.c:2927
+ alloc_task_struct_node kernel/fork.c:170 [inline]
+ dup_task_struct kernel/fork.c:860 [inline]
+ copy_process+0x45fe/0x69f0 kernel/fork.c:1938
+ kernel_clone+0xe7/0xa80 kernel/fork.c:2456
+ kernel_thread+0xb5/0xf0 kernel/fork.c:2508
+ create_kthread kernel/kthread.c:315 [inline]
+ kthreadd+0x4bb/0x710 kernel/kthread.c:633
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+
+Freed by task 7183:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ __put_task_struct+0x25a/0x3e0 kernel/fork.c:741
+ put_task_struct include/linux/sched/task.h:113 [inline]
+ delayed_put_task_struct+0x1c2/0x310 kernel/exit.c:172
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+
+Last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:178
+ finish_task_switch+0x582/0x830 kernel/sched/core.c:3652
+ context_switch kernel/sched/core.c:3782 [inline]
+ __schedule+0x888/0x2030 kernel/sched/core.c:4528
+ preempt_schedule_irq+0x60/0xe0 kernel/sched/core.c:4789
+ irqentry_exit_cond_resched kernel/entry/common.c:357 [inline]
+ irqentry_exit_cond_resched kernel/entry/common.c:349 [inline]
+ irqentry_exit+0x7a/0xa0 kernel/entry/common.c:387
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+
+Second to last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:178
+ finish_task_switch+0x582/0x830 kernel/sched/core.c:3652
+ context_switch kernel/sched/core.c:3782 [inline]
+ __schedule+0x888/0x2030 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ exit_to_user_mode_loop kernel/entry/common.c:152 [inline]
+ exit_to_user_mode_prepare+0xdd/0x160 kernel/entry/common.c:191
+ irqentry_exit_to_user_mode+0x5/0x40 kernel/entry/common.c:279
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+
+The buggy address belongs to the object at ffff88801128b400
+ which belongs to the cache task_struct of size 6400
+The buggy address is located 32 bytes inside of
+ 6400-byte region [ffff88801128b400, ffff88801128cd00)
+The buggy address belongs to the page:
+page:0000000080b2305b refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x11288
+head:0000000080b2305b order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x100000000010200(slab|head)
+raw: 0100000000010200 0000000000000000 0000000100000001 ffff888008138dc0
+raw: 0000000000000000 0000000000040004 00000001ffffffff ffff88800afc1bc1
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff88800afc1bc1
+
+Memory state around the buggy address:
+ ffff88801128b300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88801128b380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff88801128b400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                               ^
+ ffff88801128b480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88801128b500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+------------[ cut here ]------------
+refcount_t: addition on 0; use-after-free.
+WARNING: CPU: 1 PID: 7176 at lib/refcount.c:25 refcount_warn_saturate+0x20d/0x2a0 lib/refcount.c:25
+Modules linked in:
+CPU: 1 PID: 7176 Comm: syz.0.263 Tainted: G    B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:refcount_warn_saturate+0x20d/0x2a0 lib/refcount.c:25
+Code: 01 31 ff 89 de e8 a3 62 46 ff 84 db 0f 85 14 ff ff ff e8 16 6b 46 ff 48 c7 c7 40 e8 5c 84 c6 05 23 94 d4 03 01 e8 2f 00 dc 01 <0f> 0b e9 f5 fe ff ff e8 f7 6a 46 ff 0f b6 1d 0a 94 d4 03 bf 01 00
+RSP: 0018:ffff88801703f9a0 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff8880171c3400 RSI: ffffffff812d93c5 RDI: ffffed1002e07f26
+RBP: ffff88801128b420 R08: 0000000000000001 R09: ffff88806cf2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801128b420
+R13: ffff88801128b400 R14: 0000000000000000 R15: ffff88801a3183d0
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f09b9f68eb0 CR3: 000000000bdba000 CR4: 0000000000350ee0
+Call Trace:
+ __refcount_add include/linux/refcount.h:199 [inline]
+ __refcount_inc include/linux/refcount.h:250 [inline]
+ refcount_inc include/linux/refcount.h:267 [inline]
+ get_task_struct include/linux/sched/task.h:104 [inline]
+ kthread_stop+0x5b2/0x6c0 kernel/kthread.c:591
+ ext4_put_super+0x9ad/0x11b0 fs/ext4/super.c:1265
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f098ed72ef9
+Code: Unable to access opcode bytes at RIP 0x7f098ed72ecf.
+RSP: 002b:00007f098d9ec038 EFLAGS: 00000246 ORIG_RAX: 00000000000001af
+RAX: ffffffffffffffe2 RBX: 00007f098ef2af80 RCX: 00007f098ed72ef9
+RDX: 0000000000000000 RSI: 0000000000000007 RDI: 0000000000000008
+RBP: 00007f098ede5b76 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f098ef2af80 R15: 00007ffc53222428
+irq event stamp: 2962
+hardirqs last  enabled at (2961): [<ffffffff83ecb152>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (2961): [<ffffffff83ecb152>] _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
+hardirqs last disabled at (2962): [<ffffffff83ebb922>] __schedule+0xfe2/0x2030 kernel/sched/core.c:4428
+softirqs last  enabled at (2744): [<ffffffff81837375>] bdi_split_work_to_wbs fs/fs-writeback.c:1061 [inline]
+softirqs last  enabled at (2744): [<ffffffff81837375>] sync_inodes_sb+0x1a5/0x9a0 fs/fs-writeback.c:2558
+softirqs last disabled at (2740): [<ffffffff818318f7>] spin_lock_bh include/linux/spinlock.h:359 [inline]
+softirqs last disabled at (2740): [<ffffffff818318f7>] wb_queue_work+0xc7/0x420 fs/fs-writeback.c:185
+---[ end trace 1d3a163653b967fe ]---
+ata2: drained 65536 bytes to clear DRQ

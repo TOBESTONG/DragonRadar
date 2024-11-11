@@ -1,0 +1,574 @@
+EXT4-fs (loop2): mounted filesystem without journal. Opts: ,errors=continue
+EXT4-fs (loop1): Ignoring removed oldalloc option
+[EXT4 FS bs=4096, gc=1, bpg=32768, ipg=32, mo=8842c028, mo2=0002]
+======================================================
+WARNING: possible circular locking dependency detected
+5.10.0 #1 Not tainted
+------------------------------------------------------
+syz.1.168/4157 is trying to acquire lock:
+ffff888013fd5b10 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_map_blocks+0x381/0x1740 fs/ext4/inode.c:551
+
+but task is already holding lock:
+ffff88800928e1e0 (&s->s_dquot.dqio_sem){++++}-{3:3}, at: v2_read_dquot+0x49/0x120 fs/quota/quota_v2.c:308
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&s->s_dquot.dqio_sem){++++}-{3:3}:
+       down_read+0x96/0x450 kernel/locking/rwsem.c:1492
+       v2_read_dquot+0x49/0x120 fs/quota/quota_v2.c:308
+       dquot_acquire+0x133/0x590 fs/quota/dquot.c:434
+       ext4_acquire_dquot+0x25e/0x3d0 fs/ext4/super.c:6186
+       dqget+0x681/0xfb0 fs/quota/dquot.c:901
+       __dquot_initialize+0x59d/0xd60 fs/quota/dquot.c:1479
+       ext4_create+0x8b/0x4d0 fs/ext4/namei.c:2612
+       lookup_open+0xf52/0x1330 fs/namei.c:3104
+       open_last_lookups fs/namei.c:3178 [inline]
+       path_openat+0x93f/0x26f0 fs/namei.c:3366
+       do_filp_open+0x17e/0x3c0 fs/namei.c:3396
+       do_sys_openat2+0x16d/0x420 fs/open.c:1168
+       do_sys_open fs/open.c:1184 [inline]
+       __do_sys_openat fs/open.c:1200 [inline]
+       __se_sys_openat fs/open.c:1195 [inline]
+       __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #1 (&dquot->dq_lock){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+       __mutex_lock+0x13b/0x10d0 kernel/locking/mutex.c:1103
+       dquot_commit+0x4d/0x380 fs/quota/dquot.c:476
+       ext4_write_dquot+0x24e/0x310 fs/ext4/super.c:6170
+       ext4_mark_dquot_dirty+0x111/0x1a0 fs/ext4/super.c:6221
+       mark_dquot_dirty fs/quota/dquot.c:347 [inline]
+       mark_all_dquot_dirty fs/quota/dquot.c:385 [inline]
+       __dquot_free_space+0x6af/0xa20 fs/quota/dquot.c:1894
+       dquot_free_space_nodirty include/linux/quotaops.h:376 [inline]
+       dquot_free_space include/linux/quotaops.h:381 [inline]
+       dquot_free_block include/linux/quotaops.h:392 [inline]
+       ext4_free_blocks+0xfea/0x22a0 fs/ext4/mballoc.c:5493
+       ext4_remove_blocks fs/ext4/extents.c:2498 [inline]
+       ext4_ext_rm_leaf fs/ext4/extents.c:2664 [inline]
+       ext4_ext_remove_space+0x20ff/0x4470 fs/ext4/extents.c:2912
+       ext4_ext_truncate+0x1fb/0x260 fs/ext4/extents.c:4370
+       ext4_truncate+0xed8/0x1390 fs/ext4/inode.c:4254
+       ext4_evict_inode+0xb59/0x1890 fs/ext4/inode.c:280
+       evict+0x284/0x6d0 fs/inode.c:578
+       iput_final fs/inode.c:1654 [inline]
+       iput+0x4e5/0x840 fs/inode.c:1680
+       ext4_orphan_cleanup fs/ext4/super.c:3119 [inline]
+       ext4_fill_super+0x92ef/0xd960 fs/ext4/super.c:5067
+       mount_bdev+0x350/0x410 fs/super.c:1419
+       legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+       vfs_get_tree+0x8e/0x360 fs/super.c:1549
+       do_new_mount fs/namespace.c:2875 [inline]
+       path_mount+0x1318/0x2060 fs/namespace.c:3205
+       do_mount fs/namespace.c:3218 [inline]
+       __do_sys_mount fs/namespace.c:3426 [inline]
+       __se_sys_mount fs/namespace.c:3403 [inline]
+       __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #0 (&ei->i_data_sem/2){++++}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:2868 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+       validate_chain kernel/locking/lockdep.c:3608 [inline]
+       __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+       lock_acquire kernel/locking/lockdep.c:5437 [inline]
+       lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+       down_read+0x96/0x450 kernel/locking/rwsem.c:1492
+       ext4_map_blocks+0x381/0x1740 fs/ext4/inode.c:551
+       ext4_getblk+0x52b/0x6a0 fs/ext4/inode.c:838
+       ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+       ext4_quota_read+0x243/0x320 fs/ext4/super.c:6484
+       find_tree_dqentry+0x6f/0x6e0 fs/quota/quota_tree.c:580
+       find_tree_dqentry+0x180/0x6e0 fs/quota/quota_tree.c:591
+       find_dqentry fs/quota/quota_tree.c:603 [inline]
+       qtree_read_dquot+0x111/0x760 fs/quota/quota_tree.c:623
+       v2_read_dquot+0xce/0x120 fs/quota/quota_v2.c:309
+       dquot_acquire+0x133/0x590 fs/quota/dquot.c:434
+       ext4_acquire_dquot+0x25e/0x3d0 fs/ext4/super.c:6186
+       dqget+0x681/0xfb0 fs/quota/dquot.c:901
+       __dquot_initialize+0x59d/0xd60 fs/quota/dquot.c:1479
+       ext4_orphan_cleanup fs/ext4/super.c:3095 [inline]
+       ext4_fill_super+0x91c3/0xd960 fs/ext4/super.c:5067
+       mount_bdev+0x350/0x410 fs/super.c:1419
+       legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+       vfs_get_tree+0x8e/0x360 fs/super.c:1549
+       do_new_mount fs/namespace.c:2875 [inline]
+       path_mount+0x1318/0x2060 fs/namespace.c:3205
+       do_mount fs/namespace.c:3218 [inline]
+       __do_sys_mount fs/namespace.c:3426 [inline]
+       __se_sys_mount fs/namespace.c:3403 [inline]
+       __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+other info that might help us debug this:
+
+Chain exists of:
+  &ei->i_data_sem/2 --> &dquot->dq_lock --> &s->s_dquot.dqio_sem
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&s->s_dquot.dqio_sem);
+                               lock(&dquot->dq_lock);
+                               lock(&s->s_dquot.dqio_sem);
+  lock(&ei->i_data_sem/2);
+
+ *** DEADLOCK ***
+
+3 locks held by syz.1.168/4157:
+ #0: ffff88800928e0e0 (&type->s_umount_key#21/1){+.+.}-{3:3}, at: alloc_super+0x1b4/0xac0 fs/super.c:229
+ #1: ffff888013c94968 (&dquot->dq_lock){+.+.}-{3:3}, at: dquot_acquire+0x54/0x590 fs/quota/dquot.c:432
+ #2: ffff88800928e1e0 (&s->s_dquot.dqio_sem){++++}-{3:3}, at: v2_read_dquot+0x49/0x120 fs/quota/quota_v2.c:308
+
+stack backtrace:
+CPU: 0 PID: 4157 Comm: syz.1.168 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
+ check_prev_add kernel/locking/lockdep.c:2868 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+ validate_chain kernel/locking/lockdep.c:3608 [inline]
+ __lock_acquire+0x2ac4/0x5ca0 kernel/locking/lockdep.c:4832
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x293/0x9b0 kernel/locking/lockdep.c:5402
+ down_read+0x96/0x450 kernel/locking/rwsem.c:1492
+ ext4_map_blocks+0x381/0x1740 fs/ext4/inode.c:551
+ ext4_getblk+0x52b/0x6a0 fs/ext4/inode.c:838
+ ext4_bread+0x29/0x210 fs/ext4/inode.c:890
+ ext4_quota_read+0x243/0x320 fs/ext4/super.c:6484
+ find_tree_dqentry+0x6f/0x6e0 fs/quota/quota_tree.c:580
+ find_tree_dqentry+0x180/0x6e0 fs/quota/quota_tree.c:591
+ find_dqentry fs/quota/quota_tree.c:603 [inline]
+ qtree_read_dquot+0x111/0x760 fs/quota/quota_tree.c:623
+ v2_read_dquot+0xce/0x120 fs/quota/quota_v2.c:309
+ dquot_acquire+0x133/0x590 fs/quota/dquot.c:434
+ ext4_acquire_dquot+0x25e/0x3d0 fs/ext4/super.c:6186
+ dqget+0x681/0xfb0 fs/quota/dquot.c:901
+ __dquot_initialize+0x59d/0xd60 fs/quota/dquot.c:1479
+ ext4_orphan_cleanup fs/ext4/super.c:3095 [inline]
+ ext4_fill_super+0x91c3/0xd960 fs/ext4/super.c:5067
+ mount_bdev+0x350/0x410 fs/super.c:1419
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f1a80a3d69a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f1a7f6b4e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f1a7f6b4ef0 RCX: 00007f1a80a3d69a
+RDX: 0000000020000040 RSI: 00000000200001c0 RDI: 00007f1a7f6b4eb0
+RBP: 0000000020000040 R08: 00007f1a7f6b4ef0 R09: 0000000000000004
+R10: 0000000000000004 R11: 0000000000000246 R12: 00000000200001c0
+R13: 00007f1a7f6b4eb0 R14: 00000000000004c9 R15: 000000000000002c
+EXT4-fs error (device loop1): ext4_mb_mark_diskspace_used:3233: comm syz.1.168: Allocating blocks 41-42 which overlap fs metadata
+EXT4-fs (loop1): Remounting filesystem read-only
+Quota error (device loop1): write_blk: dquota write failed
+Quota error (device loop1): qtree_write_dquot: Error -117 occurred while creating quota
+EXT4-fs (loop1): ext4_orphan_cleanup: truncating inode 16 to 9000 bytes
+EXT4-fs (loop1): 1 truncate cleaned up
+EXT4-fs (loop1): mounted filesystem without journal. Opts: oldalloc,noblock_validity,stripe=0x0000000000000006,barrier=0x000000007fff0038,errors=remount-ro,sysvgroups,resuid=0x000000000000ee00,resgid=0x000000000000ee01,barrier=0x00000000000041db2
+ext4 filesystem being mounted at /34/file0 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs (loop1): Inode 16 (00000000d19cffe8): orphan list check failed!
+00000000d19cffe8: 0001f30a 00000004 00000000 00000002  ................
+000000000b7c223a: 00000003 00000025 00000002 00000001  ....%...........
+00000000d60f9e4e: 00000027 00000002 00008001 00000027  '...........'...
+00000000bc4776db: 00000000 00000000 00000000 00000000  ................
+00000000d5ff1b8b: 00000000 00000000 00000000 00000000  ................
+0000000057b8f137: 00080000 00000000 00000000 00000000  ................
+0000000087180b9e: 00000000 00000000 00000000 00000000  ................
+00000000bc1b8af3: 00000000 dead4ead ffffffff 00000000  .....N..........
+00000000c98f715c: ffffffff ffffffff 86749140 ffffffff  ........@.t.....
+0000000043251656: 00000000 00000000 00000000 00000000  ................
+00000000a0104790: 8446cee0 ffffffff 00020000 00000000  ..F.............
+00000000fe74b0b1: 13fd00b0 ffff8880 13fd00b0 ffff8880  ................
+000000003550eb6b: 13fd0058 ffff8880 87213100 ffffffff  X........1!.....
+0000000087419ae6: 00000000 00000000 00000000 00000000  ................
+00000000d559ed88: 845351c0 ffffffff 00030000 00000000  .QS.............
+0000000025f2e416: 0cc06318 ffff8880 0cc06318 ffff8880  .c.......c......
+000000007fb0a1e5: 13fd0100 ffff8880 13fd0100 ffff8880  ................
+00000000d2ec2649: 00000000 00000000 00000000 00000000  ................
+0000000059399332: 00000000 dead4ead ffffffff 00000000  .....N..........
+000000005752ab54: ffffffff ffffffff 87214580 ffffffff  .........E!.....
+00000000c9340e56: 00000000 00000000 00000000 00000000  ................
+00000000ff878c77: 84545900 ffffffff 00020000 00000000  .YT.............
+000000005e4f56b0: 13fd0160 ffff8880 13fd0160 ffff8880  `.......`.......
+000000007a977f66: 00000000 00000000 00000000 dead4ead  .............N..
+00000000074091a2: ffffffff 00000000 ffffffff ffffffff  ................
+000000007031971c: 86749100 ffffffff 00000000 00000000  ..t.............
+00000000fa9c99ff: 00000000 00000000 8446cb00 ffffffff  ..........F.....
+00000000e7921b81: 00020000 00000000 00000000 00000000  ................
+000000006d9f8b61: 13fd01c0 ffff8880 13fd01c0 ffff8880  ................
+0000000054d7b153: 13fd0170 ffff8880 87213240 ffffffff  p.......@2!.....
+000000002bd4f6d9: 00000000 00000000 00000000 00000000  ................
+00000000020c3e76: 84535580 ffffffff 00030000 00000000  .US.............
+00000000f353108b: 00002328 00000000 00000000 00000000  (#..............
+000000009fec1cfe: 00000000 00000000 00000000 00000000  ................
+00000000a02def8e: 00000000 dead4ead ffffffff 00000000  .....N..........
+00000000f65a20f6: ffffffff ffffffff 86749140 ffffffff  ........@.t.....
+000000005f1135a2: 00000000 00000000 00000000 00000000  ................
+000000005def80bd: 8446cee0 ffffffff 00020000 00000000  ..F.............
+0000000013650808: 13fd0260 ffff8880 13fd0260 ffff8880  `.......`.......
+00000000d537d633: 13fd0208 ffff8880 872130c0 ffffffff  .........0!.....
+00000000274a78fd: 00000000 00000000 00000000 00000000  ................
+000000001943e315: 84535200 ffffffff 00030000 00000000  .RS.............
+000000002e6e4412: 00000000 00000000 00000000 00000000  ................
+00000000a3783bf9: 00000000 00000000 00000000 dead4ead  .............N..
+000000008e64edbe: ffffffff 00000000 ffffffff ffffffff  ................
+00000000af64ed2c: 86749140 ffffffff 00000000 00000000  @.t.............
+00000000fab18cc3: 00000000 00000000 8446cee0 ffffffff  ..........F.....
+00000000e8ab9a8d: 00020000 00000000 13fd02f8 ffff8880  ................
+00000000f6a4ea9b: 13fd02f8 ffff8880 13fd02a0 ffff8880  ................
+00000000fdedcf43: 87213080 ffffffff 00000000 00000000  .0!.............
+00000000470dfd62: 00000000 00000000 84535240 ffffffff  ........@RS.....
+000000008ec378dc: 00030000 00000000 000881ed 00000000  ................
+00000000ea408e4e: 00000000 00000000 ffffffff ffffffff  ................
+0000000011180ae5: ffffffff ffffffff 84527840 ffffffff  ........@xR.....
+00000000bde1d91f: 0928e000 ffff8880 13fd0550 ffff8880  ..(.....P.......
+000000008b49fb06: 0c07f000 ffff8880 00000010 00000000  ................
+000000000662bed5: 00000002 00000000 00002328 00000000  ........(#......
+0000000039d45256: 637cf1f2 00000000 00000000 00000000  ..|c............
+000000000dca45ad: 637cf1f2 00000000 00000000 00000000  ..|c............
+00000000153df298: 637cf1f2 00000000 00000000 00000000  ..|c............
+00000000e2d695e6: 00000000 dead4ead ffffffff 00000000  .....N..........
+00000000c6561a4d: ffffffff ffffffff 85321128 ffffffff  ........(.2.....
+0000000076108227: 86e81540 ffffffff 00000000 00000000  @...............
+000000009fa812c7: 844f5280 ffffffff 00020000 00000000  .RO.............
+00000000f36d80b5: 000c0000 00000000 00000018 00000000  ................
+000000001cbd0bb7: 00000060 00000000 00000000 00000000  `...............
+00000000a5aa0c5d: 00000000 00000000 00000000 00000000  ................
+00000000e6d15481: 00000000 dead4ead ffffffff 00000000  .....N..........
+0000000059ea190c: ffffffff ffffffff 86749140 ffffffff  ........@.t.....
+0000000032a39682: 00000000 00000000 00000000 00000000  ................
+00000000f3b296d8: 8446cee0 ffffffff 00020000 00000000  ..F.............
+00000000d620782f: 13fd0470 ffff8880 13fd0470 ffff8880  p.......p.......
+00000000f07a68ad: 13fd0418 ffff8880 85321138 ffffffff  ........8.2.....
+000000000544c0d8: 00000000 00000000 00000000 00000000  ................
+0000000001b28fb4: 844f52c0 ffffffff 00030000 00000000  .RO.............
+000000006b493232: 00000000 00000000 00000000 00000000  ................
+00000000c012b355: 00000000 00000000 00000000 00000000  ................
+00000000d6193363: 13fd04d0 ffff8880 13fd04d0 ffff8880  ................
+0000000088bd9a88: 13fd04e0 ffff8880 13fd04e0 ffff8880  ................
+00000000f9a361e7: 13fd04f0 ffff8880 13fd04f0 ffff8880  ................
+000000008a6651d8: 13fd0500 ffff8880 13fd0500 ffff8880  ................
+000000007ca1f281: 00000000 00000000 00000000 00000000  ................
+0000000024310442: 00000003 00000000 00000000 00000000  ................
+00000000faec48bc: 00000000 00000000 00000000 00000000  ................
+00000000dbc2bfb2: 84527920 ffffffff 00000000 00000000   yR.............
+000000005e0c8a70: 13fd0338 ffff8880 00000000 dead4ead  8............N..
+00000000dadb0c2f: ffffffff 00000000 ffffffff ffffffff  ................
+00000000be712572: 8720c2e0 ffffffff 86e79e00 ffffffff  .. .............
+000000001b4cb4ed: 00000000 00000000 844f5100 ffffffff  .........QO.....
+00000000c804dc72: 00020000 00000000 00000021 00000000  ........!.......
+00000000ce7fbfc0: 00000000 00000000 00100cca 00000000  ................
+000000008dd349cf: 00000000 00000000 00000000 00000000  ................
+0000000003a68c94: 00000000 00000000 00000000 00000000  ................
+000000006fa33646: 00000000 00000000 00000000 dead4ead  .............N..
+0000000024d6bae2: ffffffff 00000000 ffffffff ffffffff  ................
+000000000dbc650f: 86749140 ffffffff 00000000 00000000  @.t.............
+00000000746c239b: 00000000 00000000 8446cee0 ffffffff  ..........F.....
+000000001b510a2e: 00020000 00000000 13fd0618 ffff8880  ................
+00000000d03cbd09: 13fd0618 ffff8880 13fd05c0 ffff8880  ................
+0000000060871aee: 8720c360 ffffffff 00000000 00000000  `. .............
+00000000fdd3d1e4: 00000000 00000000 844f5140 ffffffff  ........@QO.....
+000000002d12d55b: 00030000 00000000 00000000 00000000  ................
+00000000174319a5: 00000000 00000000 00000000 00000000  ................
+00000000660fe7e5: 8452b640 ffffffff 00000010 00000000  @.R.............
+000000005067411b: 00000000 00000000 00000000 dead4ead  .............N..
+0000000092e2d034: ffffffff 00000000 ffffffff ffffffff  ................
+00000000a95f7018: 8720c320 ffffffff 00000000 00000000   . .............
+000000006efe12fe: 00000000 00000000 844f5180 ffffffff  .........QO.....
+000000005b1fde17: 00020000 00000000 13fd06c8 ffff8880  ................
+0000000093ce1898: 13fd06c8 ffff8880 00000000 00000000  ................
+00000000547d0847: 13fd06e0 ffff8880 13fd06e0 ffff8880  ................
+00000000bfb16503: 00000000 00000000 1ed2ac1e 00000000  ................
+00000000c95e70ed: 00000000 00000000 00000000 00000000  ................
+00000000b2200aed: 00000000 00000000 00000000 dead4ead  .............N..
+0000000078f5a4d8: ffffffff 00000000 ffffffff ffffffff  ................
+0000000015468804: 872133c0 ffffffff 00000000 00000000  .3!.............
+00000000784b3460: 00000000 00000000 845353e0 ffffffff  .........SS.....
+000000008322fb39: 00020000 00000000 00000000 00000000  ................
+00000000b8501cca: 00000000 00000000 00000000 00000000  ................
+0000000031d4566b: 13fd0770 ffff8880 13fd0770 ffff8880  p.......p.......
+0000000049bfb493: 00000000 dead4ead ffffffff 00000000  .....N..........
+00000000ab51a74b: ffffffff ffffffff 87213380 ffffffff  .........3!.....
+0000000029ad3029: 00000000 00000000 00000000 00000000  ................
+000000003753accc: 84535420 ffffffff 00020000 00000000   TS.............
+00000000d6b4a28b: 00000000 00000000 00000000 00000000  ................
+000000008b6da38b: 00000000 00000000 deaf1eed ffffffff  ................
+000000008143ed91: ffffffff ffffffff 87213340 ffffffff  ........@3!.....
+000000001f1fae89: 00000000 00000000 00000000 00000000  ................
+00000000092a53fe: 84535460 ffffffff 00020000 00000000  `TS.............
+000000003a72e4d5: 13fd0810 ffff8880 13fd0810 ffff8880  ................
+00000000f04eca64: 00000000 00000000 00000000 ffffffff  ................
+00000000c77415ed: 00000000 00000000 00000000 00000000  ................
+0000000001658f19: 00000000 00000000 00000000 00000000  ................
+00000000a9d175d1: 00000000 dead4ead ffffffff 00000000  .....N..........
+00000000fc3c9fa7: ffffffff ffffffff 872132c0 ffffffff  .........2!.....
+0000000074669896: 00000000 00000000 00000000 00000000  ................
+00000000cfdb5bdf: 845354e0 ffffffff 00020000 00000000  .TS.............
+0000000087ac5097: 13fd0890 ffff8880 13fd0890 ffff8880  ................
+000000008c0a096d: ffffffe0 0000000f 13fd08a8 ffff8880  ................
+000000009055fc4b: 13fd08a8 ffff8880 81ace550 ffffffff  ........P.......
+000000006d1d1e29: 87213280 ffffffff 00000000 00000000  .2!.............
+0000000068d3adc1: 00000000 00000000 84535520 ffffffff  ........ US.....
+000000003b9afa71: 00000000 00000000 00000000 00000000  ................
+0000000052345eae: 00000000 dead4ead ffffffff 00000000  .....N..........
+000000002233b981: ffffffff ffffffff 87213300 ffffffff  .........3!.....
+000000007a4b592f: 00000000 00000000 00000000 00000000  ................
+0000000057c27a44: 845354a0 ffffffff 00020000 00000000  .TS.............
+00000000ec71b5bc: 00000000 00000000 00000000 00000000  ................
+000000003d2cf365: 00000000 00000000 00000000 00000000  ................
+00000000f0685dbb: 00000000 00000000                    ........
+CPU: 1 PID: 4156 Comm: syz.1.168 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ext4_destroy_inode fs/ext4/super.c:1358 [inline]
+ ext4_destroy_inode+0xdc/0x100 fs/ext4/super.c:1349
+ destroy_inode+0xc6/0x1c0 fs/inode.c:284
+ dispose_list fs/inode.c:613 [inline]
+ evict_inodes+0x3c1/0x5e0 fs/inode.c:663
+ generic_shutdown_super+0xa6/0x370 fs/super.c:454
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f1a80a3bef9
+Code: Unable to access opcode bytes at RIP 0x7f1a80a3becf.
+RSP: 002b:00007fff86df9518 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffdfc RBX: 00007fff86df9640 RCX: 00007f1a80a3bef9
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f1a80bf3f8c
+RBP: 00007f1a80bf3f8c R08: 00007fff86f4d090 R09: 00007fff86df980f
+R10: 00007fff86df9620 R11: 0000000000000246 R12: 000000000000c798
+R13: 00007fff86df9620 R14: 0000000000000fd2 R15: 000000000000b7c6
+EXT4-fs (loop1): sb orphan head is 0
+sb_info orphan list:
+==================================================================
+BUG: KASAN: use-after-free in dump_orphan_list fs/ext4/super.c:1135 [inline]
+BUG: KASAN: use-after-free in ext4_put_super+0x1119/0x11b0 fs/ext4/super.c:1242
+Read of size 4 at addr ffff888013fd003c by task syz.1.168/4156
+
+CPU: 0 PID: 4156 Comm: syz.1.168 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x37/0x7c mm/kasan/report.c:562
+ dump_orphan_list fs/ext4/super.c:1135 [inline]
+ ext4_put_super+0x1119/0x11b0 fs/ext4/super.c:1242
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f1a80a3bef9
+Code: Unable to access opcode bytes at RIP 0x7f1a80a3becf.
+RSP: 002b:00007fff86df9518 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffdfc RBX: 00007fff86df9640 RCX: 00007f1a80a3bef9
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f1a80bf3f8c
+RBP: 00007f1a80bf3f8c R08: 00007fff86f4d090 R09: 00007fff86df980f
+R10: 00007fff86df9620 R11: 0000000000000246 R12: 000000000000c798
+R13: 00007fff86df9620 R14: 0000000000000fd2 R15: 000000000000b7c6
+
+Allocated by task 4157:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x145/0x330 mm/slub.c:2904
+ ext4_alloc_inode+0x1a/0x630 fs/ext4/super.c:1294
+ alloc_inode+0x63/0x230 fs/inode.c:234
+ iget_locked+0x1c6/0x610 fs/inode.c:1195
+ __ext4_iget+0x27c/0x4180 fs/ext4/inode.c:4619
+ ext4_orphan_get+0x284/0x6f0 fs/ext4/ialloc.c:1385
+ ext4_orphan_cleanup fs/ext4/super.c:3088 [inline]
+ ext4_fill_super+0x90de/0xd960 fs/ext4/super.c:5067
+ mount_bdev+0x350/0x410 fs/super.c:1419
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 101:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x110/0x150 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x53/0x130 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x97/0x340 mm/slub.c:3158
+ i_callback+0x42/0x70 fs/inode.c:223
+ rcu_do_batch+0x496/0x1440 kernel/rcu/tree.c:2476
+ rcu_core+0x62d/0x9d0 kernel/rcu/tree.c:2711
+ __do_softirq+0x295/0xa3f kernel/softirq.c:298
+
+Last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ destroy_inode+0x12f/0x1c0 fs/inode.c:289
+ dispose_list fs/inode.c:613 [inline]
+ evict_inodes+0x3c1/0x5e0 fs/inode.c:663
+ generic_shutdown_super+0xa6/0x370 fs/super.c:454
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Second to last call_rcu():
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0x9e/0xb0 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0xe6/0x13b0 kernel/rcu/tree.c:3027
+ destroy_inode+0x12f/0x1c0 fs/inode.c:289
+ iput_final fs/inode.c:1654 [inline]
+ iput+0x4e5/0x840 fs/inode.c:1680
+ ext4_mb_release+0x6f5/0xfe0 fs/ext4/mballoc.c:2988
+ ext4_put_super+0xb1b/0x11b0 fs/ext4/super.c:1205
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0x155/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff888013fd0000
+ which belongs to the cache ext4_inode_cache of size 2392
+The buggy address is located 60 bytes inside of
+ 2392-byte region [ffff888013fd0000, ffff888013fd0958)
+The buggy address belongs to the page:
+page:00000000405a57eb refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x13fd0
+head:00000000405a57eb order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x100000000010200(slab|head)
+raw: 0100000000010200 ffffea00004f6c00 0000000300000003 ffff88800a8e7a00
+raw: 0000000000000000 00000000800d000d 00000001ffffffff ffff88800fb3a801
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff88800fb3a801
+
+Memory state around the buggy address:
+ ffff888013fcff00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888013fcff80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff888013fd0000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                        ^
+ ffff888013fd0080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888013fd0100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+  inode loop1:16 at 000000003cbdcfa8: mode 100755, nlink 2, next 0
+------------[ cut here ]------------
+kernel BUG at fs/ext4/super.c:1243!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 4156 Comm: syz.1.168 Tainted: G    B             5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:ext4_put_super+0xe1f/0x11b0 fs/ext4/super.c:1243
+Code: 6c 24 50 e8 33 ca 81 ff 4c 89 e7 e8 4b d3 ea ff 4c 89 e7 e8 43 cb f5 ff 4c 89 e7 e8 6b 8b ec ff e9 1d fe ff ff e8 d1 11 92 ff <0f> 0b 48 c7 c7 40 d1 31 85 e8 d2 8e 2c 02 48 8b 7c 24 10 e8 09 42
+RSP: 0018:ffff88801148f9e0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffffffff81b3ffad
+RDX: ffff888019604e00 RSI: ffffffff81b3fcef RDI: ffff888013fd00f0
+RBP: ffff88800cc06000 R08: 0000000000000042 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800928e000
+R13: ffff888013fd0338 R14: ffff88800cc06318 R15: ffff88800cc06318
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f640b527c98 CR3: 000000000dd88000 CR4: 0000000000350ef0
+Call Trace:
+ generic_shutdown_super+0x142/0x370 fs/super.c:464
+ kill_block_super+0x9d/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x95/0x110 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3c8/0x580 fs/namespace.c:1118
+ task_work_run+0xe2/0x1a0 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb29/0x28e0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x462/0x2480 kernel/signal.c:2758
+ arch_do_signal+0x88/0x1a90 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0xf7/0x160 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x3d/0x270 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f1a80a3bef9
+Code: Unable to access opcode bytes at RIP 0x7f1a80a3becf.
+RSP: 002b:00007fff86df9518 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffdfc RBX: 00007fff86df9640 RCX: 00007f1a80a3bef9
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f1a80bf3f8c
+RBP: 00007f1a80bf3f8c R08: 00007fff86f4d090 R09: 00007fff86df980f
+R10: 00007fff86df9620 R11: 0000000000000246 R12: 000000000000c798
+R13: 00007fff86df9620 R14: 0000000000000fd2 R15: 000000000000b7c6
+Modules linked in:
+---[ end trace 3fe4e4b8e3128341 ]---
+RIP: 0010:ext4_put_super+0xe1f/0x11b0 fs/ext4/super.c:1243
+Code: 6c 24 50 e8 33 ca 81 ff 4c 89 e7 e8 4b d3 ea ff 4c 89 e7 e8 43 cb f5 ff 4c 89 e7 e8 6b 8b ec ff e9 1d fe ff ff e8 d1 11 92 ff <0f> 0b 48 c7 c7 40 d1 31 85 e8 d2 8e 2c 02 48 8b 7c 24 10 e8 09 42
+RSP: 0018:ffff88801148f9e0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffffffff81b3ffad
+RDX: ffff888019604e00 RSI: ffffffff81b3fcef RDI: ffff888013fd00f0
+RBP: ffff88800cc06000 R08: 0000000000000042 R09: ffff88806ce2fc0f
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800928e000
+R13: ffff888013fd0338 R14: ffff88800cc06318 R15: ffff88800cc06318
+FS:  0000000000000000(0000) GS:ffff88806ce00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f640b527c98 CR3: 000000000dd88000 CR4: 0000000000350ef0
+Fixing recursive fault but reboot is needed!

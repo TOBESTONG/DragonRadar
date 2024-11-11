@@ -1,0 +1,35 @@
+EXT4-fs error (device loop1): ext4_free_branches:1008: inode #13: comm syz.1.306: invalid indirect mapped block 1936876908 (level 1)
+EXT4-fs (loop1): 1 truncate cleaned up
+EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue
+================================================================================
+UBSAN: shift-out-of-bounds in fs/ext4/super.c:4191:25
+shift exponent 803842 is too large for 32-bit type 'int'
+CPU: 1 PID: 5651 Comm: syz.0.307 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb2/0x186 lib/ubsan.c:395
+ ext4_fill_super.cold+0x163/0x499 fs/ext4/super.c:4191
+ mount_bdev+0x350/0x410 fs/super.c:1419
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x8e/0x360 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1318/0x2060 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27e/0x300 fs/namespace.c:3403
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fa26bb4b69a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fa26a7c2e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fa26a7c2ef0 RCX: 00007fa26bb4b69a
+RDX: 0000000020000180 RSI: 00000000200002c0 RDI: 00007fa26a7c2eb0
+RBP: 0000000020000180 R08: 00007fa26a7c2ef0 R09: 0000000000004500
+R10: 0000000000004500 R11: 0000000000000246 R12: 00000000200002c0
+R13: 00007fa26a7c2eb0 R14: 00000000000004c4 R15: 000000000000002c
+================================================================================
+EXT4-fs (loop0): Invalid log block size: 803842

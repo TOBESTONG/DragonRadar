@@ -1,0 +1,58 @@
+ext4 filesystem being mounted at /2 supports timestamps until 2038 (0x7fffffff)
+EXT4-fs error (device loop1): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 25 vs 150994969 free clusters
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:2696!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 59 Comm: kworker/u4:1 Not tainted 5.10.0 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: writeback wb_workfn (flush-7:1)
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff88800aa27448 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+RDX: ffff88800a92b400 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff888013bda7b0 R08: 0000000000000000 R09: ffff888013bda7b7
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff888013bdaa98 R15: ffff888017486000
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020cb917f CR3: 0000000018c26000 CR4: 0000000000350ee0
+Call Trace:
+ do_writepages+0xee/0x290 mm/page-writeback.c:2352
+ __writeback_single_inode+0x108/0x1090 fs/fs-writeback.c:1461
+ writeback_sb_inodes+0x56e/0x1010 fs/fs-writeback.c:1721
+ wb_writeback+0x28e/0xbe0 fs/fs-writeback.c:1894
+ wb_do_writeback fs/fs-writeback.c:2039 [inline]
+ wb_workfn+0x1a4/0x1140 fs/fs-writeback.c:2080
+ process_one_work+0x7ce/0x16c0 kernel/workqueue.c:2272
+ worker_thread+0x61d/0x1310 kernel/workqueue.c:2418
+ kthread+0x3b2/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+---[ end trace ad9769b5d691475f ]---
+RIP: 0010:ext4_writepages+0x2354/0x3a00 fs/ext4/inode.c:2696
+Code: e1 be 00 10 00 00 4c 89 f7 48 d3 ee ba 01 00 00 00 e8 10 69 fe ff 83 c0 01 89 84 24 e0 00 00 00 e9 d1 e3 ff ff e8 0c 97 9f ff <0f> 0b 48 c7 c7 20 de 2f 85 e8 0d 14 3a 02 e8 f9 96 9f ff 0f b6 84
+RSP: 0018:ffff88800aa27448 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a66535
+RDX: ffff88800a92b400 RSI: ffffffff81a677b4 RDI: 0000000000000007
+RBP: ffff888013bda7b0 R08: 0000000000000000 R09: ffff888013bda7b7
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: 00000000000000bc R14: ffff888013bdaa98 R15: ffff888017486000
+FS:  0000000000000000(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd52a467320 CR3: 00000000182fa000 CR4: 0000000000350ee0
+EXT4-fs error (device loop3): ext4_mb_generate_buddy:802: group 0, block bitmap and bg descriptor inconsistent: 25 vs 150994969 free clusters
+EXT4-fs error (device loop3): __ext4_iget:4839: inode #13: block 127754: comm syz-executor: invalid block
+EXT4-fs error (device loop3): __ext4_iget:4839: inode #13: block 127754: comm syz-executor: invalid block
+EXT4-fs (loop3): Delayed block allocation failed for inode 18 at logical offset 0 with max blocks 2048 with error 28
+EXT4-fs (loop3): This should not happen!! Data will be lost
+
+EXT4-fs (loop3): Total free blocks count 0
+EXT4-fs (loop3): Free/Dirty block details
+EXT4-fs (loop3): free_blocks=2415919120
+EXT4-fs (loop3): dirty_blocks=8192
+EXT4-fs (loop3): Block reservation details
+EXT4-fs (loop3): i_reserved_data_blocks=512
+EXT4-fs (loop3): Delayed block allocation failed for inode 18 at logical offset 2050 with max blocks 2048 with error 28
+EXT4-fs (loop3): This should not happen!! Data will be lost
+
