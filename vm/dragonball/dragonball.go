@@ -4,6 +4,7 @@ package dragonball
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -38,6 +39,8 @@ type Config struct {
 	DbsCli     string `json:"dbs_cli"`
 	DbsArgs    string `json:"dbs_args"`
 	Count      int    `json:"count"`
+	BridgeName string `json:"bridge_name"`
+	BridgeIP   string `json:"bridge_ip"`
 }
 
 type Pool struct {
@@ -46,29 +49,33 @@ type Pool struct {
 }
 
 type instance struct {
-	cfg          *Config
-	os           string
-	workdir      string
-	sshKey       string
-	sshUser      string
-	sshHost      string
-	sshPort      int
-	dbsCmd       *exec.Cmd
-	merger       *vmimpl.OutputMerger
-	index        int
-	debug        bool
-	timeouts     targets.Timeouts
-	rpipe        io.ReadCloser
-	wpipe        io.WriteCloser
-	sshPublicKey string
-	guestIP      string
+    cfg            *Config
+    os             string
+    workdir        string
+    sshKey         string
+    sshUser        string
+    sshHost        string
+    sshPort        int
+    dbsCmd         *exec.Cmd
+    merger         *vmimpl.OutputMerger
+    index          int
+    debug          bool
+    timeouts       targets.Timeouts
+    rpipe          io.ReadCloser
+    wpipe          io.WriteCloser
+    guestIP        string
+    args           []string
+    forwardedPorts [][2]int // [][{hostPort, guestPort}]
 }
+
 
 func ctor(env *vmimpl.Env) (vmimpl.Pool, error) {
 	cfg := &Config{
 		Count:   1,
 		Vcpu:    1,
+		MaxVcpu: 1,
 		MemSize: 1024,
+		BridgeIP: "192.168.100.1/24",
 	}
 
 	if err := config.LoadData(env.Config, cfg); err != nil {
@@ -105,10 +112,17 @@ func ctor(env *vmimpl.Env) (vmimpl.Pool, error) {
 	}
 	cfg.KernelPath = osutil.Abs(cfg.KernelPath)
 
+
+	if cfg.BridgeName == "" {
+        cfg.BridgeName = "br_syzkaller"
+    }
+    if cfg.BridgeIP == "" {
+        cfg.BridgeIP = "192.168.100.1/24"
+    }
 	// Set up the network bridge
-	if err := setupBridge(); err != nil {
-		return nil, fmt.Errorf("failed to set up network bridge: %w", err)
-	}
+	if err := setupBridge(cfg.BridgeName, cfg.BridgeIP); err != nil {
+        return nil, fmt.Errorf("failed to set up network bridge: %w", err)
+    }
 
 	pool := &Pool{
 		env: env,
@@ -117,30 +131,52 @@ func ctor(env *vmimpl.Env) (vmimpl.Pool, error) {
 	return pool, nil
 }
 
-func setupBridge() error {
-	// Create a bridge if not exists
-	bridgeName := "br0"
+func setupBridge(bridgeName, bridgeIP string) error {
+    // Check if the bridge exists
 	_, err := osutil.RunCmd(time.Minute, "", "ip", "link", "show", bridgeName)
-	if err != nil {
-		log.Logf(0, "Failed to detect bridge %s, attempting to create...", bridgeName)
-		// Bridge does not exist, create it
+    if err != nil {
+        log.Logf(0, "Bridge %s not found, creating...", bridgeName)
+        // The bridge does not exist, create it
 		cmds := [][]string{
-			{"ip", "link", "add", bridgeName, "type", "bridge"},
-			{"ip", "addr", "add", "192.168.100.1/24", "dev", bridgeName},
-			{"ip", "link", "set", bridgeName, "up"},
-		}
-		for _, cmd := range cmds {
-			_, err := osutil.RunCmd(time.Minute, "", cmd[0], cmd[1:]...)
-			if err != nil {
-				return fmt.Errorf("failed to run command %v: %w", cmd, err)
+            {"ip", "link", "add", bridgeName, "type", "bridge"},
+            {"ip", "addr", "add", bridgeIP, "dev", bridgeName},
+            {"ip", "link", "set", bridgeName, "up"},
+        }
+        for _, cmd := range cmds {
+            _, err := osutil.RunCmd(time.Minute, "", cmd[0], cmd[1:]...)
+            if err != nil {
+                return fmt.Errorf("failed to run command %v: %w", cmd, err)
+            }
+        }
+    } else {
+        log.Logf(0, "Bridge %s already exists", bridgeName)
+        // Bridge exists, check if there is an IP address
+		outputAddr, err := osutil.RunCmd(time.Minute, "", "ip", "addr", "show", "dev", bridgeName)
+        if err != nil {
+            return fmt.Errorf("failed to get IP address of bridge %s: %w", bridgeName, err)
+        }
+        if !strings.Contains(string(outputAddr), bridgeIP) {
+			log.Logf(0, "Bridge %s does not have IP %s, assigning...", bridgeName, bridgeIP)
+			cmds := [][]string{
+				{"ip", "addr", "add", bridgeIP, "dev", bridgeName},
+				{"ip", "link", "set", bridgeName, "up"},
 			}
+			for _, cmd := range cmds {
+				_, err := osutil.RunCmd(time.Minute, "", cmd[0], cmd[1:]...)
+				if err != nil {
+					if !strings.Contains(err.Error(), "Address already assigned") {
+						return fmt.Errorf("failed to run command %v: %w", cmd, err)
+					}
+				}
+			}
+		} else {
+			log.Logf(0, "Bridge %s already has IP %s", bridgeName, bridgeIP)
 		}
 		
-	}else {
-        log.Logf(0, "Bridge %s already exists", bridgeName)
-	}
-	return nil
+    }
+    return nil
 }
+
 
 
 func (pool *Pool) Count() int {
@@ -148,97 +184,115 @@ func (pool *Pool) Count() int {
 }
 
 func (pool *Pool) Create(workdir string, index int) (vmimpl.Instance, error) {
-	sshkey := pool.env.SSHKey
-	sshuser := pool.env.SSHUser
+    sshKey := pool.env.SSHKey
+    sshUser := pool.env.SSHUser
 
-	for i := 0; ; i++ {
-		inst, err := pool.ctor(workdir, sshkey, sshuser, index)
-		if err == nil {
-			return inst, nil
-		}
-		if i < 1000 && strings.Contains(err.Error(), "could not set up host forwarding rule") {
-			continue
-		}
-		if i < 1000 && strings.Contains(err.Error(), "Device or resource busy") {
-			continue
-		}
-		return nil, err
-	}
+    // Extract the network portion of the bridge IP address
+    bridgeIP := strings.Split(pool.cfg.BridgeIP, "/")[0]
+    ipParts := strings.Split(bridgeIP, ".")
+    if len(ipParts) != 4 {
+        return nil, fmt.Errorf("invalid bridge IP address: %s", bridgeIP)
+    }
+    // Using the same network segment, assign the IP address of the virtual machine
+    guestIP := fmt.Sprintf("%s.%s.%s.%d", ipParts[0], ipParts[1], ipParts[2], index+2)
+    // Extract gateway IP address
+    gatewayIP := bridgeIP
+    if err := prepareInitScript(workdir, sshKey, guestIP, gatewayIP); err != nil {
+        return nil, fmt.Errorf("failed to prepare init.sh: %w", err)
+    }
+	initScriptPath := filepath.Join(workdir, "init.sh")
+    content, err := ioutil.ReadFile(initScriptPath)
+    if err != nil {
+        return nil, fmt.Errorf("failed to read init.sh: %w", err)
+    }
+
+    fmt.Println("init.sh contents: ")
+    fmt.Println(string(content))
+
+    for i := 0; ; i++ {
+        inst, err := pool.ctor(workdir, sshKey, sshUser, index, guestIP)
+        if err == nil {
+            return inst, nil
+        }
+        if i < 1000 && strings.Contains(err.Error(), "could not set up host forwarding rule") {
+            continue
+        }
+        if i < 1000 && strings.Contains(err.Error(), "Device or resource busy") {
+            continue
+        }
+        return nil, err
+    }
 }
 
-func (pool *Pool) ctor(workdir, sshkey, sshuser string, index int) (*instance, error) {
-	inst := &instance{
-		index:    index,
-		cfg:      pool.cfg,
-		debug:    pool.env.Debug,
-		os:       pool.env.OS,
-		workdir:  workdir,
-		sshKey:   sshkey,
-		sshUser:  sshuser,
-		timeouts: pool.env.Timeouts,
-	}
-	closeInst := inst
-	defer func() {
-		if closeInst != nil {
-			closeInst.Close()
-		}
-	}()
 
-	if err := inst.prepareInitScript(); err != nil {
-		return nil, fmt.Errorf("failed to prepare init.sh: %w", err)
-	}
 
-	// Ensure TAP interface exists
-	tapInterface := fmt.Sprintf("tap%d", inst.index)
-	if err := inst.setupTapInterface(tapInterface); err != nil {
-		return nil, fmt.Errorf("failed to set up TAP interface: %w", err)
-	}
 
-	var err error
-	inst.rpipe, inst.wpipe, err = osutil.LongPipe()
-	if err != nil {
-		return nil, err
-	}
+func (pool *Pool) ctor(workdir, sshkey, sshuser string, index int, guestIP string) (*instance, error) {
+    inst := &instance{
+        index:    index,
+        cfg:      pool.cfg,
+        debug:    pool.env.Debug,
+        os:       pool.env.OS,
+        workdir:  workdir,
+        sshKey:   sshkey,
+        sshUser:  sshuser,
+        timeouts: pool.env.Timeouts,
+        guestIP:  guestIP, 
+    }
+    closeInst := inst
+    defer func() {
+        if closeInst != nil {
+            closeInst.Close()
+        }
+    }()
 
-	if err := inst.boot(tapInterface); err != nil {
-		return nil, err
-	}
+    tapInterface := fmt.Sprintf("tap%d", inst.index)
+    if err := inst.setupTapInterface(tapInterface); err != nil {
+        return nil, fmt.Errorf("failed to set up TAP interface: %w", err)
+    }
 
-	closeInst = nil
-	return inst, nil
+    var err error
+    inst.rpipe, inst.wpipe, err = osutil.LongPipe()
+    if err != nil {
+        return nil, err
+    }
+
+    if err := inst.boot(tapInterface); err != nil {
+        return nil, err
+    }
+
+    closeInst = nil
+    return inst, nil
 }
 
-func (inst *instance) prepareInitScript() error {
-	sshPubKey, err := os.ReadFile(inst.sshKey + ".pub")
-	if err != nil {
-		return fmt.Errorf("failed to read SSH public key: %w", err)
-	}
 
-	inst.sshPublicKey = strings.TrimSpace(string(sshPubKey))
 
-	// Assign unique guest IP based on inst.index
-	inst.guestIP = fmt.Sprintf("192.168.100.%d", inst.index+2) // Starts from .2
-
-	// Write init.sh to the shared directory (inst.workdir)
-	initScriptContent := strings.Replace(initScript, "{{KEY}}", inst.sshKey, -1)
-	initScriptContent = strings.Replace(initScriptContent, "{{GUEST_IP}}", inst.guestIP, -1)
-	initScriptPath := filepath.Join(inst.workdir, "init.sh")
-	if err := osutil.WriteExecFile(initScriptPath, []byte(initScriptContent)); err != nil {
-		return fmt.Errorf("failed to write init.sh to shared directory: %w", err)
-	}
-
-	return nil
+func prepareInitScript(workdir, sshKey, guestIP, gatewayIP string) error {
+    initScriptContent := strings.Replace(initScript, "{{KEY}}", sshKey, -1)
+    initScriptContent = strings.Replace(initScriptContent, "{{GUEST_IP}}", guestIP, -1)
+    initScriptContent = strings.Replace(initScriptContent, "{{GATEWAY_IP}}", gatewayIP, -1)
+    initScriptPath := filepath.Join(workdir, "init.sh")
+    if err := osutil.WriteExecFile(initScriptPath, []byte(initScriptContent)); err != nil {
+        return fmt.Errorf("failed to write init.sh to shared directory: %w", err)
+    }
+    return nil
 }
+
+
+
+
 
 func (inst *instance) boot(tapInterface string) error {
 	// Assign an unused TCP port for SSH port forwarding
 	inst.sshPort = vmimpl.UnusedTCPPort()
+	inst.sshHost = "localhost"
 
 	args := inst.buildDbsCliArgs(tapInterface)
-
+	inst.args = args 
 	
 	// Create the command
 	cmd := osutil.Command(inst.cfg.DbsCli, args...)
+	cmd.Dir = inst.workdir
 	if inst.debug {
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
@@ -247,20 +301,13 @@ func (inst *instance) boot(tapInterface string) error {
 		cmd.Stderr = inst.wpipe
 	}
 	inst.dbsCmd = cmd
-
 	// Start the command
 	log.Logf(0, "Starting dbs-cli with args: %v", args)
 	if err := cmd.Start(); err != nil {
-		if inst.wpipe != nil {
-			inst.wpipe.Close()
-		}
-		log.Logf(0, "Failed to start dbs-cli: %v", err) 
-		return fmt.Errorf("failed to start dbs-cli: %w", err)
+		return fmt.Errorf("failed to start %v %+v: %w", inst.cfg.DbsCli, args, err)
 	}
-	if inst.wpipe != nil {
-		inst.wpipe.Close()
-		inst.wpipe = nil
-	}
+	inst.wpipe.Close()
+	inst.wpipe = nil
 
 	// Start the output merger
 	var tee io.Writer
@@ -271,70 +318,97 @@ func (inst *instance) boot(tapInterface string) error {
 	inst.merger.Add("dbs-cli", inst.rpipe)
 	inst.rpipe = nil
 
-	// Set up port forwarding using iptables
-	if err := setupPortForwarding(inst.sshPort, inst.guestIP, 22); err != nil {
-		return fmt.Errorf("failed to set up port forwarding: %w", err)
-	}
+	var bootOutput []byte
+    bootOutputStop := make(chan bool)
+    go func() {
+        for {
+            select {
+            case out := <-inst.merger.Output:
+                bootOutput = append(bootOutput, out...)
+            case <-bootOutputStop:
+                close(bootOutputStop)
+                return
+            }
+        }
+    }()
 
-	inst.sshHost = "localhost"
+	// Set up port forwarding using iptables
+    if err := setupPortForwarding(inst.sshPort, inst.guestIP, 22); err != nil {
+        bootOutputStop <- true
+        <-bootOutputStop
+        return fmt.Errorf("failed to set up port forwarding: %w", err)
+    }
+
 	// Wait for SSH to become available
 	log.Logf(0, "Waiting for SSH to become available on %s:%d", inst.sshHost, inst.sshPort)
 	if err := vmimpl.WaitForSSH(inst.debug, 10*time.Minute*inst.timeouts.Scale, inst.sshHost,
-		inst.sshKey, inst.sshUser, inst.os, inst.sshPort, inst.merger.Err, false); err != nil {
-		log.Logf(0, "Failed to connect via SSH: %v", err)
-		return vmimpl.MakeBootError(err, nil)
-	}
-
+        inst.sshKey, inst.sshUser, inst.os, inst.sshPort, inst.merger.Err, false); err != nil {
+        bootOutputStop <- true
+        <-bootOutputStop
+        log.Logf(0, "Failed to connect via SSH: %v", err)
+        return vmimpl.MakeBootError(err, bootOutput)
+    }
+    bootOutputStop <- true
 	return nil
 }
 
 func (inst *instance) Close() error {
-	if inst.dbsCmd != nil {
-		// Force terminate the dbs-cli process
-		if err := inst.dbsCmd.Process.Kill(); err != nil {
-			log.Logf(0, "failed to kill VM process: %v", err)
-		}
+    if inst.dbsCmd != nil {
+        // Force terminate the dbs-cli process
+        if err := inst.dbsCmd.Process.Kill(); err != nil {
+            log.Logf(0, "failed to kill VM process: %v", err)
+        }
+        inst.dbsCmd.Wait()
+    }
 
-		// Wait for the dbs-cli process to exit
-		inst.dbsCmd.Wait()
-	}
+    // Make sure all resources are cleaned up
+    if inst.merger != nil {
+        inst.merger.Wait()
+    }
+    if inst.rpipe != nil {
+        inst.rpipe.Close()
+    }
+    if inst.wpipe != nil {
+        inst.wpipe.Close()
+    }
 
-	// Ensure all resources are cleaned up
-	if inst.merger != nil {
-		inst.merger.Wait()
-	}
-	if inst.rpipe != nil {
-		inst.rpipe.Close()
-	}
-	if inst.wpipe != nil {
-		inst.wpipe.Close()
-	}
+    // Clean up the TAP interface
+    tapInterface := fmt.Sprintf("tap%d", inst.index)
+    if _, err := osutil.RunCmd(time.Minute, "", "ip", "link", "set", tapInterface, "down"); err != nil {
+        log.Logf(0, "failed to set TAP interface down: %v", err)
+    }
+    if _, err := osutil.RunCmd(time.Minute, "", "ip", "tuntap", "del", "mode", "tap", tapInterface); err != nil {
+        log.Logf(0, "failed to delete TAP interface: %v", err)
+    }
 
-	// Clean up the tap interface
-	tapInterface := fmt.Sprintf("tap%d", inst.index)
-	osutil.RunCmd(time.Minute, "", "ip", "link", "set", tapInterface, "down")
-	osutil.RunCmd(time.Minute, "", "ip", "tuntap", "del", "mode", "tap", tapInterface)
+    // Clean up SSH port forwarding rules
+    cleanupPortForwarding(inst.sshPort, inst.guestIP, 22)
 
-	// Clean up port forwarding rules
-	cleanupPortForwarding(inst.sshPort, inst.guestIP, 22)
+    // Clean up other forwarded ports
+    for _, fp := range inst.forwardedPorts {
+        hostPort := fp[0]
+        guestPort := fp[1]
+        cleanupPortForwarding(hostPort, inst.guestIP, guestPort)
+    }
 
-	return nil
+    return nil
 }
 
+
 func (inst *instance) setupTapInterface(tapName string) error {
-	// Create TAP interface
-	cmds := [][]string{
-		{"ip", "tuntap", "add", "dev", tapName, "mode", "tap"},
-		{"ip", "link", "set", tapName, "up"},
-		{"ip", "link", "set", tapName, "master", "br0"},
-	}
-	for _, cmd := range cmds {
-		_, err := osutil.RunCmd(time.Minute, "", cmd[0], cmd[1:]...)
-		if err != nil {
-			return fmt.Errorf("failed to run command %v: %w", cmd, err)
-		}
-	}
-	return nil
+    bridgeName := inst.cfg.BridgeName
+    cmds := [][]string{
+        {"ip", "tuntap", "add", "dev", tapName, "mode", "tap"},
+        {"ip", "link", "set", tapName, "up"},
+        {"ip", "link", "set", tapName, "master", bridgeName},
+    }
+    for _, cmd := range cmds {
+        _, err := osutil.RunCmd(time.Minute, "", cmd[0], cmd[1:]...)
+        if err != nil {
+            return fmt.Errorf("failed to run command %v: %w", cmd, err)
+        }
+    }
+    return nil
 }
 
 func (inst *instance) buildDbsCliArgs(tapInterface string) []string {
@@ -402,6 +476,7 @@ func (inst *instance) buildDbsCliArgs(tapInterface string) []string {
 
 func setupPortForwarding(hostPort int, guestIP string, guestPort int) error {
 	cmds := [][]string{
+		//Forward the hostPort's port to the virtual machine's guestIP:guestPort
 		{"iptables", "-t", "nat", "-A", "PREROUTING", "-p", "tcp",
 			"--dport", strconv.Itoa(hostPort), "-j", "DNAT", "--to-destination",
 			fmt.Sprintf("%s:%d", guestIP, guestPort)},
@@ -419,6 +494,7 @@ func setupPortForwarding(hostPort int, guestIP string, guestPort int) error {
 
 func cleanupPortForwarding(hostPort int, guestIP string, guestPort int) {
 	cmds := [][]string{
+		//Remove the previously added DNAT rule from the PREROUTING chain of the nat table
 		{"iptables", "-t", "nat", "-D", "PREROUTING", "-p", "tcp",
 			"--dport", strconv.Itoa(hostPort), "-j", "DNAT", "--to-destination",
 			fmt.Sprintf("%s:%d", guestIP, guestPort)},
@@ -431,9 +507,21 @@ func cleanupPortForwarding(hostPort int, guestIP string, guestPort int) {
 }
 
 func (inst *instance) Forward(port int) (string, error) {
-	// Return the host address and port where the service is forwarded.
-	return fmt.Sprintf("localhost:%d", port), nil
+    if port == 0 {
+        return "", fmt.Errorf("vm/dragonball: forward port is zero")
+    }
+
+    hostPort := vmimpl.UnusedTCPPort()
+    if err := setupPortForwarding(hostPort, inst.guestIP, port); err != nil {
+        return "", fmt.Errorf("failed to set up port forwarding: %w", err)
+    }
+
+    // Save forwarded port information
+    inst.forwardedPorts = append(inst.forwardedPorts, [2]int{hostPort, port})
+
+    return fmt.Sprintf("localhost:%v", hostPort), nil
 }
+
 
 func (inst *instance) Run(timeout time.Duration, stop <-chan bool, command string) (
 	<-chan []byte, <-chan error, error) {
@@ -501,7 +589,7 @@ func (inst *instance) sshArgs(args ...string) []string {
 }
 
 // nolint: lll
-const initScript = `#! /bin/bash
+const initScript = `#!/bin/bash
 set -eux
 mount -t proc none /proc
 mount -t sysfs none /sys
@@ -515,14 +603,14 @@ touch /etc/fstab
 mkdir /etc/network
 mkdir /run/network
 printf 'auto lo\niface lo inet loopback\n\n' >> /etc/network/interfaces
-printf 'auto eth0\niface eth0 inet static\naddress {{GUEST_IP}}\nnetmask 255.255.255.0\ngateway 192.168.100.1\n\n' >> /etc/network/interfaces
+printf 'auto eth0\niface eth0 inet static\naddress {{GUEST_IP}}\nnetmask 255.255.255.0\ngateway {{GATEWAY_IP}}\n\n' >> /etc/network/interfaces
 mkdir -p /etc/network/if-pre-up.d
 mkdir -p /etc/network/if-up.d
 ifup lo
 ifup eth0 || true
 echo "root::0:0:root:/root:/bin/bash" > /etc/passwd
 mkdir -p /etc/ssh
-cp {{KEY}}.pub /root/
+cp {{KEY}}.pub /root/key.pub
 chmod 0700 /root
 chmod 0600 /root/key.pub
 mkdir -p /var/run/sshd/
@@ -530,22 +618,22 @@ chmod 700 /var/run/sshd
 groupadd -g 33 sshd
 useradd -u 33 -g 33 -c sshd -d / sshd
 cat > /etc/ssh/sshd_config <<EOF
-          Port 22
-          Protocol 2
-          UsePrivilegeSeparation no
-          HostKey {{KEY}}
-          PermitRootLogin yes
-          AuthenticationMethods publickey
-          ChallengeResponseAuthentication no
-          AuthorizedKeysFile /root/key.pub
-          IgnoreUserKnownHosts yes
-          AllowUsers root
-          LogLevel INFO
-          TCPKeepAlive yes
-          RSAAuthentication yes
-          PubkeyAuthentication yes
+Port 22
+Protocol 2
+UsePrivilegeSeparation no
+HostKey {{KEY}}
+PermitRootLogin yes
+AuthenticationMethods publickey
+ChallengeResponseAuthentication no
+AuthorizedKeysFile /root/key.pub
+IgnoreUserKnownHosts yes
+AllowUsers root
+LogLevel INFO
+TCPKeepAlive yes
+RSAAuthentication yes
+PubkeyAuthentication yes
 EOF
 /usr/sbin/sshd -e -D
-tail -f /dev/null
 /sbin/halt -f
 `
+
