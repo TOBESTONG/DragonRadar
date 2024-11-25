@@ -7,12 +7,12 @@ Clone the repository:
 git clone https://github.com/openanolis/dbs-cli.git
 cd /path/to/dbs-cli
 cargo build --all-features
-cd /path/to/dbs-cli/target/debug
 ```
 
 Below is an example of using `dbs-cli` to start a Dragonball VM:
 
 ```bash
+cd /path/to/dbs-cli/target/debug
 sudo ./dbs-cli create \
     --log-file dbs-cli.log --log-level ERROR \
     --kernel-path /path/to/kernel/vmlinux \
@@ -61,7 +61,6 @@ chmod +x create-image.sh
 ```
 
 After successful execution, the `/path/to/image` directory will contain the following files:
-- `bullseye`
 - `bullseye.id_rsa`
 - `bullseye.id_rsa.pub`
 - `bullseye.img`

@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-Before officially using DragonRadar, we recommend that users first familiarize themselves with the usage of dbs-cli. Please refer to the documentation [how_to_use_dbs-cli.md](docs/DragonRadar/how_to_use_dbs_cli.md).
+Before officially using DragonRadar, we recommend that users first familiarize themselves with the usage of dbs-cli. Please refer to the documentation [how_to_use_dbs-cli.md](how_to_use_dbs_cli.md).
  
 
 ## Configuration
