@@ -4,7 +4,7 @@ This document describes how to use `dbs-cli` to launch a Dragonball MicroVM for 
 
 ## Prerequisites
 
-- A compiled `dbs-cli` binary (from [kata-containers/kata-containers](https://github.com/kata-containers/kata-containers), under `src/dragonball/src/dbs-cli`)
+- A compiled `dbs-cli` binary 
 - An **uncompressed** Linux kernel binary (`vmlinux`). Dragonball does **not** support `bzImage`.
 - A root filesystem image (e.g., Alpine-based or Debian-based `.img`)
 - Host with `sudo` access for TAP device and network configuration
@@ -157,30 +157,10 @@ After the VM boots, connect via SSH using the key generated during rootfs creati
 ssh -i /path/to/id_rsa root@172.16.0.2
 ```
 
-### Troubleshooting SSH Issues
-
-If you encounter `Permission denied` errors (common with newer OpenSSH versions):
-
-1. **Fix permissions** (inside VM console):
-   ```bash
-   chmod 700 /root/.ssh
-   chmod 600 /root/.ssh/authorized_keys
-   ```
-
-2. **Allow legacy key types** (if using RSA keys with OpenSSH ¡Ý 8.8):
-   ```bash
-   echo "PubkeyAcceptedKeyTypes +ssh-rsa" >> /etc/ssh/sshd_config
-   echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
-   systemctl restart ssh
-   ```
-
 ## 7. Common Issues
 
 | Issue | Cause | Solution |
 |---|---|---|
 | `--max-vcpu` panic | `max-vcpu` < `vcpu` | Always set `--max-vcpu` ¡Ý `--vcpu` |
-| `root=/dev/vda` fails | Image has partition table | Use `root=/dev/vda1` instead |
-| No network in VM | TAP not configured on host | Run host network setup commands (Section 3) |
 | `avc: denied` logs | SELinux in permissive mode | Safe to ignore; no functional impact |
-| SSH key rejected | OpenSSH version mismatch | Use `ed25519` keys or add `PubkeyAcceptedKeyTypes +ssh-rsa` |
 | `api-sock-path` error | Placed after `create` | Must be a **global** option, placed **before** the subcommand |
