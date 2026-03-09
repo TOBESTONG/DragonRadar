@@ -36,7 +36,7 @@ require (
 	google.golang.org/appengine/v2 v2.0.6
 	google.golang.org/genproto v0.0.0-20250603155806-513f23925822
 	google.golang.org/grpc v1.78.0
-	google.golang.org/protobuf v1.36.10
+	google.golang.org/protobuf v1.36.11
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.34.2
 	k8s.io/client-go v0.34.1
