@@ -1,0 +1,86 @@
+# Copyright 2024 syzkaller project authors. All rights reserved.
+# Use of this source code is governed by Apache 2 LICENSE that can be found in the LICENSE file.
+
+# Dragonball device manager upcall interface.
+# The Dragonball guest kernel exposes /dev/dragonball_devmgr for executing
+# device manager hotplug requests in process context. The executor wrapper
+# calls this character device through ioctl, which keeps the target path visible
+# to KCOV.
+
+meta noextract
+
+# Dragonball device manager message types
+devmgr_msg_type = DEVMGR_CONNECT, DEVMGR_ADD_CPU, DEVMGR_DEL_CPU, DEVMGR_ADD_MEM, DEVMGR_DEL_MEM, DEVMGR_ADD_MMIO, DEVMGR_DEL_MMIO, DEVMGR_ADD_PCI, DEVMGR_DEL_PCI
+
+# Message header (16 bytes)
+devmgr_msg_header {
+	magic_version	const[DEVMGR_MAGIC_VERSION, int32]
+	msg_size	int32
+	msg_type	flags[devmgr_msg_type, int32]
+	msg_flags	int32
+}
+
+# ADD_MMIO device request payload
+devmgr_add_mmio_payload {
+	mmio_base	int64
+	mmio_size	int64
+	mmio_irq	int32
+}
+
+# ADD_CPU device request payload (x86_64)
+devmgr_add_cpu_payload {
+	count		int8
+	apic_ver	int8
+	apic_ids	array[int8, 256]
+}
+
+# ADD_PCI device request payload
+devmgr_add_pci_payload {
+	busno	int8
+	devfn	int8
+}
+
+# Device manager request (0x400 bytes total)
+devmgr_req [
+	connect		devmgr_msg_header
+	add_mmio	devmgr_req_add_mmio
+	del_mmio	devmgr_req_del_mmio
+	add_cpu		devmgr_req_add_cpu
+	del_cpu		devmgr_req_del_cpu
+	add_pci		devmgr_req_add_pci
+	del_pci		devmgr_req_del_pci
+] [varlen]
+
+devmgr_req_add_mmio {
+	header	devmgr_msg_header
+	payload	devmgr_add_mmio_payload
+}
+
+devmgr_req_del_mmio {
+	header	devmgr_msg_header
+	payload	devmgr_add_mmio_payload
+}
+
+devmgr_req_add_cpu {
+	header	devmgr_msg_header
+	payload	devmgr_add_cpu_payload
+}
+
+devmgr_req_del_cpu {
+	header	devmgr_msg_header
+	payload	devmgr_add_cpu_payload
+}
+
+devmgr_req_add_pci {
+	header	devmgr_msg_header
+	payload	devmgr_add_pci_payload
+}
+
+devmgr_req_del_pci {
+	header	devmgr_msg_header
+	payload	devmgr_add_pci_payload
+}
+
+# Pseudo-syscall: sends a device manager hotplug request through the
+# Dragonball device manager ioctl path.
+syz_dragonball_devmgr(req ptr[in, devmgr_req], reqsize len[req])

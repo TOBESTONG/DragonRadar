@@ -240,6 +240,12 @@ fi
 		"--virnets", virnetJSON,
 	}
 
+	// Enable vsock device for guest-VMM upcall communication (e.g., syz_dragonball_devmgr).
+	// dbs-cli creates a virtio-vsock device with hardcoded CID=42; the guest kernel's
+	// dragonball_upcall_srv binds on AF_VSOCK port 0xDB to receive device manager commands.
+	vsockSock := filepath.Join(inst.workdir, "vsock.sock")
+	args = append(args, "--vsock", vsockSock)
+
 	if inst.debug {
 		log.Logf(0, "VM-%d: running %v %v", inst.index, dbsCli, args)
 	}

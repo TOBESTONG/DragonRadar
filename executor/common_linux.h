@@ -5917,3 +5917,44 @@ static long syz_kfuzztest_run(volatile long test_name_ptr, volatile long input_d
 }
 
 #endif
+
+#if SYZ_EXECUTOR || __NR_syz_dragonball_devmgr
+#include <linux/vm_sockets.h>
+#include <sys/socket.h>
+
+#define DB_SERVER_PORT 0xDB
+#define DEVMGR_CMD_BYTE 0x64
+#define DEVMGR_MSG_SIZE 0x400
+
+// Dragonball device manager pseudo-syscall (chardev ioctl path).
+// Opens /dev/dragonball_devmgr and calls db_devmgr_process() via ioctl
+// in the caller's process context, so KCOV can collect full coverage.
+// The old vsock path dispatched to kernel threads invisible to KCOV.
+
+struct db_devmgr_ioctl_data {
+	char req[DEVMGR_MSG_SIZE];
+	char reply[DEVMGR_MSG_SIZE];
+};
+
+#define DB_DEVMGR_IOC_PROCESS _IOWR('D', 1, struct db_devmgr_ioctl_data)
+
+static long syz_dragonball_devmgr(volatile long req_buf, volatile long req_size)
+{
+	int fd;
+	struct db_devmgr_ioctl_data arg;
+	int ret;
+
+	fd = open("/dev/dragonball_devmgr", O_RDWR);
+	if (fd < 0)
+		return fd;
+
+	memset(&arg, 0, sizeof(arg));
+	long copy_size = req_size < DEVMGR_MSG_SIZE ? req_size : DEVMGR_MSG_SIZE;
+	memcpy(arg.req, (void*)req_buf, copy_size);
+
+	ret = ioctl(fd, DB_DEVMGR_IOC_PROCESS, &arg);
+
+	close(fd);
+	return ret;
+}
+#endif
