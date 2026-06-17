@@ -1,6 +1,6 @@
 module github.com/google/syzkaller
 
-go 1.24.4
+go 1.25.0
 
 require (
 	cloud.google.com/go v0.123.0
@@ -29,7 +29,7 @@ require (
 	golang.org/x/exp v0.0.0-20251009144603-d2f985daa21b
 	golang.org/x/oauth2 v0.33.0
 	golang.org/x/perf v0.0.0-20251008221758-42ba72fec400
-	golang.org/x/sync v0.18.0
+	golang.org/x/sync v0.20.0
 	golang.org/x/sys v0.38.0
 	golang.org/x/tools v0.38.0
 	google.golang.org/api v0.257.0
